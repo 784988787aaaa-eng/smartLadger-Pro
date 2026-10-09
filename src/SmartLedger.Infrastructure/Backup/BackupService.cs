@@ -167,6 +167,21 @@ public sealed class BackupService
                 if (hasEmergency && File.Exists(emergency)) File.Copy(emergency, destination, true);
                 throw new IOException("Restored database verification failed.");
             }
+
+            // Restore branding files from the same verified archive as the database.
+            var sourceBranding = Path.Combine(temp, "Branding");
+            var destinationBranding = Path.Combine(rootPath, "Branding");
+            Directory.CreateDirectory(destinationBranding);
+            foreach (var existingLogo in Directory.EnumerateFiles(destinationBranding, "business-logo.*"))
+                File.Delete(existingLogo);
+            if (Directory.Exists(sourceBranding))
+            {
+                foreach (var logo in Directory.EnumerateFiles(sourceBranding, "business-logo.*"))
+                {
+                    ct.ThrowIfCancellationRequested();
+                    File.Copy(logo, Path.Combine(destinationBranding, Path.GetFileName(logo)), true);
+                }
+            }
         }
         finally
         {
