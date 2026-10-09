@@ -12,15 +12,15 @@ permissions:
 
 jobs:
   build:
-    name: Build and test
+    name: Build, test, and publish Windows x64
     runs-on: windows-latest
-    timeout-minutes: 30
+    timeout-minutes: 45
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up .NET SDK
+      - name: Set up .NET 10 SDK
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 10.0.x
@@ -35,13 +35,16 @@ jobs:
         run: dotnet build ./SmartLedger.sln --configuration Release --no-restore
 
       - name: Run tests
-        run: dotnet test ./SmartLedger.sln --configuration Release --no-build --verbosity minimal
+        run: dotnet test ./SmartLedger.sln --configuration Release --no-build --verbosity normal
 
-      - name: Upload Release outputs
+      - name: Publish Windows x64 application
+        run: dotnet publish ./src/SmartLedger.App/SmartLedger.App.csproj --configuration Release -p:PublishProfile=WinX64 --no-restore
+
+      - name: Upload Windows x64 package
         if: success()
         uses: actions/upload-artifact@v4
         with:
-          name: SmartLedger-Release-${{ github.run_number }}
-          path: src/SmartLedger.App/bin/Release/net10.0-windows/
-          if-no-files-found: warn
+          name: SmartLedger-Windows-x64-${{ github.run_number }}
+          path: src/SmartLedger.App/bin/Release/net10.0-windows/win-x64/publish/
+          if-no-files-found: error
           retention-days: 14
