@@ -21,7 +21,7 @@ public partial class SettingsViewModel : ObservableObject
     private readonly UserRepository users;
     private readonly IAppSession session;
     private readonly AuditRepository audit;
-    private readonly BackupService backup = new();
+    private readonly BackupService backup = new(LocalAppPaths.Root);
     private string logoPath = "";
 
     [ObservableProperty] private string businessName = "";
@@ -203,8 +203,8 @@ public partial class SettingsViewModel : ObservableObject
         try
         {
             var info = await backup.CreateAsync(dialog.FolderName);
-            await audit.LogActionAsync(session.CurrentUser?.Id, "BACKUP_CREATE", "Backup", null, new { info.FilePath, info.SizeBytes });
-            LastBackupText = $"آخر نسخة في هذه الجلسة: {info.CreatedAt:yyyy/MM/dd HH:mm} — {info.SizeBytes:N0} بايت";
+            await audit.LogActionAsync(session.CurrentUser?.Id, "BACKUP_CREATE", "Backup", null, new { info.FilePath, SizeBytes = new FileInfo(info.FilePath).Length });
+            LastBackupText = $"آخر نسخة في هذه الجلسة: {info.CreatedAt:yyyy/MM/dd HH:mm} — {new FileInfo(info.FilePath).Length:N0} بايت";
             StatusText = $"تم إنشاء النسخة الاحتياطية والتحقق من الملف: {info.FilePath}";
         }
         catch (OperationCanceledException) { StatusText = "تم إلغاء النسخ الاحتياطي."; }
