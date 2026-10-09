@@ -1,0 +1,279 @@
+SMART LEDGER — DASHBOARD / SHELL AUDIT
+========================================
+تاريخ الفحص: 2026-10-08
+المسار الوحيد المفحوص:
+C:\Users\pc\Desktop\SmartLedger_Run_2026-10-05
+
+ملاحظة منهجية:
+تم فحص ملفات التنفيذ الحالية تحت src\SmartLedger.App وملفات البيانات/النماذج المرتبطة بها.
+تم تجنب مجلدات النسخ الاحتياطية وbin/obj عند تحديد الملفات الفعلية.
+
+1) الهيكل العام للنافذة الرئيسية — SHELL
+-----------------------------------------
+الملف الرئيسي:
+C:\Users\pc\Desktop\SmartLedger_Run_2026-10-05\src\SmartLedger.App\Views\MainWindow.xaml
+
+الملف البرمجي للنافذة:
+C:\Users\pc\Desktop\SmartLedger_Run_2026-10-05\src\SmartLedger.App\Views\MainWindow.xaml.cs
+
+نموذج الحالة والتنقل:
+C:\Users\pc\Desktop\SmartLedger_Run_2026-10-05\src\SmartLedger.App\ViewModels\MainViewModel.cs
+
+التقنية:
+- WPF / XAML على Windows Desktop.
+- النافذة Borderless: WindowStyle=None.
+- اتجاه النافذة RTL.
+- حجم ابتدائي 1400×850، والحد الأدنى 1100×700.
+- النافذة مقسمة عملياً إلى:
+  1. Sidebar في الجهة اليمنى.
+  2. منطقة المحتوى في الجهة اليسرى.
+  3. Top Bar أعلى منطقة المحتوى.
+  4. Content area قابلة للتمرير عمودياً وتعرض CurrentViewModel.
+
+الهوية الحالية:
+- خلفية Midnight Navy.
+- حدود هادئة باللون الأزرق الداكن.
+- أيقونات Vector/Geometry مدمجة في MainWindow.xaml.
+- Custom Window Chrome: إغلاق / تكبير-استعادة / تصغير.
+- زر خصوصية للأرصدة.
+- مركز إشعارات.
+- بحث علوي.
+- زر تصغير/توسيع Sidebar.
+
+2) القائمة الجانبية الحالية
+-----------------------------
+عناصر التنقل الحالية بالترتيب:
+
+1. الرئيسية — AppPage.Dashboard
+2. الدفاتر والحسابات — AppPage.Accounts
+3. العمليات — AppPage.Operations
+4. المبيعات — AppPage.Sales
+5. المشتريات — AppPage.Purchases
+6. المخزون — AppPage.Inventory
+7. المصروفات — AppPage.Expenses
+8. التقارير — AppPage.Reports
+9. المستخدمون والصلاحيات — AppPage.Users
+10. الرسائل والقوالب — AppPage.Messages
+11. سلة المحذوفات — AppPage.RecycleBin
+12. سجل التدقيق — AppPage.AuditLogs
+
+وفي الجزء السفلي:
+13. الإعدادات — AppPage.Settings
+14. زر تصغير/توسيع القائمة.
+
+التبديل بين الشاشات:
+- جميع الأزرار تستخدم NavigateCommand في MainViewModel.
+- كل زر يرسل AppPage محدداً كـ CommandParameter.
+- MainViewModel يختار ViewModel الموافق للصفحة من switch:
+  Dashboard / Accounts / Operations / Sales / Purchases / Inventory /
+  Expenses / Reports / Users / AuditLogs / Messages / RecycleBin / Settings.
+- يتم تحميل ViewModel عبر LoadViewModelAsync قبل نشر CurrentPage وCurrentViewModel.
+- توجد آلية تسلسل/Coalescing للطلبات السريعة عبر _navigationTail و_navigationVersion.
+- توجد صلاحيات قبل الانتقال، مع حماية من الانتقال أثناء وجود نافذة إدخال مفتوحة.
+- ContentControl باسم CurrentContent يعرض CurrentViewModel، بينما DataTemplates الموجودة في ModuleTemplates.xaml تحدد شكل العرض لكل ViewModel.
+
+3) الشريط العلوي TOP BAR
+-------------------------
+داخل MainWindow.xaml، يحتوي على:
+
+أ) أزرار النافذة:
+- إغلاق البرنامج.
+- تكبير/استعادة.
+- تصغير.
+
+ب) أدوات النظام:
+- زر إظهار/إخفاء الأرصدة (Privacy).
+- زر مركز الإشعارات.
+- عداد إشعارات يظهر عند وجود تنبيهات.
+
+ج) البحث:
+- عنصر GlobalSearchSurface بعرض 660px تقريباً وبحد أقصى 720px.
+- TextBox مربوط بـ MainViewModel.GlobalSearch.
+- اختصار ظاهر للمستخدم: Ctrl + K.
+- Enter/Escape تتم معالجتهما في MainWindow.xaml.cs.
+- Popup لنتائج البحث.
+- النتائج تعرض Category + Title + Detail.
+- MainViewModel يوجه النتائج إلى الحسابات/المخزون/العمليات/المبيعات/المشتريات/المصروفات حسب EntityType.
+
+ملاحظة تدقيقية مهمة:
+البحث الحالي ليس بحثاً عاماً موحداً بالكامل في كل الحالات؛ عند الوقوف على الحسابات أو المخزون يتم تحويل البحث إلى بحث الشاشة الحالية مباشرة بدلاً من إظهار قائمة نتائج عامة. أما بقية الحالات فتستخدم SearchGlobalAsync. هذا يعني أن البنية الحالية Hybrid Search وليست Global Search موحدة 100%.
+
+4) الشاشة الرئيسية الحالية — DASHBOARD
+---------------------------------------
+لا يوجد DashboardPage.xaml مستقل في المسار الحالي.
+
+العرض الفعلي للصفحة الرئيسية موجود كـ DataTemplate داخل:
+
+C:\Users\pc\Desktop\SmartLedger_Run_2026-10-05\src\SmartLedger.App\Views\ModuleTemplates.xaml
+
+والقالب المستهدف هو:
+<DataTemplate DataType="{x:Type vm:DashboardViewModel}">
+
+إذن:
+- View فعلياً = Dashboard DataTemplate داخل ModuleTemplates.xaml.
+- ViewModel = DashboardViewModel.cs.
+- لا توجد UserControl/Page منفصلة باسم DashboardPage في الشجرة الحالية.
+
+5) Dashboard ViewModel
+-----------------------
+الملف:
+C:\Users\pc\Desktop\SmartLedger_Run_2026-10-05\src\SmartLedger.App\ViewModels\DashboardViewModel.cs
+
+يحتوي حالياً على:
+- Summary من النوع DashboardSummary.
+- Recent من النوع IReadOnlyList<RecentOperationRow>.
+- Loading.
+
+LoadAsync() ينفذ:
+1. repo.GetDashboardAsync()
+2. repo.GetRecentOperationsAsync(10)
+3. يوقف Loading بعد اكتمال التحميل.
+
+لا توجد في DashboardViewModel حالياً:
+- رسوم بيانية Charts.
+- تحليل زمني متقدم.
+- مؤشرات منفصلة تُحسب داخل الـViewModel.
+- قوائم Dashboard إضافية مستقلة عن Summary وRecent.
+
+6) بيانات Dashboard ومصدرها
+----------------------------
+الملف:
+C:\Users\pc\Desktop\SmartLedger_Run_2026-10-05\src\SmartLedger.Infrastructure\Data\AppRepository.cs
+
+GetDashboardAsync() يجلب:
+
+أ) الرصيد الصافي:
+- يجمع تأثير عمليات الحسابات حسب نوع العملية.
+- ثم يستخدم BalanceEngine.Split(netBalance).
+- ينتج OwedToUs وWeOwe.
+- NetBalance في DashboardSummary = OwedToUs - WeOwe.
+
+ب) قيمة المخزون:
+- SUM(StockSmallUnits × PurchasePrice) من Products.
+
+ج) حركات اليوم:
+- COUNT من Operations منذ التاريخ المحلي الحالي.
+
+د) مبيعات اليوم:
+- SUM(Total) من Invoices حيث Type=0 منذ اليوم.
+
+هـ) مشتريات اليوم:
+- SUM(Total) من Invoices حيث Type=1 منذ اليوم.
+
+و) مصروفات اليوم:
+- SUM(Amount) من Expenses منذ اليوم.
+
+النموذج:
+C:\Users\pc\Desktop\SmartLedger_Run_2026-10-05\src\SmartLedger.Core\Models\Domain.cs
+
+DashboardSummary:
+- OwedToUs
+- WeOwe
+- StockValue
+- OperationsToday
+- SalesToday
+- PurchasesToday
+- ExpensesToday
+- NetBalance = OwedToUs - WeOwe
+
+7) ماذا يظهر للمستخدم الآن عند فتح "الرئيسية"؟
+-----------------------------------------------
+وفق القالب الحالي في ModuleTemplates.xaml:
+
+أولاً — صف الملخص المالي:
+خمس خانات رئيسية:
+- لنا
+- علينا
+- الصافي
+- حركات اليوم
+- قيمة المخزون
+
+المبالغ مربوطة بـ PrivacyMoneyConverter في المواضع المالية الرئيسية.
+
+ثانياً — الإجراءات السريعة:
+عنوان:
+"الإجراءات السريعة"
+
+الأزرار الحالية:
+- حساب جديد — F7
+- عملية جديدة — F8
+- فاتورة بيع — F9
+- فاتورة شراء — F10
+
+وتُعرض في UniformGrid بأربعة أعمدة.
+
+ثالثاً — أحدث العمليات:
+عنوان:
+"أحدث العمليات"
+
+جدول مرتبط بـ DashboardViewModel.Recent، ويعرض حتى 10 حركات.
+
+ترتيب الأعمدة الحالي:
+1. م
+2. اسم الحساب
+3. المبلغ
+4. نوع الحركة
+5. البيان / التفاصيل
+6. التاريخ والوقت
+
+المبلغ يستخدم PrivacyMoneyConverter، ونوع الحركة يستخدم RecentOperationLabelConverter وRecentOperationBrushConverter.
+
+رابعاً — حالة التحميل:
+عند Loading تظهر طبقة Overlay برسالة:
+"جاري تحديث لوحة القيادة…"
+مع نص يوضح أن الأرصدة والحركات تُحمّل من قاعدة البيانات المحلية.
+
+8) عناصر التحكم والمساحات الحالية
+----------------------------------
+MainWindow:
+- Sidebar.
+- Top Bar.
+- Global Search.
+- Notifications Popup.
+- Privacy toggle.
+- Window Chrome.
+- CurrentContent / ContentControl.
+
+Dashboard:
+- 5 KPI/Summary cells.
+- Quick Actions card.
+- Recent Operations card.
+- DataGrid.
+- Loading overlay.
+
+لا يوجد حالياً:
+- Chart/graph.
+- مخطط مبيعات/مشتريات.
+- Timeline مستقل.
+- Widgets منفصلة للمخزون أو المصروفات.
+- Dashboard side panels مستقلة.
+
+9) ملاحظات فنية مهمة لإعادة الهيكلة القادمة
+---------------------------------------------
+أ) Dashboard ليس ملف View مستقل؛ هو DataTemplate ضخم داخل ModuleTemplates.xaml. هذا يجعل ModuleTemplates نقطة مركزية كبيرة ويزيد ارتباط الـUI بعدة شاشات.
+
+ب) MainViewModel مسؤول عن Shell + Navigation + Global Search + Notifications + Quick Actions + Privacy، وهو مركز تنسيق كبير.
+
+ج) البحث الحالي Hybrid:
+- Accounts/Inventory = بحث محلي داخل الشاشة.
+- باقي الصفحات = SearchGlobalAsync.
+وهذا يحتاج قراراً معمارياً إذا كان الهدف إعادة بناء Global Search موحد.
+
+د) البيانات المالية الأساسية للوحة تأتي من AppRepository مباشرة، وليس من خدمة Dashboard مستقلة.
+
+هـ) لا توجد رسوم بيانية حالياً، والـDashboard الحالي هو Dashboard تشغيلي مختصر: KPI + Quick Actions + Recent Operations.
+
+و) CurrentContent يعتمد على DataTemplate resolution بواسطة نوع ViewModel، وليس على Frame/Page navigation التقليدي.
+
+10) الملفات الدقيقة ذات الصلة
+------------------------------
+C:\Users\pc\Desktop\SmartLedger_Run_2026-10-05\src\SmartLedger.App\Views\MainWindow.xaml
+C:\Users\pc\Desktop\SmartLedger_Run_2026-10-05\src\SmartLedger.App\Views\MainWindow.xaml.cs
+C:\Users\pc\Desktop\SmartLedger_Run_2026-10-05\src\SmartLedger.App\ViewModels\MainViewModel.cs
+C:\Users\pc\Desktop\SmartLedger_Run_2026-10-05\src\SmartLedger.App\ViewModels\DashboardViewModel.cs
+C:\Users\pc\Desktop\SmartLedger_Run_2026-10-05\src\SmartLedger.App\Views\ModuleTemplates.xaml
+C:\Users\pc\Desktop\SmartLedger_Run_2026-10-05\src\SmartLedger.Infrastructure\Data\AppRepository.cs
+C:\Users\pc\Desktop\SmartLedger_Run_2026-10-05\src\SmartLedger.Core\Models\Domain.cs
+
+الخلاصة التنفيذية:
+الـShell الحالي مبني بشكل واضح حول MainWindow + MainViewModel، والـDashboard الحالي يعمل كـDataTemplate داخل ModuleTemplates.xaml. عند فتح "الرئيسية" يحصل تحميل Summary + آخر 10 عمليات، ثم تظهر خمس مؤشرات مالية/تشغيلية، أربعة إجراءات سريعة، وجدول أحدث العمليات، مع دعم الخصوصية والبحث والإشعارات من الـShell. لا توجد رسوم بيانية حالياً.

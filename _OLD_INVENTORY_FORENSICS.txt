@@ -1,0 +1,519 @@
+SMART LEDGER — OLD INVENTORY FORENSIC AUDIT
+تاريخ الفحص: 2026-10-08
+المرجع الوحيد المفحوص: C:\Users\pc\Desktop\SmartLedger_Old_Versions_Archive_2026-10-06\النسخة المحسنة
+قاعدة الفحص: النسخة القديمة مرجع قراءة فقط؛ لم يتم تعديل أي ملف فيها.
+
+============================================================
+1) بطاقة تعريف الصنف بالمخزن — Product Definition Dialog
+============================================================
+
+الملفات المسؤولة:
+- Views\Dialogs\ProductDialog.xaml
+- Views\Dialogs\ProductDialog.xaml.cs
+
+النافذة WPF:
+<Window x:Class="SmartLedger.App.Views.Dialogs.ProductDialog"
+        Title="بيانات الصنف" FlowDirection="RightToLeft"
+        WindowStyle="None" AllowsTransparency="True"
+        ResizeMode="NoResize">
+
+البنية العامة: نافذة كثيفة من ثلاث مناطق: رأس، نموذج الحقول، أزرار الحفظ/الإلغاء.
+اختصاراتها: F9 للحفظ، Enter للتنقل، Esc للإلغاء.
+
+1.1 الحقول الأساسية — ProductDialog.xaml
+- CodeBox       = رقم الصنف (الكود)
+- NameBox       = اسم الصنف *
+- BarcodeBox    = الباركود (سريع)
+- WarehouseComboBox = المخزن
+- CategoryComboBox  = التصنيف (المجموعة)، وقابل للتحرير
+- UnitComboBox      = الوحدة الأساسية (الصغرى)
+- EnableMajorUnitCheck = تفعيل التسعير بـ (الوحدة الكبرى)
+- MajorUnitComboBox    = الوحدة الكبرى
+
+1.2 حقول الوحدة الكبرى والتعبئة
+MajorUnitGrid مخفي افتراضياً، ويظهر عندما:
+EnableMajorUnitCheck.IsChecked == true
+
+الحقول:
+- PkgPiecesBox   = سعة/معامل العبوة: عدد الوحدات الصغرى داخل الكبرى
+- PkgPurchaseBox = شراء الوحدة الكبرى
+- PkgSaleBox     = بيع الوحدة الكبرى
+- PkgBoxesBox    = الرصيد الأولي بالوحدة الكبرى
+
+التسمية ليست ثابتة؛ UpdateDynamicUnitLabels() يعيد بناء التسميات بحسب
+UnitComboBox.Text وMajorUnitComboBox.Text. مثال:
+"سعة كرتون (حبة)"
+"شراء حبة (التكلفة)"
+"سعر بيع حبة"
+"رصيد أولي (كرتون)"
+"تفعيل التسعير بـ (كرتون)"
+
+1.3 حقول الرصيد والأسعار
+- QtyBox             = صافي الرصيد بالصغرى
+- AlertBox           = حد الطلب/التنبيه
+- PurchasePriceBox   = تكلفة شراء الوحدة الصغرى
+- SalePriceBox       = سعر بيع الوحدة الصغرى
+- ProfitPerUnitText  = ربح الوحدة المحسوب لحظياً
+- ProfitMarginText   = هامش الربح المحسوب لحظياً
+
+عند تعديل صنف موجود:
+QtyBox.IsReadOnly = true
+PurchasePriceBox.IsReadOnly = true
+والخدمة تمنع تغيير الكمية/تكلفة المخزون من نافذة البيانات لأنها حقائق محاسبية.
+
+============================================================
+2) معادلات الوحدة الكبرى والتسعير اللحظي
+============================================================
+
+ProductDialog.xaml.cs يستخدم _isSyncing لمنع الدوران بين TextChanged.
+
+2.1 من سعر الكبرى إلى سعر الصغرى — MajorPriceChanged
+pieces = معامل التعبئة، وإذا كان <= 0 يصبح 1.
+boxCost = سعر شراء الكبرى
+boxSale = سعر بيع الكبرى
+
+PurchasePriceBox = boxCost / pieces
+SalePriceBox     = boxSale / pieces
+
+أي:
+تكلفة الحبة = تكلفة الكرتون ÷ عدد الحبات في الكرتون
+سعر بيع الحبة = سعر بيع الكرتون ÷ عدد الحبات في الكرتون
+
+2.2 من سعر الصغرى إلى سعر الكبرى — MinorPriceChanged
+unitCost = تكلفة الحبة
+unitSale = سعر بيع الحبة
+
+PkgPurchaseBox = unitCost × pieces
+PkgSaleBox     = unitSale × pieces
+
+أي أن الإدخال يعمل في الاتجاهين، مع تحديث حي أثناء الكتابة.
+
+2.3 تحويل الرصيد — PackagingValuesChanged
+boxes  = عدد الوحدات الكبرى
+pieces = معامل التعبئة، وإذا كان <= 0 يصبح 1
+
+QtyBox = boxes × pieces
+
+أي:
+صافي الرصيد بالصغرى = الرصيد بالكرتون × عدد الحبات في الكرتون.
+
+============================================================
+3) المعادلة اللحظية لهامش الربح وربح الحبة
+============================================================
+
+الدالة:
+private void UpdateProfitCalculations()
+
+تقرأ:
+cost = PurchasePriceBox
+sale = SalePriceBox
+
+ربح الوحدة:
+profit = Math.Max(0m, sale - cost)
+
+ثم:
+ProfitPerUnitText.Text =
+    $"ربح {minor}: {profit:#,##0.##} {CurrencyService.CurrentSymbol}"
+
+هامش الربح:
+إذا cost > 0:
+margin = decimal.Round(((sale - cost) / cost) * 100m, 1)
+وإلا:
+margin = 0
+
+ثم:
+ProfitMarginText.Text = $"هامش الربح: {margin}%"
+
+ملاحظة Forensic دقيقة:
+- ربح الوحدة المعروض لا ينزل تحت الصفر بسبب Math.Max.
+- نسبة الهامش نفسها يمكن أن تكون سالبة إذا كان سعر البيع أقل من التكلفة.
+- المعادلة هي هامش على التكلفة (Markup/Cost Margin)، وليست نسبة الربح من سعر البيع.
+
+مثال:
+تكلفة الحبة = 100
+بيع الحبة = 125
+ربح الحبة = 25
+هامش الربح = ((125-100)/100)*100 = 25%
+
+============================================================
+4) الحفظ والخدمة المحاسبية للصنف
+============================================================
+
+ProductDialog.Save() يتحقق من:
+- الاسم غير فارغ.
+- الرصيد >= 0
+- حد الطلب >= 0
+- تكلفة الشراء >= 0
+- سعر البيع >= 0
+- معامل التعبئة > 0
+- شراء/بيع الوحدة الكبرى >= 0
+
+ثم يبني ResultProduct بالحقول:
+Code, Name, Barcode, WarehouseName, Category, Unit,
+HasMajorUnit, MajorUnit, UnitsInMajor,
+MajorPurchasePrice, MajorSalePrice,
+Quantity, AlertThreshold, PurchasePrice, SalePrice.
+
+الطبقة التالية:
+ViewModels\InventoryViewModel.cs
+تستدعي:
+_accounting.AddProductAsync(dialog.ResultProduct)
+أو:
+_accounting.UpdateProductAsync(dialog.ResultProduct)
+
+ثم:
+Services\AccountingService.cs
+يوجّه إلى:
+Services\InventoryService.cs
+
+InventoryService.AddProductAsync:
+- يتحقق من عدم سلبية الكمية والأسعار.
+- يجعل MovingAverageCost مصدراً لتقييم المخزون.
+- إذا كانت الكمية الافتتاحية غير صفرية ينشئ InventoryMovement:
+  Type = Opening
+  QuantityDelta = product.Quantity
+  Description = "رصيد افتتاحي للصنف"
+  OccurredAt = DateTime.Now
+- ثم يسجل أثر المخزون المحاسبي عبر FinancialPostingService.
+
+InventoryService.UpdateProductAsync:
+- يمنع تعديل Quantity أو MovingAverageCost أو PurchasePrice إذا اختلفت عن الحالية.
+- يترك هذه الحقائق لتسوية المخزون/الحركات، وليس نافذة تعريف الصنف.
+
+============================================================
+5) شاشة المخزون والمخازن
+============================================================
+
+الملفات:
+- Views\InventoryView.xaml
+- Views\InventoryView.xaml.cs
+- ViewModels\InventoryViewModel.cs
+- Services\InventoryService.cs
+- Services\AccountingService.cs
+
+InventoryView.xaml يقسم الصفحة إلى:
+1) مؤشرات رأسية.
+2) شريط المخزن/الفلاتر/البحث.
+3) جدول الأصناف + لوحة الصنف المحدد.
+
+جدول الأصناف الرئيسي ItemsSource:
+{Binding FilteredProducts}
+والتحديد:
+{Binding SelectedProduct, Mode=TwoWay}
+
+الأعمدة المفحوصة:
+- الكود
+- اسم الصنف
+- المخزن
+- التصنيف
+- الوحدة
+- الرصيد المتوفر
+- متوسط التكلفة
+- إجمالي القيمة
+- الحالة
+
+القيمة:
+InventoryValue = Quantity × MovingAverageCost
+ومصدر التكلفة الموثوق في Product هو MovingAverageCost.
+
+============================================================
+6) سجل حركة الصنف — اللوحة الجانبية
+============================================================
+
+الواجهة:
+Views\InventoryView.xaml
+
+في النسخة المفحوصة، اللوحة الجانبية تعرض:
+"سجل حركة الصنف (مبيعات / مشتريات):"
+
+ItemsSource:
+{Binding SelectedProduct.Movements}
+
+الجدول المرئي الفعلي في XAML يحتوي على:
+- البيان والحركة   -> Binding="{Binding Title}"
+- الكمية           -> Binding="{Binding QuantityText}"
+- التاريخ          -> Binding="{Binding DateText}"
+
+في نسخة audit أخرى من نفس الملف ظهرت التسميات المختصرة:
+البيان | الكمية | التاريخ؛ الجوهر واحد.
+
+!!! تحذير Forensic مهم !!!
+التكليف الحالي يطلب:
+التاريخ | الكمية | البيان والحركة | الرصيد | هامش الوحدة | القيمة
+
+لكن الفحص المباشر للـ XAML + ViewModel + Service يثبت أن النسخة القديمة
+لم تكن تعرض الرصيد التراكمي أو هامش الوحدة أو قيمة الحركة كأعمدة في هذا الجدول.
+لا يوجد مصدر Query قديم يحسب هذه الثلاثة لهذا الجدول.
+لذلك لا يجوز نسبها إلى النسخة القديمة على أنها ميزة موجودة.
+
+6.1 كيف تتغير الحركات عند النقر على صنف؟
+في:
+ViewModels\InventoryViewModel.cs
+
+هناك:
+partial void OnSelectedProductChanged(ProductItemViewModel? value)
+
+إذا كان value غير فارغ وMovements.Count == 0:
+    _ = LoadProductHistoryOnDemandAsync(value);
+
+ثم:
+var history = await _accounting.GetProductHistoryAsync(item.Id);
+
+بعدها:
+item.Movements.Clear();
+
+ولكل حركة:
+Title      = h.Title
+Quantity   = h.Quantity
+DateText   = SmartFormatters.DateTime(h.Date)
+IsAddition = h.IsAddition
+
+هذه هي آلية التصفية/التحميل الفعلية عند اختيار أي صف.
+
+6.2 مصدر البيانات Query
+في:
+Services\InventoryService.cs
+
+GetProductHistoryAsync(int productId)
+
+الاستعلام مبني على:
+InvoiceItems
+JOIN Invoices ON item.InvoiceId == invoice.Id
+
+شرط:
+item.ProductId == productId
+
+ترتيب:
+invoice.OccurredAt descending
+
+حد:
+Take(100)
+
+ويُرجع:
+(Date, Title, Quantity, IsAddition)
+
+عنوان الحركة:
+- إذا InvoiceType.Purchase:
+  "شراء من {PartyName}"
+- وإلا:
+  "بيع إلى {PartyName}"
+
+إذن السجل القديم ليس مبنياً على InventoryMovements مباشرة، بل على
+InvoiceItems + Invoices.
+
+يوجد أيضاً:
+GetProductHistoriesAsync()
+وهو تحميل جماعي حتى 500 صف، لكنه ليس المسار الذي تربطه
+InventoryView باللوحة الجانبية؛ المسار الفعلي عند الاختيار هو
+GetProductHistoryAsync(productId).
+
+6.3 ProductMovementItem
+في InventoryViewModel:
+- Title
+- Quantity
+- QuantityText = (+/-) + Quantity بتنسيق #,##0.##
+- DateText
+- IsAddition
+
+علامة + للمشتريات، وعلامة - للمبيعات.
+
+============================================================
+7) شريط المؤشرات والفلترة العلوية
+============================================================
+
+Views\InventoryView.xaml
+
+المؤشرات:
+- TotalInventoryValue  -> "قيمة المخزون"
+- TotalItemsCount      -> "الأصناف"
+- TotalPiecesCount     -> "إجمالي الكمية"
+- AlertsCount          -> "النواقص"
+
+InventoryViewModel.LoadAsync يحسب:
+TotalItemsCount = products.Count
+TotalPiecesCount = products.Sum(x => x.Quantity)
+TotalInventoryValue = products.Sum(x => x.Quantity * x.MovingAverageCost)
+AlertsCount = products.Count(x => x.Quantity <= x.AlertThreshold)
+
+التنبيه لا يعتمد على لون واجهة فقط؛ الحالة نفسها تبنى في ProductItemViewModel:
+Quantity <= 0              => "نافد"
+Quantity <= AlertThreshold => "منخفض"
+غير ذلك                    => "متوفر"
+
+7.1 اختيار المخزن
+AvailableWarehouses تبدأ بـ:
+"كافة المخازن"
+
+ثم تُضاف أسماء المخازن من:
+_accounting.GetWarehousesAsync()
+
+SelectedWarehouse هو المخزن الحالي.
+وعند تغييره:
+ShowWarehouseColumn = (SelectedWarehouse == "كافة المخازن")
+ثم ApplyFilter().
+
+7.2 الفلاتر السريعة
+XAML:
+RadioButton Content="الكل" CommandParameter="All"
+RadioButton Content="المتوفر" CommandParameter="InStock"
+RadioButton Content="تحت حد الطلب" CommandParameter="LowStock"
+RadioButton Content="النافد" CommandParameter="OutOfStock"
+
+ViewModel:
+SetFilter(string filter)
+يحوّلها إلى:
+All / InStock / LowStock / OutOfStock
+
+ثم ApplyFilter().
+
+7.3 البحث
+SearchText مربوط:
+Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
+
+ApplyFilter() يبحث في:
+Name
+Category
+Barcode
+
+ويطبق البحث مع المخزن وحالة المخزون في نفس الاستعلام الذاكري.
+
+============================================================
+8) نموذج البيانات الذي يجعل هذه الشاشة قابلة للبناء الصحيح
+============================================================
+
+Core\Models\Models.cs — Product:
+- Id
+- Code
+- Name
+- Category
+- Unit
+- WarehouseName
+- Barcode
+- Quantity
+- AlertThreshold
+- PurchasePrice
+- LastPurchasePrice
+- MovingAverageCost
+- SalePrice
+- HasMajorUnit
+- MajorUnit
+- UnitsInMajor
+- MajorPurchasePrice
+- MajorSalePrice
+- IsActive
+
+InventoryMovement:
+- ProductId
+- InvoiceId
+- Type
+- QuantityDelta
+- WarehouseName
+- Description
+- OccurredAt
+- JournalEntryId
+- ReversalOfId
+- IsReversed
+
+أنواع InventoryMovementType:
+Opening, Sale, Purchase, Adjustment, Transfer
+
+هذا مهم هندسياً:
+- Quantity = رصيد فعلي.
+- MovingAverageCost = التكلفة المتحركة المعتمدة للتقييم.
+- InvoiceItems/Invoices = المصدر القديم لسجل البيع والشراء.
+- InventoryMovements = سجل مخزني/محاسبي أعمق للحركات والتسويات.
+
+============================================================
+9) ما هو "الكنز" الحقيقي الذي يجب نقله للمشروع الجديد؟
+============================================================
+
+أ) نافذة إدخال سريعة وكثيفة:
+الكود -> الاسم -> الباركود
+ثم المخزن -> المجموعة -> الوحدة الصغرى
+ثم تفعيل اختياري للوحدة الكبرى
+ثم معامل التعبئة وأسعار الكبرى
+ثم الرصيد وحد الطلب وأسعار الصغرى
+ثم مؤشرات الربح اللحظية.
+
+ب) الوحدة الكبرى ليست مجرد نص:
+هي علاقة رياضية حقيقية:
+Major = UnitsInMajor × Minor
+
+ج) السعران متزامنان في الاتجاهين:
+Major / factor -> Minor
+Minor × factor -> Major
+
+د) الرصيد الافتتاحي بالكبرى يتحول فورياً إلى الصغرى.
+
+هـ) الربح والهامش يظهران أثناء الكتابة دون حفظ.
+
+و) Split View:
+جدول أصناف رئيسي + بطاقة الصنف المحدد.
+
+ز) سجل الحركة لا يُحمّل لكل الأصناف دفعة واحدة؛ يُجلب عند اختيار الصنف
+On-Demand.
+
+ح) المخزن والفلاتر والبحث تعمل فوق نفس مجموعة الأصناف.
+
+============================================================
+10) فروق يجب عدم إخفائها عن لجنة SmartLedger
+============================================================
+
+1. جدول الحركة القديم ليس الجدول الغني المطلوب حالياً؛ أعمدته الفعلية:
+   البيان/الحركة + الكمية + التاريخ فقط.
+
+2. لا يوجد في GetProductHistoryAsync حساب موثق لـ:
+   Running Balance
+   Unit Margin
+   Movement Value
+
+3. لذلك تصميم الجدول الجديد المقترح:
+   م | التاريخ والوقت | البيان/الحركة | الكمية | الرصيد التراكمي | هامش الوحدة | القيمة
+   هو تطوير محسوب، وليس "نسخاً" لميزة قديمة غير موجودة.
+
+4. التكلفة المعتمدة للتقييم في النسخة المفحوصة هي MovingAverageCost،
+   وليس مجرد PurchasePrice.
+
+5. UpdateProductAsync يحمي الكمية وتكلفة المخزون من التعديل المباشر.
+
+============================================================
+11) الخلاصة التنفيذية
+============================================================
+
+النسخة القديمة تحتوي على أفضل أفكار UX المطلوبة لشاشة المخزون:
+- كثافة إدخال ممتازة.
+- وضوح العلاقة بين الوحدة الصغرى والكبرى.
+- مزامنة الأسعار لحظياً.
+- تحويل التعبئة إلى رصيد صغرى لحظياً.
+- ربح وهامش فوريان.
+- مؤشرات مخزون عملية.
+- فلاتر حالة سريعة.
+- اختيار مخزن واضح.
+- بحث مباشر.
+- Split View.
+- تحميل تاريخ الصنف عند اختياره.
+
+أما ما ينبغي بناؤه في المشروع الحالي فلا يجب أن يكون نسخة حرفية:
+نأخذ "فكرة الإدخال وسرعته" و"منطق المجال" و"On-Demand history"،
+لكن نبني سجل الحركة الحديث بمصدر محاسبي موثوق، ونضيف صراحة:
+الرصيد التراكمي + هامش الوحدة + قيمة الحركة، مع الحفاظ على الدقة
+المالية وعدم تكرار منطق المخزون داخل الواجهة.
+
+============================================================
+12) قائمة الملفات المفحوصة
+============================================================
+
+Views\InventoryView.xaml
+Views\InventoryView.xaml.cs
+ViewModels\InventoryViewModel.cs
+Views\Dialogs\ProductDialog.xaml
+Views\Dialogs\ProductDialog.xaml.cs
+Services\InventoryService.cs
+Services\AccountingService.cs
+Services\AccountingContracts.cs
+Core\Models\Models.cs
+Core\Models\Warehouse.cs
+Data\SmartLedgerDbContext.cs
+inventory_xaml_audit.txt
+
+انتهى الفحص الجنائي — لا توجد تعديلات على النسخة المرجعية القديمة.

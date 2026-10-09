@@ -1,0 +1,37 @@
+﻿================================================================================
+       تقرير معالجة أخطاء ViewModels و LoginWindow وإعادة البناء               
+       التاريخ: 2026-10-01 01:16:30                       
+================================================================================
+
+[✓ تم] إضافة using System.IO إلى BackupViewModel.cs
+[1] فحص أسطر On...Changed في SetupViewModel.cs:
+  - تم تصحيح السطر 27:     partial void OnUserNameChanged(string value) => OnPropertyChanged(nameof(CanCreate));
+  - تم تصحيح السطر 28:     partial void OnPasswordChanged(string value) { OnPropertyChanged(nameof(CanCreate)); OnPropertyChanged(nameof(PasswordMatch)); }
+  - تم تصحيح السطر 29:     partial void OnConfirmationChanged(string value) { OnPropertyChanged(nameof(CanCreate)); OnPropertyChanged(nameof(PasswordMatch)); }
+  - تم تصحيح السطر 30:     partial void OnRecoveryPhraseChanged(string value) => OnPropertyChanged(nameof(CanCreate));
+  - تم تصحيح السطر 31:     partial void OnRecoveryHintChanged(string value) => OnPropertyChanged(nameof(CanCreate));
+[✓ تم] ضبط تواقيع دوال On...Changed لتتطابق مع مولد CommunityToolkit.Mvvm.
+[2] فحص LoginWindow.xaml.cs حول السطر 14:
+  6: namespace SmartLedger.App.Views;
+  7: public partial class LoginWindow : Window
+  8: {
+  9:     public LoginWindow(Database database)
+  10:     {
+  11:         InitializeComponent();
+  12:         var users=new UserRepository(database);
+  13:         var session=new AppSession();
+  14:         DataContext=new LoginViewModel(users,new PasswordHasher(),user=>OpenMain(session,user));
+  15:         Loaded+=(_,_)=>UserNameBox.Focus();
+  16:     }
+  17:     private void PasswordChanged(object sender,RoutedEventArgs e){if(DataContext is LoginViewModel vm)vm.Password=PasswordBox.Password;}
+  18:     private void OpenMain(AppSession session,SmartLedger.Core.Models.User user){session.Start(new SmartLedger.Core.Models.AppUser(user.Id,user.UserName,user.DisplayName,user.IsAdministrator,user.IsActive)); new MainWindow(session).Show(); Close();}
+  19: }
+[✓ تم] إخماد تحذير الفهرسة CA1826 في SmartLedger.App.csproj
+
+--------------------------------------------------------------------------------
+[3] جاري البناء والتحقق النهائي...
+  [✗ متبقي الملاحظات التالية]:
+    C:\Users\pc\Desktop\mnt\data\SmartLedger\src\SmartLedger.App\Views\LoginWindow.xaml.cs(14,71): error CS1593: Delegate 'Action' does not take 1 arguments [C:\Users\pc\Desktop\mnt\data\SmartLedger\src\SmartLedger.App\SmartLedger.App_xnjoqgpw_wpftmp.csproj]
+    C:\Users\pc\Desktop\mnt\data\SmartLedger\src\SmartLedger.App\Views\LoginWindow.xaml.cs(14,71): error CS1593: Delegate 'Action' does not take 1 arguments [C:\Users\pc\Desktop\mnt\data\SmartLedger\src\SmartLedger.App\SmartLedger.App_xnjoqgpw_wpftmp.csproj]
+
+================================================================================

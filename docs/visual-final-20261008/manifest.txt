@@ -1,0 +1,13 @@
+Dashboard|current=Dashboard|vm=DashboardViewModel|invariant=True|file=C:\Users\pc\Desktop\SmartLedger_Run_2026-10-05\docs\visual-final-20261008\Dashboard.png
+Accounts|current=Accounts|vm=AccountsViewModel|invariant=True|file=C:\Users\pc\Desktop\SmartLedger_Run_2026-10-05\docs\visual-final-20261008\Accounts.png
+Operations|current=Operations|vm=OperationsViewModel|invariant=True|file=C:\Users\pc\Desktop\SmartLedger_Run_2026-10-05\docs\visual-final-20261008\Operations.png
+Sales|current=Sales|vm=SalesViewModel|invariant=True|file=C:\Users\pc\Desktop\SmartLedger_Run_2026-10-05\docs\visual-final-20261008\Sales.png
+Purchases|current=Purchases|vm=PurchasesViewModel|invariant=True|file=C:\Users\pc\Desktop\SmartLedger_Run_2026-10-05\docs\visual-final-20261008\Purchases.png
+Inventory|current=Inventory|vm=InventoryViewModel|invariant=True|file=C:\Users\pc\Desktop\SmartLedger_Run_2026-10-05\docs\visual-final-20261008\Inventory.png
+Expenses|current=Expenses|vm=ExpensesViewModel|invariant=True|file=C:\Users\pc\Desktop\SmartLedger_Run_2026-10-05\docs\visual-final-20261008\Expenses.png
+Reports|current=Reports|vm=ReportsViewModel|invariant=True|file=C:\Users\pc\Desktop\SmartLedger_Run_2026-10-05\docs\visual-final-20261008\Reports.png
+Users|current=Users|vm=UsersViewModel|invariant=True|file=C:\Users\pc\Desktop\SmartLedger_Run_2026-10-05\docs\visual-final-20261008\Users.png
+AuditLogs|current=AuditLogs|vm=AuditLogViewModel|invariant=True|file=C:\Users\pc\Desktop\SmartLedger_Run_2026-10-05\docs\visual-final-20261008\AuditLogs.png
+Messages|current=Messages|vm=MessagesViewModel|invariant=True|file=C:\Users\pc\Desktop\SmartLedger_Run_2026-10-05\docs\visual-final-20261008\Messages.png
+RecycleBin|current=RecycleBin|vm=RecycleBinViewModel|invariant=True|file=C:\Users\pc\Desktop\SmartLedger_Run_2026-10-05\docs\visual-final-20261008\RecycleBin.png
+Settings|current=Settings|vm=SettingsViewModel|invariant=True|file=C:\Users\pc\Desktop\SmartLedger_Run_2026-10-05\docs\visual-final-20261008\Settings.png

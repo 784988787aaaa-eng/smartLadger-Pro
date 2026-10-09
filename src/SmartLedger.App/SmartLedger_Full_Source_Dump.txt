@@ -1,0 +1,872 @@
+﻿================================================================================
+             حزمة الأكواد الكاملة لتطبيق SmartLedger.App للمراجعة وإعادة الكتابة            
+             التاريخ والوقت: 2026-10-01 01:20:56          
+================================================================================
+
+إجمالي الملفات المشمولة في الحزمة: 29
+--------------------------------------------------------------------------------
+
+################################################################################
+## FILE [1/29]: \App.xaml.cs
+## LINES: 5 | EXTENSION: .cs
+################################################################################
+using System.Windows;
+
+namespace SmartLedger.App;
+
+public partial class App : Application { }
+
+
+## END_OF_FILE: \App.xaml.cs
+
+################################################################################
+## FILE [2/29]: \ViewModels\BackupViewModel.cs
+## LINES: 61 | EXTENSION: .cs
+################################################################################
+using System.Linq;
+using System.IO;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using SmartLedger.Core.Abstractions;
+
+namespace SmartLedger.App.ViewModels;
+
+public partial class BackupViewModel : ObservableObject
+{
+    private readonly IBackupService _backupService;
+    [ObservableProperty] private string destination;
+    [ObservableProperty] private string status;
+    [ObservableProperty] private bool isBusy;
+
+    public BackupViewModel(IBackupService backupService)
+    {
+        _backupService = backupService;
+        destination = backupService.FindRecommendedDirectory() ?? "";
+        status = string.IsNullOrWhiteSpace(destination)
+            ? "لم يتم العثور على قرص ثانٍ مناسب. اختر قرصًا مختلفًا عن قرص النظام."
+            : "المسار المقترح جاهز للنسخ الاحتياطي.";
+    }
+
+    public bool HasSecondaryDrive => !string.IsNullOrWhiteSpace(Destination) && IsSecondary(Destination);
+
+    [RelayCommand]
+    private void Choose()
+    {
+        var dialog = new Microsoft.Win32.OpenFolderDialog { Title = "اختر مجلد النسخ الاحتياطي" };
+        if (dialog.ShowDialog() != true) return;
+        Destination = dialog.FolderName;
+        Status = HasSecondaryDrive
+            ? "المسار صالح: قرص مختلف عن قرص النظام."
+            : "هذا المجلد على قرص النظام. اختر قرصًا آخر.";
+        OnPropertyChanged(nameof(HasSecondaryDrive));
+        CreateCommand.NotifyCanExecuteChanged();
+    }
+
+    [RelayCommand(CanExecute = nameof(CanBackup))]
+    private async Task CreateAsync()
+    {
+        IsBusy = true;
+        Status = "جارٍ إنشاء النسخة الاحتياطية…";
+        try
+        {
+            var result = await _backupService.CreateAsync(Destination);
+            Status = $"تم الحفظ بأمان على قرص مستقل • {Path.GetFileName(result.FilePath)}";
+        }
+        catch (Exception ex) { Status = ex.Message; }
+        finally { IsBusy = false; CreateCommand.NotifyCanExecuteChanged(); }
+    }
+
+    private bool CanBackup() => !IsBusy && HasSecondaryDrive;
+    private static bool IsSecondary(string path)
+    {
+        var system = Path.GetPathRoot(Environment.SystemDirectory);
+        var target = Path.GetPathRoot(Path.GetFullPath(path));
+        return !string.Equals(system, target, StringComparison.OrdinalIgnoreCase);
+    }
+}
+
+
+## END_OF_FILE: \ViewModels\BackupViewModel.cs
+
+################################################################################
+## FILE [3/29]: \ViewModels\BooksViewModel.cs
+## LINES: 19 | EXTENSION: .cs
+################################################################################
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using SmartLedger.Core.Abstractions;
+using SmartLedger.Core.Models;
+
+namespace SmartLedger.App.ViewModels;
+public partial class BooksViewModel(IAppRepository repo) : ObservableObject
+{
+    [ObservableProperty] private IReadOnlyList<Book> books=Array.Empty<Book>();
+    [ObservableProperty] private IReadOnlyList<PersonSummary> people=Array.Empty<PersonSummary>();
+    [ObservableProperty] private Guid? selectedBookId;
+    [ObservableProperty] private string search="";
+    public async Task LoadAsync(){Books=await repo.GetBooksAsync(); if(SelectedBookId is null) SelectedBookId=(Books.Count > 0 ? Books[0] : null)?.Id; await RefreshPeopleAsync();}
+    partial void OnSelectedBookIdChanged(Guid? value)=>_=RefreshPeopleAsync();
+    partial void OnSearchChanged(string value)=>_=RefreshPeopleAsync();
+    private async Task RefreshPeopleAsync(){ if(SelectedBookId is null)return; People=await repo.GetPeopleAsync(SelectedBookId,Search); }
+    [RelayCommand] private async Task AddBookAsync(){await repo.CreateBookAsync("دفتر جديد","#123B70","▦");await LoadAsync();}
+    [RelayCommand] private async Task AddPersonAsync(){var book=Books.FirstOrDefault(x => x.Id == SelectedBookId && x.Kind != BookKind.All) ?? Books.FirstOrDefault(x => x.Kind == BookKind.Custom) ?? Books.FirstOrDefault(x => x.Kind == BookKind.Custom) ?? Books.FirstOrDefault(x => x.Kind == BookKind.Customers); if(book is null) return; await repo.CreatePersonAsync(book.Id,"شخص جديد","","");await RefreshPeopleAsync();}
+}
+
+
+## END_OF_FILE: \ViewModels\BooksViewModel.cs
+
+################################################################################
+## FILE [4/29]: \ViewModels\DashboardViewModel.cs
+## LINES: 11 | EXTENSION: .cs
+################################################################################
+using CommunityToolkit.Mvvm.ComponentModel;
+using SmartLedger.Core.Abstractions;
+using SmartLedger.Core.Models;
+
+namespace SmartLedger.App.ViewModels;
+public partial class DashboardViewModel(IAppRepository repo) : ObservableObject
+{
+    [ObservableProperty] private DashboardSummary summary = new(0,0,0,0);
+    [ObservableProperty] private bool loading;
+    public async Task LoadAsync(){Loading=true; Summary=await repo.GetDashboardAsync(); Loading=false;}
+}
+
+
+## END_OF_FILE: \ViewModels\DashboardViewModel.cs
+
+################################################################################
+## FILE [5/29]: \ViewModels\InventoryViewModel.cs
+## LINES: 14 | EXTENSION: .cs
+################################################################################
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using SmartLedger.Core.Abstractions;
+using SmartLedger.Core.Models;
+
+namespace SmartLedger.App.ViewModels;
+public partial class InventoryViewModel(IAppRepository repo) : ObservableObject
+{
+    [ObservableProperty] private IReadOnlyList<Product> products=Array.Empty<Product>();
+    [ObservableProperty] private string search="";
+    public async Task LoadAsync()=>Products=await repo.GetProductsAsync(Search);
+    partial void OnSearchChanged(string value)=>_=LoadAsync();
+    [RelayCommand] private async Task AddProductAsync(){await repo.CreateProductAsync(new Product(Guid.NewGuid(),"منتج جديد","كرتون","حبة",24,0,0,0,10,DateTimeOffset.Now));await LoadAsync();}
+}
+
+
+## END_OF_FILE: \ViewModels\InventoryViewModel.cs
+
+################################################################################
+## FILE [6/29]: \ViewModels\LoginViewModel.cs
+## LINES: 34 | EXTENSION: .cs
+################################################################################
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using SmartLedger.Core.Services;
+using SmartLedger.Infrastructure.Data;
+
+namespace SmartLedger.App.ViewModels;
+
+public partial class LoginViewModel : ObservableObject
+{
+    private readonly UserRepository _users;
+    private readonly PasswordHasher _hasher;
+    private readonly Action _completed;
+
+    [ObservableProperty] private string userName = "";
+    [ObservableProperty] private string password = "";
+    [ObservableProperty] private string error = "";
+
+    public LoginViewModel(UserRepository users, PasswordHasher hasher, Action completed)
+        => (_users, _hasher, _completed) = (users, hasher, completed);
+
+    [RelayCommand]
+    private async Task LoginAsync()
+    {
+        Error = "";
+        var user = await _users.FindAsync(UserName.Trim());
+        if (user is null || !user.IsActive || !_hasher.Verify(Password, user.PasswordHash))
+        {
+            Error = "اسم المستخدم أو كلمة المرور غير صحيحة.";
+            Password = "";
+            return;
+        }
+        _completed();
+    }
+}
+
+
+## END_OF_FILE: \ViewModels\LoginViewModel.cs
+
+################################################################################
+## FILE [7/29]: \ViewModels\MainViewModel.cs
+## LINES: 35 | EXTENSION: .cs
+################################################################################
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using SmartLedger.Core.Abstractions;
+using SmartLedger.Core.Models;
+
+namespace SmartLedger.App.ViewModels;
+
+public partial class MainViewModel : ObservableObject
+{
+    private readonly IAppRepository _repo;
+    private readonly IAppSession _session;
+    private readonly IBackupService _backup;
+    [ObservableProperty] private object? currentPage;
+    [ObservableProperty] private string pageTitle = "الرئيسية";
+    [ObservableProperty] private string searchText = "";
+    public AppUser User => _session.CurrentUser!;
+    public MainViewModel(IAppRepository repo, IAppSession session, IBackupService backup) { _repo=repo; _session=session; _backup=backup; Navigate("home"); }
+    [RelayCommand] private void Navigate(string page)
+    {
+        PageTitle = page switch { "books"=>"الدفاتر", "operations"=>"العمليات", "inventory"=>"المخزن", "reports"=>"التقارير", "messages"=>"الرسائل", "trash"=>"سلة المحذوفات", "settings"=>"الإعدادات", _=>"الرئيسية" };
+        CurrentPage = page switch
+        {
+            "books" => new BooksViewModel(_repo),
+            "operations" => new OperationsViewModel(_repo, _session),
+            "inventory" => new InventoryViewModel(_repo),
+            "reports" => new SimplePageViewModel("التقارير", "تقارير واضحة ومهيأة للطباعة والتصدير."),
+            "messages" => new SimplePageViewModel("الرسائل", "قوالب الرسائل وإرسال كشوف الحساب."),
+            "trash" => new SimplePageViewModel("سلة المحذوفات", "العناصر المحذوفة ستظهر هنا مع إمكانية الاستعادة."),
+            "settings" => new SettingsViewModel(_backup),
+            _ => new DashboardViewModel(_repo)
+        };
+    }
+}
+
+public sealed class SimplePageViewModel(string title, string description) { public string Title { get; }=title; public string Description { get; }=description; }
+
+
+## END_OF_FILE: \ViewModels\MainViewModel.cs
+
+################################################################################
+## FILE [8/29]: \ViewModels\OperationsViewModel.cs
+## LINES: 61 | EXTENSION: .cs
+################################################################################
+using System.Globalization;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using SmartLedger.Core.Abstractions;
+using SmartLedger.Core.Models;
+
+namespace SmartLedger.App.ViewModels;
+
+public partial class OperationsViewModel(IAppRepository repo, IAppSession session) : ObservableObject
+{
+    [ObservableProperty] private IReadOnlyList<PersonSummary> people = Array.Empty<PersonSummary>();
+    [ObservableProperty] private IReadOnlyList<LedgerOperation> operations = Array.Empty<LedgerOperation>();
+    [ObservableProperty] private Guid? selectedPersonId;
+    [ObservableProperty] private OperationType selectedType = OperationType.ReceiveFromPerson;
+    [ObservableProperty] private string amountText = "";
+    [ObservableProperty] private string note = "";
+    [ObservableProperty] private string dateText = FormatDate(DateTimeOffset.Now);
+    [ObservableProperty] private bool isBusy;
+
+    public Array Types => Enum.GetValues<OperationType>();
+
+    partial void OnSelectedPersonIdChanged(Guid? value) => SaveCommand.NotifyCanExecuteChanged();
+    partial void OnAmountTextChanged(string value) => SaveCommand.NotifyCanExecuteChanged();
+    partial void OnIsBusyChanged(bool value) => SaveCommand.NotifyCanExecuteChanged();
+
+    public async Task LoadAsync()
+    {
+        People = await repo.GetPeopleAsync();
+        Operations = await repo.GetOperationsAsync(take: 100);
+        DateText = FormatDate(DateTimeOffset.Now);
+    }
+
+    [RelayCommand(CanExecute = nameof(CanSave))]
+    private async Task SaveAsync()
+    {
+        if (!TryParseAmount(AmountText, out var amount) || SelectedPersonId is null) return;
+        IsBusy = true;
+        try
+        {
+            await repo.CreateOperationAsync(new LedgerOperation(
+                Guid.NewGuid(), SelectedPersonId.Value, SelectedType, amount,
+                Note.Trim(), DateTimeOffset.Now, session.CurrentUser!.Id));
+
+            AmountText = "";
+            Note = "";
+            DateText = FormatDate(DateTimeOffset.Now);
+            Operations = await repo.GetOperationsAsync(take: 100);
+        }
+        finally { IsBusy = false; }
+    }
+
+    private bool CanSave() => !IsBusy && SelectedPersonId is not null && TryParseAmount(AmountText, out var amount) && amount > 0;
+
+    private static bool TryParseAmount(string? value, out decimal amount)
+    {
+        var normalized = (value ?? "").Trim().Replace(",", "").Replace("٬", "");
+        return decimal.TryParse(normalized, NumberStyles.Number, CultureInfo.InvariantCulture, out amount);
+    }
+
+    private static string FormatDate(DateTimeOffset value) => value.ToLocalTime().ToString("dddd • dd/MM/yyyy • hh:mm tt", CultureInfo.CurrentCulture);
+}
+
+
+## END_OF_FILE: \ViewModels\OperationsViewModel.cs
+
+################################################################################
+## FILE [9/29]: \ViewModels\SettingsViewModel.cs
+## LINES: 9 | EXTENSION: .cs
+################################################################################
+using SmartLedger.Core.Abstractions;
+
+namespace SmartLedger.App.ViewModels;
+
+public sealed class SettingsViewModel
+{
+    public BackupViewModel Backup { get; }
+    public SettingsViewModel(IBackupService backupService) => Backup = new(backupService);
+}
+
+
+## END_OF_FILE: \ViewModels\SettingsViewModel.cs
+
+################################################################################
+## FILE [10/29]: \ViewModels\SetupViewModel.cs
+## LINES: 49 | EXTENSION: .cs
+################################################################################
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using SmartLedger.Core.Models;
+using SmartLedger.Core.Services;
+using SmartLedger.Infrastructure.Data;
+
+namespace SmartLedger.App.ViewModels;
+
+public partial class SetupViewModel : ObservableObject
+{
+    private readonly UserRepository _users;
+    private readonly PasswordHasher _hasher;
+    private readonly Action _completed;
+
+    [ObservableProperty] private string userName = "";
+    [ObservableProperty] private string password = "";
+    [ObservableProperty] private string confirmation = "";
+    [ObservableProperty] private string recoveryPhrase = "";
+    [ObservableProperty] private string recoveryHint = "";
+    [ObservableProperty] private string error = "";
+
+    public SetupViewModel(UserRepository users, PasswordHasher hasher, Action completed)
+        => (_users, _hasher, _completed) = (users, hasher, completed);
+
+    public bool CanCreate => UserName.Trim().Length >= 3 && Password.Length >= 8 && Password == Confirmation && RecoveryPhrase.Trim().Length >= 8 && RecoveryHint.Trim().Length >= 2;
+
+    partial void OnUserNameChanged(string value) => OnPropertyChanged(nameof(CanCreate));
+    partial void OnPasswordChanged(string value) { OnPropertyChanged(nameof(CanCreate)); OnPropertyChanged(nameof(PasswordMatch)); }
+    partial void OnConfirmationChanged(string value) { OnPropertyChanged(nameof(CanCreate)); OnPropertyChanged(nameof(PasswordMatch)); }
+    partial void OnRecoveryPhraseChanged(string value) => OnPropertyChanged(nameof(CanCreate));
+    partial void OnRecoveryHintChanged(string value) => OnPropertyChanged(nameof(CanCreate));
+
+    public bool PasswordMatch => string.IsNullOrEmpty(Confirmation) || Password == Confirmation;
+
+    [RelayCommand(CanExecute = nameof(CanCreate))]
+    private async Task CreateAsync()
+    {
+        Error = "";
+        try
+        {
+            await _users.CreateAdministratorAsync(new AdminSetup(UserName.Trim(), _hasher.Hash(Password), _hasher.Hash(RecoveryPhrase.Trim()), RecoveryHint.Trim()));
+            _completed();
+        }
+        catch (Exception ex)
+        {
+            Error = $"تعذر إنشاء حساب الإدارة: {ex.Message}";
+        }
+    }
+}
+
+
+## END_OF_FILE: \ViewModels\SetupViewModel.cs
+
+################################################################################
+## FILE [11/29]: \Views\BootstrapWindow.xaml.cs
+## LINES: 42 | EXTENSION: .cs
+################################################################################
+using System.Windows;
+using SmartLedger.App.ViewModels;
+using SmartLedger.Core.Services;
+using SmartLedger.Infrastructure.Data;
+using SmartLedger.Infrastructure.Security;
+
+namespace SmartLedger.App.Views;
+
+public partial class BootstrapWindow : Window
+{
+    private readonly Database _database = new(LocalAppPaths.Root);
+
+    public BootstrapWindow()
+    {
+        InitializeComponent();
+        Loaded += async (_, _) => await InitializeAsync();
+    }
+
+    private async Task InitializeAsync()
+    {
+        await _database.InitializeAsync();
+        var users = new UserRepository(_database);
+        if (await users.HasAdministratorAsync())
+        {
+            OpenLogin(users);
+            return;
+        }
+        DataContext = new SetupViewModel(users, new PasswordHasher(), OpenLogin);
+        UserNameBox.Focus();
+    }
+
+    private void PasswordChanged(object sender, RoutedEventArgs e) { if (DataContext is SetupViewModel vm) vm.Password = PasswordBox.Password; }
+    private void ConfirmChanged(object sender, RoutedEventArgs e) { if (DataContext is SetupViewModel vm) vm.Confirmation = ConfirmBox.Password; }
+
+    private void OpenLogin() => OpenLogin(new UserRepository(_database));
+
+    private void OpenLogin(UserRepository users)
+    {
+        new LoginWindow(_database).Show();
+        Close();
+    }
+}
+
+
+## END_OF_FILE: \Views\BootstrapWindow.xaml.cs
+
+################################################################################
+## FILE [12/29]: \Views\LoginWindow.xaml.cs
+## LINES: 19 | EXTENSION: .cs
+################################################################################
+using System.Windows;
+using SmartLedger.App.ViewModels;
+using SmartLedger.Core.Services;
+using SmartLedger.Infrastructure.Data;
+
+namespace SmartLedger.App.Views;
+public partial class LoginWindow : Window
+{
+    public LoginWindow(Database database)
+    {
+        InitializeComponent();
+        var users=new UserRepository(database);
+        var session=new AppSession();
+        DataContext=new LoginViewModel(users,new PasswordHasher(),user=>OpenMain(session,user));
+        Loaded+=(_,_)=>UserNameBox.Focus();
+    }
+    private void PasswordChanged(object sender,RoutedEventArgs e){if(DataContext is LoginViewModel vm)vm.Password=PasswordBox.Password;}
+    private void OpenMain(AppSession session,SmartLedger.Core.Models.User user){session.Start(new SmartLedger.Core.Models.AppUser(user.Id,user.UserName,user.DisplayName,user.IsAdministrator,user.IsActive)); new MainWindow(session).Show(); Close();}
+}
+
+
+## END_OF_FILE: \Views\LoginWindow.xaml.cs
+
+################################################################################
+## FILE [13/29]: \Views\MainWindow.xaml.cs
+## LINES: 17 | EXTENSION: .cs
+################################################################################
+using System.Windows;
+using SmartLedger.App.ViewModels;
+using SmartLedger.Core.Services;
+using SmartLedger.Infrastructure.Data;
+using SmartLedger.Infrastructure.Security;
+using SmartLedger.Infrastructure.Backup;
+
+namespace SmartLedger.App.Views;
+public partial class MainWindow : Window
+{
+    public MainWindow(AppSession session)
+    {
+        InitializeComponent();
+        var db=new Database(LocalAppPaths.Root);
+        DataContext=new MainViewModel(new AppRepository(db),session,new SqliteBackupService(db));
+    }
+}
+
+
+## END_OF_FILE: \Views\MainWindow.xaml.cs
+
+################################################################################
+## FILE [14/29]: \Views\Pages\BooksPage.xaml.cs
+## LINES: 3 | EXTENSION: .cs
+################################################################################
+using System.Windows; using System.Windows.Controls; using SmartLedger.App.ViewModels; using SmartLedger.Core.Models;
+namespace SmartLedger.App.Views.Pages;
+public partial class BooksPage:UserControl{public BooksPage()=>InitializeComponent(); private async void LoadedPage(object s,RoutedEventArgs e){if(DataContext is BooksViewModel vm)await vm.LoadAsync();} private void BookClicked(object s,RoutedEventArgs e){if(DataContext is BooksViewModel vm && s is Button b && b.DataContext is Book book)vm.SelectedBookId=book.Id;}}
+
+
+## END_OF_FILE: \Views\Pages\BooksPage.xaml.cs
+
+################################################################################
+## FILE [15/29]: \Views\Pages\DashboardPage.xaml.cs
+## LINES: 3 | EXTENSION: .cs
+################################################################################
+using System.Windows; using System.Windows.Controls; using SmartLedger.App.ViewModels;
+namespace SmartLedger.App.Views.Pages;
+public partial class DashboardPage:UserControl{public DashboardPage()=>InitializeComponent(); private async void LoadedPage(object s,RoutedEventArgs e){if(DataContext is DashboardViewModel vm)await vm.LoadAsync();}}
+
+
+## END_OF_FILE: \Views\Pages\DashboardPage.xaml.cs
+
+################################################################################
+## FILE [16/29]: \Views\Pages\InventoryPage.xaml.cs
+## LINES: 2 | EXTENSION: .cs
+################################################################################
+using System.Windows; using System.Windows.Controls; using SmartLedger.App.ViewModels;
+namespace SmartLedger.App.Views.Pages; public partial class InventoryPage:UserControl{public InventoryPage()=>InitializeComponent(); private async void LoadedPage(object s,RoutedEventArgs e){if(DataContext is InventoryViewModel vm)await vm.LoadAsync();}}
+
+
+## END_OF_FILE: \Views\Pages\InventoryPage.xaml.cs
+
+################################################################################
+## FILE [17/29]: \Views\Pages\OperationsPage.xaml.cs
+## LINES: 26 | EXTENSION: .cs
+################################################################################
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
+using SmartLedger.App.ViewModels;
+
+namespace SmartLedger.App.Views.Pages;
+
+public partial class OperationsPage : UserControl
+{
+    public OperationsPage() => InitializeComponent();
+
+    private async void LoadedPage(object sender, RoutedEventArgs e)
+    {
+        if (DataContext is OperationsViewModel vm)
+        {
+            await vm.LoadAsync();
+            PersonBox.Focus();
+        }
+    }
+
+    private void PersonBox_KeyDown(object sender, KeyEventArgs e) { if (e.Key == Key.Enter) { TypeBox.Focus(); e.Handled = true; } }
+    private void TypeBox_KeyDown(object sender, KeyEventArgs e) { if (e.Key == Key.Enter) { AmountBox.Focus(); e.Handled = true; } }
+    private void AmountBox_KeyDown(object sender, KeyEventArgs e) { if (e.Key == Key.Enter) { DateBox.Focus(); e.Handled = true; } }
+    private void DateBox_KeyDown(object sender, KeyEventArgs e) { if (e.Key == Key.Enter) { NoteBox.Focus(); e.Handled = true; } }
+    private void NoteBox_KeyDown(object sender, KeyEventArgs e) { if (e.Key == Key.Enter && Keyboard.Modifiers == ModifierKeys.Control) return; if (e.Key == Key.Enter && Keyboard.Modifiers == ModifierKeys.None) { SaveButton.Focus(); e.Handled = true; } }
+}
+
+
+## END_OF_FILE: \Views\Pages\OperationsPage.xaml.cs
+
+################################################################################
+## FILE [18/29]: \Views\Pages\SettingsPage.xaml.cs
+## LINES: 7 | EXTENSION: .cs
+################################################################################
+using System.Windows.Controls;
+
+namespace SmartLedger.App.Views.Pages;
+public partial class SettingsPage : UserControl
+{
+    public SettingsPage() => InitializeComponent();
+}
+
+
+## END_OF_FILE: \Views\Pages\SettingsPage.xaml.cs
+
+################################################################################
+## FILE [19/29]: \Views\Pages\SimplePage.xaml.cs
+## LINES: 1 | EXTENSION: .cs
+################################################################################
+using System.Windows.Controls; namespace SmartLedger.App.Views.Pages; public partial class SimplePage:UserControl{public SimplePage()=>InitializeComponent();}
+
+
+## END_OF_FILE: \Views\Pages\SimplePage.xaml.cs
+
+################################################################################
+## FILE [20/29]: \App.xaml
+## LINES: 13 | EXTENSION: .xaml
+################################################################################
+<Application x:Class="SmartLedger.App.App" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" StartupUri="Views/BootstrapWindow.xaml">
+ <Application.Resources>
+  <SolidColorBrush x:Key="Navy" Color="#123B70"/><SolidColorBrush x:Key="Text" Color="#17212B"/><SolidColorBrush x:Key="Muted" Color="#667085"/><SolidColorBrush x:Key="Border" Color="#E4E7EC"/><SolidColorBrush x:Key="Surface" Color="#FFFFFF"/><SolidColorBrush x:Key="Background" Color="#F6F8FB"/><SolidColorBrush x:Key="Green" Color="#168C5B"/><SolidColorBrush x:Key="Red" Color="#C63C4B"/><SolidColorBrush x:Key="Orange" Color="#C96A12"/>
+  <Style TargetType="TextBlock"><Setter Property="Foreground" Value="{StaticResource Text}"/><Setter Property="FontSize" Value="14"/></Style>
+  <Style TargetType="TextBox"><Setter Property="Height" Value="42"/><Setter Property="Padding" Value="12,0"/><Setter Property="FontSize" Value="14"/><Setter Property="BorderBrush" Value="{StaticResource Border}"/><Setter Property="BorderThickness" Value="1"/></Style>
+  <Style TargetType="PasswordBox"><Setter Property="Height" Value="42"/><Setter Property="Padding" Value="12,0"/><Setter Property="FontSize" Value="14"/><Setter Property="BorderBrush" Value="{StaticResource Border}"/></Style>
+  <Style TargetType="ComboBox"><Setter Property="Height" Value="42"/><Setter Property="FontSize" Value="14"/><Setter Property="BorderBrush" Value="{StaticResource Border}"/></Style>
+  <Style TargetType="Button"><Setter Property="Height" Value="42"/><Setter Property="Padding" Value="18,0"/><Setter Property="FontSize" Value="14"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="Background" Value="White"/><Setter Property="BorderBrush" Value="{StaticResource Border}"/></Style>
+  <Style x:Key="NavButton" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}"><Setter Property="HorizontalContentAlignment" Value="Right"/><Setter Property="Margin" Value="0,3,0,0"/><Setter Property="Background" Value="Transparent"/><Setter Property="BorderThickness" Value="0"/><Setter Property="Foreground" Value="{StaticResource Text}"/></Style>
+  <Style x:Key="PrimaryButton" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}"><Setter Property="Background" Value="{StaticResource Navy}"/><Setter Property="Foreground" Value="White"/><Setter Property="BorderThickness" Value="0"/></Style>
+  <Style TargetType="DataGrid"><Setter Property="AutoGenerateColumns" Value="False"/><Setter Property="CanUserAddRows" Value="False"/><Setter Property="HeadersVisibility" Value="Column"/><Setter Property="BorderBrush" Value="{StaticResource Border}"/><Setter Property="RowHeight" Value="46"/><Setter Property="FontSize" Value="14"/></Style>
+ </Application.Resources>
+</Application>
+
+
+## END_OF_FILE: \App.xaml
+
+################################################################################
+## FILE [21/29]: \Views\BootstrapWindow.xaml
+## LINES: 24 | EXTENSION: .xaml
+################################################################################
+<Window x:Class="SmartLedger.App.Views.BootstrapWindow" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Title="إعداد البرنامج" Width="480" Height="530" MinWidth="440" MinHeight="500" WindowStartupLocation="CenterScreen" FlowDirection="RightToLeft" UseLayoutRounding="True" SnapsToDevicePixels="True" Background="White">
+    <Grid Margin="28">
+        <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
+        <StackPanel HorizontalAlignment="Center">
+            <TextBlock Text="▮▮▮" Foreground="{StaticResource Navy}" FontSize="26" FontWeight="Bold" HorizontalAlignment="Center"/>
+            <TextBlock Text="إعداد البرنامج لأول مرة" Foreground="{StaticResource Navy}" FontSize="24" FontWeight="Bold" Margin="0,8,0,4"/>
+            <TextBlock Text="أنشئ حساب الإدارة الرئيسي لإدارة البرنامج والمستخدمين والبيانات." Foreground="{StaticResource Muted}" FontSize="12" TextAlignment="Center" TextWrapping="Wrap"/>
+        </StackPanel>
+        <StackPanel Grid.Row="2" Margin="0,24,0,0">
+            <TextBlock Text="اسم المستخدم" FontWeight="SemiBold" Margin="0,0,0,6"/>
+            <TextBox x:Name="UserNameBox" Text="{Binding UserName, UpdateSourceTrigger=PropertyChanged}"/>
+            <TextBlock Text="كلمة المرور" FontWeight="SemiBold" Margin="0,12,0,6"/>
+            <PasswordBox x:Name="PasswordBox" PasswordChanged="PasswordChanged"/>
+            <TextBlock Text="تأكيد كلمة المرور" FontWeight="SemiBold" Margin="0,12,0,6"/>
+            <PasswordBox x:Name="ConfirmBox" PasswordChanged="ConfirmChanged"/>
+            <TextBlock Text="عبارة الاسترداد" FontWeight="Bold" Foreground="{StaticResource Navy}" Margin="0,16,0,6"/>
+            <TextBox Text="{Binding RecoveryPhrase, UpdateSourceTrigger=PropertyChanged}"/>
+            <TextBlock Text="تلميح عبارة الاسترداد" FontWeight="SemiBold" Margin="0,10,0,6"/>
+            <TextBox Text="{Binding RecoveryHint, UpdateSourceTrigger=PropertyChanged}"/>
+            <TextBlock Text="{Binding Error}" Foreground="#B42318" FontSize="12" Margin="0,8,0,0" TextWrapping="Wrap"/>
+            <Button Content="إنشاء حساب الإدارة" Command="{Binding CreateCommand}" Background="{StaticResource Navy}" Foreground="White" BorderThickness="0" Margin="0,12,0,0" IsDefault="True"/>
+        </StackPanel>
+    </Grid>
+</Window>
+
+
+## END_OF_FILE: \Views\BootstrapWindow.xaml
+
+################################################################################
+## FILE [22/29]: \Views\LoginWindow.xaml
+## LINES: 16 | EXTENSION: .xaml
+################################################################################
+<Window x:Class="SmartLedger.App.Views.LoginWindow" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Title="تسجيل الدخول" Width="480" Height="400" MinWidth="440" MinHeight="360" WindowStartupLocation="CenterScreen" FlowDirection="RightToLeft" UseLayoutRounding="True" SnapsToDevicePixels="True" Background="White">
+    <Grid Margin="32">
+        <StackPanel>
+            <TextBlock Text="تسجيل الدخول" Foreground="{StaticResource Navy}" FontSize="26" FontWeight="Bold"/>
+            <TextBlock Text="أدخل بيانات الدخول للمتابعة." Foreground="{StaticResource Muted}" Margin="0,5,0,24"/>
+            <TextBlock Text="اسم المستخدم" FontWeight="SemiBold" Margin="0,0,0,6"/>
+            <TextBox x:Name="UserNameBox" Text="{Binding UserName, UpdateSourceTrigger=PropertyChanged}"/>
+            <TextBlock Text="كلمة المرور" FontWeight="SemiBold" Margin="0,14,0,6"/>
+            <PasswordBox x:Name="PasswordBox" PasswordChanged="PasswordChanged"/>
+            <TextBlock Text="{Binding Error}" Foreground="#B42318" FontSize="12" Margin="0,8,0,0"/>
+            <Button Content="تسجيل الدخول" Command="{Binding LoginCommand}" Background="{StaticResource Navy}" Foreground="White" BorderThickness="0" Margin="0,18,0,0" IsDefault="True"/>
+            <Button Content="استعادة الوصول" Background="Transparent" BorderThickness="0" Foreground="{StaticResource Navy}" Margin="0,6,0,0"/>
+            <TextBlock Text="بياناتك محلية ومحمية." Foreground="{StaticResource Muted}" HorizontalAlignment="Center" Margin="0,18,0,0"/>
+        </StackPanel>
+    </Grid>
+</Window>
+
+
+## END_OF_FILE: \Views\LoginWindow.xaml
+
+################################################################################
+## FILE [23/29]: \Views\MainWindow.xaml
+## LINES: 50 | EXTENSION: .xaml
+################################################################################
+<Window x:Class="SmartLedger.App.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="clr-namespace:SmartLedger.App.ViewModels"
+        xmlns:views="clr-namespace:SmartLedger.App.Views.Pages"
+        Title="دفتر أعمال ذكي"
+        Width="1280" Height="750" MinWidth="980" MinHeight="580"
+        WindowStartupLocation="CenterScreen"
+        FlowDirection="RightToLeft"
+        Background="{StaticResource Background}"
+        UseLayoutRounding="True"
+        SnapsToDevicePixels="True"
+        TextOptions.TextFormattingMode="Display"
+        TextOptions.TextRenderingMode="ClearType">
+ <Window.Resources>
+  <DataTemplate DataType="{x:Type vm:DashboardViewModel}"><views:DashboardPage/></DataTemplate>
+  <DataTemplate DataType="{x:Type vm:BooksViewModel}"><views:BooksPage/></DataTemplate>
+  <DataTemplate DataType="{x:Type vm:OperationsViewModel}"><views:OperationsPage/></DataTemplate>
+  <DataTemplate DataType="{x:Type vm:InventoryViewModel}"><views:InventoryPage/></DataTemplate>
+  <DataTemplate DataType="{x:Type vm:SimplePageViewModel}"><views:SimplePage/></DataTemplate>
+  <DataTemplate DataType="{x:Type vm:SettingsViewModel}"><views:SettingsPage/></DataTemplate>
+ </Window.Resources>
+ <Grid>
+  <Grid.ColumnDefinitions><ColumnDefinition Width="230"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+  <Border Background="White" BorderBrush="{StaticResource Border}" BorderThickness="0,0,1,0" Padding="18">
+   <DockPanel>
+    <StackPanel DockPanel.Dock="Bottom"><TextBlock Text="الخصوصية" Foreground="{StaticResource Muted}" Margin="4,24,4,8"/><Button Style="{StaticResource NavButton}" Content="👁  إخفاء الأرقام"/><TextBlock Text="محلي • آمن • دون تعقيد" Foreground="{StaticResource Muted}" FontSize="11" Margin="4,12,4,0"/></StackPanel>
+    <StackPanel>
+     <TextBlock Text="دفتر أعمال ذكي" FontSize="20" FontWeight="Bold" Foreground="{StaticResource Navy}" Margin="4,4,4,28"/>
+     <Button Style="{StaticResource NavButton}" Content="⌂  الرئيسية" Command="{Binding NavigateCommand}" CommandParameter="home"/>
+     <Button Style="{StaticResource NavButton}" Content="▦  الدفاتر" Command="{Binding NavigateCommand}" CommandParameter="books"/>
+     <Button Style="{StaticResource NavButton}" Content="⇄  العمليات" Command="{Binding NavigateCommand}" CommandParameter="operations"/>
+     <Button Style="{StaticResource NavButton}" Content="▤  المخزن" Command="{Binding NavigateCommand}" CommandParameter="inventory"/>
+     <Button Style="{StaticResource NavButton}" Content="▥  التقارير" Command="{Binding NavigateCommand}" CommandParameter="reports"/>
+     <Button Style="{StaticResource NavButton}" Content="✉  الرسائل" Command="{Binding NavigateCommand}" CommandParameter="messages"/>
+     <Button Style="{StaticResource NavButton}" Content="♻  سلة المحذوفات" Command="{Binding NavigateCommand}" CommandParameter="trash"/>
+     <Button Style="{StaticResource NavButton}" Content="⚙  الإعدادات" Command="{Binding NavigateCommand}" CommandParameter="settings"/>
+    </StackPanel>
+   </DockPanel>
+  </Border>
+  <Grid Grid.Column="1" Margin="24,22,24,24">
+   <Grid.RowDefinitions><RowDefinition Height="64"/><RowDefinition Height="*"/></Grid.RowDefinitions>
+   <Grid>
+    <StackPanel Orientation="Horizontal" HorizontalAlignment="Left"><Border Background="White" BorderBrush="{StaticResource Border}" BorderThickness="1" CornerRadius="10" Width="330" Height="42"><Grid><TextBlock Text="⌕  ابحث في البرنامج  Ctrl+K" Foreground="{StaticResource Muted}" VerticalAlignment="Center" Margin="14,0"/></Grid></Border></StackPanel>
+    <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" VerticalAlignment="Center"><TextBlock Text="{Binding PageTitle}" Foreground="{StaticResource Muted}" VerticalAlignment="Center" Margin="0,0,28,0"/><TextBlock Text="{Binding User.DisplayName}" FontWeight="SemiBold" VerticalAlignment="Center" Margin="0,0,14,0"/><Border Width="38" Height="38" Background="#E9F0FA" CornerRadius="19"><TextBlock Text="●" Foreground="{StaticResource Navy}" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border></StackPanel>
+   </Grid>
+   <Border Grid.Row="1" Background="White" CornerRadius="14" Padding="26" BorderBrush="{StaticResource Border}" BorderThickness="1"><ContentControl Content="{Binding CurrentPage}"/></Border>
+  </Grid>
+ </Grid>
+</Window>
+
+
+## END_OF_FILE: \Views\MainWindow.xaml
+
+################################################################################
+## FILE [24/29]: \Views\Pages\BooksPage.xaml
+## LINES: 8 | EXTENSION: .xaml
+################################################################################
+<UserControl FlowDirection="RightToLeft" x:Class="SmartLedger.App.Views.Pages.BooksPage" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Loaded="LoadedPage">
+ <Grid><Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
+  <Grid><StackPanel><TextBlock Text="الدفاتر" FontSize="28" FontWeight="Bold"/><TextBlock Text="نظم الأشخاص بالطريقة التي تناسب عملك." Foreground="{StaticResource Muted}" Margin="0,6,0,0"/></StackPanel><StackPanel Orientation="Horizontal" HorizontalAlignment="Left"><Button Content="+ إضافة شخص" Command="{Binding AddPersonCommand}" Style="{StaticResource PrimaryButton}" Margin="0,0,8,0"/><Button Content="+ إضافة دفتر" Command="{Binding AddBookCommand}"/></StackPanel></Grid>
+  <Grid Grid.Row="1" Margin="0,24,0,16"><Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="330"/></Grid.ColumnDefinitions><ItemsControl ItemsSource="{Binding Books}"><ItemsControl.ItemsPanel><ItemsPanelTemplate><StackPanel Orientation="Horizontal"/></ItemsPanelTemplate></ItemsControl.ItemsPanel><ItemsControl.ItemTemplate><DataTemplate><Button Content="{Binding Name}" Click="BookClicked" Padding="18,0" Margin="0,0,8,0"/></DataTemplate></ItemsControl.ItemTemplate></ItemsControl><TextBox Grid.Column="1" Text="{Binding Search, UpdateSourceTrigger=PropertyChanged}" Height="42" ToolTip="ابحث عن اسم أو رقم أو ملاحظة..."/></Grid>
+  <DataGrid Grid.Row="2" ItemsSource="{Binding People}"><DataGrid.Columns><DataGridTextColumn Header="الاسم" Binding="{Binding Person.Name}" Width="2*"/><DataGridTextColumn Header="الدفتر" Binding="{Binding BookName}" Width="*"/><DataGridTextColumn Header="لنا" Binding="{Binding OwedToUs, StringFormat={}{0:N0}}" Width="*"/><DataGridTextColumn Header="علينا" Binding="{Binding WeOwe, StringFormat={}{0:N0}}" Width="*"/><DataGridTextColumn Header="آخر حركة" Binding="{Binding LastOperationAt, StringFormat=dddd • dd/MM • hh:mm tt}" Width="*"/></DataGrid.Columns></DataGrid>
+ </Grid>
+</UserControl>
+
+
+
+## END_OF_FILE: \Views\Pages\BooksPage.xaml
+
+################################################################################
+## FILE [25/29]: \Views\Pages\DashboardPage.xaml
+## LINES: 13 | EXTENSION: .xaml
+################################################################################
+<UserControl FlowDirection="RightToLeft" x:Class="SmartLedger.App.Views.Pages.DashboardPage" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Loaded="LoadedPage">
+ <ScrollViewer VerticalScrollBarVisibility="Auto"><StackPanel>
+  <TextBlock Text="الرئيسية" FontSize="28" FontWeight="Bold"/><TextBlock Text="نظرة واضحة على ما لنا، وما علينا، وما يحدث اليوم." Foreground="{StaticResource Muted}" Margin="0,6,0,24"/>
+  <UniformGrid Columns="4" Margin="0,0,0,24">
+   <Border Background="#ECF8F2" CornerRadius="12" Padding="18" Margin="0,0,10,0"><StackPanel><TextBlock Text="لنا" Foreground="{StaticResource Green}" FontWeight="Bold"/><TextBlock Text="{Binding Summary.OwedToUs, StringFormat={}{0:N0}}" FontSize="26" FontWeight="Bold" Margin="0,10,0,0"/><TextBlock Text="مستحق لنا" Foreground="{StaticResource Muted}" FontSize="12"/></StackPanel></Border>
+   <Border Background="#FFF0F1" CornerRadius="12" Padding="18" Margin="0,0,10,0"><StackPanel><TextBlock Text="علينا" Foreground="{StaticResource Red}" FontWeight="Bold"/><TextBlock Text="{Binding Summary.WeOwe, StringFormat={}{0:N0}}" FontSize="26" FontWeight="Bold" Margin="0,10,0,0"/><TextBlock Text="مستحق علينا" Foreground="{StaticResource Muted}" FontSize="12"/></StackPanel></Border>
+   <Border Background="#F1F5FA" CornerRadius="12" Padding="18" Margin="0,0,10,0"><StackPanel><TextBlock Text="المخزون" Foreground="{StaticResource Navy}" FontWeight="Bold"/><TextBlock Text="{Binding Summary.StockValue, StringFormat={}{0:N0}}" FontSize="26" FontWeight="Bold" Margin="0,10,0,0"/><TextBlock Text="قيمة تقديرية بسعر البيع" Foreground="{StaticResource Muted}" FontSize="12"/></StackPanel></Border>
+   <Border Background="#FFF7EA" CornerRadius="12" Padding="18"><StackPanel><TextBlock Text="عمليات اليوم" Foreground="{StaticResource Orange}" FontWeight="Bold"/><TextBlock Text="{Binding Summary.OperationsToday}" FontSize="26" FontWeight="Bold" Margin="0,10,0,0"/><TextBlock Text="حركة مسجلة اليوم" Foreground="{StaticResource Muted}" FontSize="12"/></StackPanel></Border>
+  </UniformGrid>
+  <Border Background="#FAFBFC" CornerRadius="12" Padding="18"><StackPanel><TextBlock Text="بداية العمل" FontSize="18" FontWeight="Bold"/><TextBlock Text="ابدأ من الدفاتر لإضافة الأشخاص، أو من العمليات لتسجيل حركة بسرعة." Foreground="{StaticResource Muted}" Margin="0,6,0,0"/></StackPanel></Border>
+ </StackPanel></ScrollViewer>
+</UserControl>
+
+
+
+## END_OF_FILE: \Views\Pages\DashboardPage.xaml
+
+################################################################################
+## FILE [26/29]: \Views\Pages\InventoryPage.xaml
+## LINES: 8 | EXTENSION: .xaml
+################################################################################
+<UserControl FlowDirection="RightToLeft" x:Class="SmartLedger.App.Views.Pages.InventoryPage" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Loaded="LoadedPage">
+ <Grid><Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
+  <Grid><StackPanel><TextBlock Text="المخزن" FontSize="28" FontWeight="Bold"/><TextBlock Text="منتجات ووحدات مرنة بدون تعقيد محاسبي." Foreground="{StaticResource Muted}" Margin="0,6,0,0"/></StackPanel><Button Content="+ إضافة منتج" Command="{Binding AddProductCommand}" Style="{StaticResource PrimaryButton}" HorizontalAlignment="Left"/></Grid>
+  <Grid Grid.Row="1" Margin="0,22,0,16"><TextBox Width="330" HorizontalAlignment="Right" Text="{Binding Search, UpdateSourceTrigger=PropertyChanged}" ToolTip="ابحث عن منتج..."/></Grid>
+  <DataGrid Grid.Row="2" ItemsSource="{Binding Products}"><DataGrid.Columns><DataGridTextColumn Header="المنتج" Binding="{Binding Name}" Width="2*"/><DataGridTextColumn Header="الوحدة" Binding="{Binding LargeUnit}" Width="*"/><DataGridTextColumn Header="الصغرى" Binding="{Binding SmallUnit}" Width="*"/><DataGridTextColumn Header="المتاح" Binding="{Binding StockSmallUnits, StringFormat={}{0:N0}}" Width="*"/><DataGridTextColumn Header="سعر البيع" Binding="{Binding SalePrice, StringFormat={}{0:N0}}" Width="*"/><DataGridTextColumn Header="التنبيه عند" Binding="{Binding AlertThreshold, StringFormat={}{0:N0}}" Width="*"/></DataGrid.Columns></DataGrid>
+ </Grid>
+</UserControl>
+
+
+
+## END_OF_FILE: \Views\Pages\InventoryPage.xaml
+
+################################################################################
+## FILE [27/29]: \Views\Pages\OperationsPage.xaml
+## LINES: 52 | EXTENSION: .xaml
+################################################################################
+<UserControl FlowDirection="RightToLeft" x:Class="SmartLedger.App.Views.Pages.OperationsPage"
+ xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+ Loaded="LoadedPage">
+ <Grid>
+  <Grid.ColumnDefinitions><ColumnDefinition Width="380"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+  <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+   <Border Background="#FAFBFC" BorderBrush="{StaticResource Border}" BorderThickness="0,0,1,0" Padding="22">
+   <StackPanel>
+    <TextBlock Text="تسجيل عملية" FontSize="24" FontWeight="Bold"/>
+    <TextBlock Text="إدخال سريع. Enter ينتقل للحقل التالي، وEnter الأخير يحفظ." Foreground="{StaticResource Muted}" TextWrapping="Wrap" Margin="0,5,0,20"/>
+    <TextBlock Text="الشخص" FontWeight="SemiBold" Margin="0,0,0,6"/>
+    <ComboBox x:Name="PersonBox" KeyDown="PersonBox_KeyDown" ItemsSource="{Binding People}" SelectedValue="{Binding SelectedPersonId}" SelectedValuePath="Person.Id" DisplayMemberPath="Person.Name"/>
+    <TextBlock Text="نوع العملية" FontWeight="SemiBold" Margin="0,14,0,6"/>
+    <ComboBox x:Name="TypeBox" KeyDown="TypeBox_KeyDown" ItemsSource="{Binding Types}" SelectedItem="{Binding SelectedType}"/>
+    <TextBlock Text="المبلغ" FontWeight="SemiBold" Margin="0,14,0,6"/>
+    <TextBox x:Name="AmountBox" KeyDown="AmountBox_KeyDown" Text="{Binding AmountText, UpdateSourceTrigger=PropertyChanged}" HorizontalContentAlignment="Right"/>
+    <TextBlock Text="التاريخ والوقت" FontWeight="SemiBold" Margin="0,14,0,6"/>
+    <TextBox x:Name="DateBox" KeyDown="DateBox_KeyDown" Text="{Binding DateText}" IsReadOnly="True" Background="#F2F4F7"/>
+    <TextBlock Text="ملاحظة" FontWeight="SemiBold" Margin="0,14,0,6"/>
+    <TextBox x:Name="NoteBox" KeyDown="NoteBox_KeyDown" Text="{Binding Note, UpdateSourceTrigger=PropertyChanged}" Height="70" AcceptsReturn="True" VerticalContentAlignment="Top" Padding="10"/>
+    <Button x:Name="SaveButton" Content="حفظ العملية   Enter" Command="{Binding SaveCommand}" Style="{StaticResource PrimaryButton}" Margin="0,18,0,0"/>
+    <TextBlock Text="اختصار: Ctrl+N يبدأ عملية جديدة" Foreground="{StaticResource Muted}" FontSize="11" HorizontalAlignment="Center" Margin="0,12,0,0"/>
+   </StackPanel>
+  </Border>
+  </ScrollViewer>
+  <Grid Grid.Column="1" Margin="24,0,0,0">
+   <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
+   <Grid Margin="0,0,0,18">
+    <StackPanel><TextBlock Text="آخر العمليات" FontSize="22" FontWeight="Bold"/><TextBlock Text="آخر 100 عملية — الأحدث أولًا" Foreground="{StaticResource Muted}" Margin="0,4,0,0"/></StackPanel>
+    <TextBlock Text="Ctrl+N" HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="{StaticResource Muted}"/>
+   </Grid>
+   <DataGrid Grid.Row="1" ItemsSource="{Binding Operations}" IsReadOnly="True" EnableRowVirtualization="True" EnableColumnVirtualization="True" VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling">
+    <DataGrid.Columns>
+     <DataGridTextColumn Header="التاريخ" Binding="{Binding OccurredAt, StringFormat=dddd • dd/MM • hh:mm tt}" Width="2*"/>
+     <DataGridTextColumn Header="النوع" Binding="{Binding Type}" Width="*"/>
+     <DataGridTextColumn Header="المبلغ" Binding="{Binding Amount, StringFormat=N2}" Width="1.2*">
+       <DataGridTextColumn.ElementStyle>
+         <Style TargetType="TextBlock">
+           <Setter Property="HorizontalAlignment" Value="Right"/>
+           <Setter Property="FontWeight" Value="SemiBold"/>
+           <Setter Property="FlowDirection" Value="LeftToRight"/>
+           <Setter Property="Padding" Value="0,0,10,0"/>
+         </Style>
+       </DataGridTextColumn.ElementStyle>
+     </DataGridTextColumn>
+     <DataGridTextColumn Header="ملاحظة" Binding="{Binding Note}" Width="2*"/>
+    </DataGrid.Columns>
+   </DataGrid>
+  </Grid>
+ </Grid>
+</UserControl>
+
+
+
+## END_OF_FILE: \Views\Pages\OperationsPage.xaml
+
+################################################################################
+## FILE [28/29]: \Views\Pages\SettingsPage.xaml
+## LINES: 23 | EXTENSION: .xaml
+################################################################################
+<UserControl FlowDirection="RightToLeft" x:Class="SmartLedger.App.Views.Pages.SettingsPage"
+ xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+ <ScrollViewer VerticalScrollBarVisibility="Auto">
+  <StackPanel>
+   <TextBlock Text="الإعدادات" FontSize="28" FontWeight="Bold"/>
+   <TextBlock Text="إعدادات التشغيل والأمان والنسخ الاحتياطي." Foreground="{StaticResource Muted}" Margin="0,6,0,24"/>
+   <Border Background="#FAFBFC" BorderBrush="{StaticResource Border}" BorderThickness="1" CornerRadius="12" Padding="20">
+    <StackPanel>
+     <TextBlock Text="النسخ الاحتياطي" FontSize="20" FontWeight="SemiBold"/>
+     <TextBlock Text="يفضل حفظ النسخ على قرص مختلف عن قرص النظام لحماية البيانات عند تعطل القرص الرئيسي." Foreground="{StaticResource Muted}" TextWrapping="Wrap" Margin="0,6,0,16"/>
+     <Grid>
+      <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+      <TextBox Text="{Binding Backup.Destination, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True" Height="42"/>
+      <Button Grid.Column="1" Content="اختيار مجلد" Command="{Binding Backup.ChooseCommand}" Margin="10,0,0,0"/>
+     </Grid>
+     <TextBlock Text="{Binding Backup.Status}" Foreground="{StaticResource Muted}" TextWrapping="Wrap" Margin="0,12,0,0"/>
+     <Button Content="إنشاء نسخة احتياطية الآن" Command="{Binding Backup.CreateCommand}" Style="{StaticResource PrimaryButton}" Width="190" HorizontalAlignment="Right" Margin="0,16,0,0"/>
+    </StackPanel>
+   </Border>
+  </StackPanel>
+ </ScrollViewer>
+</UserControl>
+
+
+
+## END_OF_FILE: \Views\Pages\SettingsPage.xaml
+
+################################################################################
+## FILE [29/29]: \Views\Pages\SimplePage.xaml
+## LINES: 4 | EXTENSION: .xaml
+################################################################################
+<UserControl FlowDirection="RightToLeft" x:Class="SmartLedger.App.Views.Pages.SimplePage" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+ <StackPanel><TextBlock Text="{Binding Title}" FontSize="28" FontWeight="Bold"/><TextBlock Text="{Binding Description}" Foreground="{StaticResource Muted}" Margin="0,6,0,24"/><Border Background="#FAFBFC" CornerRadius="12" Padding="20"><TextBlock Text="هذه الوحدة موضوعة في البنية النهائية وقابلة لإكمال وظائفها دون تغيير هيكل التطبيق." Foreground="{StaticResource Muted}"/></Border></StackPanel>
+</UserControl>
+
+
+
+## END_OF_FILE: \Views\Pages\SimplePage.xaml
+
+================================================================================
+                    نهاية حزمة الأكواد الكاملة                    
+================================================================================

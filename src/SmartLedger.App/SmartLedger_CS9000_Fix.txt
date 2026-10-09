@@ -1,0 +1,37 @@
+﻿================================================================================
+             تقرير معالجة خطأ السلاسل النصية الخام CS9000 وإعادة البناء        
+             التاريخ: 2026-10-01 01:09:48                 
+================================================================================
+
+[1] فحص محتوى الأسطر حول السطر 50:
+  41:     public async Task<IReadOnlyList<PersonSummary>> GetPeopleAsync(Guid? bookId = null, string? search = null, CancellationToken ct = default)
+  42:     {
+  43:         var result = new List<PersonSummary>(); await using var db=database.Open(); await db.OpenAsync(ct); await using var cmd=db.CreateCommand();
+  44:         cmd.CommandText = """
+  45:         SELECT p.Id,p.BookId,p.Name,p.Phone,p.Note,p.CreatedAt,b.Name,
+  46:         COALESCE(SUM(CASE WHEN o.Type=2 THEN CAST(o.Amount AS REAL) WHEN o.Type IN (0,4) THEN -CAST(o.Amount AS REAL) ELSE 0 END),0),
+  47:         COALESCE(SUM(CASE WHEN o.Type IN (1,3) THEN CAST(o.Amount AS REAL) WHEN o.Type=5 THEN -CAST(o.Amount AS REAL) ELSE 0 END),0), MAX(o.OccurredAt)
+  48:         FROM People p JOIN Books b ON b.Id=p.BookId LEFT JOIN Operations o ON o.PersonId=p.Id
+  49:         WHERE ($book IS NULL OR p.BookId=$book OR EXISTS(SELECT 1 FROM Books ab WHERE ab.Id=$book AND ab.Kind=0)) AND ($search='' OR p.Name LIKE '%'||$search||'%' OR p.Phone LIKE '%'||$search||'%')
+  50:         GROUP BY p.Id ORDER BY p.Name;""";
+  51:         cmd.Parameters.AddWithValue("$book", bookId?.ToString("N") ?? (object)DBNull.Value); cmd.Parameters.AddWithValue("$search", search?.Trim() ?? "");
+  52:         await using var r=await cmd.ExecuteReaderAsync(ct); while(await r.ReadAsync(ct)) result.Add(new PersonSummary(new Person(Guid.Parse(r.GetString(0)),Guid.Parse(r.GetString(1)),r.GetString(2),r.GetString(3),r.GetString(4),DateTimeOffset.Parse(r.GetString(5))),r.GetString(6),r.GetDecimal(7),r.GetDecimal(8),r.IsDBNull(9)?null:DateTimeOffset.Parse(r.GetString(9)))); return result;
+  53:     }
+  54: 
+  55:     public async Task<Person> CreatePersonAsync(Guid bookId,string name,string phone,string note,CancellationToken ct=default)
+  56:     { var p=new Person(Guid.NewGuid(),bookId,name.Trim(),phone.Trim(),note.Trim(),DateTimeOffset.UtcNow); await using var db=database.Open(); await db.OpenAsync(ct); await using var cmd=db.CreateCommand(); cmd.CommandText="INSERT INTO People VALUES($id,$book,$name,$phone,$note,$created);"; Add(cmd,("$id",p.Id.ToString("N")),("$book",p.BookId.ToString("N")),("$name",p.Name),("$phone",p.Phone),("$note",p.Note),("$created",p.CreatedAt.ToString("O"))); await cmd.ExecuteNonQueryAsync(ct); return p; }
+  57: 
+  58:     public async Task<DashboardSummary> GetDashboardAsync(CancellationToken ct=default)
+  59:     { var people=await GetPeopleAsync(null,null,ct); decimal ours=people.Sum(x=>x.OwedToUs), theirs=people.Sum(x=>x.WeOwe); await using var db=database.Open(); await db.OpenAsync(ct); await using var cmd=db.CreateCommand(); cmd.CommandText="SELECT COUNT(*) FROM Operations WHERE date(OccurredAt)=date('now','localtime');"; var today=Convert.ToInt32(await cmd.ExecuteScalarAsync(ct)); cmd.CommandText="SELECT COALESCE(SUM(CAST(StockSmallUnits AS REAL)*CAST(SalePrice AS REAL)),0) FROM Products;"; var stock=Convert.ToDecimal(await cmd.ExecuteScalarAsync(ct)); return new DashboardSummary(ours,theirs,stock,today); }
+  60: 
+  61:     public async Task<IReadOnlyList<LedgerOperation>> GetOperationsAsync(Guid? personId=null,int take=100,CancellationToken ct=default)
+
+[✓ تم] تطبيق الإصلاح النحوي لعلامات Raw String Literal.
+
+--------------------------------------------------------------------------------
+[2] جاري إعادة البناء والتأكد...
+  [✗ نتيجة البناء الحالية]:
+    C:\Users\pc\Desktop\mnt\data\SmartLedger\src\SmartLedger.Infrastructure\Data\AppRepository.cs(46,1): error CS8999: Line does not start with the same whitespace as the closing line of the raw string literal. [C:\Users\pc\Desktop\mnt\data\SmartLedger\src\SmartLedger.Infrastructure\SmartLedger.Infrastructure.csproj]
+    C:\Users\pc\Desktop\mnt\data\SmartLedger\src\SmartLedger.Infrastructure\Data\AppRepository.cs(46,1): error CS8999: Line does not start with the same whitespace as the closing line of the raw string literal. [C:\Users\pc\Desktop\mnt\data\SmartLedger\src\SmartLedger.Infrastructure\SmartLedger.Infrastructure.csproj]
+
+================================================================================

@@ -1,0 +1,25 @@
+﻿================================================================================
+         تقرير اختبار البناء والتجميع (Build Verification) وتدفق الإدخال       
+         التاريخ: 2026-10-01 01:06:20                     
+================================================================================
+
+[1] فحص كود سرعة الإدخال (OperationsPage.xaml.cs):
+  - حدث NoteBox_KeyDown موجود.
+  - [✓ ممتاز] التركيز التلقائي التفاعلي مفعل عند فتح الصفحة.
+
+--------------------------------------------------------------------------------
+[2] نتائج التجميع البرمجي (dotnet build):
+جاري البناء...
+  [✗ خطأ] حدثت أخطاء أثناء البناء:
+    C:\Program Files\dotnet\sdk\8.0.425\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.TargetFrameworkInference.targets(166,5): error NETSDK1045: The current .NET SDK does not support targeting .NET 10.0.  Either target .NET 8.0 or lower, or use a version of the .NET SDK that supports .NET 10.0. Download the .NET SDK from https://aka.ms/dotnet/download [C:\Users\pc\Desktop\mnt\data\SmartLedger\src\SmartLedger.Core\SmartLedger.Core.csproj]
+    C:\Program Files\dotnet\sdk\8.0.425\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.TargetFrameworkInference.targets(166,5): error NETSDK1045: The current .NET SDK does not support targeting .NET 10.0.  Either target .NET 8.0 or lower, or use a version of the .NET SDK that supports .NET 10.0. Download the .NET SDK from https://aka.ms/dotnet/download [C:\Users\pc\Desktop\mnt\data\SmartLedger\src\SmartLedger.Infrastructure\SmartLedger.Infrastructure.csproj]
+    C:\Program Files\dotnet\sdk\8.0.425\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.TargetFrameworkInference.targets(166,5): error NETSDK1045: The current .NET SDK does not support targeting .NET 10.0.  Either target .NET 8.0 or lower, or use a version of the .NET SDK that supports .NET 10.0. Download the .NET SDK from https://aka.ms/dotnet/download [C:\Users\pc\Desktop\mnt\data\SmartLedger\src\SmartLedger.App\SmartLedger.App.csproj]
+    C:\Program Files\dotnet\sdk\8.0.425\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.TargetFrameworkInference.targets(166,5): error NETSDK1045: The current .NET SDK does not support targeting .NET 10.0.  Either target .NET 8.0 or lower, or use a version of the .NET SDK that supports .NET 10.0. Download the .NET SDK from https://aka.ms/dotnet/download [C:\Users\pc\Desktop\mnt\data\SmartLedger\src\SmartLedger.Core\SmartLedger.Core.csproj]
+    C:\Program Files\dotnet\sdk\8.0.425\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.TargetFrameworkInference.targets(166,5): error NETSDK1045: The current .NET SDK does not support targeting .NET 10.0.  Either target .NET 8.0 or lower, or use a version of the .NET SDK that supports .NET 10.0. Download the .NET SDK from https://aka.ms/dotnet/download [C:\Users\pc\Desktop\mnt\data\SmartLedger\src\SmartLedger.Infrastructure\SmartLedger.Infrastructure.csproj]
+    C:\Program Files\dotnet\sdk\8.0.425\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.TargetFrameworkInference.targets(166,5): error NETSDK1045: The current .NET SDK does not support targeting .NET 10.0.  Either target .NET 8.0 or lower, or use a version of the .NET SDK that supports .NET 10.0. Download the .NET SDK from https://aka.ms/dotnet/download [C:\Users\pc\Desktop\mnt\data\SmartLedger\src\SmartLedger.App\SmartLedger.App.csproj]
+
+  - إجمالي التحذيرات (Warnings): 0
+
+================================================================================
+نهاية تقرير التجميع. الصق المحتوى هنا للتحليل النهائي.
+================================================================================

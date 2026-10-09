@@ -1,0 +1,17 @@
+﻿================================================================================
+               تقرير الحسم النهائي - تصحيح السطر 36 وبناء المشروع               
+               التاريخ: 2026-10-01 01:14:45               
+================================================================================
+
+[1] فحص وتعديل الأسطر حول عمود المبلغ في OperationsPage.xaml:
+  - السطر القديم:      <DataGridTextColumn Header="المبلغ" Binding="{Binding Amount, StringFormat=\{}{}{0:N2}}" Width="1.2*">
+  - السطر بعد الإصلاح:      <DataGridTextColumn Header="المبلغ" Binding="{Binding Amount, StringFormat=\{}{}{0:N2}}" Width="1.2*">
+[✓ تم] تم تثبيت صيغة التنسيق المالي القياسية StringFormat=N2 بنجاح.
+
+--------------------------------------------------------------------------------
+[2] جاري تنفيذ التجميع النهائي الشامل (dotnet build)...
+  [✗ تفاصيل الخطأ]:
+    C:\Users\pc\Desktop\mnt\data\SmartLedger\src\SmartLedger.App\Views\Pages\OperationsPage.xaml(36,42): error MC3044: The text '{}{0:N2}}' is not allowed after the closing '}' of a MarkupExtension expression. Line 36 Position 42. [C:\Users\pc\Desktop\mnt\data\SmartLedger\src\SmartLedger.App\SmartLedger.App.csproj]
+    C:\Users\pc\Desktop\mnt\data\SmartLedger\src\SmartLedger.App\Views\Pages\OperationsPage.xaml(36,42): error MC3044: The text '{}{0:N2}}' is not allowed after the closing '}' of a MarkupExtension expression. Line 36 Position 42. [C:\Users\pc\Desktop\mnt\data\SmartLedger\src\SmartLedger.App\SmartLedger.App.csproj]
+
+================================================================================

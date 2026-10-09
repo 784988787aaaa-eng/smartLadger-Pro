@@ -1,0 +1,971 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:vm="clr-namespace:SmartLedger.App.ViewModels" xmlns:behaviors="clr-namespace:SmartLedger.App.Behaviors" xmlns:local="clr-namespace:SmartLedger.App.Converters" xmlns:core="clr-namespace:SmartLedger.Core.Models;assembly=SmartLedger.Core">
+  <local:PrivacyMoneyConverter x:Key="PrivacyMoneyConverter"/>
+  <local:NetBalanceAmountConverter x:Key="NetBalanceAmountConverter"/>
+  <local:NetBalanceStatusConverter x:Key="NetBalanceStatusConverter"/>
+  <local:NetBalanceDirectionConverter x:Key="NetBalanceDirectionConverter"/>
+  <local:StringEmptyToVisibilityConverter x:Key="StringEmptyToVisibilityConverter"/>
+  <local:BookSelectionConverter x:Key="BookSelectionConverter"/>
+  <local:NetBalanceBrushConverter x:Key="NetBalanceBrushConverter"/>
+  <local:RecentOperationLabelConverter x:Key="RecentOperationLabelConverter"/>
+  <local:RecentOperationBrushConverter x:Key="RecentOperationBrushConverter"/>
+  <local:RecentOperationAmountConverter x:Key="RecentOperationAmountConverter"/>
+  <local:NegativeAmountBrushConverter x:Key="NegativeAmountBrushConverter"/>
+  <BooleanToVisibilityConverter x:Key="BoolToVisibility"/>
+  <Style x:Key="DarkContextMenu" TargetType="ContextMenu">
+    <Setter Property="Background" Value="#0B162C"/>
+    <Setter Property="BorderBrush" Value="#2A4B72"/>
+    <Setter Property="BorderThickness" Value="1"/>
+    <Setter Property="Padding" Value="4"/>
+    <Setter Property="SnapsToDevicePixels" Value="True"/>
+  </Style>
+  <Style x:Key="DarkMenuItem" TargetType="MenuItem">
+    <Setter Property="Foreground" Value="#EAF4FF"/>
+    <Setter Property="Background" Value="Transparent"/>
+    <Setter Property="FontSize" Value="12"/>
+    <Setter Property="Padding" Value="12,8"/>
+    <Setter Property="HorizontalContentAlignment" Value="Right"/>
+    <Style.Triggers>
+      <Trigger Property="IsHighlighted" Value="True">
+        <Setter Property="Background" Value="#163457"/>
+        <Setter Property="Foreground" Value="#FFFFFF"/>
+      </Trigger>
+    </Style.Triggers>
+  </Style>
+  <Style x:Key="SegmentedChoice" TargetType="RadioButton">
+    <Setter Property="Foreground" Value="#AFC4DE"/>
+    <Setter Property="FontSize" Value="13"/>
+    <Setter Property="FontWeight" Value="SemiBold"/>
+    <Setter Property="Background" Value="#0B162C"/>
+    <Setter Property="BorderBrush" Value="#263E61"/>
+    <Setter Property="BorderThickness" Value="1"/>
+    <Setter Property="Height" Value="42"/>
+    <Setter Property="Margin" Value="2,0"/>
+    <Setter Property="HorizontalContentAlignment" Value="Center"/>
+    <Setter Property="VerticalContentAlignment" Value="Center"/>
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="RadioButton">
+          <Border x:Name="Chrome" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="9" Padding="12,0">
+            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+          </Border>
+          <ControlTemplate.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+              <Setter TargetName="Chrome" Property="BorderBrush" Value="#3A6088"/>
+            </Trigger>
+            <Trigger Property="IsEnabled" Value="False">
+              <Setter TargetName="Chrome" Property="Opacity" Value="0.45"/>
+            </Trigger>
+          </ControlTemplate.Triggers>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+    <Style.Triggers>
+      <Trigger Property="IsChecked" Value="True">
+        <Setter Property="Background" Value="#153457"/>
+        <Setter Property="BorderBrush" Value="#4D86B5"/>
+        <Setter Property="Foreground" Value="#EAF4FF"/>
+      </Trigger>
+    </Style.Triggers>
+  </Style>
+  <Style x:Key="OpeningForUsChoice" TargetType="RadioButton" BasedOn="{StaticResource SegmentedChoice}"><Style.Triggers><Trigger Property="IsChecked" Value="True"><Setter Property="Background" Value="#12352C"/><Setter Property="BorderBrush" Value="#10B981"/><Setter Property="Foreground" Value="#D1FAE5"/></Trigger></Style.Triggers></Style>
+  <Style x:Key="OpeningAgainstUsChoice" TargetType="RadioButton" BasedOn="{StaticResource SegmentedChoice}"><Style.Triggers><Trigger Property="IsChecked" Value="True"><Setter Property="Background" Value="#3A1B20"/><Setter Property="BorderBrush" Value="#EF4444"/><Setter Property="Foreground" Value="#FEE2E2"/></Trigger></Style.Triggers></Style>
+  <Style x:Key="MovementReceiveChoice" TargetType="RadioButton" BasedOn="{StaticResource SegmentedChoice}"><Style.Triggers><Trigger Property="IsChecked" Value="True"><Setter Property="Background" Value="#12352C"/><Setter Property="BorderBrush" Value="#10B981"/><Setter Property="Foreground" Value="#D1FAE5"/></Trigger></Style.Triggers></Style>
+  <Style x:Key="MovementSaleChoice" TargetType="RadioButton" BasedOn="{StaticResource SegmentedChoice}"><Style.Triggers><Trigger Property="IsChecked" Value="True"><Setter Property="Background" Value="#103343"/><Setter Property="BorderBrush" Value="#06B6D4"/><Setter Property="Foreground" Value="#CFFAFE"/></Trigger></Style.Triggers></Style>
+  <Style x:Key="MovementPaymentChoice" TargetType="RadioButton" BasedOn="{StaticResource SegmentedChoice}"><Style.Triggers><Trigger Property="IsChecked" Value="True"><Setter Property="Background" Value="#3A2818"/><Setter Property="BorderBrush" Value="#F59E0B"/><Setter Property="Foreground" Value="#FEF3C7"/></Trigger></Style.Triggers></Style>
+  <Style x:Key="MovementPurchaseChoice" TargetType="RadioButton" BasedOn="{StaticResource SegmentedChoice}"><Style.Triggers><Trigger Property="IsChecked" Value="True"><Setter Property="Background" Value="#122D4A"/><Setter Property="BorderBrush" Value="#3B82F6"/><Setter Property="Foreground" Value="#DBEAFE"/></Trigger></Style.Triggers></Style>
+  <local:LatinNumberConverter x:Key="LatinNumberConverter"/>
+  <local:SerialNumberConverter x:Key="SerialNumberConverter"/>
+  <local:ArabicDateTimeConverter x:Key="ArabicDateTimeConverter"/>
+  <local:AuditDisplayConverter x:Key="AuditDisplayConverter"/>
+  <local:InverseBooleanToVisibilityConverter x:Key="InverseBoolToVisibility"/>
+  <DataTemplate DataType="{x:Type vm:DashboardViewModel}">
+    <Grid FlowDirection="RightToLeft">
+      <Grid.RowDefinitions>
+        <RowDefinition Height="130"/>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="*"/>
+      </Grid.RowDefinitions>
+
+      <Grid Grid.Row="0" Margin="0,0,0,16">
+        <Grid.ColumnDefinitions><ColumnDefinition Width="1.35*"/><ColumnDefinition Width="1.1*"/><ColumnDefinition Width="1*"/></Grid.ColumnDefinitions>
+        <Border Grid.Column="0" Background="#0F172A" BorderBrush="#1E293B" BorderThickness="1" CornerRadius="12" Padding="18" Margin="0,0,6,0">
+          <Grid><Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+            <Grid Grid.Row="0"><TextBlock HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,44,0" Text="صافي المركز المالي" TextAlignment="Right" FlowDirection="RightToLeft" FontSize="13" FontWeight="SemiBold" Foreground="{StaticResource BrushMuted}"/><Border Width="34" Height="34" HorizontalAlignment="Left" Background="#16263D" CornerRadius="17"><TextBlock Text="◆" Foreground="{StaticResource BrushAccent2}" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="13"/></Border></Grid>
+            <TextBlock Grid.Row="1" Text="{Binding Summary.NetBalance,Converter={StaticResource PrivacyMoneyConverter}}" TextAlignment="Right" HorizontalAlignment="Stretch" FontSize="25" FontWeight="Bold" Margin="0,10,0,12" Foreground="{Binding Summary.NetBalance,Converter={StaticResource NetBalanceBrushConverter}}" FlowDirection="LeftToRight"/>
+            <Grid Grid.Row="2"><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions><Border Grid.Column="0" Background="#101F1D" BorderBrush="#1A4038" BorderThickness="1" CornerRadius="8" Padding="10,6" Margin="0,0,4,0"><StackPanel Orientation="Horizontal"><TextBlock Text="لنا" Foreground="#10B981" FontWeight="SemiBold"/><TextBlock Text="  "/><TextBlock Text="{Binding Summary.OwedToUs,Converter={StaticResource PrivacyMoneyConverter}}" Foreground="#10B981" FlowDirection="LeftToRight"/></StackPanel></Border><Border Grid.Column="1" Background="#241719" BorderBrush="#4A2529" BorderThickness="1" CornerRadius="8" Padding="10,6" Margin="4,0,0,0"><StackPanel Orientation="Horizontal"><TextBlock Text="علينا" Foreground="#EF4444" FontWeight="SemiBold"/><TextBlock Text="  "/><TextBlock Text="{Binding Summary.WeOwe,Converter={StaticResource PrivacyMoneyConverter}}" Foreground="#EF4444" FlowDirection="LeftToRight"/></StackPanel></Border></Grid>
+          </Grid>
+        </Border>
+        <Border Grid.Column="1" Background="#0F172A" BorderBrush="#1E293B" BorderThickness="1" CornerRadius="12" Padding="18" Margin="6,0">
+          <Grid><Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+            <Grid Grid.Row="0"><TextBlock HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,44,0" Text="نشاط اليوم" TextAlignment="Right" FlowDirection="RightToLeft" FontSize="13" FontWeight="SemiBold" Foreground="{StaticResource BrushMuted}"/><Border Width="34" Height="34" HorizontalAlignment="Left" Background="#16263D" CornerRadius="17"><TextBlock Text="↗" Foreground="{StaticResource BrushAccent2}" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="17" FontWeight="Bold"/></Border></Grid>
+            <TextBlock Grid.Row="1" Text="{Binding Summary.SalesToday,Converter={StaticResource PrivacyMoneyConverter}}" TextAlignment="Right" HorizontalAlignment="Stretch" FontSize="25" FontWeight="Bold" Margin="0,10,0,12" Foreground="{StaticResource BrushAccent2}" FlowDirection="LeftToRight"/>
+            <Grid Grid.Row="2"><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions><Border Grid.Column="0" Background="#241719" BorderBrush="#4A2529" BorderThickness="1" CornerRadius="8" Padding="10,6" Margin="0,0,4,0"><StackPanel Orientation="Horizontal"><TextBlock Text="مصروفات" Foreground="#EF4444" FontSize="11"/><TextBlock Text="  "/><TextBlock Text="{Binding Summary.ExpensesToday,Converter={StaticResource PrivacyMoneyConverter}}" Foreground="#EF4444" FontSize="11" FlowDirection="LeftToRight"/></StackPanel></Border><Border Grid.Column="1" Background="#121D2D" BorderBrush="#22354F" BorderThickness="1" CornerRadius="8" Padding="10,6" Margin="4,0,0,0"><StackPanel Orientation="Horizontal"><TextBlock Text="حركات" Foreground="{StaticResource BrushMuted}" FontSize="11"/><TextBlock Text="  "/><TextBlock Text="{Binding Summary.OperationsToday}" Foreground="White" FontSize="12"/></StackPanel></Border></Grid>
+          </Grid>
+        </Border>
+        <Border Grid.Column="2" Background="#0F172A" BorderBrush="#1E293B" BorderThickness="1" CornerRadius="12" Padding="18" Margin="6,0,0,0">
+          <Grid><Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions><Grid Grid.Row="0"><TextBlock HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,44,0" Text="قيمة بضاعة المخزون" TextAlignment="Right" FlowDirection="RightToLeft" FontSize="13" FontWeight="SemiBold" Foreground="{StaticResource BrushMuted}"/><Border Width="34" Height="34" HorizontalAlignment="Left" Background="#16263D" CornerRadius="17"><TextBlock Text="▦" Foreground="{StaticResource BrushAccent2}" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="16"/></Border></Grid><TextBlock Grid.Row="1" Text="{Binding Summary.StockValue,Converter={StaticResource PrivacyMoneyConverter}}" TextAlignment="Right" HorizontalAlignment="Stretch" FontSize="25" FontWeight="Bold" Margin="0,10,0,3" Foreground="{StaticResource BrushAccent2}" FlowDirection="LeftToRight"/><Grid Grid.Row="2" Margin="0,8,0,0"><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions><TextBlock HorizontalAlignment="Stretch" Text="الأصول التشغيلية الحالية" TextAlignment="Right" FlowDirection="RightToLeft" FontSize="11" Foreground="{StaticResource BrushMuted}" VerticalAlignment="Bottom"/><Border Grid.Column="1" Background="#11263A" CornerRadius="7" Padding="8,5"><TextBlock Text="المخزون" FontSize="10" Foreground="{StaticResource BrushAccent2}"/></Border></Grid></Grid>
+        </Border>
+      </Grid>
+
+      <Border Grid.Row="1" Background="#0F172A" BorderBrush="#1E293B" BorderThickness="1" CornerRadius="12" Padding="14" Margin="0,0,0,16">
+        <StackPanel><TextBlock HorizontalAlignment="Right" Text="الإجراءات السريعة" TextAlignment="Right" FlowDirection="RightToLeft" FontSize="15" FontWeight="Bold" Margin="0,0,0,10"/><ItemsControl ItemsSource="{Binding DataContext.QuickActions, RelativeSource={RelativeSource AncestorType={x:Type Window}}}" FlowDirection="RightToLeft"><ItemsControl.ItemsPanel><ItemsPanelTemplate><UniformGrid Columns="4"/></ItemsPanelTemplate></ItemsControl.ItemsPanel><ItemsControl.ItemTemplate><DataTemplate><Button Command="{Binding Command}" ToolTip="{Binding Label}"><Button.Style><Style TargetType="Button" BasedOn="{StaticResource GhostButton}"><Setter Property="Height" Value="58"/><Setter Property="Margin" Value="4"/><Setter Property="Padding" Value="14,8"/></Style></Button.Style><Grid FlowDirection="RightToLeft"><Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions><TextBlock Grid.Column="0" Text="{Binding Label}" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center"/><Border Grid.Column="1" Width="32" Height="24" CornerRadius="4" Background="#0B1220" BorderBrush="#26364D" BorderThickness="1" VerticalAlignment="Center"><TextBlock Text="{Binding Shortcut}" Foreground="#CBD5E1" FontSize="10" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" FlowDirection="LeftToRight"/></Border></Grid></Button></DataTemplate></ItemsControl.ItemTemplate></ItemsControl></StackPanel>
+      </Border>
+
+      <Grid Grid.Row="2" Margin="0,0,0,12">
+        <Grid.ColumnDefinitions><ColumnDefinition Width="1.8*"/><ColumnDefinition Width="0"/></Grid.ColumnDefinitions>
+        <Border Grid.Column="0" Background="#0F172A" BorderBrush="#1E293B" BorderThickness="1" CornerRadius="12" Padding="14" Margin="0">
+          <Grid>
+            <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="48"/></Grid.RowDefinitions>
+            <StackPanel Grid.Row="0" Margin="0,0,0,10" HorizontalAlignment="Stretch">
+              <TextBlock HorizontalAlignment="Right" Text="أحدث العمليات" TextAlignment="Right" FlowDirection="RightToLeft" FontSize="15" FontWeight="Bold"/>
+              <TextBlock HorizontalAlignment="Right" Text="آخر الحركات المسجلة في الدفتر" TextAlignment="Right" FlowDirection="RightToLeft" FontSize="11" Foreground="{StaticResource BrushMuted}" Margin="0,3,0,0"/>
+            </StackPanel>
+            <Border Grid.Row="1" BorderBrush="#1E293B" BorderThickness="1" CornerRadius="12">
+              <DataGrid FlowDirection="RightToLeft" ItemsSource="{Binding Recent}" IsReadOnly="True" AutoGenerateColumns="False" HeadersVisibility="Column" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto" RowHeight="48" AlternationCount="1000000" BorderThickness="0">
+                <DataGrid.Columns>
+                  <DataGridTemplateColumn Header="م" Width="48" MinWidth="48" CanUserResize="False"><DataGridTemplateColumn.CellTemplate><DataTemplate><TextBlock Text="{Binding RelativeSource={RelativeSource AncestorType={x:Type DataGridRow}},Path=AlternationIndex,Converter={StaticResource SerialNumberConverter}}" HorizontalAlignment="Center" VerticalAlignment="Center" TextAlignment="Center" FontSize="11.5" Foreground="{StaticResource BrushMuted}" FlowDirection="LeftToRight"/></DataTemplate></DataGridTemplateColumn.CellTemplate></DataGridTemplateColumn>
+                  <DataGridTextColumn Header="الحساب" Binding="{Binding PersonName}" Width="1.15*" ElementStyle="{StaticResource TableTextCell}"/>
+                  <DataGridTemplateColumn Header="المبلغ" Width="140"><DataGridTemplateColumn.CellTemplate><DataTemplate><TextBlock Text="{Binding Amount,Converter={StaticResource RecentOperationAmountConverter}}" Foreground="{Binding Type,Converter={StaticResource RecentOperationBrushConverter}}" FontWeight="SemiBold" HorizontalAlignment="Center" TextAlignment="Center" FlowDirection="LeftToRight"/></DataTemplate></DataGridTemplateColumn.CellTemplate></DataGridTemplateColumn>
+                  <DataGridTemplateColumn Header="نوع الحركة" Width="105"><DataGridTemplateColumn.CellTemplate><DataTemplate><TextBlock Text="{Binding Type,Converter={StaticResource RecentOperationLabelConverter}}" Foreground="{Binding Type,Converter={StaticResource RecentOperationBrushConverter}}" FontWeight="SemiBold" HorizontalAlignment="Center" TextAlignment="Center"/></DataTemplate></DataGridTemplateColumn.CellTemplate></DataGridTemplateColumn>
+                  <DataGridTextColumn Header="البيان / التفاصيل" Binding="{Binding Note}" Width="1.45*" ElementStyle="{StaticResource TableTextCell}"/>
+                  <DataGridTemplateColumn Header="التاريخ والوقت" Width="178"><DataGridTemplateColumn.CellTemplate><DataTemplate><TextBlock Text="{Binding Date,Converter={StaticResource ArabicDateTimeConverter}}" HorizontalAlignment="Center" TextAlignment="Center" FlowDirection="LeftToRight" Foreground="{StaticResource BrushMuted}" FontSize="12.5"/></DataTemplate></DataGridTemplateColumn.CellTemplate></DataGridTemplateColumn>
+                </DataGrid.Columns>
+              </DataGrid>
+            </Border>
+            <Border Grid.Row="2" Background="#0B132B" BorderBrush="#1E293B" BorderThickness="1,0,1,0" Padding="10,0">
+              <Grid FlowDirection="RightToLeft">
+                <TextBlock Text="يتم عرض أحدث 10 قيود مسجلة" Foreground="{StaticResource BrushMuted}" FontSize="11" VerticalAlignment="Center"/>
+                <Button Content="الدفاتر والحسابات" Command="{Binding DataContext.NavigateCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}" CommandParameter="{x:Static vm:AppPage.Accounts}" Background="Transparent" Foreground="{StaticResource BrushAccent2}" BorderBrush="#2A4B72" BorderThickness="1" Padding="10,5" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+              </Grid>
+            </Border>
+          </Grid>
+        </Border>
+        <Grid Grid.Column="1" Margin="0" Visibility="Collapsed">
+          <Grid.RowDefinitions><RowDefinition Height="1.25*"/><RowDefinition Height="*"/></Grid.RowDefinitions>
+          <Border Grid.Row="0" Background="#0F172A" BorderBrush="#1E293B" BorderThickness="1" CornerRadius="12" Padding="14" Margin="0,0,0,6">
+            <StackPanel>
+              <Grid Margin="2,0,0,10"><TextBlock HorizontalAlignment="Stretch" Text="النشاط اليومي" TextAlignment="Right" FlowDirection="RightToLeft" FontSize="15" FontWeight="Bold"/><Border Width="30" Height="30" HorizontalAlignment="Left" Background="#16263D" CornerRadius="15"><TextBlock Text="↗" Foreground="{StaticResource BrushAccent2}" HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold"/></Border></Grid>
+              <TextBlock HorizontalAlignment="Stretch" Text="ملخص الحركة المالية اليوم" TextAlignment="Right" FlowDirection="RightToLeft" FontSize="11" Foreground="{StaticResource BrushMuted}" Margin="0,0,0,10"/>
+              <Border Background="#121D2D" BorderBrush="#22354F" BorderThickness="1" CornerRadius="9" Padding="10,8" Margin="0,0,0,6"><Grid><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions><Border Width="26" Height="26" Background="#132A38" CornerRadius="13"><TextBlock Text="↗" Foreground="{StaticResource BrushPositive}" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border><TextBlock Grid.Column="1" HorizontalAlignment="Stretch" Text="مبيعات اليوم" TextAlignment="Right" FlowDirection="RightToLeft" Margin="10,0" VerticalAlignment="Center" Foreground="{StaticResource BrushMuted}" FontSize="12"/><TextBlock Grid.Column="2" Text="{Binding Summary.SalesToday,Converter={StaticResource PrivacyMoneyConverter}}" Foreground="{StaticResource BrushPositive}" FontWeight="SemiBold" FlowDirection="LeftToRight" VerticalAlignment="Center"/></Grid></Border>
+              <Border Background="#121D2D" BorderBrush="#22354F" BorderThickness="1" CornerRadius="9" Padding="10,8" Margin="0,0,0,6"><Grid><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions><Border Width="26" Height="26" Background="#16263D" CornerRadius="13"><TextBlock Text="↙" Foreground="{StaticResource BrushAccent2}" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border><TextBlock Grid.Column="1" HorizontalAlignment="Stretch" Text="مشتريات اليوم" TextAlignment="Right" FlowDirection="RightToLeft" Margin="10,0" VerticalAlignment="Center" Foreground="{StaticResource BrushMuted}" FontSize="12"/><TextBlock Grid.Column="2" Text="{Binding Summary.PurchasesToday,Converter={StaticResource PrivacyMoneyConverter}}" Foreground="{StaticResource BrushAccent2}" FontWeight="SemiBold" FlowDirection="LeftToRight" VerticalAlignment="Center"/></Grid></Border>
+              <Border Background="#121D2D" BorderBrush="#22354F" BorderThickness="1" CornerRadius="9" Padding="10,8" Margin="0,0,0,8"><Grid><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions><Border Width="26" Height="26" Background="#2A1B20" CornerRadius="13"><TextBlock Text="−" Foreground="#EF4444" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="15"/></Border><TextBlock Grid.Column="1" HorizontalAlignment="Stretch" Text="مصروفات اليوم" TextAlignment="Right" FlowDirection="RightToLeft" Margin="10,0" VerticalAlignment="Center" Foreground="{StaticResource BrushMuted}" FontSize="12"/><TextBlock Grid.Column="2" Text="{Binding Summary.ExpensesToday,Converter={StaticResource PrivacyMoneyConverter}}" Foreground="#EF4444" FontWeight="SemiBold" FlowDirection="LeftToRight" VerticalAlignment="Center"/></Grid></Border>
+              <Border Background="#13263A" BorderBrush="#28506B" BorderThickness="1" CornerRadius="10" Padding="10,8"><Grid><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions><StackPanel><TextBlock HorizontalAlignment="Stretch" Text="صافي الحركة التقديرية" TextAlignment="Right" FlowDirection="RightToLeft" Foreground="White" FontSize="12" FontWeight="SemiBold"/><TextBlock HorizontalAlignment="Stretch" Text="بعد المشتريات والمصروفات" TextAlignment="Right" FlowDirection="RightToLeft" Foreground="{StaticResource BrushMuted}" FontSize="10" Margin="0,2,0,0"/></StackPanel><TextBlock Grid.Column="1" Text="{Binding DailyNetEstimate,Converter={StaticResource PrivacyMoneyConverter}}" Foreground="{Binding DailyNetEstimate,Converter={StaticResource NetBalanceBrushConverter}}" FontSize="16" FontWeight="Bold" FlowDirection="LeftToRight" VerticalAlignment="Center"/></Grid></Border>
+            </StackPanel>
+          </Border>
+          <Border Grid.Row="1" Background="#0F172A" BorderBrush="#1E293B" BorderThickness="1" CornerRadius="12" Padding="14" Margin="0,6,0,0">
+            <Grid>
+              <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
+              <Grid Margin="2,0,0,8"><TextBlock HorizontalAlignment="Stretch" Text="مؤشر السيولة السريعة" TextAlignment="Right" FlowDirection="RightToLeft" FontSize="15" FontWeight="Bold"/><Border Width="30" Height="30" HorizontalAlignment="Left" Background="#16263D" CornerRadius="15"><TextBlock Text="▣" Foreground="{StaticResource BrushAccent2}" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border></Grid>
+              <Grid Grid.Row="1"><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions><Border Width="34" Height="34" Background="#10263A" CornerRadius="17"><TextBlock Text="₿" Foreground="{StaticResource BrushAccent2}" HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold"/></Border><StackPanel Grid.Column="1" Margin="10,0" VerticalAlignment="Center"><TextBlock HorizontalAlignment="Stretch" Text="حركة نقدية متوقعة" TextAlignment="Right" FlowDirection="RightToLeft" Foreground="{StaticResource BrushMuted}" FontSize="11"/><TextBlock HorizontalAlignment="Stretch" Text="مبني على نشاط اليوم" TextAlignment="Right" FlowDirection="RightToLeft" Foreground="{StaticResource BrushMuted}" FontSize="10" Margin="0,2,0,0"/></StackPanel><TextBlock Grid.Column="2" Text="{Binding DailyNetEstimate,Converter={StaticResource PrivacyMoneyConverter}}" Foreground="{Binding DailyNetEstimate,Converter={StaticResource NetBalanceBrushConverter}}" FontSize="17" FontWeight="Bold" FlowDirection="LeftToRight" VerticalAlignment="Center"/></Grid>
+            </Grid>
+          </Border>
+        </Grid>
+      </Grid>
+    </Grid>
+  </DataTemplate>  <DataTemplate DataType="{x:Type vm:AccountsViewModel}">
+    <Grid x:Name="RootAccountsPage" KeyboardNavigation.TabNavigation="Local">
+      <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
+      <Grid Style="{StaticResource AppStandardToolbar}" FlowDirection="LeftToRight">
+        <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+        <StackPanel Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Left" FlowDirection="RightToLeft">
+          <Button Content="حذف المحدد" Command="{Binding DeleteSelectedCommand}" Style="{StaticResource DangerButton}" Width="120" Margin="0,0,8,0"/>
+          <Button Content="+ حساب جديد" Command="{Binding OpenAddCommand}" Style="{StaticResource PrimaryButton}" Width="138"/>
+        </StackPanel>
+        <ScrollViewer Grid.Column="1" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled" FlowDirection="RightToLeft" MaxWidth="900">
+          <StackPanel Orientation="Horizontal" FlowDirection="RightToLeft">
+            <RadioButton Content="الكل" Command="{Binding SelectBookKindCommand}" CommandParameter="{x:Static core:BookKind.All}" GroupName="AccountBookFilters" Style="{StaticResource SegmentedChoice}" Width="78" Margin="0,0,5,0">
+              <RadioButton.IsChecked><MultiBinding Mode="OneWay" Converter="{StaticResource BookSelectionConverter}"><Binding ElementName="RootAccountsPage" Path="DataContext.AllBookId"/><Binding Path="SelectedBookId"/></MultiBinding></RadioButton.IsChecked>
+            </RadioButton>
+            <RadioButton Content="العملاء" Command="{Binding SelectBookKindCommand}" CommandParameter="{x:Static core:BookKind.Customers}" GroupName="AccountBookFilters" Style="{StaticResource SegmentedChoice}" Width="88" Margin="0,0,5,0">
+              <RadioButton.IsChecked><MultiBinding Mode="OneWay" Converter="{StaticResource BookSelectionConverter}"><Binding ElementName="RootAccountsPage" Path="DataContext.CustomersBookId"/><Binding Path="SelectedBookId"/></MultiBinding></RadioButton.IsChecked>
+            </RadioButton>
+            <RadioButton Content="الموردون" Command="{Binding SelectBookKindCommand}" CommandParameter="{x:Static core:BookKind.Suppliers}" GroupName="AccountBookFilters" Style="{StaticResource SegmentedChoice}" Width="88" Margin="0,0,5,0">
+              <RadioButton.IsChecked><MultiBinding Mode="OneWay" Converter="{StaticResource BookSelectionConverter}"><Binding ElementName="RootAccountsPage" Path="DataContext.SuppliersBookId"/><Binding Path="SelectedBookId"/></MultiBinding></RadioButton.IsChecked>
+            </RadioButton>
+            <RadioButton Content="العاملون" Command="{Binding SelectBookKindCommand}" CommandParameter="{x:Static core:BookKind.Employees}" GroupName="AccountBookFilters" Style="{StaticResource SegmentedChoice}" Width="88" Margin="0,0,5,0">
+              <RadioButton.IsChecked><MultiBinding Mode="OneWay" Converter="{StaticResource BookSelectionConverter}"><Binding ElementName="RootAccountsPage" Path="DataContext.EmployeesBookId"/><Binding Path="SelectedBookId"/></MultiBinding></RadioButton.IsChecked>
+            </RadioButton>
+            <RadioButton Content="أخرى" Command="{Binding SelectBookKindCommand}" CommandParameter="{x:Static core:BookKind.Other}" GroupName="AccountBookFilters" Style="{StaticResource SegmentedChoice}" Width="70" Margin="0,0,5,0">
+              <RadioButton.IsChecked><MultiBinding Mode="OneWay" Converter="{StaticResource BookSelectionConverter}"><Binding ElementName="RootAccountsPage" Path="DataContext.OtherBookId"/><Binding Path="SelectedBookId"/></MultiBinding></RadioButton.IsChecked>
+            </RadioButton>
+            <Button Content="+" Command="{Binding OpenBookAddCommand}" Style="{StaticResource GhostButton}" Width="40" Height="40" ToolTip="إضافة تصنيف جديد" AutomationProperties.Name="إضافة تصنيف جديد" Margin="0,0,6,0"/>
+            <ItemsControl ItemsSource="{Binding CustomBookGroups}" FlowDirection="RightToLeft">
+              <ItemsControl.ItemsPanel><ItemsPanelTemplate><StackPanel Orientation="Horizontal"/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
+              <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                  <RadioButton Content="{Binding Name}" Tag="{Binding DataContext, RelativeSource={RelativeSource AncestorType=ItemsControl}}" Command="{Binding DataContext.SelectCustomBookCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}" CommandParameter="{Binding}" GroupName="AccountBookFilters" Style="{StaticResource SegmentedChoice}" MinWidth="90" Height="40" Margin="0,0,5,0" ToolTip="النقر يفتح التصنيف — زر الفأرة الأيمن للتعديل أو الحذف">
+                    <RadioButton.ContextMenu>
+                      <ContextMenu FlowDirection="RightToLeft" Style="{StaticResource DarkContextMenu}">
+                        <MenuItem Header="تعديل اسم التصنيف" Style="{StaticResource DarkMenuItem}" Command="{Binding PlacementTarget.Tag.OpenBookEditCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" CommandParameter="{Binding}"/>
+                        <MenuItem Header="حذف التصنيف" Style="{StaticResource DarkMenuItem}" Command="{Binding PlacementTarget.Tag.DeleteBookCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" CommandParameter="{Binding}"/>
+                      </ContextMenu>
+                    </RadioButton.ContextMenu>
+                    <RadioButton.IsChecked><MultiBinding Mode="OneWay" Converter="{StaticResource BookSelectionConverter}"><Binding Path="Id"/><Binding Path="DataContext.SelectedBookId" RelativeSource="{RelativeSource AncestorType=ItemsControl}"/></MultiBinding></RadioButton.IsChecked>
+                  </RadioButton>
+                </DataTemplate>
+              </ItemsControl.ItemTemplate>
+            </ItemsControl>
+          </StackPanel>
+        </ScrollViewer>
+      </Grid>
+      <Border Grid.Row="1" Background="#0F172A" BorderBrush="#1E293B" BorderThickness="1" CornerRadius="10" Padding="8" Margin="0,0,0,8">
+        <Grid FlowDirection="RightToLeft">
+          <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+          <Border Grid.Column="0" Background="#102A25" BorderBrush="#1C5B4A" BorderThickness="1" CornerRadius="8" Padding="12,6" Margin="0,0,6,0">
+            <StackPanel Orientation="Horizontal"><TextBlock Text="إجمالي لنا" Foreground="#A7F3D0" FontSize="11.5" FontWeight="SemiBold"/><TextBlock Text="  " Foreground="{StaticResource BrushMuted}"/><TextBlock Text="{Binding TotalOwedToUs,Converter={StaticResource PrivacyMoneyConverter}}" Foreground="#10B981" FontSize="13" FontWeight="Bold" FlowDirection="LeftToRight"/></StackPanel>
+          </Border>
+          <Border Grid.Column="1" Background="#321B22" BorderBrush="#63313A" BorderThickness="1" CornerRadius="8" Padding="12,6">
+            <StackPanel Orientation="Horizontal"><TextBlock Text="إجمالي علينا" Foreground="#FECACA" FontSize="11.5" FontWeight="SemiBold"/><TextBlock Text="  " Foreground="{StaticResource BrushMuted}"/><TextBlock Text="{Binding TotalWeOwe,Converter={StaticResource PrivacyMoneyConverter}}" Foreground="#EF4444" FontSize="13" FontWeight="Bold" FlowDirection="LeftToRight"/></StackPanel>
+          </Border>
+          <TextBlock Grid.Column="2" Text="ملخص الحسابات المعروضة" Foreground="{StaticResource BrushMuted}" FontSize="11" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="8,0,0,0"/>
+        </Grid>
+      </Border>
+      <Border Grid.Row="2" Style="{StaticResource Card}" Padding="8">
+        <Grid>
+          <Grid.RowDefinitions><RowDefinition Height="*"/><RowDefinition Height="42"/></Grid.RowDefinitions>
+          <DataGrid Grid.Row="0" FlowDirection="RightToLeft" AutoGenerateColumns="False" ItemsSource="{Binding People}" SelectedItem="{Binding SelectedPerson}" IsReadOnly="True" HeadersVisibility="Column" ColumnHeaderHeight="50" RowHeight="60" AlternationCount="100000" EnableRowVirtualization="True" EnableColumnVirtualization="True" HorizontalScrollBarVisibility="Disabled">
+          <DataGrid.InputBindings>
+            <MouseBinding MouseAction="LeftDoubleClick" Command="{Binding OpenAccountCommand}"/>
+          </DataGrid.InputBindings>
+          <DataGrid.Columns>
+            <DataGridTemplateColumn Header="م" Width="60" MinWidth="60" MaxWidth="60" CanUserResize="False">
+              <DataGridTemplateColumn.CellTemplate><DataTemplate>
+                <TextBlock Text="{Binding RelativeSource={RelativeSource AncestorType={x:Type DataGridRow}}, Path=AlternationIndex, Converter={StaticResource SerialNumberConverter}}" HorizontalAlignment="Center" VerticalAlignment="Center" TextAlignment="Center" FlowDirection="LeftToRight" FontSize="12" Foreground="{StaticResource BrushMuted}"/>
+              </DataTemplate></DataGridTemplateColumn.CellTemplate>
+            </DataGridTemplateColumn>
+            <DataGridTemplateColumn Header="اسم الحساب" Width="1.45*">
+              <DataGridTemplateColumn.CellTemplate><DataTemplate>
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" FlowDirection="RightToLeft" Margin="0,3">
+                  <TextBlock Text="{Binding PersonName}" Style="{StaticResource TableTextCell}" FontWeight="SemiBold" MaxWidth="260"/>
+                  <Border Background="#13253E" BorderBrush="#2C4D72" BorderThickness="1" CornerRadius="5" Padding="7,2" Margin="10,0,0,0">
+                    <TextBlock Text="{Binding BookName}" FontSize="10.5" Foreground="{StaticResource BrushMuted}" TextTrimming="CharacterEllipsis"/>
+                  </Border>
+                </StackPanel>
+              </DataTemplate></DataGridTemplateColumn.CellTemplate>
+            </DataGridTemplateColumn>
+            <DataGridTemplateColumn Header="الهاتف" Width="120" MinWidth="110">
+              <DataGridTemplateColumn.CellTemplate><DataTemplate>
+                <TextBlock Text="{Binding Person.Phone}" Foreground="{StaticResource BrushMuted}" FontSize="12" HorizontalAlignment="Center" TextAlignment="Center" FlowDirection="LeftToRight"/>
+              </DataTemplate></DataGridTemplateColumn.CellTemplate>
+            </DataGridTemplateColumn>
+            <DataGridTemplateColumn Header="المبلغ المتبقي" Width="145" MinWidth="135">
+              <DataGridTemplateColumn.CellTemplate><DataTemplate>
+                <TextBlock Text="{Binding NetBalance,Converter={StaticResource PrivacyMoneyConverter}}" Foreground="{Binding NetBalance,Converter={StaticResource NetBalanceBrushConverter}}" FontSize="13.5" FontWeight="SemiBold" HorizontalAlignment="Center" TextAlignment="Center" FlowDirection="LeftToRight"/>
+              </DataTemplate></DataGridTemplateColumn.CellTemplate>
+            </DataGridTemplateColumn>
+            <DataGridTemplateColumn Header="الاتجاه" Width="90" MinWidth="84">
+              <DataGridTemplateColumn.CellTemplate><DataTemplate>
+                <TextBlock Text="{Binding NetBalance,Converter={StaticResource NetBalanceDirectionConverter}}" Foreground="{Binding NetBalance,Converter={StaticResource NetBalanceBrushConverter}}" FontSize="12.5" FontWeight="SemiBold" HorizontalAlignment="Center" TextAlignment="Center"/>
+              </DataTemplate></DataGridTemplateColumn.CellTemplate>
+            </DataGridTemplateColumn>
+            <DataGridTemplateColumn Header="البيان والتفصيل" Width="1.35*">
+              <DataGridTemplateColumn.CellTemplate><DataTemplate>
+                <TextBlock Text="{Binding Person.Note}" Foreground="{StaticResource BrushMuted}" FontSize="12" TextTrimming="CharacterEllipsis" ToolTip="{Binding Person.Note}" VerticalAlignment="Center" HorizontalAlignment="Center" TextAlignment="Center"/>
+              </DataTemplate></DataGridTemplateColumn.CellTemplate>
+            </DataGridTemplateColumn>
+            <DataGridTemplateColumn Header="آخر حركة" Width="175" MinWidth="165">
+              <DataGridTemplateColumn.CellTemplate><DataTemplate>
+                <TextBlock Text="{Binding LastOperationAt,Converter={StaticResource ArabicDateTimeConverter}}" HorizontalAlignment="Center" TextAlignment="Center" FlowDirection="LeftToRight" Foreground="{StaticResource BrushMuted}" FontSize="12.5" FontWeight="Normal"/>
+              </DataTemplate></DataGridTemplateColumn.CellTemplate>
+            </DataGridTemplateColumn>
+          </DataGrid.Columns>
+        </DataGrid>
+        <Border Grid.Row="1" Background="#0B132B" BorderBrush="#1E293B" BorderThickness="1,1,1,0" CornerRadius="0,0,8,8" Padding="10,0">
+          <Grid FlowDirection="RightToLeft">
+            <TextBlock Text="{Binding VisibleAccountsCount, StringFormat={}إجمالي الحسابات: {0}}" Foreground="{StaticResource BrushMuted}" FontSize="11" VerticalAlignment="Center"/>
+            <TextBlock Text="[F7] لإضافة حساب جديد" Foreground="{StaticResource BrushMuted}" FontSize="11" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+          </Grid>
+        </Border>
+        </Grid>
+      </Border>
+      <Grid Style="{StaticResource DialogOverlay}" Visibility="{Binding IsDialogOpen,Converter={StaticResource BoolToVisibility}}">
+        <Border Width="496" MaxWidth="608" MaxHeight="680" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{StaticResource DialogShell}" Padding="18">
+          <Grid FlowDirection="RightToLeft" KeyboardNavigation.TabNavigation="Cycle" behaviors:InputDialogBehavior.IsEnabled="True" behaviors:InputDialogBehavior.EnterSavesOnRadio="True">
+            <Grid.InputBindings>
+              <KeyBinding Key="F5" Command="{Binding SaveNewCommand}"/>
+              <KeyBinding Key="S" Modifiers="Control" Command="{Binding SaveNewCommand}"/>
+              <KeyBinding Key="Escape" Command="{Binding CloseDialogCommand}"/>
+            </Grid.InputBindings>
+            <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+
+            <Grid Grid.Row="0" Height="38" Margin="0,0,0,10" FlowDirection="LeftToRight">
+              <Grid.ColumnDefinitions><ColumnDefinition Width="38"/><ColumnDefinition Width="*"/><ColumnDefinition Width="38"/></Grid.ColumnDefinitions>
+              <Button Grid.Column="2" Command="{Binding CloseDialogCommand}" Style="{StaticResource IconButton}" ToolTip="إغلاق" AutomationProperties.Name="إغلاق" Width="36" Height="36">
+                <Path Width="14" Height="14" Stretch="Uniform" Stroke="#9DB7D4" StrokeThickness="1.6" Data="{StaticResource CloseIcon}"/>
+              </Button>
+              <TextBlock Grid.Column="1" Text="إضافة حساب جديد" FontSize="18" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center" TextAlignment="Center" FlowDirection="RightToLeft"/>
+            </Grid>
+
+            <Grid Grid.Row="1" KeyboardNavigation.TabNavigation="Local">
+              <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+              <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+
+              <StackPanel Grid.Row="0" Grid.ColumnSpan="2" Margin="0,0,0,5">
+                <TextBlock Text="اسم الحساب" Style="{StaticResource SectionLabel}" Margin="0,0,0,3"/>
+                <TextBox Style="{StaticResource DialogField}" AutomationProperties.Name="اسم الحساب" Text="{Binding NewName,UpdateSourceTrigger=PropertyChanged}" FlowDirection="RightToLeft" TextAlignment="Right" HorizontalContentAlignment="Right" Language="ar-SA" InputMethod.IsInputMethodEnabled="True" InputMethod.PreferredImeState="On" InputMethod.PreferredImeConversionMode="Native" Padding="10,4,8,4" CaretBrush="#EAF4FF" SelectionBrush="#356FB5" TabIndex="0" Height="44"/>
+              </StackPanel>
+
+              <StackPanel Grid.Row="1" Grid.Column="0" Margin="0,0,4,5">
+                <TextBlock Text="الدفتر" Style="{StaticResource SectionLabel}" Margin="0,0,0,3"/>
+                <ComboBox Style="{StaticResource DialogComboBox}" ItemsSource="{Binding BookGroups}" DisplayMemberPath="Name" SelectedItem="{Binding SelectedGroupBook,Mode=TwoWay}" IsEditable="False" AutomationProperties.Name="الدفتر" TabIndex="1" Height="44" Focusable="True" IsTabStop="True" KeyboardNavigation.DirectionalNavigation="Contained" behaviors:InputDialogBehavior.SpaceOpensComboBox="True" Background="#0B162C" Foreground="#EAF4FF" BorderBrush="#263E61"></ComboBox>
+              </StackPanel>
+              <StackPanel Grid.Row="1" Grid.Column="1" Margin="4,0,0,5">
+                <TextBlock Text="{Binding Currency, StringFormat={}المبلغ ({0})}" Style="{StaticResource SectionLabel}" Margin="0,0,0,3"/>
+                <Grid Height="44">
+                  <TextBox Style="{StaticResource DialogNumericField}" AutomationProperties.Name="المبلغ الافتتاحي" Text="{Binding OpeningBalanceText,UpdateSourceTrigger=PropertyChanged}" FlowDirection="RightToLeft" TextAlignment="Right" HorizontalContentAlignment="Right" Padding="9,4" FontSize="14" TabIndex="2" Height="44"/>
+                  
+                </Grid>
+              </StackPanel>
+
+              <StackPanel Grid.Row="2" Grid.ColumnSpan="2" Margin="0,0,0,5">
+                <TextBlock Text="الملاحظات (اختياري)" Style="{StaticResource SectionLabel}" Margin="0,0,0,3"/>
+                <TextBox Style="{StaticResource DialogField}" AutomationProperties.Name="الملاحظات" Text="{Binding NewNote,UpdateSourceTrigger=PropertyChanged}" FlowDirection="RightToLeft" TextAlignment="Right" HorizontalContentAlignment="Right" TabIndex="3" Height="44"/>
+              </StackPanel>
+
+              <Grid Grid.Row="3" Grid.ColumnSpan="2">
+                <Grid.ColumnDefinitions><ColumnDefinition Width="1*"/><ColumnDefinition Width="1.15*"/></Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="0" Margin="0,0,4,0">
+                  <TextBlock Text="رقم الهاتف (اختياري)" Style="{StaticResource SectionLabel}" Margin="0,0,0,3"/>
+                  <TextBox Style="{StaticResource DialogField}" AutomationProperties.Name="رقم الهاتف" Text="{Binding NewPhone,UpdateSourceTrigger=PropertyChanged}" FlowDirection="RightToLeft" TextAlignment="Right" HorizontalContentAlignment="Right" TabIndex="4" Height="44" Language="ar-SA"/>
+                </StackPanel>
+                <StackPanel Grid.Column="1" Margin="4,0,0,0">
+                  <TextBlock Text="اتجاه الحركة" Style="{StaticResource SectionLabel}" Margin="0,0,0,3"/>
+                  <UniformGrid Columns="2" Height="44" FlowDirection="RightToLeft">
+                    <RadioButton Content="له" GroupName="OpeningBalanceDirection" Height="44" TabIndex="5" Style="{StaticResource OpeningAgainstUsChoice}" IsChecked="{Binding OpeningBalanceAgainstUs}" Command="{Binding SelectOpeningAgainstUsCommand}" AutomationProperties.Name="له"/>
+                    <RadioButton Content="عليه" GroupName="OpeningBalanceDirection" Height="44" TabIndex="6" Style="{StaticResource OpeningForUsChoice}" IsChecked="{Binding OpeningBalanceForUs}" Command="{Binding SelectOpeningForUsCommand}" AutomationProperties.Name="عليه"/>
+                  </UniformGrid>
+                </StackPanel>
+              </Grid>
+            </Grid>
+            <Grid Grid.Row="2" Margin="0,6,0,0">
+              <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+              <TextBlock Grid.Column="1" Text="{Binding StatusText}" Foreground="{StaticResource BrushMuted}" FontSize="11" VerticalAlignment="Center" TextWrapping="Wrap" MaxWidth="210" FlowDirection="RightToLeft"/>
+              <StackPanel Grid.Column="0" Orientation="Horizontal" FlowDirection="RightToLeft">
+                <Button Command="{Binding SaveNewCommand}" Content="حفظ الحساب" Width="112" Height="36" Margin="0,0,5,0" AutomationProperties.Name="حفظ الحساب">
+                  <Button.Style>
+                    <Style TargetType="Button" BasedOn="{StaticResource PrimaryButton}">
+                      <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsSaving}" Value="True">
+                          <Setter Property="Content" Value="جارٍ الحفظ…"/>
+                          <Setter Property="IsEnabled" Value="False"/>
+                        </DataTrigger>
+                      </Style.Triggers>
+                    </Style>
+                  </Button.Style>
+                </Button>
+                <Button Content="إلغاء" Command="{Binding CloseDialogCommand}" Style="{StaticResource GhostButton}" Width="68" Height="36" IsCancel="True" AutomationProperties.Name="إلغاء"/>
+              </StackPanel>
+            </Grid>
+          </Grid>
+        </Border>
+      </Grid>
+      <Grid Style="{StaticResource DialogOverlay}" Visibility="{Binding IsBookDialogOpen,Converter={StaticResource BoolToVisibility}}">
+        <Border Width="440" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{StaticResource DialogShell}" Padding="22">
+          <Grid FlowDirection="RightToLeft" KeyboardNavigation.TabNavigation="Cycle" behaviors:InputDialogBehavior.IsEnabled="True">
+            <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+            <Grid Grid.Row="0" Height="40" Margin="0,0,0,16" FlowDirection="LeftToRight">
+              <Grid.ColumnDefinitions><ColumnDefinition Width="40"/><ColumnDefinition Width="*"/><ColumnDefinition Width="40"/></Grid.ColumnDefinitions>
+              <Button Grid.Column="2" Command="{Binding CloseBookDialogCommand}" Style="{StaticResource IconButton}" ToolTip="إغلاق" AutomationProperties.Name="إغلاق" Width="36" Height="36">
+                <Path Width="14" Height="14" Stretch="Uniform" Stroke="#9DB7D4" StrokeThickness="1.6" Data="{StaticResource CloseIcon}"/>
+              </Button>
+              <TextBlock Grid.Column="1" Text="{Binding BookDialogTitle}" FontSize="18" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center" TextAlignment="Center"/>
+            </Grid>
+            <StackPanel Grid.Row="1">
+              <TextBlock Text="اسم التصنيف" Style="{StaticResource SectionLabel}"/>
+              <TextBox Height="42" Style="{StaticResource DialogField}" Text="{Binding BookNameText,UpdateSourceTrigger=PropertyChanged}" FlowDirection="RightToLeft" TextAlignment="Right" HorizontalContentAlignment="Right" AutomationProperties.Name="اسم التصنيف" TabIndex="0"/>
+              <TextBlock Text="يمكنك لاحقًا تغيير الاسم أو حذف التصنيف من زر الفأرة الأيمن." Style="{StaticResource CaptionText}" Margin="0,7,0,0" TextWrapping="Wrap"/>
+            </StackPanel>
+            <Grid Grid.Row="2" Margin="0,18,0,0">
+              <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+              <TextBlock Text="{Binding BookDialogStatus}" Foreground="{StaticResource BrushMuted}" FontSize="11" VerticalAlignment="Center" TextWrapping="Wrap" MaxWidth="190"/>
+              <StackPanel Grid.Column="0" Orientation="Horizontal" FlowDirection="RightToLeft">
+                <Button Content="حفظ التصنيف" Command="{Binding SaveBookCommand}" Style="{StaticResource PrimaryButton}" Width="118" Height="40" Margin="0,0,8,0" AutomationProperties.Name="حفظ التصنيف"/>
+                <Button Content="إلغاء" Command="{Binding CloseBookDialogCommand}" Style="{StaticResource GhostButton}" Width="82" Height="40" IsCancel="True" AutomationProperties.Name="إلغاء"/>
+              </StackPanel>
+            </Grid>
+          </Grid>
+        </Border>
+      </Grid>
+      <Grid Style="{StaticResource DialogOverlay}" Visibility="{Binding IsAccountOpen,Converter={StaticResource BoolToVisibility}}">
+        <Border Width="920" Height="640" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{StaticResource DialogShell}" Padding="20">
+          <Grid FlowDirection="RightToLeft">
+            <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+            <Grid Grid.Row="0" Margin="0,0,0,14" FlowDirection="RightToLeft">
+              <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+              <Button Grid.Column="0" Command="{Binding CloseAccountCommand}" Style="{StaticResource IconButton}" ToolTip="إغلاق تفاصيل الحساب" AutomationProperties.Name="إغلاق تفاصيل الحساب">
+                <Path Width="14" Height="14" Stretch="Uniform" Stroke="#9DB7D4" StrokeThickness="1.6" Data="{StaticResource CloseIcon}"/>
+              </Button>
+              <StackPanel Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" FlowDirection="RightToLeft">
+                <TextBlock Text="{Binding SelectedAccountTitle}" FontSize="21" FontWeight="SemiBold" HorizontalAlignment="Center" TextAlignment="Center"/>
+                <TextBlock Text="{Binding SelectedAccountTypeLabel}" Style="{StaticResource CaptionText}" HorizontalAlignment="Center" TextAlignment="Center" Margin="0,4,0,0"/>
+              </StackPanel>
+              <Border Grid.Column="2" Width="42" Height="42" Background="Transparent"/>
+            </Grid>
+            <Border Grid.Row="1" Style="{StaticResource Card}" Padding="12" Margin="0,0,0,12">
+              <StackPanel>
+              <UniformGrid Columns="3" FlowDirection="RightToLeft">
+                <StackPanel Margin="4" HorizontalAlignment="Center"><TextBlock Text="الرصيد الحالي" Style="{StaticResource KpiLabel}" HorizontalAlignment="Center"/><TextBlock Text="{Binding SelectedAccountBalance,Converter={StaticResource PrivacyMoneyConverter}}" Style="{StaticResource MetricText}" HorizontalAlignment="Center"/></StackPanel>
+                <StackPanel Margin="4" HorizontalAlignment="Center"><TextBlock Text="عليه" Style="{StaticResource KpiLabel}" Foreground="{StaticResource BrushPositive}" HorizontalAlignment="Center"/><TextBlock Text="{Binding SelectedAccountOwedToUs,Converter={StaticResource PrivacyMoneyConverter}}" Style="{StaticResource MetricText}" HorizontalAlignment="Center"/></StackPanel>
+                <StackPanel Margin="4" HorizontalAlignment="Center"><TextBlock Text="له" Style="{StaticResource KpiLabel}" Foreground="{StaticResource BrushNegative}" HorizontalAlignment="Center"/><TextBlock Text="{Binding SelectedAccountWeOwe,Converter={StaticResource PrivacyMoneyConverter}}" Style="{StaticResource MetricText}" HorizontalAlignment="Center"/></StackPanel>
+              </UniformGrid>
+              <TextBlock Text="ملاحظة الحساب" Style="{StaticResource KpiLabel}" Margin="4,8,4,2"/>
+              <TextBlock Text="{Binding SelectedAccountNote}" Foreground="{StaticResource BrushText}" TextWrapping="Wrap" Margin="4,0,4,2" AutomationProperties.Name="ملاحظة الحساب"/>
+              </StackPanel>
+            </Border>
+            <Border Grid.Row="2" Style="{StaticResource Card}" Padding="10">
+              <DataGrid ItemsSource="{Binding SelectedAccountStatementRows}"
+                        IsReadOnly="True"
+                        AutoGenerateColumns="False"
+                        HeadersVisibility="Column"
+                        HorizontalScrollBarVisibility="Disabled"
+                        VerticalScrollBarVisibility="Auto"
+                        RowHeight="50"
+                        FlowDirection="RightToLeft"
+                        GridLinesVisibility="Horizontal"
+                        AlternationCount="1000000">
+                <DataGrid.Columns>
+                  <DataGridTemplateColumn Width="48">
+                    <DataGridTemplateColumn.HeaderTemplate>
+                      <DataTemplate><TextBlock Text="م" HorizontalAlignment="Center" TextAlignment="Center" FontWeight="SemiBold" FontSize="12.5"/></DataTemplate>
+                    </DataGridTemplateColumn.HeaderTemplate>
+                    <DataGridTemplateColumn.CellTemplate>
+                      <DataTemplate>
+                        <TextBlock Text="{Binding RelativeSource={RelativeSource AncestorType={x:Type DataGridRow}},Path=AlternationIndex,Converter={StaticResource SerialNumberConverter}}"
+                                   HorizontalAlignment="Center" VerticalAlignment="Center" TextAlignment="Center"
+                                   FlowDirection="LeftToRight" Foreground="{StaticResource BrushMuted}" FontSize="11.5"/>
+                      </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                  </DataGridTemplateColumn>
+
+                  <DataGridTemplateColumn Header="البيان / التفاصيل" Width="1.7*">
+                    <DataGridTemplateColumn.HeaderTemplate>
+                      <DataTemplate><TextBlock Text="البيان / التفاصيل" HorizontalAlignment="Center" TextAlignment="Center" FontWeight="SemiBold" FontSize="12.5"/></DataTemplate>
+                    </DataGridTemplateColumn.HeaderTemplate>
+                    <DataGridTemplateColumn.CellTemplate>
+                      <DataTemplate>
+                        <TextBlock Text="{Binding Note}" Style="{StaticResource TableTextCell}" ToolTip="{Binding Note}"
+                                   HorizontalAlignment="Stretch" TextAlignment="Center"/>
+                      </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                  </DataGridTemplateColumn>
+
+                  <DataGridTemplateColumn Header="نوع الحركة" Width="125">
+                    <DataGridTemplateColumn.HeaderTemplate>
+                      <DataTemplate><TextBlock Text="نوع الحركة" HorizontalAlignment="Center" TextAlignment="Center" FontWeight="SemiBold" FontSize="12.5"/></DataTemplate>
+                    </DataGridTemplateColumn.HeaderTemplate>
+                    <DataGridTemplateColumn.CellTemplate>
+                      <DataTemplate>
+                        <TextBlock Text="{Binding TypeLabel}" HorizontalAlignment="Center" TextAlignment="Center"
+                                   FontWeight="SemiBold" FontSize="13">
+                          <TextBlock.Style>
+                            <Style TargetType="TextBlock">
+                              <Setter Property="Foreground" Value="{StaticResource BrushMuted}"/>
+                              <Style.Triggers>
+                                <DataTrigger Binding="{Binding TypeLabel}" Value="له"><Setter Property="Foreground" Value="{StaticResource BrushPositive}"/></DataTrigger>
+                                <DataTrigger Binding="{Binding TypeLabel}" Value="عليه"><Setter Property="Foreground" Value="{StaticResource BrushNegative}"/></DataTrigger>
+                              </Style.Triggers>
+                            </Style>
+                          </TextBlock.Style>
+                        </TextBlock>
+                      </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                  </DataGridTemplateColumn>
+
+                  <DataGridTemplateColumn Header="المبلغ" Width="125">
+                    <DataGridTemplateColumn.HeaderTemplate>
+                      <DataTemplate><TextBlock Text="المبلغ" HorizontalAlignment="Center" TextAlignment="Center" FontWeight="SemiBold" FontSize="12.5"/></DataTemplate>
+                    </DataGridTemplateColumn.HeaderTemplate>
+                    <DataGridTemplateColumn.CellTemplate>
+                      <DataTemplate>
+                        <TextBlock Text="{Binding Amount,Converter={StaticResource PrivacyMoneyConverter}}"
+                                   FlowDirection="LeftToRight" HorizontalAlignment="Center" TextAlignment="Center"
+                                   FontWeight="SemiBold" FontSize="13">
+                          <TextBlock.Style>
+                            <Style TargetType="TextBlock" BasedOn="{StaticResource NumericCell}">
+                              <Setter Property="Foreground" Value="{StaticResource BrushText}"/>
+                              <Style.Triggers>
+                                <DataTrigger Binding="{Binding Amount}" Value="0">
+                                  <Setter Property="Foreground" Value="{StaticResource BrushMuted}"/>
+                                </DataTrigger>
+                              </Style.Triggers>
+                            </Style>
+                          </TextBlock.Style>
+                        </TextBlock>
+                      </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                  </DataGridTemplateColumn>
+
+                  <DataGridTemplateColumn Header="الوقت والتاريخ" Width="185">
+                    <DataGridTemplateColumn.HeaderTemplate>
+                      <DataTemplate><TextBlock Text="الوقت والتاريخ" HorizontalAlignment="Center" TextAlignment="Center" FontWeight="SemiBold" FontSize="12.5"/></DataTemplate>
+                    </DataGridTemplateColumn.HeaderTemplate>
+                    <DataGridTemplateColumn.CellTemplate>
+                      <DataTemplate>
+                        <TextBlock Text="{Binding OccurredAt,Converter={StaticResource ArabicDateTimeConverter}}"
+                                   HorizontalAlignment="Center" TextAlignment="Center" FlowDirection="LeftToRight"
+                                   Foreground="{StaticResource BrushMuted}" FontSize="12.5"/>
+                      </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                  </DataGridTemplateColumn>
+
+                  <DataGridTemplateColumn Header="الإجمالي التراكمي" Width="160">
+                    <DataGridTemplateColumn.HeaderTemplate>
+                      <DataTemplate><TextBlock Text="الإجمالي التراكمي" HorizontalAlignment="Center" TextAlignment="Center" FontWeight="SemiBold" FontSize="12.5"/></DataTemplate>
+                    </DataGridTemplateColumn.HeaderTemplate>
+                    <DataGridTemplateColumn.CellTemplate>
+                      <DataTemplate>
+                        <TextBlock Text="{Binding CumulativeBalance,Converter={StaticResource PrivacyMoneyConverter}}"
+                                   FlowDirection="LeftToRight" HorizontalAlignment="Center" TextAlignment="Center"
+                                   FontWeight="SemiBold">
+                          <TextBlock.Style>
+                            <Style TargetType="TextBlock" BasedOn="{StaticResource NumericCell}">
+                              <Setter Property="Foreground" Value="{StaticResource BrushAccent2}"/>
+                              <Setter Property="FontSize" Value="13.5"/>
+                              <Style.Triggers>
+                                <DataTrigger Binding="{Binding CumulativeBalance}" Value="0">
+                                  <Setter Property="Foreground" Value="{StaticResource BrushMuted}"/>
+                                </DataTrigger>
+                              </Style.Triggers>
+                            </Style>
+                          </TextBlock.Style>
+                        </TextBlock>
+                      </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                  </DataGridTemplateColumn>
+                </DataGrid.Columns>
+              </DataGrid>
+            </Border>
+            <DockPanel Grid.Row="3" Margin="0,12,0,0">
+              <TextBlock Text="{Binding AccountStatementStatus}" Style="{StaticResource CaptionText}" VerticalAlignment="Center"/>
+              <StackPanel DockPanel.Dock="Left" Orientation="Horizontal">
+                <Button Content="تصدير Excel" Command="{Binding ExportAccountExcelCommand}" Style="{StaticResource GhostButton}" Width="108" Margin="8,0,0,0"/>
+                <Button Content="تصدير PDF" Command="{Binding ExportAccountPdfCommand}" Style="{StaticResource PrimaryButton}" Width="108"/>
+              </StackPanel>
+            </DockPanel>
+          </Grid>
+        </Border>
+      </Grid>
+    </Grid>
+  </DataTemplate>
+  <DataTemplate DataType="{x:Type vm:OperationsViewModel}">
+    <Grid FlowDirection="RightToLeft">
+      <Grid.InputBindings>
+        <KeyBinding Key="F5" Command="{Binding SaveCommand}"/>
+        <KeyBinding Key="S" Modifiers="Control" Command="{Binding SaveCommand}"/>
+      </Grid.InputBindings>
+      <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
+      <Border Grid.Row="0" Style="{StaticResource Card}" Padding="14" Margin="0,0,0,14">
+        <Grid FlowDirection="RightToLeft">
+          <Grid.ColumnDefinitions><ColumnDefinition Width="1.45*"/><ColumnDefinition Width="1.1*"/><ColumnDefinition Width="150"/><ColumnDefinition Width="1.55*"/></Grid.ColumnDefinitions>
+          <Grid Grid.Column="0" Margin="4">
+            <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+            <TextBlock Text="الحساب" Style="{StaticResource SectionLabel}"/>
+            <Grid Grid.Row="1" Margin="0,4,0,0">
+              <TextBox x:Name="OperationPersonSearch" Style="{StaticResource Field}" Text="{Binding PersonSearch,UpdateSourceTrigger=PropertyChanged}" FlowDirection="LeftToRight" TextAlignment="Right" AutomationProperties.Name="بحث عن الحساب"/>
+              <Popup Placement="Bottom" PlacementTarget="{Binding ElementName=OperationPersonSearch}" IsOpen="{Binding IsMainPersonSuggestionsOpen}" StaysOpen="False" AllowsTransparency="True">
+                <Border Width="390" MaxHeight="260" Style="{StaticResource DialogShell}" Padding="6">
+                  <ListBox ItemsSource="{Binding People}" SelectedValuePath="PersonId" SelectedValue="{Binding SelectedPersonId,Mode=TwoWay}" FlowDirection="RightToLeft">
+                    <ListBox.ItemTemplate><DataTemplate><Grid Margin="4,2"><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions><TextBlock Text="{Binding PersonName}" FontWeight="SemiBold"/><TextBlock Grid.Column="1" Text="{Binding BookName}" Foreground="{StaticResource BrushMuted}" Margin="12,0,0,0"/></Grid></DataTemplate></ListBox.ItemTemplate>
+                  </ListBox>
+                </Border>
+              </Popup>
+            </Grid>
+          </Grid>
+          <StackPanel Grid.Column="1" Margin="4">
+            <TextBlock Text="نوع الحركة" Style="{StaticResource SectionLabel}"/>
+            <UniformGrid Columns="2" Margin="0,4,0,0">
+              <RadioButton Content="استلام" GroupName="OperationType" Style="{StaticResource SegmentedChoice}" IsChecked="{Binding IsReceiveSelected}" Command="{Binding SelectReceiveCommand}"/>
+              <RadioButton Content="بيع" GroupName="OperationType" Style="{StaticResource SegmentedChoice}" IsChecked="{Binding IsSaleSelected}" Command="{Binding SelectSaleCommand}"/>
+              <RadioButton Content="سداد" GroupName="OperationType" Style="{StaticResource SegmentedChoice}" IsChecked="{Binding IsPaymentSelected}" Command="{Binding SelectPaymentCommand}"/>
+              <RadioButton Content="شراء" GroupName="OperationType" Style="{StaticResource SegmentedChoice}" IsChecked="{Binding IsPurchaseSelected}" Command="{Binding SelectPurchaseCommand}"/>
+            </UniformGrid>
+          </StackPanel>
+          <StackPanel Grid.Column="2" Margin="4"><TextBlock Text="المبلغ" Style="{StaticResource SectionLabel}"/><TextBox Style="{StaticResource NumericField}" Text="{Binding AmountText,UpdateSourceTrigger=PropertyChanged}" Margin="0,4,0,0"/></StackPanel>
+          <StackPanel Grid.Column="3" Margin="4"><TextBlock Text="البيان" Style="{StaticResource SectionLabel}"/><TextBox Style="{StaticResource Field}" Text="{Binding Note,UpdateSourceTrigger=PropertyChanged}" Margin="0,4,0,0"/></StackPanel>
+        </Grid>
+      </Border>
+      <Border Grid.Row="1" Style="{StaticResource Card}" Padding="8">
+        <DataGrid FlowDirection="RightToLeft" ItemsSource="{Binding Rows}" IsReadOnly="True" AutoGenerateColumns="False" RowHeight="46" AlternationCount="1000000" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+          <DataGrid.Columns>
+            <DataGridTemplateColumn Width="46"><DataGridTemplateColumn.HeaderTemplate><DataTemplate><TextBlock Text="م" HorizontalAlignment="Center" TextAlignment="Center" FontWeight="SemiBold"/></DataTemplate></DataGridTemplateColumn.HeaderTemplate><DataGridTemplateColumn.CellTemplate><DataTemplate><TextBlock Text="{Binding RelativeSource={RelativeSource AncestorType={x:Type DataGridRow}},Path=AlternationIndex,Converter={StaticResource SerialNumberConverter}}" HorizontalAlignment="Center" VerticalAlignment="Center" FlowDirection="LeftToRight" Foreground="{StaticResource BrushMuted}"/></DataTemplate></DataGridTemplateColumn.CellTemplate></DataGridTemplateColumn>
+            <DataGridTextColumn Header="اسم الحساب" Binding="{Binding PersonName}" Width="1.35*" ElementStyle="{StaticResource TableTextCell}"/>
+            <DataGridTemplateColumn Header="المبلغ" Width="150"><DataGridTemplateColumn.CellTemplate><DataTemplate><TextBlock Text="{Binding Amount,Converter={StaticResource PrivacyMoneyConverter}}" FontWeight="SemiBold" HorizontalAlignment="Center" TextAlignment="Center" FlowDirection="LeftToRight" Language="en-US"><TextBlock.Style><Style TargetType="TextBlock" BasedOn="{StaticResource NumericCell}"><Setter Property="Foreground" Value="{StaticResource BrushMuted}"/><Style.Triggers><DataTrigger Binding="{Binding DirectionPositive}" Value="True"><Setter Property="Foreground" Value="{StaticResource BrushPositive}"/></DataTrigger><DataTrigger Binding="{Binding DirectionPositive}" Value="False"><Setter Property="Foreground" Value="{StaticResource BrushNegative}"/></DataTrigger></Style.Triggers></Style></TextBlock.Style></TextBlock></DataTemplate></DataGridTemplateColumn.CellTemplate></DataGridTemplateColumn>
+            <DataGridTemplateColumn Header="الاتجاه" Width="1.15*"><DataGridTemplateColumn.CellTemplate><DataTemplate><TextBlock Text="{Binding DirectionLabel}" FontWeight="SemiBold" HorizontalAlignment="Center" TextAlignment="Center"><TextBlock.Style><Style TargetType="TextBlock" BasedOn="{StaticResource TableTextCell}"><Setter Property="Foreground" Value="{StaticResource BrushMuted}"/><Style.Triggers><DataTrigger Binding="{Binding DirectionPositive}" Value="True"><Setter Property="Foreground" Value="{StaticResource BrushPositive}"/></DataTrigger><DataTrigger Binding="{Binding DirectionPositive}" Value="False"><Setter Property="Foreground" Value="{StaticResource BrushNegative}"/></DataTrigger></Style.Triggers></Style></TextBlock.Style></TextBlock></DataTemplate></DataGridTemplateColumn.CellTemplate></DataGridTemplateColumn>
+            <DataGridTextColumn Header="البيان" Binding="{Binding Note}" Width="1.55*" ElementStyle="{StaticResource TableTextCell}"/>
+            <DataGridTextColumn Header="الوقت والتاريخ" Binding="{Binding OccurredAt,Converter={StaticResource ArabicDateTimeConverter}}" Width="180" ElementStyle="{StaticResource TableTextCell}"/>
+          </DataGrid.Columns>
+        </DataGrid>
+      </Border>
+      <Grid Style="{StaticResource DialogOverlay}" Visibility="{Binding IsDialogOpen,Converter={StaticResource BoolToVisibility}}">
+        <Border Width="620" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{StaticResource DialogShell}" Padding="26">
+          <Grid FlowDirection="RightToLeft" KeyboardNavigation.TabNavigation="Local" behaviors:InputDialogBehavior.IsEnabled="True">
+            <Grid.InputBindings>
+              <KeyBinding Key="F5" Command="{Binding SaveCommand}"/>
+              <KeyBinding Key="S" Modifiers="Control" Command="{Binding SaveCommand}"/>
+              <KeyBinding Key="Escape" Command="{Binding CloseDialogCommand}"/>
+            </Grid.InputBindings>
+            <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+            <DockPanel Grid.Row="0" Margin="0,0,0,18"><Button DockPanel.Dock="Left" Command="{Binding CloseDialogCommand}" Style="{StaticResource IconButton}" ToolTip="إغلاق" AutomationProperties.Name="إغلاق"><Path Width="14" Height="14" Stretch="Uniform" Stroke="#9DB7D4" StrokeThickness="1.6" Data="{StaticResource CloseIcon}"/></Button><TextBlock Text="حركة جديدة" FontSize="22" FontWeight="SemiBold"/></DockPanel>
+            <Grid Grid.Row="1" Margin="0,0,0,14">
+              <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+              <TextBlock Text="الحساب" Style="{StaticResource SectionLabel}"/>
+              <Grid Grid.Row="1" Margin="0,4,0,0">
+                <TextBox x:Name="OperationDialogPersonSearch" Style="{StaticResource Field}" Text="{Binding PersonSearch,UpdateSourceTrigger=PropertyChanged}" FlowDirection="LeftToRight" TextAlignment="Right" AutomationProperties.Name="الحساب"/>
+                <Popup Placement="Bottom" PlacementTarget="{Binding ElementName=OperationDialogPersonSearch}" IsOpen="{Binding IsDialogPersonSuggestionsOpen}" StaysOpen="False" AllowsTransparency="True">
+                  <Border Width="520" MaxHeight="260" Style="{StaticResource DialogShell}" Padding="6">
+                    <ListBox ItemsSource="{Binding People}" SelectedValuePath="PersonId" SelectedValue="{Binding SelectedPersonId,Mode=TwoWay}" FlowDirection="RightToLeft">
+                      <ListBox.ItemTemplate><DataTemplate><Grid Margin="4,2"><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions><TextBlock Text="{Binding PersonName}" FontWeight="SemiBold"/><TextBlock Grid.Column="1" Text="{Binding BookName}" Foreground="{StaticResource BrushMuted}" Margin="12,0,0,0"/></Grid></DataTemplate></ListBox.ItemTemplate>
+                    </ListBox>
+                  </Border>
+                </Popup>
+              </Grid>
+            </Grid>
+            <StackPanel Grid.Row="2" Margin="0,0,0,14">
+              <TextBlock Text="نوع الحركة" Style="{StaticResource SectionLabel}"/>
+              <UniformGrid Columns="2" Margin="0,4,0,0">
+                <RadioButton Content="استلام" GroupName="DialogOperationType" Style="{StaticResource MovementReceiveChoice}" IsChecked="{Binding IsReceiveSelected}" Command="{Binding SelectReceiveCommand}"/>
+                <RadioButton Content="بيع" GroupName="DialogOperationType" Style="{StaticResource MovementSaleChoice}" IsChecked="{Binding IsSaleSelected}" Command="{Binding SelectSaleCommand}"/>
+                <RadioButton Content="سداد" GroupName="DialogOperationType" Style="{StaticResource MovementPaymentChoice}" IsChecked="{Binding IsPaymentSelected}" Command="{Binding SelectPaymentCommand}"/>
+                <RadioButton Content="شراء" GroupName="DialogOperationType" Style="{StaticResource MovementPurchaseChoice}" IsChecked="{Binding IsPurchaseSelected}" Command="{Binding SelectPurchaseCommand}"/>
+              </UniformGrid>
+              <TextBlock Text="يتم اختيار الاتجاه الافتراضي حسب تصنيف الحساب ويمكن تغييره قبل الحفظ." Style="{StaticResource CaptionText}" Margin="0,7,0,0"/>
+            </StackPanel>
+            <Grid Grid.Row="3"><Grid.ColumnDefinitions><ColumnDefinition Width="1.05*"/><ColumnDefinition Width="1.7*"/></Grid.ColumnDefinitions><StackPanel Margin="0,0,7,0"><TextBlock Text="المبلغ" Style="{StaticResource SectionLabel}"/><Grid Height="46" FlowDirection="LeftToRight" Margin="0,4,0,0"><TextBlock Text="ر.ي" Width="42" Foreground="{StaticResource BrushMuted}" FontSize="12" FontWeight="SemiBold" VerticalAlignment="Center" HorizontalAlignment="Center"/><TextBox Grid.Column="1" Style="{StaticResource NumericField}" Height="46" FontSize="18" FontWeight="Bold" Text="{Binding AmountText,UpdateSourceTrigger=PropertyChanged}" AutomationProperties.Name="المبلغ" TextAlignment="Right" HorizontalContentAlignment="Right" Padding="10,5"/></Grid></StackPanel><StackPanel Grid.Column="1" Margin="7,0,0,0"><TextBlock Text="البيان" Style="{StaticResource SectionLabel}"/><TextBox Style="{StaticResource Field}" Height="46" Text="{Binding Note,UpdateSourceTrigger=PropertyChanged}" AutomationProperties.Name="البيان" Margin="0,4,0,0"/></StackPanel></Grid>
+            <TextBlock Grid.Row="4" Text="{Binding StatusText}" Style="{StaticResource CaptionText}" Foreground="{StaticResource BrushNegative}" Margin="0,10,0,0"/>
+            <StackPanel Grid.Row="5" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,16,0,0">
+              <TextBlock Text="Enter للتالي  •  Ctrl+S أو F5 للحفظ  •  Esc للإغلاق" Style="{StaticResource CaptionText}" VerticalAlignment="Center" Margin="0,0,16,0"/>
+              <Button Content="حفظ الحركة  [F5]" Command="{Binding SaveCommand}" Style="{StaticResource PrimaryButton}" Width="150"/>
+              <Button Content="إلغاء  [Esc]" Command="{Binding CloseDialogCommand}" Style="{StaticResource GhostButton}" Width="105" Margin="8,0,0,0"/>
+            </StackPanel>
+          </Grid>
+        </Border>
+      </Grid>
+    </Grid>
+  </DataTemplate>
+  <DataTemplate DataType="{x:Type vm:InventoryViewModel}">
+    <Grid FlowDirection="RightToLeft">
+      <Grid.InputBindings></Grid.InputBindings>
+      <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
+      <DockPanel Grid.Row="0" Margin="0,0,0,12"><StackPanel DockPanel.Dock="Right"><TextBlock Text="المخزون" FontSize="22" FontWeight="SemiBold"/><TextBlock Text="الأصناف، الوحدات والأسعار وحركة البضاعة" Style="{StaticResource CaptionText}"/></StackPanel><Button DockPanel.Dock="Left" Content="+ إضافة صنف" Command="{Binding OpenAddCommand}" Style="{StaticResource PrimaryButton}" Width="155" Height="42"/></DockPanel>
+      <UniformGrid Grid.Row="1" Columns="4" Margin="0,0,0,12" FlowDirection="RightToLeft"><Border Style="{StaticResource Card}" Padding="14" Margin="0,0,6,0"><StackPanel><TextBlock Text="الأصناف" Style="{StaticResource KpiLabel}"/><TextBlock Text="{Binding ProductsCount}" Style="{StaticResource MetricText}" Margin="0,5,0,0"/></StackPanel></Border><Border Style="{StaticResource Card}" Padding="14" Margin="6,0"><StackPanel><TextBlock Text="إجمالي الكمية" Style="{StaticResource KpiLabel}"/><TextBlock Text="{Binding Products.Count}" Style="{StaticResource MetricText}" Margin="0,5,0,0"/></StackPanel></Border><Border Background="#241D12" BorderBrush="#5A421F" BorderThickness="1" CornerRadius="10" Padding="14" Margin="6,0,0,0"><StackPanel><TextBlock Text="تنبيه النواقص" Style="{StaticResource KpiLabel}" Foreground="#F5B84B"/><TextBlock Text="{Binding LowStockCount}" Style="{StaticResource MetricText}" Foreground="#F5B84B" Margin="0,5,0,0"/></StackPanel></Border></UniformGrid>
+      <Grid Grid.Row="2"><Grid.ColumnDefinitions><ColumnDefinition Width="1.85*"/><ColumnDefinition Width="1*"/></Grid.ColumnDefinitions>
+        <Border Grid.Column="0" Style="{StaticResource Card}" Padding="8" Margin="0,0,6,0"><Grid><Grid.RowDefinitions><RowDefinition Height="*"/><RowDefinition Height="44"/></Grid.RowDefinitions>
+          <DataGrid Grid.Row="0" FlowDirection="RightToLeft" ItemsSource="{Binding Products}" SelectedItem="{Binding SelectedProduct,Mode=TwoWay}" AlternationCount="10000" IsReadOnly="True" AutoGenerateColumns="False" HeadersVisibility="Column" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto" RowHeight="46">
+            <DataGrid.Columns>
+              <DataGridTemplateColumn Header="م" Width="48" MinWidth="48" CanUserResize="False"><DataGridTemplateColumn.CellTemplate><DataTemplate><TextBlock Text="{Binding RelativeSource={RelativeSource AncestorType={x:Type DataGridRow}},Path=AlternationIndex,Converter={StaticResource SerialNumberConverter}}" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="{StaticResource BrushMuted}"/></DataTemplate></DataGridTemplateColumn.CellTemplate></DataGridTemplateColumn>
+              <DataGridTextColumn Header="اسم الصنف" Binding="{Binding Name}" Width="1.25*" ElementStyle="{StaticResource TableTextCell}"/>
+              <DataGridTextColumn Header="الباركود" Binding="{Binding Barcode}" Width="115" ElementStyle="{StaticResource TableTextCell}"/>
+              <DataGridTemplateColumn Header="الرصيد / الكمية" Width="125"><DataGridTemplateColumn.CellTemplate><DataTemplate><TextBlock HorizontalAlignment="Center" TextAlignment="Center"><Run Text="{Binding StockSmallUnits,Converter={StaticResource PrivacyMoneyConverter}}"/><Run Text=" "/><Run Text="{Binding SmallUnit}"/></TextBlock></DataTemplate></DataGridTemplateColumn.CellTemplate></DataGridTemplateColumn>
+              <DataGridTextColumn Header="سعر الشراء" Binding="{Binding PurchasePrice,Converter={StaticResource PrivacyMoneyConverter}}" ElementStyle="{StaticResource NumericCell}" Width="105"/>
+              <DataGridTextColumn Header="سعر البيع" Binding="{Binding SalePrice,Converter={StaticResource PrivacyMoneyConverter}}" ElementStyle="{StaticResource NumericCell}" Width="105"/>
+              <DataGridTextColumn Header="المورد" Binding="{Binding DefaultSupplierName}" Width="120" ElementStyle="{StaticResource TableTextCell}"/>
+              <DataGridTemplateColumn Header="حالة التوفر" Width="105"><DataGridTemplateColumn.CellTemplate><DataTemplate><TextBlock HorizontalAlignment="Center"><TextBlock.Style><Style TargetType="TextBlock" BasedOn="{StaticResource TableTextCell}"><Setter Property="Text" Value="متوفر  ●"/><Setter Property="Foreground" Value="{StaticResource BrushPositive}"/><Style.Triggers><DataTrigger Binding="{Binding AvailabilityLabel}" Value="نفد"><Setter Property="Text" Value="نفد  ●"/><Setter Property="Foreground" Value="{StaticResource BrushNegative}"/></DataTrigger><DataTrigger Binding="{Binding AvailabilityLabel}" Value="منخفض"><Setter Property="Text" Value="منخفض  ●"/><Setter Property="Foreground" Value="#F5B84B"/></DataTrigger></Style.Triggers></Style></TextBlock.Style></TextBlock></DataTemplate></DataGridTemplateColumn.CellTemplate></DataGridTemplateColumn>
+              <DataGridTemplateColumn Header="إجراءات" Width="76"><DataGridTemplateColumn.CellTemplate><DataTemplate><Button Content="✏" Command="{Binding DataContext.OpenEditCommand,RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}" CommandParameter="{Binding}" Style="{StaticResource IconButton}" ToolTip="تعديل الصنف" AutomationProperties.Name="تعديل الصنف"/></DataTemplate></DataGridTemplateColumn.CellTemplate></DataGridTemplateColumn>
+            </DataGrid.Columns>
+          </DataGrid>
+          <DockPanel Grid.Row="1" Background="#0B132B" Margin="0,6,0,0" LastChildFill="False"><TextBlock Text="{Binding ProductsCount,StringFormat={}إجمالي الأصناف المعروضة: {0}}" Foreground="{StaticResource BrushMuted}" VerticalAlignment="Center"/><TextBlock Text="[F7] لإضافة صنف جديد" Foreground="{StaticResource BrushAccent2}" Margin="20,0,0,0" VerticalAlignment="Center" DockPanel.Dock="Left"/></DockPanel>
+        </Grid></Border>
+        <Border Grid.Column="1" Style="{StaticResource Card}" Padding="14" Margin="6,0,0,0"><Grid><Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
+          <StackPanel Grid.Row="0" Margin="0,0,0,12"><TextBlock Text="تفاصيل الصنف" FontSize="16" FontWeight="SemiBold"/><TextBlock Text="سجل حركة البضاعة المحددة" Style="{StaticResource CaptionText}"/></StackPanel>
+          <Border Grid.Row="1" Background="#0B162C" BorderBrush="{StaticResource BrushLine}" BorderThickness="1" CornerRadius="10" Padding="12" Margin="0,0,0,12"><Grid><Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions><TextBlock Text="{Binding SelectedProduct.Name}" FontSize="18" FontWeight="SemiBold"/><WrapPanel Grid.Row="1" Margin="0,7,0,0"><TextBlock Text="المورد: " Foreground="{StaticResource BrushMuted}"/><TextBlock Text="{Binding SelectedProductSupplier}"/><TextBlock Text="   •   " Foreground="{StaticResource BrushMuted}"/><TextBlock Text="الرف: " Foreground="{StaticResource BrushMuted}"/><TextBlock Text="{Binding SelectedProductLocation}"/></WrapPanel><TextBlock Grid.Row="2" Text="{Binding SelectedProduct.StockSmallUnits,Converter={StaticResource PrivacyMoneyConverter},StringFormat={}الرصيد الحالي: {0}}" Foreground="{StaticResource BrushAccent2}" Margin="0,7,0,0"/></Grid></Border>
+          <DataGrid Grid.Row="2" ItemsSource="{Binding SelectedProductMovements}" IsReadOnly="True" AutoGenerateColumns="False" HeadersVisibility="Column" FlowDirection="RightToLeft" RowHeight="44" HorizontalScrollBarVisibility="Disabled"><DataGrid.Columns><DataGridTextColumn Header="الوقت والتاريخ" Binding="{Binding OccurredAt,Converter={StaticResource ArabicDateTimeConverter}}" Width="120" ElementStyle="{StaticResource TableTextCell}"/><DataGridTextColumn Header="نوع الحركة" Binding="{Binding TypeLabel}" Width="100" ElementStyle="{StaticResource TableTextCell}"/><DataGridTextColumn Header="الكمية" Binding="{Binding QuantitySmallUnits,Converter={StaticResource PrivacyMoneyConverter}}" Width="75" ElementStyle="{StaticResource NumericCell}"/><DataGridTextColumn Header="الرصيد المتراكم" Binding="{Binding RunningBalance,Converter={StaticResource PrivacyMoneyConverter}}" Width="105" ElementStyle="{StaticResource NumericCell}"/><DataGridTextColumn Header="البيان" Binding="{Binding Note}" Width="1.2*" ElementStyle="{StaticResource TableTextCell}"/></DataGrid.Columns></DataGrid>
+        </Grid></Border>
+      </Grid>
+            <Grid Style="{StaticResource DialogOverlay}" Visibility="{Binding IsDialogOpen,Converter={StaticResource BoolToVisibility}}">
+        <Border Width="820" MaxWidth="960" MaxHeight="900" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{StaticResource DialogShell}" Padding="22">
+          <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+            <Grid FlowDirection="RightToLeft" KeyboardNavigation.TabNavigation="Local" behaviors:InputDialogBehavior.IsEnabled="True">
+              <Grid.InputBindings><KeyBinding Key="Escape" Command="{Binding CloseDialogCommand}"/></Grid.InputBindings>
+              <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+              <DockPanel Grid.Row="0" Margin="0,0,0,16"><Button DockPanel.Dock="Left" Command="{Binding CloseDialogCommand}" Style="{StaticResource IconButton}" ToolTip="إغلاق" AutomationProperties.Name="إغلاق" Width="36" Height="36"><Path Width="14" Height="14" Stretch="Uniform" Stroke="#9DB7D4" StrokeThickness="1.6" Data="{StaticResource CloseIcon}"/></Button><StackPanel Margin="0,0,12,0"><TextBlock FontSize="22" FontWeight="SemiBold"><TextBlock.Style><Style TargetType="TextBlock"><Setter Property="Text" Value="إضافة صنف جديد"/><Style.Triggers><DataTrigger Binding="{Binding IsEditing}" Value="True"><Setter Property="Text" Value="تعديل بيانات الصنف"/></DataTrigger></Style.Triggers></Style></TextBlock.Style></TextBlock><TextBlock Text="إدخال سريع، وحدات مرنة، ورصيد واضح" Style="{StaticResource CaptionText}" Margin="0,4,0,0"/></StackPanel></DockPanel>
+              <Border Grid.Row="1" Style="{StaticResource Card}" Padding="16" Margin="0,0,0,12"><StackPanel><TextBlock Text="١. معلومات الصنف" FontSize="15" FontWeight="SemiBold" Margin="2,0,2,10"/><Grid><Grid.ColumnDefinitions><ColumnDefinition Width="2*"/><ColumnDefinition Width="1.2*"/><ColumnDefinition Width="1.2*"/></Grid.ColumnDefinitions><StackPanel Margin="4"><TextBlock Text="اسم الصنف *" Style="{StaticResource SectionLabel}"/><TextBox Style="{StaticResource Field}" FontSize="15" Text="{Binding NewName,UpdateSourceTrigger=PropertyChanged}"/></StackPanel><StackPanel Grid.Column="1" Margin="4"><TextBlock Text="الباركود" Style="{StaticResource SectionLabel}"/><TextBox Style="{StaticResource Field}" Text="{Binding NewBarcode,UpdateSourceTrigger=PropertyChanged}" FlowDirection="LeftToRight"/></StackPanel><StackPanel Grid.Column="2" Margin="4"><TextBlock Text="التصنيف" Style="{StaticResource SectionLabel}"/><TextBox Style="{StaticResource Field}" Text="{Binding NewCategory,UpdateSourceTrigger=PropertyChanged}"/></StackPanel></Grid><Grid Margin="0,4,0,0"><Grid.ColumnDefinitions><ColumnDefinition Width="1.2*"/><ColumnDefinition Width="1.2*"/><ColumnDefinition Width="1.2*"/></Grid.ColumnDefinitions><StackPanel Margin="4"><TextBlock Text="المخزن" Style="{StaticResource SectionLabel}"/><ComboBox Height="44" IsEditable="True" IsTextSearchEnabled="True" ItemsSource="{Binding ProductWarehouses}" Text="{Binding NewWarehouse,UpdateSourceTrigger=PropertyChanged}" ToolTip="اختر مخزنًا أو اكتب اسمًا جديدًا"/></StackPanel><StackPanel Grid.Column="1" Margin="4"><TextBlock Text="موقع التخزين" Style="{StaticResource SectionLabel}"/><TextBox Style="{StaticResource Field}" Text="{Binding NewShelfLocation,UpdateSourceTrigger=PropertyChanged}" ToolTip="رف أو ممر (اختياري)"/></StackPanel><StackPanel Grid.Column="2" Margin="4"><TextBlock Text="المورد الافتراضي" Style="{StaticResource SectionLabel}"/><ComboBox ItemsSource="{Binding Suppliers}" DisplayMemberPath="PersonName" SelectedValuePath="PersonId" SelectedValue="{Binding NewSupplierId,Mode=TwoWay}" Height="44"/></StackPanel></Grid></StackPanel></Border>
+              <Border Grid.Row="2" Style="{StaticResource Card}" Padding="16" Margin="0,0,0,12"><StackPanel><Grid Margin="2,0,2,10"><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions><StackPanel><TextBlock Text="٢. الوحدات والتحويل" FontSize="15" FontWeight="SemiBold"/><TextBlock Text="وحدة واحدة للصنف البسيط، أو وحدتان عند البيع والشراء بالتجزئة والجملة" Style="{StaticResource CaptionText}" Margin="0,4,0,0"/></StackPanel><CheckBox Grid.Column="1" Content="تفعيل وحدة كبرى" IsChecked="{Binding EnableMajorUnit}" VerticalAlignment="Center" Margin="12,0,0,0" FontWeight="SemiBold"/></Grid><Grid><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions><StackPanel Margin="4"><TextBlock Text="الوحدة الأساسية" Style="{StaticResource SectionLabel}"/><TextBox Style="{StaticResource Field}" Text="{Binding NewSmallUnit,UpdateSourceTrigger=PropertyChanged}" ToolTip="مثل حبة أو قارورة أو علبة"/></StackPanel><StackPanel Grid.Column="1" Margin="4"><StackPanel.Style><Style TargetType="StackPanel"><Setter Property="Visibility" Value="Collapsed"/><Style.Triggers><DataTrigger Binding="{Binding EnableMajorUnit}" Value="True"><Setter Property="Visibility" Value="Visible"/></DataTrigger></Style.Triggers></Style></StackPanel.Style><TextBlock Text="الوحدة الكبرى" Style="{StaticResource SectionLabel}"/><TextBox Style="{StaticResource Field}" Text="{Binding NewLargeUnit,UpdateSourceTrigger=PropertyChanged}" ToolTip="مثل كرتون أو صندوق"/></StackPanel><StackPanel Grid.Column="2" Margin="4"><StackPanel.Style><Style TargetType="StackPanel"><Setter Property="Visibility" Value="Collapsed"/><Style.Triggers><DataTrigger Binding="{Binding EnableMajorUnit}" Value="True"><Setter Property="Visibility" Value="Visible"/></DataTrigger></Style.Triggers></Style></StackPanel.Style><TextBlock Text="عدد الوحدات الأساسية في الكبرى" Style="{StaticResource SectionLabel}"/><TextBox Style="{StaticResource NumericField}" Text="{Binding NewConversion,UpdateSourceTrigger=PropertyChanged}" ToolTip="مثال: 24 قارورة في الكرتون"/></StackPanel></Grid><Border Background="#0B162C" BorderBrush="{StaticResource BrushLine}" BorderThickness="1" CornerRadius="8" Padding="10" Margin="4,8,4,0"><StackPanel Orientation="Horizontal" HorizontalAlignment="Center"><TextBlock Text="معاينة: " Foreground="{StaticResource BrushMuted}" VerticalAlignment="Center"/><TextBlock Text="{Binding NewLargeUnit}" FontWeight="SemiBold" VerticalAlignment="Center"><TextBlock.Style><Style TargetType="TextBlock"><Setter Property="Visibility" Value="Collapsed"/><Style.Triggers><DataTrigger Binding="{Binding EnableMajorUnit}" Value="True"><Setter Property="Visibility" Value="Visible"/></DataTrigger></Style.Triggers></Style></TextBlock.Style></TextBlock><TextBlock Text=" = " Foreground="{StaticResource BrushMuted}" VerticalAlignment="Center"><TextBlock.Style><Style TargetType="TextBlock"><Setter Property="Visibility" Value="Collapsed"/><Style.Triggers><DataTrigger Binding="{Binding EnableMajorUnit}" Value="True"><Setter Property="Visibility" Value="Visible"/></DataTrigger></Style.Triggers></Style></TextBlock.Style></TextBlock><TextBlock Text="{Binding NewConversion}" FontWeight="SemiBold" Foreground="{StaticResource BrushAccent2}" VerticalAlignment="Center"><TextBlock.Style><Style TargetType="TextBlock"><Setter Property="Visibility" Value="Collapsed"/><Style.Triggers><DataTrigger Binding="{Binding EnableMajorUnit}" Value="True"><Setter Property="Visibility" Value="Visible"/></DataTrigger></Style.Triggers></Style></TextBlock.Style></TextBlock><TextBlock Text="{Binding NewSmallUnit}" FontWeight="SemiBold" Margin="5,0,0,0" VerticalAlignment="Center"/><TextBlock Text="منتج بوحدة واحدة؛ لا يلزم تحويل" Foreground="{StaticResource BrushMuted}" VerticalAlignment="Center"><TextBlock.Style><Style TargetType="TextBlock"><Setter Property="Visibility" Value="Visible"/><Style.Triggers><DataTrigger Binding="{Binding EnableMajorUnit}" Value="True"><Setter Property="Visibility" Value="Collapsed"/></DataTrigger></Style.Triggers></Style></TextBlock.Style></TextBlock></StackPanel></Border></StackPanel></Border>
+              <Border Grid.Row="3" Style="{StaticResource Card}" Padding="16" Margin="0,0,0,12"><StackPanel><TextBlock Text="٣. الرصيد الافتتاحي والتنبيه" FontSize="15" FontWeight="SemiBold" Margin="2,0,2,10"/><Grid><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions><StackPanel Margin="4"><TextBlock Text="الكمية الافتتاحية" Style="{StaticResource SectionLabel}"/><Grid><TextBox Text="{Binding NewOpeningQuantity,UpdateSourceTrigger=PropertyChanged}"><TextBox.Style><Style TargetType="TextBox" BasedOn="{StaticResource NumericField}"><Setter Property="Visibility" Value="Visible"/><Style.Triggers><DataTrigger Binding="{Binding EnableMajorUnit}" Value="True"><Setter Property="Visibility" Value="Collapsed"/></DataTrigger></Style.Triggers></Style></TextBox.Style></TextBox><TextBox Text="{Binding NewOpeningLargeQuantity,UpdateSourceTrigger=PropertyChanged}"><TextBox.Style><Style TargetType="TextBox" BasedOn="{StaticResource NumericField}"><Setter Property="Visibility" Value="Collapsed"/><Style.Triggers><DataTrigger Binding="{Binding EnableMajorUnit}" Value="True"><Setter Property="Visibility" Value="Visible"/></DataTrigger></Style.Triggers></Style></TextBox.Style></TextBox></Grid><TextBlock Text="{Binding NetOpeningSmallUnits,StringFormat={}الرصيد المعادل: {0:0.##} وحدة أساسية}" Foreground="{StaticResource BrushAccent2}" Margin="2,5,0,0"/></StackPanel><StackPanel Grid.Column="1" Margin="4"><TextBlock Text="حد تنبيه انخفاض المخزون" Style="{StaticResource SectionLabel}"/><TextBox Style="{StaticResource NumericField}" Text="{Binding NewAlert,UpdateSourceTrigger=PropertyChanged}"/></StackPanel><StackPanel Grid.Column="2" Margin="4"><TextBlock Text="ملاحظة داخلية" Style="{StaticResource SectionLabel}"/><TextBox Style="{StaticResource Field}" Text="{Binding NewNote,UpdateSourceTrigger=PropertyChanged}"/></StackPanel></Grid></StackPanel></Border>
+              <Border Grid.Row="4" Style="{StaticResource Card}" Padding="16" Margin="0,0,0,14"><StackPanel><TextBlock Text="٤. التسعير" FontSize="15" FontWeight="SemiBold" Margin="2,0,2,10"/><Grid><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/><ColumnDefinition Width="1.1*"/></Grid.ColumnDefinitions><StackPanel Margin="4"><TextBlock Text="{Binding NewSmallUnit,StringFormat={}سعر الشراء / {0}}" Style="{StaticResource SectionLabel}"/><TextBox Style="{StaticResource NumericField}" Text="{Binding NewPurchasePrice,UpdateSourceTrigger=PropertyChanged}"/></StackPanel><StackPanel Grid.Column="1" Margin="4"><TextBlock Text="{Binding NewSmallUnit,StringFormat={}سعر البيع / {0}}" Style="{StaticResource SectionLabel}"/><TextBox Style="{StaticResource NumericField}" Text="{Binding NewSalePrice,UpdateSourceTrigger=PropertyChanged}"/></StackPanel><Border Grid.Column="2" Background="#0B162C" BorderBrush="{StaticResource BrushLine}" BorderThickness="1" CornerRadius="8" Padding="10" Margin="4"><StackPanel VerticalAlignment="Center"><TextBlock Text="هامش الربح التقديري" Style="{StaticResource SectionLabel}"/><TextBlock Text="{Binding ProfitMargin,StringFormat={}{0:0.0}%}" FontSize="19" FontWeight="SemiBold" Foreground="{StaticResource BrushAccent2}"/><TextBlock Text="{Binding ProfitPerUnit,StringFormat={}الربح للوحدة: {0:0.##}}" Style="{StaticResource CaptionText}"/></StackPanel></Border></Grid><Grid IsEnabled="{Binding EnableMajorUnit}" Margin="0,5,0,0"><Grid.Style><Style TargetType="Grid"><Setter Property="Visibility" Value="Collapsed"/><Style.Triggers><DataTrigger Binding="{Binding EnableMajorUnit}" Value="True"><Setter Property="Visibility" Value="Visible"/></DataTrigger></Style.Triggers></Style></Grid.Style><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/><ColumnDefinition Width="1.1*"/></Grid.ColumnDefinitions><StackPanel Margin="4"><TextBlock Text="{Binding NewLargeUnit,StringFormat={}سعر الشراء / {0}}" Style="{StaticResource SectionLabel}"/><TextBox Style="{StaticResource NumericField}" Text="{Binding NewMajorPurchasePrice,UpdateSourceTrigger=PropertyChanged}"/></StackPanel><StackPanel Grid.Column="1" Margin="4"><TextBlock Text="{Binding NewLargeUnit,StringFormat={}سعر البيع / {0}}" Style="{StaticResource SectionLabel}"/><TextBox Style="{StaticResource NumericField}" Text="{Binding NewMajorSalePrice,UpdateSourceTrigger=PropertyChanged}"/></StackPanel><StackPanel Grid.Column="2" Margin="4" VerticalAlignment="Center"><TextBlock Text="يمكن تعديل سعر الوحدة الكبرى يدويًا" Style="{StaticResource CaptionText}" TextWrapping="Wrap"/></StackPanel></Grid></StackPanel></Border>
+              <Grid Grid.Row="5"><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions><TextBlock Text="{Binding StatusText}" Style="{StaticResource CaptionText}" VerticalAlignment="Center" TextWrapping="Wrap" Margin="2,0,12,0"/><Button Grid.Column="1" Content="إلغاء" Command="{Binding CloseDialogCommand}" Style="{StaticResource GhostButton}" Width="100" Margin="0,0,8,0"/><Button Grid.Column="2" Content="حفظ الصنف" Command="{Binding SaveNewCommand}" Style="{StaticResource PrimaryButton}" Width="145"/></Grid>
+            </Grid>
+          </ScrollViewer>
+        </Border>
+      </Grid>
+    </Grid>
+  </DataTemplate><DataTemplate DataType="{x:Type vm:SalesViewModel}">
+    <Grid FlowDirection="RightToLeft">
+      <Grid.RowDefinitions><RowDefinition Height="*"/></Grid.RowDefinitions>
+      <Border Grid.Row="0" Style="{StaticResource ElevatedCard}" Padding="24" Margin="0,0,0,4">
+        <Grid FlowDirection="RightToLeft">
+          <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+            <TextBlock Text="لا توجد فواتير بيع بعد" FontSize="19" FontWeight="SemiBold" HorizontalAlignment="Center"/>
+            <TextBlock Text="ابدأ فاتورة جديدة، وسيتم تحديث المخزون ورصيد العميل تلقائيًا عند الحفظ." Style="{StaticResource CaptionText}" TextWrapping="Wrap" MaxWidth="620" TextAlignment="Center" HorizontalAlignment="Center" Margin="0,7,0,16"/>
+            <Button Content="إنشاء فاتورة بيع" Command="{Binding OpenNewCommand}" Style="{StaticResource PrimaryButton}" Width="160" Height="44" HorizontalAlignment="Center"/>
+          </StackPanel>
+        </Grid>
+      </Border>
+      <Grid Style="{StaticResource DialogOverlay}" Visibility="{Binding IsDialogOpen,Converter={StaticResource BoolToVisibility}}">
+        <Border Width="680" MaxHeight="880" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{StaticResource DialogShell}" Padding="22"><ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+          <Grid FlowDirection="RightToLeft" KeyboardNavigation.TabNavigation="Local" behaviors:InputDialogBehavior.IsEnabled="True">
+            <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+            <DockPanel Grid.Row="0" Margin="0,0,0,16">
+              <Button DockPanel.Dock="Left" Command="{Binding CloseDialogCommand}" Style="{StaticResource IconButton}" ToolTip="إغلاق" AutomationProperties.Name="إغلاق"><Path Width="14" Height="14" Stretch="Uniform" Stroke="#9DB7D4" StrokeThickness="1.6" Data="{StaticResource CloseIcon}"/></Button>
+              <StackPanel><TextBlock Text="فاتورة بيع جديدة" FontSize="22" FontWeight="SemiBold"/><TextBlock Text="أدخل بيانات الفاتورة بالترتيب ثم احفظ." Style="{StaticResource CaptionText}"/></StackPanel>
+            </DockPanel>
+            <Grid Grid.Row="1" Margin="0,0,0,12">
+              <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions>
+              <StackPanel Margin="4"><TextBlock Text="العميل" Style="{StaticResource SectionLabel}"/><Grid><TextBox x:Name="SaleCustomerSearch" behaviors:InputDialogBehavior.SuggestionKeysEnabled="True" behaviors:InputDialogBehavior.SuggestionPopupName="SaleCustomerSuggestions" behaviors:InputDialogBehavior.SuggestionPopup="{Binding ElementName=SaleCustomerSuggestions}" TabIndex="1" Style="{StaticResource Field}" Text="{Binding CustomerSearch,UpdateSourceTrigger=PropertyChanged}" AutomationProperties.Name="العميل" Height="44"/><Popup x:Name="SaleCustomerSuggestions" behaviors:InputDialogBehavior.RegisterSuggestionPopup="True" Placement="Bottom" PlacementTarget="{Binding ElementName=SaleCustomerSearch}" IsOpen="{Binding IsCustomerSuggestionsOpen,Mode=TwoWay}" StaysOpen="False" AllowsTransparency="True"><Border Width="520" MaxHeight="240" Style="{StaticResource DialogShell}" Padding="5"><ListBox ItemsSource="{Binding People}" SelectedValuePath="PersonId" SelectedValue="{Binding PersonId,Mode=TwoWay}" FlowDirection="RightToLeft"><ListBox.ItemTemplate><DataTemplate><Grid Margin="4,3"><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions><TextBlock Text="{Binding PersonName}" FontWeight="SemiBold"/><TextBlock Grid.Column="1" Text="{Binding Person.Phone, StringFormat={}الهاتف: {0}}" Foreground="{StaticResource BrushMuted}" Margin="12,0,0,0"/></Grid></DataTemplate></ListBox.ItemTemplate></ListBox></Border></Popup></Grid><Button Content="+ حساب جديد" Command="{Binding OpenQuickPersonCommand}" Style="{StaticResource GhostButton}" Height="32" Padding="8,2" MinWidth="130" Margin="0,4,0,0" HorizontalAlignment="Right"/></StackPanel>
+              <StackPanel Grid.Column="1" Margin="4"><TextBlock Text="الصنف" Style="{StaticResource SectionLabel}"/><Grid><TextBox x:Name="SaleProductSearch" behaviors:InputDialogBehavior.SuggestionKeysEnabled="True" behaviors:InputDialogBehavior.SuggestionPopupName="SaleProductSuggestions" behaviors:InputDialogBehavior.SuggestionPopup="{Binding ElementName=SaleProductSuggestions}" TabIndex="2" Style="{StaticResource Field}" Text="{Binding ProductSearch,UpdateSourceTrigger=PropertyChanged}" AutomationProperties.Name="الصنف" Height="44"/><Popup x:Name="SaleProductSuggestions" behaviors:InputDialogBehavior.RegisterSuggestionPopup="True" Placement="Bottom" PlacementTarget="{Binding ElementName=SaleProductSearch}" IsOpen="{Binding IsProductSuggestionsOpen,Mode=TwoWay}" StaysOpen="False" AllowsTransparency="True"><Border Width="520" MaxHeight="240" Style="{StaticResource DialogShell}" Padding="5"><ListBox ItemsSource="{Binding Products}" SelectedValuePath="Id" SelectedValue="{Binding ProductId,Mode=TwoWay}" FlowDirection="RightToLeft"><ListBox.ItemTemplate><DataTemplate><StackPanel Margin="4,3"><TextBlock Text="{Binding Name}" FontWeight="SemiBold"/><TextBlock Foreground="{StaticResource BrushMuted}" FontSize="11" Text="{Binding SmallUnit, StringFormat={}الوحدة: {0}}"/><TextBlock Foreground="{StaticResource BrushMuted}" FontSize="11" Text="{Binding StockSmallUnits, StringFormat={}الرصيد: {0}}"/><TextBlock Foreground="{StaticResource BrushMuted}" FontSize="11" Text="{Binding SalePrice, StringFormat={}سعر البيع: {0}}"/><TextBlock Foreground="{StaticResource BrushMuted}" FontSize="11" Text="{Binding PurchasePrice, StringFormat={}شراء مرجعي: {0}}"/></StackPanel></DataTemplate></ListBox.ItemTemplate></ListBox></Border></Popup></Grid><Button Content="+ صنف جديد" Command="{Binding OpenQuickProductCommand}" Style="{StaticResource GhostButton}" Height="32" Padding="8,2" MinWidth="130" Margin="0,4,0,0" HorizontalAlignment="Right"/></StackPanel>
+              <StackPanel Grid.Column="2" Margin="4"><TextBlock Text="الكمية *" Style="{StaticResource SectionLabel}"/><TextBox TabIndex="3" Style="{StaticResource NumericField}" Text="{Binding QuantityText,UpdateSourceTrigger=PropertyChanged}" Height="44"/></StackPanel>
+              <StackPanel Grid.Column="3" Margin="4"><TextBlock Text="الوحدة" Style="{StaticResource SectionLabel}"/><ComboBox ItemsSource="{Binding QuantityUnits}" SelectedItem="{Binding SelectedQuantityUnit,Mode=TwoWay}" Height="44" TabIndex="4" AutomationProperties.Name="وحدة الكمية"/></StackPanel>
+            </Grid>
+            <Grid Grid.Row="2" Margin="0,0,0,12">
+              <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions>
+              <StackPanel Margin="4"><TextBlock Text="السعر *" Style="{StaticResource SectionLabel}"/><TextBox TabIndex="5" Style="{StaticResource NumericField}" Text="{Binding PriceText,UpdateSourceTrigger=PropertyChanged}" Height="44"/></StackPanel>
+              <StackPanel Grid.Column="1" Margin="4"><TextBlock Text="المدفوع" Style="{StaticResource SectionLabel}"/><TextBox TabIndex="6" Style="{StaticResource NumericField}" Text="{Binding PaidText,UpdateSourceTrigger=PropertyChanged}" Height="44"/></StackPanel>
+              <StackPanel Grid.Column="2" Margin="4"><TextBlock Text="البيان" Style="{StaticResource SectionLabel}"/><TextBox TabIndex="7" Style="{StaticResource Field}" Text="{Binding Note,UpdateSourceTrigger=PropertyChanged}" Height="44"/></StackPanel>
+            </Grid>
+            <StackPanel Grid.Row="3" Margin="4,0,4,8"><Button Content="إضافة الصنف إلى الفاتورة" Command="{Binding AddLineCommand}" Style="{StaticResource PrimaryButton}" Height="36" HorizontalAlignment="Right"/><DataGrid ItemsSource="{Binding Lines}" AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True" Height="118" Margin="0,6,0,0" FlowDirection="RightToLeft" HeadersVisibility="Column"><DataGrid.Columns><DataGridTextColumn Header="الصنف" Binding="{Binding ProductName}" Width="2*"/><DataGridTextColumn Header="الكمية" Binding="{Binding Quantity}" Width="*"/><DataGridTextColumn Header="الوحدة" Binding="{Binding Unit}" Width="*"/><DataGridTextColumn Header="السعر" Binding="{Binding UnitPrice}" Width="*"/><DataGridTextColumn Header="الإجمالي" Binding="{Binding LineTotal}" Width="*"/><DataGridTemplateColumn Header="حذف" Width="60"><DataGridTemplateColumn.CellTemplate><DataTemplate><Button Content="×" Command="{Binding DataContext.RemoveLineCommand,RelativeSource={RelativeSource AncestorType=DataGrid}}" CommandParameter="{Binding}" Style="{StaticResource GhostButton}" Padding="5,0"/></DataTemplate></DataGridTemplateColumn.CellTemplate></DataGridTemplateColumn></DataGrid.Columns></DataGrid></StackPanel>
+            <StackPanel Grid.Row="4" Margin="4,0,4,12">
+              <TextBlock Text="طريقة السداد" Style="{StaticResource SectionLabel}"/>
+              <UniformGrid Columns="3" Margin="0,4,0,0">
+                <RadioButton Content="نقدي" GroupName="SalePayment" Style="{StaticResource SegmentedChoice}" IsChecked="{Binding IsCashSelected}" Command="{Binding SelectCashCommand}"/>
+                <RadioButton Content="آجل — له" GroupName="SalePayment" Style="{StaticResource SegmentedChoice}" IsChecked="{Binding IsCreditSelected}" Command="{Binding SelectCreditCommand}"/>
+                <RadioButton Content="جزئي — المتبقي له" GroupName="SalePayment" Style="{StaticResource SegmentedChoice}" IsChecked="{Binding IsPartialSelected}" Command="{Binding SelectPartialCommand}"/>
+              </UniformGrid>
+            </StackPanel>
+            <Border Grid.Row="5" Style="{StaticResource Card}" Padding="12" Margin="4,0,4,10">
+              <Grid><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions>
+                <StackPanel><TextBlock Text="الإجمالي" Style="{StaticResource CaptionText}"/><TextBlock Text="{Binding Total,Converter={StaticResource PrivacyMoneyConverter}}" Style="{StaticResource MetricText}"/></StackPanel>
+                <StackPanel Grid.Column="1"><TextBlock Text="المدفوع" Style="{StaticResource CaptionText}"/><TextBlock Text="{Binding PaidText}" Style="{StaticResource MetricText}"/></StackPanel>
+                <StackPanel Grid.Column="2"><TextBlock Text="{Binding BalanceLabel}" Style="{StaticResource CaptionText}"/><TextBlock Text="{Binding Remaining,Converter={StaticResource PrivacyMoneyConverter}}" Style="{StaticResource MetricText}" Foreground="{StaticResource BrushWarning}"/></StackPanel>
+              </Grid>
+            </Border>
+            <Grid Grid.Row="6" Margin="4,0,4,0">
+              <TextBlock Text="{Binding StatusText}" Style="{StaticResource CaptionText}" Foreground="{StaticResource BrushNegative}" VerticalAlignment="Center" TextWrapping="Wrap"/>
+            </Grid>
+            <StackPanel Grid.Row="7" Orientation="Horizontal" HorizontalAlignment="Left" Margin="4,14,4,0">
+              <Button Content="إصدار الفاتورة" Command="{Binding SaveCommand}" Style="{StaticResource PrimaryButton}" Width="150" Height="44"/>
+              <Button Content="إلغاء" Command="{Binding CloseDialogCommand}" Style="{StaticResource GhostButton}" Width="105" Height="44" Margin="8,0,0,0"/>
+            </StackPanel>
+          </Grid></ScrollViewer></Border>
+      </Grid>
+      <Grid Style="{StaticResource DialogOverlay}" Visibility="{Binding IsQuickPersonDialogOpen,Converter={StaticResource BoolToVisibility}}"><Border Width="480" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{StaticResource DialogShell}" Padding="22"><StackPanel behaviors:InputDialogBehavior.IsEnabled="True"><TextBlock Text="إنشاء حساب وربطه بالفاتورة" FontSize="20" FontWeight="SemiBold" Margin="0,0,0,12"/><TextBlock Text="الاسم" Style="{StaticResource SectionLabel}"/><TextBox Style="{StaticResource Field}" Text="{Binding QuickPersonName,UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,8"/><TextBlock Text="الهاتف (اختياري)" Style="{StaticResource SectionLabel}"/><TextBox Style="{StaticResource Field}" Text="{Binding QuickPersonPhone}" FlowDirection="LeftToRight" Margin="0,0,0,8"/><TextBlock Text="ملاحظة الحساب (اختياري)" Style="{StaticResource SectionLabel}"/><TextBox Style="{StaticResource Field}" Text="{Binding QuickPersonNote}" Margin="0,0,0,12"/><StackPanel Orientation="Horizontal" HorizontalAlignment="Left"><Button Content="إنشاء واختيار الحساب" Command="{Binding SaveQuickPersonCommand}" Style="{StaticResource PrimaryButton}" Margin="0,0,8,0"/><Button Content="إلغاء" Command="{Binding CloseQuickPersonCommand}" Style="{StaticResource GhostButton}"/></StackPanel></StackPanel></Border></Grid>
+      <Grid Style="{StaticResource DialogOverlay}" Visibility="{Binding IsQuickProductDialogOpen,Converter={StaticResource BoolToVisibility}}"><Border Width="520" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{StaticResource DialogShell}" Padding="22"><StackPanel behaviors:InputDialogBehavior.IsEnabled="True"><TextBlock Text="إنشاء صنف وربطه بالفاتورة" FontSize="20" FontWeight="SemiBold" Margin="0,0,0,12"/><TextBlock Text="اسم الصنف" Style="{StaticResource SectionLabel}"/><TextBox Style="{StaticResource Field}" Text="{Binding QuickProductName,UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,8"/><Grid><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions><StackPanel Margin="0,0,4,8"><TextBlock Text="الوحدة الصغرى" Style="{StaticResource SectionLabel}"/><TextBox Style="{StaticResource Field}" Text="{Binding QuickProductSmallUnit}"/></StackPanel><StackPanel Grid.Column="1" Margin="4,0,0,8"><TextBlock Text="الوحدة الكبرى" Style="{StaticResource SectionLabel}"/><TextBox Style="{StaticResource Field}" Text="{Binding QuickProductLargeUnit}"/></StackPanel></Grid><Grid><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions><StackPanel Margin="0,0,4,8"><TextBlock Text="معامل التحويل" Style="{StaticResource SectionLabel}"/><TextBox Style="{StaticResource NumericField}" Text="{Binding QuickProductConversion}"/></StackPanel><StackPanel Grid.Column="1" Margin="4,0,0,8"><TextBlock Text="سعر الشراء المرجعي للوحدة الصغرى (اختياري)" Style="{StaticResource SectionLabel}"/><TextBox Style="{StaticResource NumericField}" Text="{Binding QuickProductPurchasePrice}"/></StackPanel></Grid><TextBlock Text="سعر البيع الافتراضي (اختياري)" Style="{StaticResource SectionLabel}"/><TextBox Style="{StaticResource NumericField}" Text="{Binding QuickProductSalePrice}" Margin="0,0,0,12"/><StackPanel Orientation="Horizontal" HorizontalAlignment="Left"><Button Content="إنشاء واختيار الصنف" Command="{Binding SaveQuickProductCommand}" Style="{StaticResource PrimaryButton}" Margin="0,0,8,0"/><Button Content="إلغاء" Command="{Binding CloseQuickProductCommand}" Style="{StaticResource GhostButton}"/></StackPanel></StackPanel></Border></Grid>
+    </Grid>
+  </DataTemplate>
+      <DataTemplate DataType="{x:Type vm:PurchasesViewModel}">
+    <Grid FlowDirection="RightToLeft">
+      <Grid.RowDefinitions><RowDefinition Height="*"/></Grid.RowDefinitions>
+      <Border Grid.Row="0" Style="{StaticResource ElevatedCard}" Padding="24" Margin="0,0,0,4">
+        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" FlowDirection="RightToLeft">
+          <TextBlock Text="لا توجد فواتير شراء بعد" FontSize="19" FontWeight="SemiBold" HorizontalAlignment="Center"/>
+          <TextBlock Text="ابدأ فاتورة جديدة، وسيتم تحديث المخزون ورصيد المورد تلقائيًا عند الحفظ." Style="{StaticResource CaptionText}" TextWrapping="Wrap" MaxWidth="620" TextAlignment="Center" HorizontalAlignment="Center" Margin="0,7,0,16"/>
+          <Button Content="إنشاء فاتورة شراء" Command="{Binding OpenNewCommand}" Style="{StaticResource PrimaryButton}" Width="160" Height="44" HorizontalAlignment="Center"/>
+        </StackPanel>
+      </Border>
+      <Grid Style="{StaticResource DialogOverlay}" Visibility="{Binding IsDialogOpen,Converter={StaticResource BoolToVisibility}}">
+        <Border Width="640" MaxHeight="880" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{StaticResource DialogShell}" Padding="20"><ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+          <Grid FlowDirection="RightToLeft" KeyboardNavigation.TabNavigation="Local" behaviors:InputDialogBehavior.IsEnabled="True">
+            <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+            <DockPanel Grid.Row="0" Margin="0,0,0,16"><Button DockPanel.Dock="Left" Command="{Binding CloseDialogCommand}" Style="{StaticResource IconButton}" ToolTip="إغلاق"><Path Width="14" Height="14" Stretch="Uniform" Stroke="#9DB7D4" StrokeThickness="1.6" Data="{StaticResource CloseIcon}"/></Button><StackPanel><TextBlock Text="فاتورة شراء جديدة" FontSize="22" FontWeight="SemiBold"/><TextBlock Text="أدخل البيانات بالترتيب ثم احفظ." Style="{StaticResource CaptionText}"/></StackPanel></DockPanel>
+            <StackPanel Grid.Row="5" Margin="4,0,4,12"><TextBlock Text="طريقة السداد" Style="{StaticResource SectionLabel}"/><UniformGrid Columns="3"><RadioButton Content="نقدي" GroupName="PurchasePayment" Style="{StaticResource SegmentedChoice}" IsChecked="{Binding IsCashSelected}" Command="{Binding SelectCashCommand}"/><RadioButton Content="آجل — عليه" GroupName="PurchasePayment" Style="{StaticResource SegmentedChoice}" IsChecked="{Binding IsCreditSelected}" Command="{Binding SelectCreditCommand}"/><RadioButton Content="جزئي — المتبقي عليه" GroupName="PurchasePayment" Style="{StaticResource SegmentedChoice}" IsChecked="{Binding IsPartialSelected}" Command="{Binding SelectPartialCommand}"/></UniformGrid></StackPanel>
+            <StackPanel Grid.Row="1" Margin="4,0,4,12"><TextBlock Text="المورد" Style="{StaticResource SectionLabel}"/><Grid><TextBox x:Name="PurchaseSupplierSearch" behaviors:InputDialogBehavior.SuggestionKeysEnabled="True" behaviors:InputDialogBehavior.SuggestionPopupName="PurchaseSupplierSuggestions" behaviors:InputDialogBehavior.SuggestionPopup="{Binding ElementName=PurchaseSupplierSuggestions}" TabIndex="1" Style="{StaticResource Field}" Text="{Binding SupplierSearch,UpdateSourceTrigger=PropertyChanged}" AutomationProperties.Name="المورد" Height="44"/><Popup x:Name="PurchaseSupplierSuggestions" behaviors:InputDialogBehavior.RegisterSuggestionPopup="True" Placement="Bottom" PlacementTarget="{Binding ElementName=PurchaseSupplierSearch}" IsOpen="{Binding IsSupplierSuggestionsOpen,Mode=TwoWay}" StaysOpen="False" AllowsTransparency="True"><Border Width="520" MaxHeight="240" Style="{StaticResource DialogShell}" Padding="5"><ListBox ItemsSource="{Binding People}" SelectedValuePath="PersonId" SelectedValue="{Binding PersonId,Mode=TwoWay}" FlowDirection="RightToLeft"><ListBox.ItemTemplate><DataTemplate><StackPanel Margin="4,3"><TextBlock Text="{Binding PersonName}" FontWeight="SemiBold"/><TextBlock Text="{Binding Person.Phone, StringFormat={}الهاتف: {0}}" Foreground="{StaticResource BrushMuted}" FontSize="11"/></StackPanel></DataTemplate></ListBox.ItemTemplate></ListBox></Border></Popup></Grid><Button Content="+ حساب جديد" Command="{Binding OpenQuickPersonCommand}" Style="{StaticResource GhostButton}" Height="32" Padding="8,2" MinWidth="130" Margin="0,4,0,0" HorizontalAlignment="Right"/></StackPanel>
+            <StackPanel Grid.Row="2" Margin="4,0,4,12"><TextBlock Text="الصنف" Style="{StaticResource SectionLabel}"/><Grid><TextBox x:Name="PurchaseProductSearch" behaviors:InputDialogBehavior.SuggestionKeysEnabled="True" behaviors:InputDialogBehavior.SuggestionPopupName="PurchaseProductSuggestions" behaviors:InputDialogBehavior.SuggestionPopup="{Binding ElementName=PurchaseProductSuggestions}" TabIndex="2" Style="{StaticResource Field}" Text="{Binding ProductSearch,UpdateSourceTrigger=PropertyChanged}" AutomationProperties.Name="الصنف" Height="44"/><Popup x:Name="PurchaseProductSuggestions" behaviors:InputDialogBehavior.RegisterSuggestionPopup="True" Placement="Bottom" PlacementTarget="{Binding ElementName=PurchaseProductSearch}" IsOpen="{Binding IsProductSuggestionsOpen,Mode=TwoWay}" StaysOpen="False" AllowsTransparency="True"><Border Width="520" MaxHeight="240" Style="{StaticResource DialogShell}" Padding="5"><ListBox ItemsSource="{Binding Products}" SelectedValuePath="Id" SelectedValue="{Binding ProductId,Mode=TwoWay}" FlowDirection="RightToLeft"><ListBox.ItemTemplate><DataTemplate><StackPanel Margin="4,3"><TextBlock Text="{Binding Name}" FontWeight="SemiBold"/><TextBlock Foreground="{StaticResource BrushMuted}" FontSize="11" Text="{Binding SmallUnit, StringFormat={}الوحدة: {0}}"/><TextBlock Foreground="{StaticResource BrushMuted}" FontSize="11" Text="{Binding StockSmallUnits, StringFormat={}الرصيد: {0}}"/><TextBlock Foreground="{StaticResource BrushMuted}" FontSize="11" Text="{Binding PurchasePrice, StringFormat={}شراء مرجعي: {0}}"/><TextBlock Foreground="{StaticResource BrushMuted}" FontSize="11" Text="{Binding SalePrice, StringFormat={}سعر البيع: {0}}"/></StackPanel></DataTemplate></ListBox.ItemTemplate></ListBox></Border></Popup></Grid><Button Content="+ صنف جديد" Command="{Binding OpenQuickProductCommand}" Style="{StaticResource GhostButton}" Height="32" Padding="8,2" MinWidth="130" Margin="0,4,0,0" HorizontalAlignment="Right"/></StackPanel>
+            <Grid Grid.Row="3" Margin="0,0,0,8"><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions><StackPanel Margin="4"><TextBlock Text="الكمية *" Style="{StaticResource SectionLabel}"/><TextBox TabIndex="3" Style="{StaticResource NumericField}" Text="{Binding QuantityText,UpdateSourceTrigger=PropertyChanged}"/></StackPanel><StackPanel Grid.Column="1" Margin="4"><TextBlock Text="السعر *" Style="{StaticResource SectionLabel}"/><TextBox TabIndex="5" Style="{StaticResource NumericField}" Text="{Binding PriceText,UpdateSourceTrigger=PropertyChanged}"/></StackPanel><StackPanel Grid.Column="2" Margin="4"><TextBlock Text="المدفوع" Style="{StaticResource SectionLabel}"/><TextBox TabIndex="6" Style="{StaticResource NumericField}" Text="{Binding PaidText,UpdateSourceTrigger=PropertyChanged}"/></StackPanel><StackPanel Grid.Column="3" Margin="4"><TextBlock Text="الوحدة" Style="{StaticResource SectionLabel}"/><ComboBox ItemsSource="{Binding QuantityUnits}" SelectedItem="{Binding SelectedQuantityUnit,Mode=TwoWay}" Height="44" TabIndex="4" AutomationProperties.Name="وحدة الكمية"/></StackPanel></Grid>
+            <StackPanel Grid.Row="4" Margin="4,0,4,8"><Button Content="إضافة الصنف إلى الفاتورة" Command="{Binding AddLineCommand}" Style="{StaticResource PrimaryButton}" Height="36" HorizontalAlignment="Right"/><DataGrid ItemsSource="{Binding Lines}" AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True" Height="108" Margin="0,6,0,0" FlowDirection="RightToLeft" HeadersVisibility="Column"><DataGrid.Columns><DataGridTextColumn Header="الصنف" Binding="{Binding ProductName}" Width="2*"/><DataGridTextColumn Header="الكمية" Binding="{Binding Quantity}" Width="*"/><DataGridTextColumn Header="الوحدة" Binding="{Binding Unit}" Width="*"/><DataGridTextColumn Header="السعر" Binding="{Binding UnitPrice}" Width="*"/><DataGridTextColumn Header="الإجمالي" Binding="{Binding LineTotal}" Width="*"/><DataGridTemplateColumn Header="حذف" Width="60"><DataGridTemplateColumn.CellTemplate><DataTemplate><Button Content="×" Command="{Binding DataContext.RemoveLineCommand,RelativeSource={RelativeSource AncestorType=DataGrid}}" CommandParameter="{Binding}" Style="{StaticResource GhostButton}" Padding="5,0"/></DataTemplate></DataGridTemplateColumn.CellTemplate></DataGridTemplateColumn></DataGrid.Columns></DataGrid></StackPanel><StackPanel Grid.Row="6" Margin="4,0,4,12"><TextBlock Text="البيان / الملاحظة" Style="{StaticResource SectionLabel}"/><TextBox TabIndex="7" Style="{StaticResource Field}" Text="{Binding Note,UpdateSourceTrigger=PropertyChanged}"/></StackPanel>
+            <Border Grid.Row="7" Style="{StaticResource Card}" Padding="12" Margin="4,0,4,8"><Grid><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions><StackPanel><TextBlock Text="الإجمالي" Style="{StaticResource CaptionText}"/><TextBlock Text="{Binding Total,Converter={StaticResource PrivacyMoneyConverter}}" Style="{StaticResource MetricText}"/></StackPanel><StackPanel Grid.Column="1"><TextBlock Text="المدفوع" Style="{StaticResource CaptionText}"/><TextBlock Text="{Binding PaidText}" Style="{StaticResource MetricText}"/></StackPanel><StackPanel Grid.Column="2"><TextBlock Text="{Binding BalanceLabel}" Style="{StaticResource CaptionText}"/><TextBlock Text="{Binding Remaining,Converter={StaticResource PrivacyMoneyConverter}}" Style="{StaticResource MetricText}" Foreground="{StaticResource BrushWarning}"/></StackPanel></Grid></Border>
+            <Grid Grid.Row="8"><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions><TextBlock Text="{Binding StatusText}" Style="{StaticResource CaptionText}" Foreground="{StaticResource BrushNegative}" VerticalAlignment="Center" Margin="4"/><Button Grid.Column="1" Content="تسجيل الفاتورة" Command="{Binding SaveCommand}" Style="{StaticResource PrimaryButton}" Width="150" Margin="8,0,0,0"/><Button Grid.Column="2" Content="إلغاء" Command="{Binding CloseDialogCommand}" Style="{StaticResource GhostButton}" Width="105" Margin="8,0,0,0"/></Grid>
+          </Grid></ScrollViewer></Border>
+      </Grid>
+      <Grid Style="{StaticResource DialogOverlay}" Visibility="{Binding IsQuickPersonDialogOpen,Converter={StaticResource BoolToVisibility}}"><Border Width="480" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{StaticResource DialogShell}" Padding="22"><StackPanel behaviors:InputDialogBehavior.IsEnabled="True"><TextBlock Text="إنشاء حساب وربطه بالفاتورة" FontSize="20" FontWeight="SemiBold" Margin="0,0,0,12"/><TextBlock Text="الاسم" Style="{StaticResource SectionLabel}"/><TextBox Style="{StaticResource Field}" Text="{Binding QuickPersonName,UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,8"/><TextBlock Text="الهاتف (اختياري)" Style="{StaticResource SectionLabel}"/><TextBox Style="{StaticResource Field}" Text="{Binding QuickPersonPhone}" FlowDirection="LeftToRight" Margin="0,0,0,8"/><TextBlock Text="ملاحظة الحساب (اختياري)" Style="{StaticResource SectionLabel}"/><TextBox Style="{StaticResource Field}" Text="{Binding QuickPersonNote}" Margin="0,0,0,12"/><StackPanel Orientation="Horizontal" HorizontalAlignment="Left"><Button Content="إنشاء واختيار الحساب" Command="{Binding SaveQuickPersonCommand}" Style="{StaticResource PrimaryButton}" Margin="0,0,8,0"/><Button Content="إلغاء" Command="{Binding CloseQuickPersonCommand}" Style="{StaticResource GhostButton}"/></StackPanel></StackPanel></Border></Grid>
+      <Grid Style="{StaticResource DialogOverlay}" Visibility="{Binding IsQuickProductDialogOpen,Converter={StaticResource BoolToVisibility}}"><Border Width="520" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{StaticResource DialogShell}" Padding="22"><StackPanel behaviors:InputDialogBehavior.IsEnabled="True"><TextBlock Text="إنشاء صنف وربطه بالفاتورة" FontSize="20" FontWeight="SemiBold" Margin="0,0,0,12"/><TextBlock Text="اسم الصنف" Style="{StaticResource SectionLabel}"/><TextBox Style="{StaticResource Field}" Text="{Binding QuickProductName,UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,8"/><Grid><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions><StackPanel Margin="0,0,4,8"><TextBlock Text="الوحدة الصغرى" Style="{StaticResource SectionLabel}"/><TextBox Style="{StaticResource Field}" Text="{Binding QuickProductSmallUnit}"/></StackPanel><StackPanel Grid.Column="1" Margin="4,0,0,8"><TextBlock Text="الوحدة الكبرى" Style="{StaticResource SectionLabel}"/><TextBox Style="{StaticResource Field}" Text="{Binding QuickProductLargeUnit}"/></StackPanel></Grid><Grid><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions><StackPanel Margin="0,0,4,8"><TextBlock Text="معامل التحويل" Style="{StaticResource SectionLabel}"/><TextBox Style="{StaticResource NumericField}" Text="{Binding QuickProductConversion}"/></StackPanel><StackPanel Grid.Column="1" Margin="4,0,0,8"><TextBlock Text="سعر الشراء المرجعي للوحدة الصغرى (اختياري)" Style="{StaticResource SectionLabel}"/><TextBox Style="{StaticResource NumericField}" Text="{Binding QuickProductPurchasePrice}"/></StackPanel></Grid><TextBlock Text="سعر البيع الافتراضي (اختياري)" Style="{StaticResource SectionLabel}"/><TextBox Style="{StaticResource NumericField}" Text="{Binding QuickProductSalePrice}" Margin="0,0,0,12"/><StackPanel Orientation="Horizontal" HorizontalAlignment="Left"><Button Content="إنشاء واختيار الصنف" Command="{Binding SaveQuickProductCommand}" Style="{StaticResource PrimaryButton}" Margin="0,0,8,0"/><Button Content="إلغاء" Command="{Binding CloseQuickProductCommand}" Style="{StaticResource GhostButton}"/></StackPanel></StackPanel></Border></Grid>
+    </Grid>
+  </DataTemplate>
+  <DataTemplate DataType="{x:Type vm:ExpensesViewModel}">
+    <Grid FlowDirection="RightToLeft"><Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions><DockPanel Margin="0,0,0,16"><StackPanel DockPanel.Dock="Right"><TextBlock Text="المصروفات" FontSize="22" FontWeight="SemiBold"/><TextBlock Text="تسجيل ومراجعة المصروفات بشكل واضح وسريع" Style="{StaticResource CaptionText}"/></StackPanel><Button DockPanel.Dock="Left" Content="+ تسجيل نفقة" Command="{Binding OpenAddCommand}" Style="{StaticResource PrimaryButton}" Width="130"/></DockPanel><Border Grid.Row="1" Style="{StaticResource Card}" Padding="8"><DataGrid ItemsSource="{Binding Expenses}" IsReadOnly="True"><DataGrid.Columns><DataGridTextColumn Header="التصنيف" Binding="{Binding Category}" Width="180" ElementStyle="{StaticResource TableTextCell}"/><DataGridTextColumn Header="المبلغ" Binding="{Binding Amount,Converter={StaticResource PrivacyMoneyConverter}}" ElementStyle="{StaticResource NumericCell}" Width="160"/><DataGridTextColumn Header="التاريخ" Binding="{Binding OccurredAt,Converter={StaticResource ArabicDateTimeConverter}}" Width="180" ElementStyle="{StaticResource TableTextCell}"/><DataGridTextColumn Header="البيان" Binding="{Binding Note}" Width="1.4*" ElementStyle="{StaticResource TableTextCell}"/></DataGrid.Columns></DataGrid></Border><Grid Style="{StaticResource DialogOverlay}" Visibility="{Binding IsDialogOpen,Converter={StaticResource BoolToVisibility}}"><Border Width="560" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{StaticResource DialogShell}" Padding="28"><StackPanel behaviors:InputDialogBehavior.IsEnabled="True"><DockPanel Margin="0,0,0,20"><StackPanel><TextBlock Text="تسجيل نفقة" FontSize="22" FontWeight="SemiBold"/><TextBlock Text="سجل النفقة بسرعة ووضوح" Style="{StaticResource CaptionText}"/></StackPanel><Button DockPanel.Dock="Left" Command="{Binding CloseDialogCommand}" Style="{StaticResource IconButton}" ToolTip="إغلاق" AutomationProperties.Name="إغلاق"><Path Width="14" Height="14" Stretch="Uniform" Stroke="#9DB7D4" StrokeThickness="1.6" Data="{StaticResource CloseIcon}"/></Button></DockPanel><TextBlock Text="التصنيف" Style="{StaticResource SectionLabel}"/><TextBox Style="{StaticResource Field}" Text="{Binding Category}" Margin="0,0,0,14"/><TextBlock Text="المبلغ" Style="{StaticResource SectionLabel}"/><TextBox Style="{StaticResource NumericField}" Text="{Binding AmountText}" Margin="0,0,0,14"/><TextBlock Text="البيان" Style="{StaticResource SectionLabel}"/><TextBox Style="{StaticResource Field}" Text="{Binding Note}" Margin="0,0,0,20"/><StackPanel Orientation="Horizontal" HorizontalAlignment="Left"><Button Content="حفظ النفقة" Command="{Binding SaveCommand}" Style="{StaticResource PrimaryButton}" Width="125" Margin="0,0,8,0"/><Button Content="إلغاء" Command="{Binding CloseDialogCommand}" Style="{StaticResource GhostButton}" Width="100"/></StackPanel></StackPanel></Border></Grid></Grid>
+  </DataTemplate>
+  <DataTemplate DataType="{x:Type vm:ReportsViewModel}">
+    <Grid FlowDirection="RightToLeft"><Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
+      <Border Style="{StaticResource ElevatedCard}" Padding="16" Margin="0,0,0,14"><Grid><Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/><ColumnDefinition Width="180"/><ColumnDefinition Width="110"/><ColumnDefinition Width="110"/></Grid.ColumnDefinitions><StackPanel Margin="4"><TextBlock Text="من تاريخ" Style="{StaticResource SectionLabel}"/><DatePicker SelectedDate="{Binding FromDate}" Height="42"/></StackPanel><StackPanel Grid.Column="1" Margin="4"><TextBlock Text="إلى تاريخ" Style="{StaticResource SectionLabel}"/><DatePicker SelectedDate="{Binding ToDate}" Height="42"/></StackPanel><StackPanel Grid.Column="2" Margin="4"><TextBlock Text="صيغة المستند" Style="{StaticResource SectionLabel}"/><ComboBox ItemsSource="{Binding PageKinds}" SelectedItem="{Binding SelectedPageKind}" Height="42"><ComboBox.ItemTemplate><DataTemplate><TextBlock Text="{Binding}"/></DataTemplate></ComboBox.ItemTemplate></ComboBox></StackPanel><Button Grid.Column="3" Content="تحديث" Command="{Binding RefreshCommand}" Style="{StaticResource PrimaryButton}" Margin="8,21,4,0"/><Button Grid.Column="4" Content="تصدير Excel" Command="{Binding ExportExcelCommand}" Style="{StaticResource GhostButton}" Margin="4,21,0,0"/><StackPanel Grid.Row="1" Grid.ColumnSpan="5" Orientation="Horizontal" HorizontalAlignment="Left" Margin="4,10,4,0"><Button Content="تصدير PDF" Command="{Binding ExportPdfCommand}" Style="{StaticResource PrimaryButton}" Width="125" Margin="0,0,8,0"/><TextBlock Text="{Binding StatusText}" Style="{StaticResource CaptionText}" VerticalAlignment="Center" TextWrapping="Wrap"/></StackPanel></Grid></Border>
+      <Border Grid.Row="1" Style="{StaticResource Card}" Padding="14" Margin="0,0,0,14"><UniformGrid Columns="6" FlowDirection="RightToLeft"><StackPanel Margin="0,0,12,0"><TextBlock Text="المبيعات" Style="{StaticResource KpiLabel}" Foreground="{StaticResource BrushPositive}"/><TextBlock Text="{Binding Summary.Sales,Converter={StaticResource PrivacyMoneyConverter}}" Style="{StaticResource MetricText}"/></StackPanel><StackPanel Margin="4,0,8,0"><TextBlock Text="المشتريات" Style="{StaticResource KpiLabel}" Foreground="{StaticResource BrushWarning}"/><TextBlock Text="{Binding Summary.Purchases,Converter={StaticResource PrivacyMoneyConverter}}" Style="{StaticResource MetricText}"/></StackPanel><StackPanel Margin="8,0,4,0"><TextBlock Text="النفقات" Style="{StaticResource KpiLabel}" Foreground="{StaticResource BrushNegative}"/><TextBlock Text="{Binding Summary.Expenses,Converter={StaticResource PrivacyMoneyConverter}}" Style="{StaticResource MetricText}"/></StackPanel><StackPanel Margin="4"><TextBlock Text="لنا" Style="{StaticResource KpiLabel}" Foreground="{StaticResource BrushPositive}"/><TextBlock Text="{Binding Summary.Receivables,Converter={StaticResource PrivacyMoneyConverter}}" Style="{StaticResource MetricText}"/></StackPanel><StackPanel Margin="4"><TextBlock Text="علينا" Style="{StaticResource KpiLabel}" Foreground="{StaticResource BrushNegative}"/><TextBlock Text="{Binding Summary.Payables,Converter={StaticResource PrivacyMoneyConverter}}" Style="{StaticResource MetricText}"/></StackPanel><StackPanel Margin="8,0,0,0"><TextBlock Text="مؤشر الحركة (ليس ربحًا)" Style="{StaticResource KpiLabel}" Foreground="{StaticResource BrushAccent2}"/><TextBlock Text="{Binding MovementIndicator,Converter={StaticResource PrivacyMoneyConverter}}" Style="{StaticResource MetricText}"/></StackPanel></UniformGrid></Border>
+      <Border Grid.Row="2" Style="{StaticResource Card}" Padding="8"><DockPanel><StackPanel DockPanel.Dock="Top" Margin="8,5,8,12"><TextBlock Text="تفاصيل العمليات خلال الفترة" FontSize="18" FontWeight="SemiBold"/><TextBlock Text="{Binding PeriodText}" Style="{StaticResource CaptionText}"/></StackPanel><DataGrid FlowDirection="RightToLeft" ItemsSource="{Binding Recent}" IsReadOnly="True"><DataGrid.Columns><DataGridTemplateColumn Header="م" Width="45"><DataGridTemplateColumn.CellTemplate><DataTemplate><TextBlock Text="{Binding RelativeSource={RelativeSource AncestorType={x:Type DataGridRow}}, Path=AlternationIndex, Converter={StaticResource SerialNumberConverter}}" HorizontalAlignment="Center" VerticalAlignment="Center" TextAlignment="Center" FontFamily="{StaticResource ArabicFont}" FontSize="11" FlowDirection="LeftToRight"/></DataTemplate></DataGridTemplateColumn.CellTemplate></DataGridTemplateColumn><DataGridTextColumn Header="التاريخ والوقت" Binding="{Binding Date,Converter={StaticResource ArabicDateTimeConverter}}" Width="140" ElementStyle="{StaticResource TableTextCell}"/><DataGridTextColumn Header="الحساب" Binding="{Binding PersonName}" Width="1.2*" ElementStyle="{StaticResource TableTextCell}"/><DataGridTemplateColumn Header="نوع الحركة" Width="130"><DataGridTemplateColumn.CellTemplate><DataTemplate><TextBlock Text="{Binding Type}" HorizontalAlignment="Center" TextAlignment="Center"/></DataTemplate></DataGridTemplateColumn.CellTemplate></DataGridTemplateColumn><DataGridTemplateColumn Header="المبلغ" Width="140"><DataGridTemplateColumn.CellTemplate><DataTemplate><TextBlock Text="{Binding Amount,Converter={StaticResource PrivacyMoneyConverter}}" Foreground="{StaticResource BrushAccent2}" HorizontalAlignment="Center" TextAlignment="Center" FlowDirection="LeftToRight"/></DataTemplate></DataGridTemplateColumn.CellTemplate></DataGridTemplateColumn><DataGridTextColumn Header="البيان / التفاصيل" Binding="{Binding Note}" Width="1.8*" ElementStyle="{StaticResource TableTextCell}"/></DataGrid.Columns></DataGrid></DockPanel></Border>
+    </Grid>
+  </DataTemplate>
+  <DataTemplate DataType="{x:Type vm:UsersViewModel}">
+    <Grid FlowDirection="RightToLeft">
+      <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+      <Border Style="{StaticResource ElevatedCard}" Padding="16" Margin="0,0,0,14">
+        <Grid FlowDirection="RightToLeft">
+          <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+          <StackPanel Grid.Column="0" VerticalAlignment="Center">
+            <TextBlock Text="المستخدمون والصلاحيات" FontSize="22" FontWeight="Bold" TextAlignment="Right"/>
+            <TextBlock Text="إدارة حسابات الفريق وأدوار الوصول إلى وظائف النظام." Style="{StaticResource CaptionText}" Margin="0,5,0,0" TextAlignment="Right"/>
+          </StackPanel>
+          <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center" FlowDirection="RightToLeft">
+            <Button Content="+ مستخدم جديد" Command="{Binding NewCommand}" Style="{StaticResource PrimaryButton}" MinWidth="145" Margin="0,0,0,0" IsEnabled="{Binding CanManage}"/>
+            <Button Content="تعديل" Command="{Binding EditCommand}" Style="{StaticResource GhostButton}" Width="82" Margin="8,0,0,0"/>
+            <Button Content="تفعيل/تعطيل" Command="{Binding ToggleActiveCommand}" Style="{StaticResource GhostButton}" Width="112" Margin="8,0,0,0" IsEnabled="{Binding CanManage}"/>
+            <Button Content="حذف" Command="{Binding DeleteCommand}" Style="{StaticResource DangerButton}" Width="76" Margin="8,0,0,0" IsEnabled="{Binding CanManage}"/>
+          </StackPanel>
+        </Grid>
+      </Border>
+      <Border Grid.Row="1" Style="{StaticResource Card}" Padding="8" ClipToBounds="True">
+        <DataGrid FlowDirection="RightToLeft" ItemsSource="{Binding Users}" SelectedItem="{Binding Selected}" IsReadOnly="True"
+                  AutoGenerateColumns="False" RowHeight="54" MinRowHeight="54"
+                  HorizontalContentAlignment="Stretch" VerticalContentAlignment="Center"
+                  HeadersVisibility="Column" CanUserAddRows="False" CanUserResizeRows="False"
+                  SelectionUnit="FullRow" ScrollViewer.VerticalScrollBarVisibility="Auto">
+          <DataGrid.Columns>
+            <DataGridTextColumn Header="المستخدم" Binding="{Binding UserName}" Width="1.15*" MinWidth="150" ElementStyle="{StaticResource TableTextCell}"/>
+            <DataGridTextColumn Header="الاسم" Binding="{Binding DisplayName}" Width="1.45*" MinWidth="180" ElementStyle="{StaticResource TableTextCell}"/>
+            <DataGridTemplateColumn Header="الدور" Width="105" MinWidth="90">
+              <DataGridTemplateColumn.CellTemplate><DataTemplate><Border Background="#172B46" BorderBrush="#2A4568" BorderThickness="1" CornerRadius="10" Padding="10,4" HorizontalAlignment="Center" VerticalAlignment="Center"><TextBlock Text="مستخدم" TextAlignment="Center" VerticalAlignment="Center" FontSize="12" Foreground="#C8D9EE"><TextBlock.Style><Style TargetType="TextBlock"><Setter Property="Text" Value="مستخدم"/><Style.Triggers><DataTrigger Binding="{Binding IsAdministrator}" Value="True"><Setter Property="Text" Value="مدير"/></DataTrigger></Style.Triggers></Style></TextBlock.Style></TextBlock></Border></DataTemplate></DataGridTemplateColumn.CellTemplate>
+            </DataGridTemplateColumn>
+            <DataGridTemplateColumn Header="الحالة" Width="100" MinWidth="90">
+              <DataGridTemplateColumn.CellTemplate><DataTemplate><Border CornerRadius="10" Padding="9,4" HorizontalAlignment="Center" VerticalAlignment="Center"><Border.Style><Style TargetType="Border"><Setter Property="Background" Value="#332F3948"/><Setter Property="BorderBrush" Value="#526477"/><Setter Property="BorderThickness" Value="1"/><Style.Triggers><DataTrigger Binding="{Binding IsActive}" Value="True"><Setter Property="Background" Value="#2030A878"/><Setter Property="BorderBrush" Value="#5060C99A"/></DataTrigger></Style.Triggers></Style></Border.Style><TextBlock Text="متوقف" FontSize="12" Foreground="#FCA5A5" HorizontalAlignment="Center"><TextBlock.Style><Style TargetType="TextBlock"><Setter Property="Text" Value="متوقف"/><Setter Property="Foreground" Value="#FCA5A5"/><Style.Triggers><DataTrigger Binding="{Binding IsActive}" Value="True"><Setter Property="Text" Value="نشط"/><Setter Property="Foreground" Value="#6EE7B7"/></DataTrigger></Style.Triggers></Style></TextBlock.Style></TextBlock></Border></DataTemplate></DataGridTemplateColumn.CellTemplate>
+            </DataGridTemplateColumn>
+            <DataGridTemplateColumn Header="الإجراءات" Width="250" MinWidth="250" MaxWidth="250" IsReadOnly="True">
+              <DataGridTemplateColumn.CellTemplate>
+                <DataTemplate>
+                  <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" FlowDirection="RightToLeft">
+                    <Button Content="تعديل" Command="{Binding DataContext.EditCommand, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}" CommandParameter="{Binding}" ToolTip="تعديل بيانات المستخدم" Style="{StaticResource GhostButton}" Height="32" MinWidth="62" Padding="8,0" Margin="0,0,0,0" VerticalAlignment="Center"/>
+                    <Button Content="تعطيل" ToolTip="تعطيل هذا المستخدم" Height="32" MinWidth="68" Padding="7,0" Margin="6,0,0,0" VerticalAlignment="Center">
+                      <Button.Style><Style TargetType="Button" BasedOn="{StaticResource GhostButton}"><Setter Property="Content" Value="تعطيل"/><Setter Property="Height" Value="32"/><Setter Property="MinWidth" Value="68"/><Setter Property="Padding" Value="7,0"/><Setter Property="Margin" Value="6,0,0,0"/><Setter Property="VerticalAlignment" Value="Center"/><Setter Property="Command" Value="{Binding DataContext.ToggleActiveCommand, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}"/><Setter Property="CommandParameter" Value="{Binding}"/><Style.Triggers><DataTrigger Binding="{Binding IsActive}" Value="False"><Setter Property="Content" Value="تفعيل"/></DataTrigger></Style.Triggers></Style></Button.Style>
+                    </Button>
+                    <Button Content="حذف" Command="{Binding DataContext.DeleteCommand, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}" CommandParameter="{Binding}" ToolTip="حذف المستخدم" Style="{StaticResource DangerButton}" Height="32" MinWidth="54" Padding="8,0" Margin="6,0,0,0" VerticalAlignment="Center"/>
+                  </StackPanel>
+                </DataTemplate>
+              </DataGridTemplateColumn.CellTemplate>
+            </DataGridTemplateColumn>
+          </DataGrid.Columns>
+        </DataGrid>
+      </Border>
+      <TextBlock Grid.Row="2" Text="{Binding StatusText}" Foreground="{StaticResource BrushMuted}" VerticalAlignment="Center" Margin="4,10,4,0" TextAlignment="Right"/>
+      <Grid Style="{StaticResource DialogOverlay}" Visibility="{Binding IsDialogOpen,Converter={StaticResource BoolToVisibility}}">
+        <Border Width="720" MaxWidth="900" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{StaticResource DialogShell}" Padding="22">
+          <ScrollViewer VerticalScrollBarVisibility="Auto" MaxHeight="720">
+          <Grid behaviors:InputDialogBehavior.IsEnabled="True" FlowDirection="RightToLeft">
+            <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+            <DockPanel Margin="0,0,0,16" FlowDirection="RightToLeft"><StackPanel><TextBlock Text="بيانات المستخدم" FontSize="22" FontWeight="SemiBold" TextAlignment="Right"/><TextBlock Text="بيانات الحساب والدور وصلاحيات الوصول." Style="{StaticResource CaptionText}" Margin="0,4,0,0" TextAlignment="Right"/></StackPanel><Button Command="{Binding CancelCommand}" Style="{StaticResource IconButton}" DockPanel.Dock="Left" ToolTip="إغلاق" AutomationProperties.Name="إغلاق"><Path Width="14" Height="14" Stretch="Uniform" Stroke="#9DB7D4" StrokeThickness="1.6" Data="{StaticResource CloseIcon}"/></Button></DockPanel>
+            <Border Grid.Row="1" Style="{StaticResource Card}" Padding="12" Margin="0,0,0,12"><Grid><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+              <StackPanel Margin="5"><TextBlock Text="اسم المستخدم" Style="{StaticResource SectionLabel}" TextAlignment="Right"/><TextBox Style="{StaticResource Field}" FlowDirection="LeftToRight" TextAlignment="Left" Text="{Binding UserName,UpdateSourceTrigger=PropertyChanged}"/></StackPanel>
+              <StackPanel Grid.Column="1" Margin="5"><TextBlock Text="الاسم الكامل" Style="{StaticResource SectionLabel}" TextAlignment="Right"/><TextBox Style="{StaticResource Field}" TextAlignment="Right" FlowDirection="RightToLeft" Text="{Binding DisplayName,UpdateSourceTrigger=PropertyChanged}"/></StackPanel>
+              <CheckBox Grid.Column="2" Content="مدير النظام" IsChecked="{Binding IsAdministrator}" VerticalAlignment="Center" Margin="14,18,8,0" IsEnabled="{Binding CanManage}"/>
+            </Grid></Border>
+            <Border Grid.Row="2" Style="{StaticResource Card}" Padding="12" Margin="0,0,0,12"><Grid><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions>
+              <StackPanel Margin="5"><TextBlock Text="كلمة المرور الجديدة (اختيارية عند التعديل)" Style="{StaticResource SectionLabel}" TextAlignment="Right"/><PasswordBox Style="{StaticResource PasswordField}" behaviors:PasswordBoxBehavior.Password="{Binding Password,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/></StackPanel>
+              <StackPanel Grid.Column="1" Margin="5"><TextBlock Text="تأكيد كلمة المرور" Style="{StaticResource SectionLabel}" TextAlignment="Right"/><PasswordBox Style="{StaticResource PasswordField}" behaviors:PasswordBoxBehavior.Password="{Binding ConfirmPassword,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/></StackPanel>
+            </Grid></Border>
+            <Border Grid.Row="3" Style="{StaticResource Card}" Padding="14" Margin="0,0,0,12"><StackPanel><TextBlock Text="صلاحيات العمل" FontSize="15" FontWeight="SemiBold" TextAlignment="Right" Margin="0,0,0,10"/><UniformGrid Columns="4" FlowDirection="RightToLeft">
+              <CheckBox Content="عرض البيانات" IsChecked="{Binding AllowView}" Margin="6"/>
+              <CheckBox Content="إنشاء السجلات" IsChecked="{Binding AllowCreate}" Margin="6"/>
+              <CheckBox Content="تعديل السجلات" IsChecked="{Binding AllowEdit}" Margin="6"/>
+              <CheckBox Content="حذف السجلات" IsChecked="{Binding AllowDelete}" Margin="6"/>
+              <CheckBox Content="التقارير" IsChecked="{Binding AllowReports}" Margin="6"/>
+            </UniformGrid></StackPanel></Border>
+            <Border Grid.Row="4" Style="{StaticResource Card}" Padding="14" Margin="0,0,0,12"><StackPanel><TextBlock Text="إدارة النظام (للمدير فقط)" FontSize="15" FontWeight="SemiBold" TextAlignment="Right" Margin="0,0,0,10"/><UniformGrid Columns="3" FlowDirection="RightToLeft">
+              <CheckBox Content="إدارة المستخدمين" IsChecked="{Binding AllowUsers}" Margin="6" IsEnabled="{Binding CanManage}"/>
+              <CheckBox Content="الإعدادات" IsChecked="{Binding AllowSettings}" Margin="6" IsEnabled="{Binding CanManage}"/>
+              <CheckBox Content="النسخ الاحتياطي" IsChecked="{Binding AllowBackup}" Margin="6" IsEnabled="{Binding CanManage}"/>
+            </UniformGrid></StackPanel></Border>
+            <TextBlock Grid.Row="5" Text="{Binding StatusText}" Foreground="#FCA5A5" TextAlignment="Right" TextWrapping="Wrap" Margin="4,0,4,8"/>
+            <StackPanel Grid.Row="6" Orientation="Horizontal" HorizontalAlignment="Left" Margin="4,4,4,0"><Button Content="حفظ المستخدم" Command="{Binding SaveCommand}" Style="{StaticResource PrimaryButton}" Width="140"/><Button Content="إلغاء" Command="{Binding CancelCommand}" Style="{StaticResource GhostButton}" Width="100" Margin="8,0,0,0"/></StackPanel>
+          </Grid>
+          </ScrollViewer>
+        </Border>
+      </Grid>
+    </Grid>
+  </DataTemplate>
+  <DataTemplate DataType="{x:Type vm:AuditLogViewModel}">
+    <Grid FlowDirection="RightToLeft"><Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+      <Border Style="{StaticResource ElevatedCard}" Padding="16" Margin="0,0,0,14"><Grid><Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions><StackPanel Margin="2,0,2,12"><TextBlock Text="سجل التدقيق" FontSize="23" FontWeight="Bold" Foreground="{StaticResource BrushText}" TextAlignment="Right"/><TextBlock Text="مراجعة أنشطة المستخدمين والتغييرات المسجلة في النظام" Style="{StaticResource CaptionText}" TextAlignment="Right" Margin="0,4,0,0"/></StackPanel><Grid Grid.Row="1"><Grid.ColumnDefinitions><ColumnDefinition Width="1*"/><ColumnDefinition Width="1*"/><ColumnDefinition Width="2*"/><ColumnDefinition Width="100"/></Grid.ColumnDefinitions><StackPanel Margin="4"><TextBlock Text="من تاريخ" Style="{StaticResource SectionLabel}"/><DatePicker SelectedDate="{Binding FromDate}" Height="40"/></StackPanel><StackPanel Grid.Column="1" Margin="4"><TextBlock Text="إلى تاريخ" Style="{StaticResource SectionLabel}"/><DatePicker SelectedDate="{Binding ToDate}" Height="40"/></StackPanel><StackPanel Grid.Column="2" Margin="4"><TextBlock Text="بحث في المستخدم أو العملية أو التفاصيل" Style="{StaticResource SectionLabel}"/><TextBox Style="{StaticResource Field}" Text="{Binding TextFilter,UpdateSourceTrigger=PropertyChanged}" ToolTip="يمكن البحث بالقيمة العربية أو الأصلية المسجلة"/></StackPanel><Button Grid.Column="3" Content="بحث" Command="{Binding SearchCommand}" Style="{StaticResource PrimaryButton}" Margin="8,23,4,0" Height="40"/></Grid></Grid></Border>
+      <Border Grid.Row="1" Style="{StaticResource Card}" Padding="6"><DataGrid FlowDirection="RightToLeft" ItemsSource="{Binding Entries}" IsReadOnly="True" AutoGenerateColumns="False" CanUserAddRows="False" RowHeight="44" MinRowHeight="44" GridLinesVisibility="Horizontal" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto"><DataGrid.Columns><DataGridTextColumn Header="التاريخ والوقت" Binding="{Binding OccurredAt,Converter={StaticResource AuditDisplayConverter},ConverterParameter=Date}" Width="190" MinWidth="185" ElementStyle="{StaticResource TableTextCell}"/><DataGridTextColumn Header="المستخدم" Binding="{Binding UserName}" Width="1.1*" MinWidth="120" ElementStyle="{StaticResource TableTextCell}"/><DataGridTextColumn Header="العملية" Binding="{Binding Action,Converter={StaticResource AuditDisplayConverter},ConverterParameter=Action}" Width="1.15*" MinWidth="125" ElementStyle="{StaticResource TableTextCell}"/><DataGridTextColumn Header="الكيان" Binding="{Binding EntityType,Converter={StaticResource AuditDisplayConverter},ConverterParameter=Entity}" Width="0.9*" MinWidth="95" ElementStyle="{StaticResource TableTextCell}"/><DataGridTextColumn Header="المعرّف" Binding="{Binding EntityId}" Width="155" MinWidth="110" ElementStyle="{StaticResource TableTextCell}"/><DataGridTextColumn Header="التفاصيل" Binding="{Binding Details,Converter={StaticResource AuditDisplayConverter},ConverterParameter=Details}" Width="2.2*" MinWidth="200" ElementStyle="{StaticResource TableTextCell}"/></DataGrid.Columns></DataGrid></Border><TextBlock Grid.Row="2" Text="{Binding StatusText}" Foreground="{StaticResource BrushMuted}" TextWrapping="Wrap" Margin="4,10,4,0" TextAlignment="Right"/>
+    </Grid>
+  </DataTemplate>
+  <DataTemplate DataType="{x:Type vm:RecycleBinViewModel}">
+    <Grid FlowDirection="RightToLeft">
+<Grid.RowDefinitions><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+      <Border Style="{StaticResource Card}" Padding="8"><DataGrid ItemsSource="{Binding Items}" SelectedItem="{Binding Selected}" IsReadOnly="True"><DataGrid.Columns><DataGridTextColumn Header="النوع" Binding="{Binding EntityTypeLabel}" Width="160"/><DataGridTextColumn Header="العنصر" Binding="{Binding EntityId}" Width="1.2*" ElementStyle="{StaticResource TableTextCell}"/><DataGridTextColumn Header="تاريخ الحذف" Binding="{Binding DeletedAt,Converter={StaticResource ArabicDateTimeConverter}}" Width="180" ElementStyle="{StaticResource TableTextCell}"/><DataGridTextColumn Header="بواسطة" Binding="{Binding DeletedBy}" Width="180" ElementStyle="{StaticResource TableTextCell}"/></DataGrid.Columns></DataGrid></Border>
+      <Grid Grid.Row="1" Margin="0,12,0,0"><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions><TextBlock Text="{Binding StatusText}" Foreground="{StaticResource BrushMuted}" VerticalAlignment="Center" TextWrapping="Wrap" Margin="0,0,14,0"/><StackPanel Grid.Column="1" Orientation="Horizontal"><Button Content="استعادة العنصر" Command="{Binding RestoreCommand}" Style="{StaticResource PrimaryButton}" Width="135" Margin="0,0,8,0"/><Button Content="حذف نهائي" Command="{Binding HardDeleteCommand}" Style="{StaticResource DangerButton}" Width="120"/></StackPanel></Grid>
+    </Grid>
+  </DataTemplate>
+  <DataTemplate DataType="{x:Type vm:SettingsViewModel}">
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" FlowDirection="RightToLeft">
+      <StackPanel Margin="2,0,2,18">
+        <Grid Margin="0,0,0,14">
+          <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+          <StackPanel HorizontalAlignment="Left" FlowDirection="RightToLeft">
+            <TextBlock Text="مركز الإعدادات" FontSize="24" FontWeight="Bold" Foreground="{StaticResource BrushText}" TextAlignment="Left" HorizontalAlignment="Stretch"/>
+            <TextBlock Text="إدارة هوية المنشأة والنسخ الاحتياطي من مكان واحد" Style="{StaticResource CaptionText}" Margin="0,5,0,0" TextAlignment="Left" HorizontalAlignment="Stretch"/>
+          </StackPanel>
+          <Button Grid.Column="1" Content="حفظ الإعدادات" Command="{Binding SaveCommand}" Style="{StaticResource PrimaryButton}" Padding="22,0" MinWidth="150" Height="42" VerticalAlignment="Center"/>
+        </Grid>
+        <Border Style="{StaticResource ElevatedCard}" Padding="20" Margin="0,0,0,14">
+          <Grid>
+            <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+            <StackPanel Grid.ColumnSpan="3" Margin="2,0,0,16" HorizontalAlignment="Stretch" FlowDirection="RightToLeft">
+              <TextBlock Text="هوية المنشأة" FontSize="18" FontWeight="SemiBold" Foreground="{StaticResource BrushText}" TextAlignment="Left" HorizontalAlignment="Stretch"/>
+              <TextBlock Text="تُحفظ هذه البيانات في قاعدة التطبيق وتُستخدم في مخرجات التقارير عند إنشائها." Style="{StaticResource CaptionText}" Margin="0,5,0,0" TextWrapping="Wrap" TextAlignment="Left" HorizontalAlignment="Stretch"/>
+            </StackPanel>
+            <Grid Grid.Row="1">
+              <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+              <Grid.ColumnDefinitions><ColumnDefinition Width="1.2*"/><ColumnDefinition Width="1*"/><ColumnDefinition Width="170"/></Grid.ColumnDefinitions>
+              <StackPanel Margin="3,0,8,12">
+                <TextBlock Text="اسم المنشأة *" Style="{StaticResource SectionLabel}" Margin="0,0,0,5" TextAlignment="Left" HorizontalAlignment="Left"/>
+                <TextBox Style="{StaticResource Field}" Text="{Binding BusinessName,UpdateSourceTrigger=PropertyChanged}" TextAlignment="Left" FlowDirection="RightToLeft" MaxLength="120" AutomationProperties.Name="اسم المنشأة"/>
+              </StackPanel>
+              <StackPanel Grid.Column="1" Margin="8,0,8,12">
+                <TextBlock Text="رقم الهاتف" Style="{StaticResource SectionLabel}" Margin="0,0,0,5" TextAlignment="Left" HorizontalAlignment="Left"/>
+                <TextBox Style="{StaticResource Field}" Text="{Binding Phone,UpdateSourceTrigger=PropertyChanged}" FlowDirection="LeftToRight" MaxLength="40" AutomationProperties.Name="رقم الهاتف"/>
+              </StackPanel>
+              <StackPanel Grid.Column="2" Margin="8,0,3,12">
+                <TextBlock Text="العملة الافتراضية *" Style="{StaticResource SectionLabel}" Margin="0,0,0,5" TextAlignment="Left" HorizontalAlignment="Left"/>
+                <TextBox Style="{StaticResource Field}" Text="{Binding Currency,UpdateSourceTrigger=PropertyChanged}" FlowDirection="LeftToRight" MaxLength="12" AutomationProperties.Name="العملة الافتراضية"/>
+              </StackPanel>
+              <StackPanel Grid.Row="1" Grid.ColumnSpan="2" Margin="3,2,8,0">
+                <TextBlock Text="العنوان" Style="{StaticResource SectionLabel}" Margin="0,0,0,5" TextAlignment="Left" HorizontalAlignment="Left"/>
+                <TextBox Style="{StaticResource Field}" Text="{Binding Address,UpdateSourceTrigger=PropertyChanged}" TextAlignment="Left" FlowDirection="RightToLeft" MaxLength="250" AutomationProperties.Name="عنوان المنشأة"/>
+              </StackPanel>
+            </Grid>
+            <Border Grid.Row="2" Margin="3,14,3,0" Padding="12" Background="#0A1428" BorderBrush="{StaticResource BrushLine}" BorderThickness="1" CornerRadius="9">
+              <Grid>
+                <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                <Border Width="64" Height="64" Background="#13243B" CornerRadius="8" Margin="0,0,12,0">
+                  <Image Source="{Binding LogoPreview}" Stretch="Uniform" Margin="4" Visibility="{Binding ShowLogo,Converter={StaticResource BoolToVisibility}}"/>
+                </Border>
+                <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                  <TextBlock Text="شعار المنشأة (اختياري)" FontWeight="SemiBold" Foreground="{StaticResource BrushText}" TextAlignment="Left" HorizontalAlignment="Stretch"/>
+                  <TextBlock Text="PNG أو JPG أو BMP — حتى 5 ميغابايت. يلزم حفظ الإعدادات لاعتماد التغيير." Style="{StaticResource CaptionText}" TextWrapping="Wrap" Margin="0,4,8,0" TextAlignment="Left" HorizontalAlignment="Stretch"/>
+                </StackPanel>
+                <Button Grid.Column="2" Content="اختيار شعار" Command="{Binding ChooseLogoCommand}" Style="{StaticResource GhostButton}" MinWidth="105" Margin="5,0"/>
+                <Button Grid.Column="3" Content="إزالة" Command="{Binding RemoveLogoCommand}" Style="{StaticResource GhostButton}" MinWidth="70" Margin="5,0"/>
+              </Grid>
+            </Border>
+          </Grid>
+        </Border>
+        <Border Style="{StaticResource ElevatedCard}" Padding="20" Margin="0,0,0,14">
+          <Grid>
+            <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+            <StackPanel Margin="2,0,12,0" HorizontalAlignment="Left" FlowDirection="RightToLeft">
+              <TextBlock Text="النسخ الاحتياطي والاستعادة" FontSize="18" FontWeight="SemiBold" Foreground="{StaticResource BrushText}" TextAlignment="Left" HorizontalAlignment="Stretch"/>
+              <TextBlock Text="تخضع العمليات لصلاحية النسخ الاحتياطي. الاستعادة تتطلب تأكيدًا قبل استبدال بيانات العمل." Style="{StaticResource CaptionText}" TextWrapping="Wrap" Margin="0,5,0,0" TextAlignment="Left" HorizontalAlignment="Stretch"/>
+              <TextBlock Text="{Binding LastBackupText}" Style="{StaticResource CaptionText}" TextWrapping="Wrap" Margin="0,8,0,0" TextAlignment="Left" HorizontalAlignment="Stretch"/>
+            </StackPanel>
+            <Button Grid.Column="1" Content="إنشاء نسخة احتياطية" Command="{Binding CreateBackupCommand}" Style="{StaticResource PrimaryButton}" MinWidth="155" Margin="5,0" VerticalAlignment="Center"/>
+            <Button Grid.Column="2" Content="استعادة نسخة" Command="{Binding RestoreBackupCommand}" Style="{StaticResource GhostButton}" MinWidth="125" Margin="5,0" VerticalAlignment="Center"/>
+          </Grid>
+        </Border>
+        <Border Style="{StaticResource ElevatedCard}" Padding="20" Margin="0,0,0,14" BorderBrush="#7F1D1D" BorderThickness="1">
+          <Grid>
+            <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+            <StackPanel Margin="2,0,18,0" HorizontalAlignment="Left" FlowDirection="RightToLeft">
+              <TextBlock Text="تهيئة بيانات التطبيق" FontSize="18" FontWeight="Bold" Foreground="#FCA5A5" TextAlignment="Left" HorizontalAlignment="Stretch"/>
+              <TextBlock Text="تحذف هذه العملية جميع بيانات العمل والمستخدمين والجلسات وسجلات التدقيق والعناصر المحذوفة، وتعيد التطبيق إلى حالة الإعداد الأولي. لا يمكن التراجع عن العملية بعد تنفيذها." Style="{StaticResource CaptionText}" TextWrapping="Wrap" Margin="0,7,0,0" TextAlignment="Left" HorizontalAlignment="Stretch"/>
+              <TextBlock Text="تتطلب كلمة مرور المسؤول، وكتابة عبارة التأكيد، وإنشاء نسخة احتياطية كاملة والتحقق منها قبل أي حذف." Style="{StaticResource CaptionText}" TextWrapping="Wrap" Foreground="#FCA5A5" Margin="0,7,0,0" TextAlignment="Left" HorizontalAlignment="Stretch"/>
+            </StackPanel>
+            <Button Grid.Column="1" Content="تهيئة جميع البيانات" Command="{Binding ResetDataCommand}" Visibility="{Binding CanResetData,Converter={StaticResource BoolToVisibility}}" Height="46" MinWidth="180" Padding="18,0" Background="#991B1B" BorderBrush="#EF4444" BorderThickness="1" Foreground="White" FontWeight="Bold" VerticalAlignment="Center"/>
+          </Grid>
+        </Border>        <Border Background="#0A1428" BorderBrush="{StaticResource BrushLine}" BorderThickness="1" CornerRadius="9" Padding="13">
+          <TextBlock Text="{Binding StatusText}" Foreground="{StaticResource BrushText}" TextWrapping="Wrap" TextAlignment="Left" HorizontalAlignment="Stretch" AutomationProperties.LiveSetting="Polite"/>
+        </Border>
+      </StackPanel>
+    </ScrollViewer>
+  </DataTemplate>
+</ResourceDictionary>

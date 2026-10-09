@@ -1,0 +1,17 @@
+﻿================================================================================
+       تقرير إعادة الصياغة الهندسية الاحترافية الشاملة - SmartLedger           
+       التاريخ: 2026-10-01 01:18:05                       
+================================================================================
+
+[✓ تم بنجاح] إعادة صياغة BackupViewModel.cs وتضمين System.IO و System.Linq.
+[✓ تم بنجاح] إعادة صياغة دوال الـ Partial في SetupViewModel.cs وضبط تواقيعها.
+[✓ تم بنجاح] تصحيح وتحديث LoginWindow.xaml.cs وتوفيق الـ Action Delegates.
+[✓ تم بنجاح] تحسين استعلامات الفهرسة في BooksViewModel.cs لرفع كفاءة الأداء.
+
+--------------------------------------------------------------------------------
+[6] جاري إجراء البناء الشامل للمشروع بعد إعادة الصياغة...
+  [✗ متبقي التفاصيل التالية]:
+    C:\Users\pc\Desktop\mnt\data\SmartLedger\src\SmartLedger.App\Views\LoginWindow.xaml.cs(14,71): error CS1593: Delegate 'Action' does not take 1 arguments [C:\Users\pc\Desktop\mnt\data\SmartLedger\src\SmartLedger.App\SmartLedger.App_2ni2gte0_wpftmp.csproj]
+    C:\Users\pc\Desktop\mnt\data\SmartLedger\src\SmartLedger.App\Views\LoginWindow.xaml.cs(14,71): error CS1593: Delegate 'Action' does not take 1 arguments [C:\Users\pc\Desktop\mnt\data\SmartLedger\src\SmartLedger.App\SmartLedger.App_2ni2gte0_wpftmp.csproj]
+
+================================================================================

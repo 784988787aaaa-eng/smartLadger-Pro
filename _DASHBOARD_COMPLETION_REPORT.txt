@@ -1,0 +1,26 @@
+﻿
+FINAL ERROR FORENSICS / STABILITY PASS — 2026-10-08
+
+Root causes isolated:
+1) A Dashboard recent-operations binding had been changed from RecentOperationAmountConverter to PrivacyMoneyConverter. Restoring the existing privacy-aware RecentOperationAmountConverter stopped the immediate WPF StackOverflow crash.
+2) The Executive Dashboard dual-activity layout originally left the DataGrid unbounded inside the page ScrollViewer. This produced a delayed WPF layout/text-rendering stack overflow. The final DataGrid is explicitly bounded (Height=360, MinHeight=280, MaxHeight=420), preserving page scrolling outside the grid.
+3) Windows Error Reporting confirmed the delayed crash signature as 0xc00000fd with TextShaping.dll. The final bounded layout has been run repeatedly without a new SmartLedger.Application Error event.
+
+FINAL DASHBOARD:
+- Executive KPI row: صافي المركز المالي / نبض نشاط اليوم / قيمة بضاعة المخزون.
+- Quick actions: existing QuickActions with F7/F8/F9/F10 bindings and F9 visual priority.
+- Dual Activity Hub with bounded recent-operations table and daily activity summary.
+- Recent table: م / الحساب / المبلغ / نوع الحركة / البيان والتفاصيل / التاريخ والوقت.
+- Privacy-aware money formatting uses the existing RecentOperationAmountConverter for recent operations because it already respects PrivacyMoneyConverter.IsPrivate without triggering the WPF crash path.
+- Sidebar grouping/separators remain in MainWindow.xaml.
+
+VALIDATION:
+- dotnet build SmartLedger.sln --no-restore: PASS — 0 warnings, 0 errors.
+- dotnet test tests\SmartLedger.Tests\SmartLedger.Tests.csproj --no-restore: PASS — 48 passed, 0 failed, 0 skipped.
+- Runtime process verified responsive after extended stability checks; no new SmartLedger.App error was recorded during the final bounded-dashboard run.
+
+BACKUPS:
+_ForensicsBackups\20261008_StackOverflow_Dashboard\
+_ForensicsBackups\20261008_Phase2_DashboardSidebar\
+
+Note: the final implementation intentionally avoids the previously unstable unbounded DataGrid layout and the problematic direct PrivacyMoneyConverter binding in the recent-operations cells.

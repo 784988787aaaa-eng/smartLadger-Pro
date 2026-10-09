@@ -1,0 +1,254 @@
+SMART LEDGER — INPUT DIALOG AUDIT
+====================================
+التاريخ: 2026-10-08
+المشروع: C:\Users\pc\Desktop\SmartLedger_Run_2026-10-05
+
+1) فحص الترميز
+----------------
+تمت إعادة حفظ جميع ملفات *.xaml و *.cs داخل:
+src\SmartLedger.App\
+بترميز UTF-8 with BOM (UTF-8 Signature).
+
+التحقق الآلي:
+- إجمالي الملفات المفحوصة: 576
+- ملفات بدون BOM: 0
+- ملفات تحتوي مؤشرات Mojibake بعد الإصلاح: 0
+
+ملاحظة: ظهور بعض الأحرف المشوهة داخل مخرجات طرفية Remote Desktop كان ناتجاً عن ترميز طرفية العرض؛ تم التحقق مباشرة من قيم Unicode داخل الملف. مثال "حساب جديد" ظهر كقيم Unicode عربية صحيحة، كما تم فحص الملفات بحثاً عن أنماط Mojibake ولم يظهر أي ملف.
+
+2) نافذة «حركة جديدة»
+-----------------------
+الموقع:
+src\SmartLedger.App\Views\ModuleTemplates.xaml
+
+البنية الحالية المختصرة (XAML الفعلي):
+
+<Grid Style="{StaticResource DialogOverlay}"
+      Visibility="{Binding IsDialogOpen,Converter={StaticResource BoolToVisibility}}">
+  <Border Width="620"
+          HorizontalAlignment="Center"
+          VerticalAlignment="Center"
+          Style="{StaticResource DialogShell}"
+          Padding="26">
+    <Grid FlowDirection="RightToLeft"
+          KeyboardNavigation.TabNavigation="Local"
+          behaviors:InputDialogBehavior.IsEnabled="True">
+
+      <Grid.InputBindings>
+        <KeyBinding Key="F5" Command="{Binding SaveCommand}"/>
+        <KeyBinding Key="S" Modifiers="Control" Command="{Binding SaveCommand}"/>
+        <KeyBinding Key="Escape" Command="{Binding CloseDialogCommand}"/>
+      </Grid.InputBindings>
+
+      <DockPanel Grid.Row="0" Margin="0,0,0,18">
+        <Button DockPanel.Dock="Left"
+                Command="{Binding CloseDialogCommand}"
+                Style="{StaticResource IconButton}"
+                ToolTip="إغلاق"
+                AutomationProperties.Name="إغلاق"/>
+        <TextBlock Text="حركة جديدة"
+                   FontSize="22"
+                   FontWeight="SemiBold"/>
+      </DockPanel>
+
+      <TextBlock Text="الحساب" Style="{StaticResource SectionLabel}"/>
+      <TextBox x:Name="OperationDialogPersonSearch"
+               Style="{StaticResource Field}"
+               Text="{Binding PersonSearch,UpdateSourceTrigger=PropertyChanged}"
+               AutomationProperties.Name="الحساب"/>
+
+      <TextBlock Text="نوع الحركة" Style="{StaticResource SectionLabel}"/>
+      <UniformGrid Columns="2">
+        <RadioButton Content="استلام"
+                     IsChecked="{Binding IsReceiveSelected}"
+                     Command="{Binding SelectReceiveCommand}"/>
+        <RadioButton Content="بيع"
+                     IsChecked="{Binding IsSaleSelected}"
+                     Command="{Binding SelectSaleCommand}"/>
+        <RadioButton Content="سداد"
+                     IsChecked="{Binding IsPaymentSelected}"
+                     Command="{Binding SelectPaymentCommand}"/>
+        <RadioButton Content="شراء"
+                     IsChecked="{Binding IsPurchaseSelected}"
+                     Command="{Binding SelectPurchaseCommand}"/>
+      </UniformGrid>
+
+      <TextBox Style="{StaticResource NumericField}"
+               Text="{Binding AmountText,UpdateSourceTrigger=PropertyChanged}"
+               AutomationProperties.Name="المبلغ"/>
+
+      <TextBox Style="{StaticResource Field}"
+               Text="{Binding Note,UpdateSourceTrigger=PropertyChanged}"
+               AutomationProperties.Name="البيان"/>
+
+      <TextBlock Text="Enter للتالي  •  Ctrl+S أو F5 للحفظ  •  Esc للإغلاق"
+                 Style="{StaticResource CaptionText}"/>
+
+      <Button Content="حفظ الحركة  [F5]"
+              Command="{Binding SaveCommand}"
+              Style="{StaticResource PrimaryButton}"/>
+
+      <Button Content="إلغاء  [Esc]"
+              Command="{Binding CloseDialogCommand}"
+              Style="{StaticResource GhostButton}"/>
+    </Grid>
+  </Border>
+</Grid>
+
+الحقول:
+1. الحساب — PersonSearch / SelectedPersonId مع قائمة اقتراحات.
+2. نوع الحركة — استلام، بيع، سداد، شراء.
+3. المبلغ — AmountText.
+4. البيان — Note.
+
+الأوامر:
+- حفظ: SaveCommand
+- إغلاق: CloseDialogCommand
+- استلام: SelectReceiveCommand
+- بيع: SelectSaleCommand
+- سداد: SelectPaymentCommand
+- شراء: SelectPurchaseCommand
+
+الاختصارات:
+- F5 = حفظ
+- Ctrl+S = حفظ
+- Esc = إغلاق
+- Enter = الانتقال للحقل التالي، وعند آخر حقل ينفذ الحفظ عبر InputDialogBehavior.
+
+3) نافذة «حساب جديد»
+----------------------
+الموقع:
+src\SmartLedger.App\Views\ModuleTemplates.xaml
+
+الجزء الأساسي الحالي:
+
+<Grid Style="{StaticResource DialogOverlay}"
+      Visibility="{Binding IsDialogOpen,Converter={StaticResource BoolToVisibility}}">
+  <Border Width="500"
+          MaxHeight="610"
+          HorizontalAlignment="Center"
+          VerticalAlignment="Center"
+          Style="{StaticResource DialogShell}"
+          Padding="22">
+    <Grid FlowDirection="RightToLeft"
+          KeyboardNavigation.TabNavigation="Cycle"
+          behaviors:InputDialogBehavior.IsEnabled="True">
+
+      <Button Command="{Binding CloseDialogCommand}"
+              Style="{StaticResource IconButton}"
+              ToolTip="إغلاق"
+              AutomationProperties.Name="إغلاق"/>
+
+      <TextBlock Text="إضافة حساب جديد"
+                 FontSize="18"
+                 FontWeight="SemiBold"/>
+
+      <TextBlock Text="اسم الحساب"
+                 Style="{StaticResource SectionLabel}"/>
+      <TextBox Style="{StaticResource DialogField}"
+               Text="{Binding NewName,UpdateSourceTrigger=PropertyChanged}"
+               AutomationProperties.Name="اسم الحساب"
+               TabIndex="0"/>
+
+      <TextBlock Text="تصنيف الدفتر"
+                 Style="{StaticResource SectionLabel}"/>
+      <ComboBox ItemsSource="{Binding BookGroups}"
+                DisplayMemberPath="Name"
+                SelectedItem="{Binding SelectedGroupBook}"
+                AutomationProperties.Name="تصنيف الدفتر"
+                TabIndex="1"/>
+
+      <TextBlock Text="{Binding Currency, StringFormat={}المبلغ ({0})}"
+                 Style="{StaticResource SectionLabel}"/>
+      <TextBox Style="{StaticResource NumericField}"
+               Text="{Binding OpeningBalanceText,UpdateSourceTrigger=PropertyChanged}"
+               AutomationProperties.Name="المبلغ"
+               TabIndex="2"/>
+
+      <TextBlock Text="اتجاه المبلغ"
+                 Style="{StaticResource SectionLabel}"/>
+      <RadioButton Content="عليه"
+                   IsChecked="{Binding OpeningBalanceForUs}"
+                   Command="{Binding SelectOpeningForUsCommand}"/>
+      <RadioButton Content="له"
+                   IsChecked="{Binding OpeningBalanceAgainstUs}"
+                   Command="{Binding SelectOpeningAgainstUsCommand}"/>
+
+      <TextBlock Text="البيان"
+                 Style="{StaticResource SectionLabel}"/>
+      <TextBox Style="{StaticResource DialogField}"
+               Text="{Binding NewNote,UpdateSourceTrigger=PropertyChanged}"
+               AutomationProperties.Name="البيان"
+               TabIndex="3"/>
+
+      <TextBlock Text="رقم الهاتف"
+                 Style="{StaticResource SectionLabel}"/>
+      <TextBox Style="{StaticResource DialogField}"
+               Text="{Binding NewPhone,UpdateSourceTrigger=PropertyChanged}"
+               AutomationProperties.Name="رقم الهاتف"
+               TabIndex="4"/>
+
+      <Button Command="{Binding SaveNewCommand}"
+              Content="حفظ الحساب"
+              Style="{StaticResource PrimaryButton}"/>
+      <Button Content="إلغاء"
+              Command="{Binding CloseDialogCommand}"
+              Style="{StaticResource GhostButton}"
+              IsCancel="True"/>
+    </Grid>
+  </Border>
+</Grid>
+
+الحقول:
+1. اسم الحساب — NewName.
+2. تصنيف الدفتر — SelectedGroupBook.
+3. المبلغ الافتتاحي — OpeningBalanceText.
+4. اتجاه المبلغ — عليه / له.
+5. البيان — NewNote.
+6. رقم الهاتف — NewPhone.
+
+الأوامر:
+- حفظ الحساب: SaveNewCommand
+- إغلاق/إلغاء: CloseDialogCommand
+- عليه: SelectOpeningForUsCommand
+- له: SelectOpeningAgainstUsCommand
+
+الاختصارات:
+- لا يوجد F5/Ctrl+S صريحان داخل XAML لنافذة «حساب جديد».
+- نافذة الحساب مفعّل عليها InputDialogBehavior.
+- Enter ينتقل بين حقول الإدخال، وعند آخر حقل ينفذ SaveNewCommand.
+- Esc ينفذ CloseDialogCommand.
+- التركيز الأولي ينتقل تلقائياً لأول حقل.
+
+4) InputDialogBehavior
+------------------------
+الملف:
+src\SmartLedger.App\Behaviors\InputDialogBehavior.cs
+
+السلوك المشترك:
+- Loaded: يضع التركيز على أول TextBox/ComboBox.
+- Enter: ينتقل للحقل التالي.
+- Enter في آخر حقل: ينفذ SaveNewCommand أو SaveCommand أو SaveBookCommand حسب النافذة.
+- Esc: ينفذ CloseDialogCommand أو CloseBookDialogCommand أو CancelCommand.
+- Shift+Enter لا يعترضه السلوك.
+- أزرار Button وRadioButton لا تعامل كحقول Enter.
+
+5) التحقق النهائي
+-------------------
+Build:
+dotnet build SmartLedger.sln --no-restore
+
+النتيجة:
+Build succeeded.
+0 Warning(s)
+0 Error(s)
+EXIT=0
+
+التشغيل:
+- SmartLedger.App يعمل بعد الإصلاح.
+- Responding=True
+- PID وقت الفحص: 11508
+- StartTime: 2026-10-08 20:10:54
+
+الحالة:
+إصلاح الترميز مكتمل، ونوافذ «حركة جديدة» و«حساب جديد» موثقة من XAML الحالي بعد الإصلاح.

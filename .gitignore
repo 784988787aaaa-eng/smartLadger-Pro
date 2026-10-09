@@ -1,0 +1,44 @@
+.vs/
+bin/
+obj/
+*.user
+*.suo
+*.db
+*.db-shm
+*.db-wal
+
+# SmartLedger local/build artifacts and sensitive files
+publish/
+_PreDeliveryBackup*/
+_ForensicsBackups/
+*.png
+*.zip
+_evidence_git_push.txt
+discovery_evidence.txt
+.env
+.env.*
+!.env.example
+*.sqlite
+*.sqlite3
+*.key
+*.pfx
+*.p12
+secrets.json
+appsettings.*.json
+
+# SmartLedger build artifacts, backups, and sensitive files
+*_Backup*/
+_LoginFixBackup*/
+_ResetFeatureBackup*/
+_UIFixBackup_SettingsReset*/
+_VisualAuditBackup*/
+_forensics_backup*/
+ui-backup-*/
+_evidence/
+_run_git_push.ps1
+
+# SmartLedger build artifacts, backups, and sensitive files
+*Backup*/
+*.bak
+*.bak-*
+*.pem

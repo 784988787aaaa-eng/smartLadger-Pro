@@ -1,0 +1,95 @@
+﻿================================================================================
+             تقرير التشريح التفصيلي: MainWindow و OperationsPage و Manifest     
+================================================================================
+
+[1] أول 70 سطراً من Views\MainWindow.xaml:
+<Window x:Class="SmartLedger.App.Views.MainWindow" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:vm="clr-namespace:SmartLedger.App.ViewModels" Title="دفتر أعمال ذكي" Width="1400" Height="850" MinWidth="1100" MinHeight="700" WindowStartupLocation="CenterScreen" FlowDirection="RightToLeft" Background="{StaticResource Background}" UseLayoutRounding="True" SnapsToDevicePixels="True" TextOptions.TextFormattingMode="Display" TextOptions.TextRenderingMode="ClearType">
+ <Window.Resources>
+  <DataTemplate DataType="{x:Type vm:DashboardViewModel}"><views:DashboardPage xmlns:views="clr-namespace:SmartLedger.App.Views.Pages"/></DataTemplate>
+  <DataTemplate DataType="{x:Type vm:BooksViewModel}"><views:BooksPage xmlns:views="clr-namespace:SmartLedger.App.Views.Pages"/></DataTemplate>
+  <DataTemplate DataType="{x:Type vm:OperationsViewModel}"><views:OperationsPage xmlns:views="clr-namespace:SmartLedger.App.Views.Pages"/></DataTemplate>
+  <DataTemplate DataType="{x:Type vm:InventoryViewModel}"><views:InventoryPage xmlns:views="clr-namespace:SmartLedger.App.Views.Pages"/></DataTemplate>
+  <DataTemplate DataType="{x:Type vm:SimplePageViewModel}"><views:SimplePage xmlns:views="clr-namespace:SmartLedger.App.Views.Pages"/></DataTemplate>
+  <DataTemplate DataType="{x:Type vm:SettingsViewModel}"><views:SettingsPage xmlns:views="clr-namespace:SmartLedger.App.Views.Pages"/></DataTemplate>
+ </Window.Resources>
+ <Grid>
+  <Grid.ColumnDefinitions><ColumnDefinition Width="230"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+  <Border Background="White" BorderBrush="{StaticResource Border}" BorderThickness="0,0,1,0" Padding="18">
+   <DockPanel>
+    <StackPanel DockPanel.Dock="Bottom"><TextBlock Text="الخصوصية" Foreground="{StaticResource Muted}" Margin="4,24,4,8"/><Button Style="{StaticResource NavButton}" Content="👁  إخفاء الأرقام"/><TextBlock Text="محلي • آمن • دون تعقيد" Foreground="{StaticResource Muted}" FontSize="11" Margin="4,12,4,0"/></StackPanel>
+    <StackPanel>
+     <TextBlock Text="دفتر أعمال ذكي" FontSize="20" FontWeight="Bold" Foreground="{StaticResource Navy}" Margin="4,4,4,28"/>
+     <Button Style="{StaticResource NavButton}" Content="⌂  الرئيسية" Command="{Binding NavigateCommand}" CommandParameter="home"/>
+     <Button Style="{StaticResource NavButton}" Content="▦  الدفاتر" Command="{Binding NavigateCommand}" CommandParameter="books"/>
+     <Button Style="{StaticResource NavButton}" Content="⇄  العمليات" Command="{Binding NavigateCommand}" CommandParameter="operations"/>
+     <Button Style="{StaticResource NavButton}" Content="▤  المخزن" Command="{Binding NavigateCommand}" CommandParameter="inventory"/>
+     <Button Style="{StaticResource NavButton}" Content="▥  التقارير" Command="{Binding NavigateCommand}" CommandParameter="reports"/>
+     <Button Style="{StaticResource NavButton}" Content="✉  الرسائل" Command="{Binding NavigateCommand}" CommandParameter="messages"/>
+     <Button Style="{StaticResource NavButton}" Content="♻  سلة المحذوفات" Command="{Binding NavigateCommand}" CommandParameter="trash"/>
+     <Button Style="{StaticResource NavButton}" Content="⚙  الإعدادات" Command="{Binding NavigateCommand}" CommandParameter="settings"/>
+    </StackPanel>
+   </DockPanel>
+  </Border>
+  <Grid Grid.Column="1" Margin="24,22,24,24">
+   <Grid.RowDefinitions><RowDefinition Height="64"/><RowDefinition Height="*"/></Grid.RowDefinitions>
+   <Grid>
+    <StackPanel Orientation="Horizontal" HorizontalAlignment="Left"><Border Background="White" BorderBrush="{StaticResource Border}" BorderThickness="1" CornerRadius="10" Width="330" Height="42"><Grid><TextBlock Text="⌕  ابحث في البرنامج  Ctrl+K" Foreground="{StaticResource Muted}" VerticalAlignment="Center" Margin="14,0"/></Grid></Border></StackPanel>
+    <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" VerticalAlignment="Center"><TextBlock Text="{Binding PageTitle}" Foreground="{StaticResource Muted}" VerticalAlignment="Center" Margin="0,0,28,0"/><TextBlock Text="{Binding User.DisplayName}" FontWeight="SemiBold" VerticalAlignment="Center" Margin="0,0,14,0"/><Border Width="38" Height="38" Background="#E9F0FA" CornerRadius="19"><TextBlock Text="●" Foreground="{StaticResource Navy}" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border></StackPanel>
+   </Grid>
+   <Border Grid.Row="1" Background="White" CornerRadius="14" Padding="26" BorderBrush="{StaticResource Border}" BorderThickness="1"><ContentControl Content="{Binding CurrentPage}"/></Border>
+  </Grid>
+ </Grid>
+</Window>
+
+--------------------------------------------------------------------------------
+[2] محتوى دوال التحكم بالأزرار من Views\MainWindow.xaml.cs:
+  [تنبيه]: لا توجد أحداث صريحة لـ DragMove أو Maximize/Minimize.
+
+--------------------------------------------------------------------------------
+[3] أول 80 سطراً من Views\Pages\OperationsPage.xaml:
+<UserControl x:Class="SmartLedger.App.Views.Pages.OperationsPage"
+ xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+ Loaded="LoadedPage">
+ <Grid>
+  <Grid.ColumnDefinitions><ColumnDefinition Width="390"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+  <Border Background="#FAFBFC" BorderBrush="{StaticResource Border}" BorderThickness="0,0,1,0" Padding="22">
+   <StackPanel>
+    <TextBlock Text="تسجيل عملية" FontSize="24" FontWeight="Bold"/>
+    <TextBlock Text="إدخال سريع. Enter ينتقل للحقل التالي، وEnter الأخير يحفظ." Foreground="{StaticResource Muted}" TextWrapping="Wrap" Margin="0,5,0,20"/>
+    <TextBlock Text="الشخص" FontWeight="SemiBold" Margin="0,0,0,6"/>
+    <ComboBox x:Name="PersonBox" KeyDown="PersonBox_KeyDown" ItemsSource="{Binding People}" SelectedValue="{Binding SelectedPersonId}" SelectedValuePath="Person.Id" DisplayMemberPath="Person.Name"/>
+    <TextBlock Text="نوع العملية" FontWeight="SemiBold" Margin="0,14,0,6"/>
+    <ComboBox x:Name="TypeBox" KeyDown="TypeBox_KeyDown" ItemsSource="{Binding Types}" SelectedItem="{Binding SelectedType}"/>
+    <TextBlock Text="المبلغ" FontWeight="SemiBold" Margin="0,14,0,6"/>
+    <TextBox x:Name="AmountBox" KeyDown="AmountBox_KeyDown" Text="{Binding AmountText, UpdateSourceTrigger=PropertyChanged}" HorizontalContentAlignment="Right"/>
+    <TextBlock Text="التاريخ والوقت" FontWeight="SemiBold" Margin="0,14,0,6"/>
+    <TextBox x:Name="DateBox" KeyDown="DateBox_KeyDown" Text="{Binding DateText}" IsReadOnly="True" Background="#F2F4F7"/>
+    <TextBlock Text="ملاحظة" FontWeight="SemiBold" Margin="0,14,0,6"/>
+    <TextBox x:Name="NoteBox" KeyDown="NoteBox_KeyDown" Text="{Binding Note, UpdateSourceTrigger=PropertyChanged}" Height="70" AcceptsReturn="True" VerticalContentAlignment="Top" Padding="10"/>
+    <Button x:Name="SaveButton" Content="حفظ العملية   Enter" Command="{Binding SaveCommand}" Style="{StaticResource PrimaryButton}" Margin="0,18,0,0"/>
+    <TextBlock Text="اختصار: Ctrl+N يبدأ عملية جديدة" Foreground="{StaticResource Muted}" FontSize="11" HorizontalAlignment="Center" Margin="0,12,0,0"/>
+   </StackPanel>
+  </Border>
+  <Grid Grid.Column="1" Margin="24,0,0,0">
+   <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
+   <Grid Margin="0,0,0,18">
+    <StackPanel><TextBlock Text="آخر العمليات" FontSize="22" FontWeight="Bold"/><TextBlock Text="آخر 100 عملية — الأحدث أولًا" Foreground="{StaticResource Muted}" Margin="0,4,0,0"/></StackPanel>
+    <TextBlock Text="Ctrl+N" HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="{StaticResource Muted}"/>
+   </Grid>
+   <DataGrid Grid.Row="1" ItemsSource="{Binding Operations}" IsReadOnly="True" EnableRowVirtualization="True" EnableColumnVirtualization="True" VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling">
+    <DataGrid.Columns>
+     <DataGridTextColumn Header="التاريخ" Binding="{Binding OccurredAt, StringFormat=dddd • dd/MM • hh:mm tt}" Width="2*"/>
+     <DataGridTextColumn Header="النوع" Binding="{Binding Type}" Width="*"/>
+     <DataGridTextColumn Header="المبلغ" Binding="{Binding Amount, StringFormat={}{0:N0}}" Width="*"/>
+     <DataGridTextColumn Header="ملاحظة" Binding="{Binding Note}" Width="2*"/>
+    </DataGrid.Columns>
+   </DataGrid>
+  </Grid>
+ </Grid>
+</UserControl>
+
+--------------------------------------------------------------------------------
+[4] محتوى التكوين في app.manifest:
+  - قسم dpiAware معطّل أو غير مفعّل داخل المانيفست.
+
+================================================================================

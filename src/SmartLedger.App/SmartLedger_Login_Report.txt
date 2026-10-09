@@ -1,0 +1,35 @@
+﻿================================================================================
+          تقرير فحص وتصحيح LoginWindow.xaml.cs الحاسم والبناء النهائي           
+          التاريخ: 2026-10-01 01:18:56                     
+================================================================================
+
+[1] قراءة أسطر LoginWindow.xaml.cs الحالية:
+  1: using System.Windows;
+  2: using SmartLedger.App.ViewModels;
+  3: using SmartLedger.Core.Services;
+  4: using SmartLedger.Infrastructure.Data;
+  5: 
+  6: namespace SmartLedger.App.Views;
+  7: public partial class LoginWindow : Window
+  8: {
+  9:     public LoginWindow(Database database)
+  10:     {
+  11:         InitializeComponent();
+  12:         var users=new UserRepository(database);
+  13:         var session=new AppSession();
+  14:         DataContext=new LoginViewModel(users,new PasswordHasher(),user=>OpenMain(session,user));
+  15:         Loaded+=(_,_)=>UserNameBox.Focus();
+  16:     }
+  17:     private void PasswordChanged(object sender,RoutedEventArgs e){if(DataContext is LoginViewModel vm)vm.Password=PasswordBox.Password;}
+  18:     private void OpenMain(AppSession session,SmartLedger.Core.Models.User user){session.Start(new SmartLedger.Core.Models.AppUser(user.Id,user.UserName,user.DisplayName,user.IsAdministrator,user.IsActive)); new MainWindow(session).Show(); Close();}
+  19: }
+
+[✓ تم] تم تحديث وتصحيح كود LoginWindow.xaml.cs.
+
+--------------------------------------------------------------------------------
+[2] جاري تشغيل البناء النهائي (dotnet build)...
+  [✗ متبقي]:
+    C:\Users\pc\Desktop\mnt\data\SmartLedger\src\SmartLedger.App\Views\LoginWindow.xaml.cs(14,71): error CS1593: Delegate 'Action' does not take 1 arguments [C:\Users\pc\Desktop\mnt\data\SmartLedger\src\SmartLedger.App\SmartLedger.App_bmeidvma_wpftmp.csproj]
+    C:\Users\pc\Desktop\mnt\data\SmartLedger\src\SmartLedger.App\Views\LoginWindow.xaml.cs(14,71): error CS1593: Delegate 'Action' does not take 1 arguments [C:\Users\pc\Desktop\mnt\data\SmartLedger\src\SmartLedger.App\SmartLedger.App_bmeidvma_wpftmp.csproj]
+
+================================================================================

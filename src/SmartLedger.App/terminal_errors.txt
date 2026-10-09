@@ -1,0 +1,139 @@
+﻿================================================================================
+              سجل النصوص الحمراء والأخطاء الملتقطة من الطرفية                   
+              التاريخ: 2026-10-01 01:39:28                
+================================================================================
+
+[1] أخطاء شاشة الطرفية الأخيرة (PowerShell Error History):
+--------------------------------------------------
+خطأ رقم [1]:
+The term '================================================================================' is not recognized as the name of a cmdlet, function, script file, or operable program. Check the spelling of the name, or if a path was included, verify that the path is correct and try again.
+السطر البرمجي: ================================================================================
+الاستثناء الفعلي: The term '================================================================================' is not recognized as the name of a cmdlet, function, script file, or operable program. Check the spelling of the name, or if a path was included, verify that the path is correct and try again.
+--------------------------------------------------
+خطأ رقم [2]:
+System.Management.Automation.ParseException: At line:1 char:4
++   - معرف العملية (PID): 16484
++    ~
+Missing expression after unary operator '-'.
+
+At line:1 char:5
++   - معرف العملية (PID): 16484
++     ~~~~
+Unexpected token 'معرف' in expression or statement.
+   at System.Management.Automation.Runspaces.PipelineBase.Invoke(IEnumerable input)
+   at Microsoft.PowerShell.Executor.ExecuteCommandHelper(Pipeline tempPipeline, Exception& exceptionThrown, ExecutionOptions options)
+--------------------------------------------------
+خطأ رقم [3]:
+System.Management.Automation.ParseException: At line:1 char:4
++   [★★★ ممتاز ★★★]: التطبيق يعمل بنجاح والنافذة نشطة الآن على الشاشة!
++    ~
+Missing type name after '['.
+   at System.Management.Automation.Runspaces.PipelineBase.Invoke(IEnumerable input)
+   at Microsoft.PowerShell.Executor.ExecuteCommandHelper(Pipeline tempPipeline, Exception& exceptionThrown, ExecutionOptions options)
+--------------------------------------------------
+خطأ رقم [4]:
+System.Management.Automation.ParseException: At line:2 char:2
++ [2] اختبار التشغيل ورصد الأخطاء الحية (Runtime Execution Test):
++  ~
+Missing type name after '['.
+
+At line:1 char:81
++ ... ---------------------------------------------------------------------
++                                                                          ~
+Missing expression after unary operator '--'.
+
+At line:2 char:1
++ [2] اختبار التشغيل ورصد الأخطاء الحية (Runtime Execution Test):
++ ~~~
+Unexpected token '[2]' in expression or statement.
+
+At line:1 char:3
++ --------------------------------------------------------------------- ...
++   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+The '--' operator works only on variables or on properties.
+
+At line:1 char:5
++ --------------------------------------------------------------------- ...
++     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+The '--' operator works only on variables or on properties.
+
+At line:1 char:7
++ --------------------------------------------------------------------- ...
++       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+The '--' operator works only on variables or on properties.
+
+At line:1 char:9
++ --------------------------------------------------------------------- ...
++         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+The '--' operator works only on variables or on properties.
+
+At line:1 char:11
++ --------------------------------------------------------------------- ...
++           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+The '--' operator works only on variables or on properties.
+
+At line:1 char:13
++ --------------------------------------------------------------------- ...
++             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+The '--' operator works only on variables or on properties.
+
+At line:1 char:15
++ ... --------------------------------------------------------------------- ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+The '--' operator works only on variables or on properties.
+
+Not all parse errors were reported.  Correct the reported errors and try again.
+   at System.Management.Automation.Runspaces.PipelineBase.Invoke(IEnumerable input)
+   at Microsoft.PowerShell.Executor.ExecuteCommandHelper(Pipeline tempPipeline, Exception& exceptionThrown, ExecutionOptions options)
+--------------------------------------------------
+خطأ رقم [5]:
+The term '✓' is not recognized as the name of a cmdlet, function, script file, or operable program. Check the spelling of the name, or if a path was included, verify that the path is correct and try again.
+السطر البرمجي: ✓ نجح البناء تماماً وبدون أي أخطاء.
+الاستثناء الفعلي: The term '✓' is not recognized as the name of a cmdlet, function, script file, or operable program. Check the spelling of the name, or if a path was included, verify that the path is correct and try again.
+--------------------------------------------------
+خطأ رقم [6]:
+System.Management.Automation.ParseException: At line:1 char:2
++ [1] فحص التجميع البرمجي (dotnet build):
++  ~
+Missing type name after '['.
+   at System.Management.Automation.Runspaces.PipelineBase.Invoke(IEnumerable input)
+   at Microsoft.PowerShell.Executor.ExecuteCommandHelper(Pipeline tempPipeline, Exception& exceptionThrown, ExecutionOptions options)
+--------------------------------------------------
+خطأ رقم [7]:
+System.Management.Automation.ParseException: At line:1 char:2
++ [✓ تم] تأمين فضاء أسماء Primitives في App.xaml لمنع انهيار الإقلاع Xa ...
++  ~
+Missing type name after '['.
+   at System.Management.Automation.Runspaces.PipelineBase.Invoke(IEnumerable input)
+   at Microsoft.PowerShell.Executor.ExecuteCommandHelper(Pipeline tempPipeline, Exception& exceptionThrown, ExecutionOptions options)
+--------------------------------------------------
+خطأ رقم [8]:
+The term '================================================================================' is not recognized as the name of a cmdlet, function, script file, or operable program. Check the spelling of the name, or if a path was included, verify that the path is correct and try again.
+السطر البرمجي: ================================================================================
+الاستثناء الفعلي: The term '================================================================================' is not recognized as the name of a cmdlet, function, script file, or operable program. Check the spelling of the name, or if a path was included, verify that the path is correct and try again.
+--------------------------------------------------
+خطأ رقم [9]:
+The term 'التاريخ:' is not recognized as the name of a cmdlet, function, script file, or operable program. Check the spelling of the name, or if a path was included, verify that the path is correct and try again.
+السطر البرمجي: التاريخ: 2026-10-01 01:37:27
+الاستثناء الفعلي: The term 'التاريخ:' is not recognized as the name of a cmdlet, function, script file, or operable program. Check the spelling of the name, or if a path was included, verify that the path is correct and try again.
+--------------------------------------------------
+خطأ رقم [10]:
+The term 'تقرير' is not recognized as the name of a cmdlet, function, script file, or operable program. Check the spelling of the name, or if a path was included, verify that the path is correct and try again.
+السطر البرمجي: تقرير تشخيص سبب توقف الإقلاع والإصلاح الفوري
+الاستثناء الفعلي: The term 'تقرير' is not recognized as the name of a cmdlet, function, script file, or operable program. Check the spelling of the name, or if a path was included, verify that the path is correct and try again.
+
+--------------------------------------------------------------------------------
+[2] نتيجة فحص البناء المباشر (dotnet build):
+    Determining projects to restore...
+    All projects are up-to-date for restore.
+    SmartLedger.Core -> C:\Users\pc\Desktop\mnt\data\SmartLedger\src\SmartLedger.Core\bin\Debug\net8.0\SmartLedger.Core.dll
+    SmartLedger.Infrastructure -> C:\Users\pc\Desktop\mnt\data\SmartLedger\src\SmartLedger.Infrastructure\bin\Debug\net8.0\SmartLedger.Infrastructure.dll
+    SmartLedger.App -> C:\Users\pc\Desktop\mnt\data\SmartLedger\src\SmartLedger.App\bin\Debug\net8.0-windows\SmartLedger.App.dll
+  
+  Build succeeded.
+      0 Warning(s)
+      0 Error(s)
+  
+  Time Elapsed 00:00:01.80
+
+================================================================================

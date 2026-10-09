@@ -1,0 +1,14 @@
+﻿================================================================================
+         تقرير استبدال الاستعلام بـ Verbatim String @ وإعادة البناء            
+         التاريخ: 2026-10-01 01:10:31                     
+================================================================================
+
+[✓ تم بنجاح] استبدال الاستعلام بصيغة Verbatim String المتوافقة وتفادي حساسية المسافات.
+
+--------------------------------------------------------------------------------
+[2] جاري إعادة البناء الشامل...
+  [✗ نتيجة البناء]:
+    C:\Users\pc\Desktop\mnt\data\SmartLedger\src\SmartLedger.Infrastructure\Backup\SqliteBackupService.cs(7,41): error CS0246: The type or namespace name 'Database' could not be found (are you missing a using directive or an assembly reference?) [C:\Users\pc\Desktop\mnt\data\SmartLedger\src\SmartLedger.Infrastructure\SmartLedger.Infrastructure.csproj]
+    C:\Users\pc\Desktop\mnt\data\SmartLedger\src\SmartLedger.Infrastructure\Backup\SqliteBackupService.cs(7,41): error CS0246: The type or namespace name 'Database' could not be found (are you missing a using directive or an assembly reference?) [C:\Users\pc\Desktop\mnt\data\SmartLedger\src\SmartLedger.Infrastructure\SmartLedger.Infrastructure.csproj]
+
+================================================================================

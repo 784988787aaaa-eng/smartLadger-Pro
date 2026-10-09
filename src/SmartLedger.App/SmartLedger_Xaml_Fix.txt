@@ -1,0 +1,17 @@
+﻿================================================================================
+          تقرير التصحيح الدقيق لملفات XAML (App, MainWindow, OperationsPage)   
+          التاريخ: 2026-10-01 01:12:58                     
+================================================================================
+
+[✓ تم] إزالة FlowDirection من عنصر Application في App.xaml (تخصيصها يكون في Window).
+[✓ تم] تصحيح وتوحيد فضاء الأسماء views داخل MainWindow.xaml.
+
+--------------------------------------------------------------------------------
+[4] جاري إعادة بناء المشروع الآن...
+  [✗ متبقي الملاحظات التالية]:
+    C:\Users\pc\Desktop\mnt\data\SmartLedger\src\SmartLedger.App\Views\MainWindow.xaml(2,65): error MC3000: 'Name cannot begin with the '.' character, hexadecimal value 0x2E. Line 2, position 65.' XML is not valid. [C:\Users\pc\Desktop\mnt\data\SmartLedger\src\SmartLedger.App\SmartLedger.App.csproj]
+    C:\Users\pc\Desktop\mnt\data\SmartLedger\src\SmartLedger.App\Views\Pages\OperationsPage.xaml(36,42): error MC3044: The text '{0:N2\}}' is not allowed after the closing '}' of a MarkupExtension expression. Line 36 Position 42. [C:\Users\pc\Desktop\mnt\data\SmartLedger\src\SmartLedger.App\SmartLedger.App.csproj]
+    C:\Users\pc\Desktop\mnt\data\SmartLedger\src\SmartLedger.App\Views\MainWindow.xaml(2,65): error MC3000: 'Name cannot begin with the '.' character, hexadecimal value 0x2E. Line 2, position 65.' XML is not valid. [C:\Users\pc\Desktop\mnt\data\SmartLedger\src\SmartLedger.App\SmartLedger.App.csproj]
+    C:\Users\pc\Desktop\mnt\data\SmartLedger\src\SmartLedger.App\Views\Pages\OperationsPage.xaml(36,42): error MC3044: The text '{0:N2\}}' is not allowed after the closing '}' of a MarkupExtension expression. Line 36 Position 42. [C:\Users\pc\Desktop\mnt\data\SmartLedger\src\SmartLedger.App\SmartLedger.App.csproj]
+
+================================================================================
