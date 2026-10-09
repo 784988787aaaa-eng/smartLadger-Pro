@@ -5,6 +5,7 @@ using System.Globalization;
 using System.IO.Compression;
 using System.Text;
 using SmartLedger.Core.Models;
+using BackupInfo = SmartLedger.Core.Models.BackupInfo;
 using SmartLedger.Core.Services;
 using SmartLedger.Infrastructure.Backup;
 using SmartLedger.Infrastructure.Security;
@@ -40,7 +41,7 @@ public sealed class ResetDataService
         if (!string.Equals(info.Sha256, verifiedHash, StringComparison.OrdinalIgnoreCase)) throw new InvalidDataException("Backup hash differs from the created snapshot.");
         var fingerprint = await ComputeBackupFingerprintAsync(info.FilePath, ct);
         preparedBackups[actorId] = new PreparedBackup(Path.GetFullPath(info.FilePath), verifiedHash, fingerprint, DateTimeOffset.UtcNow.AddMinutes(30));
-        return info;
+        return new BackupInfo(info.FilePath, info.CreatedAt, new FileInfo(info.FilePath).Length, false, info.Sha256);
     }
 
     public async Task ResetAsync(Guid actorId, string password, string confirmation, string verifiedBackupPath, CancellationToken ct = default)
