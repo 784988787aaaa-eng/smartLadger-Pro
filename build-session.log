@@ -1,0 +1,136 @@
+﻿=== RESTORE ===
+  Determining projects to restore...
+  Restored C:\Users\pc\SmartLedger-Build-20261010\src\SmartLedger.Core\SmartLedger.Core.csproj (in 140 ms).
+  Restored C:\Users\pc\SmartLedger-Build-20261010\src\SmartLedger.App\SmartLedger.App.csproj (in 257 ms).
+  Restored C:\Users\pc\SmartLedger-Build-20261010\src\SmartLedger.Infrastructure\SmartLedger.Infrastructure.csproj (in 257 ms).
+  1 of 4 projects are up-to-date for restore.
+=== RELEASE BUILD ===
+  SmartLedger.Core -> C:\Users\pc\SmartLedger-Build-20261010\src\SmartLedger.Core\bin\Release\net10.0\SmartLedger.Core.dll
+  SmartLedger.Infrastructure -> C:\Users\pc\SmartLedger-Build-20261010\src\SmartLedger.Infrastructure\bin\Release\net10.0\SmartLedger.Infrastructure.dll
+  SmartLedger.App -> C:\Users\pc\SmartLedger-Build-20261010\src\SmartLedger.App\bin\Release\net10.0-windows\SmartLedger.App.dll
+  SmartLedger.Tests -> C:\Users\pc\SmartLedger-Build-20261010\tests\SmartLedger.Tests\bin\Release\net10.0-windows\SmartLedger.Tests.dll
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:05.86
+=== FULL TEST SUITE ===
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+  SmartLedger.Core -> C:\Users\pc\SmartLedger-Build-20261010\src\SmartLedger.Core\bin\Release\net10.0\SmartLedger.Core.dll
+  SmartLedger.Infrastructure -> C:\Users\pc\SmartLedger-Build-20261010\src\SmartLedger.Infrastructure\bin\Release\net10.0\SmartLedger.Infrastructure.dll
+  SmartLedger.App -> C:\Users\pc\SmartLedger-Build-20261010\src\SmartLedger.App\bin\Release\net10.0-windows\SmartLedger.App.dll
+  SmartLedger.Tests -> C:\Users\pc\SmartLedger-Build-20261010\tests\SmartLedger.Tests\bin\Release\net10.0-windows\SmartLedger.Tests.dll
+Test run for C:\Users\pc\SmartLedger-Build-20261010\tests\SmartLedger.Tests\bin\Release\net10.0-windows\SmartLedger.Tests.dll (.NETCoreApp,Version=v10.0)
+A total of 1 test files matched the specified pattern.
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v3.1.4+50e68bbb8b (64-bit .NET 10.0.12)
+[xUnit.net 00:00:00.14]   Discovering: SmartLedger.Tests
+[xUnit.net 00:00:00.23]   Discovered:  SmartLedger.Tests
+[xUnit.net 00:00:00.28]   Starting:    SmartLedger.Tests
+  Passed SmartLedger.Tests.Phase4SchemaMigrationTests.Initialize_AddsExpenseCashFlowAndPreferencesWithoutDroppingLegacyTables [285 ms]
+  Passed SmartLedger.Tests.FeatureHardeningTests.RecycleBin_RestoresBookPayload [384 ms]
+  Passed SmartLedger.Tests.FeatureHardeningTests.MessageTemplates_PersistAndUpdate [88 ms]
+  Passed SmartLedger.Tests.TemplateEngineTests.Render_ReplacesAllKnownPlaceholders_AndLeavesUnknownOnesIntact [21 ms]
+  Passed SmartLedger.Tests.TemplateEngineTests.Render_IsCaseInsensitiveAndReplacesNullWithEmptyText [< 1 ms]
+  Passed SmartLedger.Tests.CoreInvariantsTests.Balance_PaymentReducesPayable [35 ms]
+  Passed SmartLedger.Tests.CoreInvariantsTests.Inventory_RejectsInvalidFactor [2 ms]
+  Passed SmartLedger.Tests.CoreInvariantsTests.Balance_SplitsNegativeAsPayable [< 1 ms]
+  Passed SmartLedger.Tests.CoreInvariantsTests.Inventory_ConvertsLargeAndSmallExactly [< 1 ms]
+  Passed SmartLedger.Tests.CoreInvariantsTests.Balance_SplitsPositiveAsReceivable [< 1 ms]
+  Passed SmartLedger.Tests.InvoicePrintServiceTests.A4Invoice_RendersValidPdf [613 ms]
+  Passed SmartLedger.Tests.InvoicePrintServiceTests.ThermalReceipt_RendersValidPdfWithArabicInvoiceContent [37 ms]
+  Passed SmartLedger.Tests.ProductPersistenceTests.CreateUpdateAndSearchByBarcodeAndName_RoundTripsCommercialMetadata [140 ms]
+  Passed SmartLedger.Tests.ProductPersistenceTests.CreateProduct_RejectsDuplicateBarcode [76 ms]
+  Passed SmartLedger.Tests.DatabaseIntegrationTests.AtomicInvoiceTransaction_RollsBackInvoiceLinesStockAndLedger [1 s]
+  Passed SmartLedger.Tests.DatabaseHardeningTests.AtomicInvoiceTransaction_CommitsInvoiceLinesStockAndLedger [1 s]
+  Passed SmartLedger.Tests.DatabaseHardeningTests.LegacyOccrredAt_IsRepairedToOccurredAt [163 ms]
+  Passed SmartLedger.Tests.AccountDirectionAndNoteTests.OpeningBalancesAndAccountNotesPersistWithoutChangingStoredAmounts [1 s]
+  Passed SmartLedger.Tests.LedgerCalculationTests.RemovingAnOperation_RecalculatesAllSubsequentBalances [6 ms]
+  Passed SmartLedger.Tests.LedgerCalculationTests.RunningBalances_AccumulateDebitsAndCreditsChronologically [16 ms]
+  Passed SmartLedger.Tests.LedgerCalculationTests.RepositoryDeleteOperation_SoftDeletesAtomicallyAndRecalculatesLedger [127 ms]
+  Passed SmartLedger.Tests.RecycleStockHardeningTests.RestoringStockMovement_RestoresMovementAndReappliesStockEffect [880 ms]
+  Passed SmartLedger.Tests.InventoryUnitConversionTests.ToMinorUnits_CombinesMajorAndMinorInput [< 1 ms]
+  Passed SmartLedger.Tests.InventoryUnitConversionTests.UnitPriceFromMajor_DividesCostByConversionFactor [< 1 ms]
+  Passed SmartLedger.Tests.InventoryUnitConversionTests.BreakDown_ConvertsFiftyUnitsToFourMajorAndTwoMinor [1 ms]
+  Passed SmartLedger.Tests.BatchStockTests.AddStockBatch_UpdatesOnHandAndPreservesBatchValuation [900 ms]
+  Passed SmartLedger.Tests.DatabaseIntegrationTests.Repository_PersistsOperationAndMaintainsTransaction [986 ms]
+  Passed SmartLedger.Tests.CoreInvariantsTests.PasswordHasher_UsesSaltedHash [1 s]
+  Passed SmartLedger.Tests.CoreInvariantsTests.ArabicDigits_ParseAsDecimal [< 1 ms]
+  Passed SmartLedger.Tests.CoreInvariantsTests.Money_DoesNotUseBinaryFloatingPoint [< 1 ms]
+  Passed SmartLedger.Tests.CoreInvariantsTests.Privacy_MasksMoneyByDefaultAndRevealsOnToggle [< 1 ms]
+  Passed SmartLedger.Tests.DatabaseIntegrationTests.Database_BootstrapsAtSchema14 [85 ms]
+  Passed SmartLedger.Tests.PersonPersistenceTests.CreatePerson_GeneratesAccountCodeAndRejectsDuplicates [133 ms]
+  Passed SmartLedger.Tests.FinancialPathTests.OperationAndProductValidation_RejectsNegativeAmountsAndInvalidProductValues [897 ms]
+  Passed SmartLedger.Tests.PersonPersistenceTests.CreateAndUpdate_RoundTripsAllAccountMetadata [119 ms]
+  Passed SmartLedger.Tests.OpeningBalanceTests.OpeningBalance_UsesLedgerAsSingleSourceOfTruth [943 ms]
+  Passed SmartLedger.Tests.AccountsViewModelTests.SaveAndNewCommand_RejectsMissingNameWithoutPersistence [24 ms]
+  Passed SmartLedger.Tests.AccountsViewModelTests.SaveAndCloseCommand_RejectsMissingNameWithoutClosingDrawer [1 ms]
+  Passed SmartLedger.Tests.AccountsViewModelTests.StatementKpis_AggregateDebitCreditAndNetBalance [2 ms]
+  Passed SmartLedger.Tests.ExpenseTests.CreateExpenseAsync_StoresExpenseAndCashOutflowAtomically [100 ms]
+  Passed SmartLedger.Tests.MessageTemplateEngineTests.Render_ReplacesKnownTokensCaseInsensitivelyAndKeepsUnknownTokens [< 1 ms]
+  Passed SmartLedger.Tests.MessageTemplateEngineTests.Render_ConvertsNullValuesToEmptyText [< 1 ms]
+  Passed SmartLedger.Tests.MessageTemplateEngineTests.Render_UsesFallbackWhenPersistedTemplateIsMissingOrBlank [< 1 ms]
+  Passed SmartLedger.Tests.AuditLogTests.LogActionAsync_PersistsReadableAuditEntry [79 ms]
+  Passed SmartLedger.Tests.PurchaseInvoiceTests.SavePurchaseInvoice_IncreasesStockCreatesBatchAndPostsSupplierCredit [99 ms]
+  Passed SmartLedger.Tests.SalesInvoiceTests.SaveSalesInvoice_CashSaleWritesCashRegisterEntry [957 ms]
+  Passed SmartLedger.Tests.UserPermissionTests.NonAdmin_CannotRaiseOwnPrivilegesOrModifyAnotherUser [971 ms]
+  Passed SmartLedger.Tests.DatabaseIntegrationTests.StockMovement_RollsBackWhenStockWouldGoNegative [923 ms]
+  Passed SmartLedger.Tests.ReportExportTests.ReportSummary_UsesInclusiveFullLocalDayRange [116 ms]
+  Passed SmartLedger.Tests.FinancialPathTests.InvoicePaymentModes_CashCreditPartialPreserveTotalsAndBalances [909 ms]
+  Passed SmartLedger.Tests.PreDeliveryHardeningTests.ProductCreation_RejectsDuplicateNormalizedNameAndBarcode [79 ms]
+  Passed SmartLedger.Tests.WhatsAppServiceTests.BuildDispatchUris_ProvidesApplicationAndWebFallback [1 ms]
+  Passed SmartLedger.Tests.WhatsAppServiceTests.NormalizePhone_ProducesDigitsWithCountryCode(input: "0777 123 456", expected: "967777123456") [< 1 ms]
+  Passed SmartLedger.Tests.WhatsAppServiceTests.NormalizePhone_ProducesDigitsWithCountryCode(input: "00967-777-123-456", expected: "967777123456") [< 1 ms]
+  Passed SmartLedger.Tests.WhatsAppServiceTests.NormalizePhone_ProducesDigitsWithCountryCode(input: "+967 777 123 456", expected: "967777123456") [< 1 ms]
+  Passed SmartLedger.Tests.WhatsAppServiceTests.NormalizePhone_ProducesDigitsWithCountryCode(input: "447700900123", expected: "967447700900123") [< 1 ms]
+  Passed SmartLedger.Tests.WhatsAppServiceTests.NormalizePhone_ProducesDigitsWithCountryCode(input: "777-123-456", expected: "967777123456") [< 1 ms]
+  Passed SmartLedger.Tests.WhatsAppServiceTests.NormalizePhone_RejectsMissingOrTooShortNumbers(phone: "123", valid: False) [< 1 ms]
+  Passed SmartLedger.Tests.WhatsAppServiceTests.NormalizePhone_RejectsMissingOrTooShortNumbers(phone: "0777 123 456", valid: True) [< 1 ms]
+  Passed SmartLedger.Tests.WhatsAppServiceTests.NormalizePhone_RejectsMissingOrTooShortNumbers(phone: "", valid: False) [< 1 ms]
+  Passed SmartLedger.Tests.WhatsAppServiceTests.BuildUrl_EncodesArabicMessageAndUsesNormalizedPhone [2 ms]
+  Passed SmartLedger.Tests.RecoveryTests.Recovery_Success_ChangesPasswordAndAuditsWithoutSecrets [2 s]
+  Passed SmartLedger.Tests.RecoveryTests.Recovery_UnknownUser_DoesNotRevealRecoveryHint [67 ms]
+  Passed SmartLedger.Tests.RecoveryTests.Recovery_PasswordConfirmationMismatch_IsRejectedBeforeHashing [< 1 ms]
+  Passed SmartLedger.Tests.SalesInvoiceTests.SaveSalesInvoice_NumbersInvoiceDeductsStockFefoAndPostsCustomerDebitAtomically [893 ms]
+  Passed SmartLedger.Tests.UserPermissionTests.LastActiveAdministrator_CannotBeDisabledDemotedOrDeleted [918 ms]
+  Passed SmartLedger.Tests.DatabaseIntegrationTests.Recycle_DeleteOperationArchivesAndRestores [935 ms]
+  Passed SmartLedger.Tests.AuditSecurityTests.Audit_SanitizesSecrets_AndKeepsSearchReadable [102 ms]
+  Passed SmartLedger.Tests.BackupServiceHardeningTests.Restore_ValidArchive_ReplacesDatabase_ClosesHandles_AndLeavesNoWalSidecars [533 ms]
+  Passed SmartLedger.Tests.PreDeliveryHardeningTests.InvoiceValidation_RejectsNegativePriceWithoutCreatingOrphans [831 ms]
+  Passed SmartLedger.Tests.AuditSecurityTests.Audit_FailureIsSurfaced_ForMandatoryAuditCallers [111 ms]
+  Passed SmartLedger.Tests.BackupServiceHardeningTests.Restore_HashMismatch_PreservesOriginalAndIntegrity [153 ms]
+  Passed SmartLedger.Tests.ReportExportTests.AccountStatementExports_ContainRunningBalanceAndRealDateCells [1 s]
+  Passed SmartLedger.Tests.BackupServiceHardeningTests.Restore_UnsupportedSchema_PreservesOriginalAndIntegrity [153 ms]
+  Passed SmartLedger.Tests.BackupServiceHardeningTests.Restore_CancellationBeforeReplacement_PreservesOriginalAndIntegrity [172 ms]
+  Passed SmartLedger.Tests.ReportExportTests.PdfExport_SupportsAllRequiredPageKinds [323 ms]
+  Passed SmartLedger.Tests.ReportExportTests.ExcelExport_WritesAmountAsNumericCell [12 ms]
+  Passed SmartLedger.Tests.ResetDataServiceTests.Reset_RequiresValidPasswordPhraseAndVerifiedBackup_ThenCanRestoreBackup [4 s]
+  Passed SmartLedger.Tests.BackupServiceHardeningTests.Backup_IncludesCommittedWalTransaction_AndPreservesIntegrity [128 ms]
+  Passed SmartLedger.Tests.UserPermissionTests.Admin_CanCreateEditDisableReactivateAndSetPermissions [806 ms]
+  Passed SmartLedger.Tests.BackupServiceHardeningTests.Restore_CorruptArchive_PreservesOriginalAndIntegrity [127 ms]
+  Passed SmartLedger.Tests.PreDeliveryHardeningTests.MultiLineInvoice_InsufficientStockRollsBackAllRowsAndMoves [712 ms]
+  Passed SmartLedger.Tests.BackupServiceHardeningTests.Restore_InterruptionDuringReplacement_RestoresEmergencyCopyAndIntegrity [186 ms]
+  Passed SmartLedger.Tests.PreDeliveryHardeningTests.BackupRestore_ValidatesHashAndRollsBackOnInvalidArchive [189 ms]
+  Passed SmartLedger.Tests.UserPermissionTests.PermissionTable_ExistsAndAdministratorHasAllPermissions [378 ms]
+  Passed SmartLedger.Tests.BackupServiceHardeningTests.Restore_ReplacementFailure_RestoresEmergencyCopyAndIntegrity [182 ms]
+  Passed SmartLedger.Tests.RecoveryTests.Recovery_WrongPhrase_DoesNotChangePassword [1 s]
+  Passed SmartLedger.Tests.PreDeliveryHardeningTests.MultiLineInvoice_CommitsEveryLineAndMovementAtomically [582 ms]
+  Passed SmartLedger.Tests.ResetDataServiceTests.Reset_RejectsNonAdministratorEvenWhenPasswordIsCorrect [1 s]
+  Passed SmartLedger.Tests.PreDeliveryHardeningTests.DuplicateInvoice_IsRejectedWithoutSecondStockOrLedgerEffect [467 ms]
+[xUnit.net 00:00:06.90]   Finished:    SmartLedger.Tests
+  Passed SmartLedger.Tests.PreDeliveryHardeningTests.StockMovement_RejectsNegativeQuantity [445 ms]
+
+Test Run Successful.
+Total tests: 91
+     Passed: 91
+ Total time: 7.6380 Seconds
+=== WINDOWS X64 PUBLISH ===
+  Determining projects to restore...
+  Restored C:\Users\pc\SmartLedger-Build-20261010\src\SmartLedger.Core\SmartLedger.Core.csproj (in 185 ms).
+  Restored C:\Users\pc\SmartLedger-Build-20261010\src\SmartLedger.Infrastructure\SmartLedger.Infrastructure.csproj (in 340 ms).
+  Restored C:\Users\pc\SmartLedger-Build-20261010\src\SmartLedger.App\SmartLedger.App.csproj (in 340 ms).
+  SmartLedger.Core -> C:\Users\pc\SmartLedger-Build-20261010\src\SmartLedger.Core\bin\Release\net10.0\SmartLedger.Core.dll
+  SmartLedger.Infrastructure -> C:\Users\pc\SmartLedger-Build-20261010\src\SmartLedger.Infrastructure\bin\Release\net10.0\SmartLedger.Infrastructure.dll
+  SmartLedger.App -> C:\Users\pc\SmartLedger-Build-20261010\src\SmartLedger.App\bin\Release\net10.0-windows\win-x64\SmartLedger.App.dll
+  SmartLedger.App -> C:\Users\pc\SmartLedger-Build-20261010\publish\
