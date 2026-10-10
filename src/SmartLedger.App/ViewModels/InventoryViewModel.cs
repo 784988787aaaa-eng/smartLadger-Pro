@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using System.Globalization;
 using SmartLedger.Core.Abstractions;
 using SmartLedger.Core.Models;
+using SmartLedger.Core.Services;
 
 namespace SmartLedger.App.ViewModels;
 
@@ -48,6 +49,8 @@ public partial class InventoryViewModel(IAppRepository repo) : ObservableObject
 
     public int ProductsCount => Products.Count;
     public decimal StockValue => Products.Sum(x => x.StockSmallUnits * x.PurchasePrice);
+    public decimal RetailStockValue => Products.Sum(x => x.StockSmallUnits * x.SalePrice);
+    public string SelectedProductStockBreakdown => SelectedProduct is { } p ? InventoryUnitConverter.BreakDown(p.StockSmallUnits, Math.Max(1m,p.ConversionFactor), p.LargeUnit, p.SmallUnit).Formatted : "—";
     public int LowStockCount => Products.Count(x => x.StockSmallUnits <= x.AlertThreshold);
     public string SelectedProductSupplier => SelectedProduct?.DefaultSupplierName ?? "بدون مورد";
     public string SelectedProductLocation => string.IsNullOrWhiteSpace(SelectedProduct?.ShelfLocation) ? "غير محدد" : SelectedProduct!.ShelfLocation;
@@ -60,6 +63,7 @@ public partial class InventoryViewModel(IAppRepository repo) : ObservableObject
         ApplyFilter();
         OnPropertyChanged(nameof(ProductsCount));
         OnPropertyChanged(nameof(StockValue));
+        OnPropertyChanged(nameof(RetailStockValue));
         OnPropertyChanged(nameof(LowStockCount));
         OnPropertyChanged(nameof(Warehouses));
         OnPropertyChanged(nameof(ProductWarehouses));
@@ -106,6 +110,7 @@ public partial class InventoryViewModel(IAppRepository repo) : ObservableObject
     {
         OnPropertyChanged(nameof(SelectedProductSupplier));
         OnPropertyChanged(nameof(SelectedProductLocation));
+        OnPropertyChanged(nameof(SelectedProductStockBreakdown));
         _ = LoadMovementsAsync(value?.Id);
     }
 
@@ -237,6 +242,25 @@ public partial class InventoryViewModel(IAppRepository repo) : ObservableObject
         }
         catch (Exception ex) { StatusText = ex.Message; }
         finally { IsSaving = false; }
+    }
+
+
+    [RelayCommand]
+    private async Task SaveAndNewProductAsync()
+    {
+        await SaveNewAsync();
+        if (!IsDialogOpen && StatusText.Contains("بنجاح", StringComparison.Ordinal))
+            OpenAdd();
+    }
+
+    [RelayCommand]
+    private async Task SaveAndCloseProductAsync() => await SaveNewAsync();
+
+    [RelayCommand]
+    private void GenerateBarcode()
+    {
+        if (string.IsNullOrWhiteSpace(NewBarcode))
+            NewBarcode = "SL" + DateTimeOffset.UtcNow.ToString("yyMMddHHmmssfff", CultureInfo.InvariantCulture);
     }
 
     private void ApplyFilter()
