@@ -2,6 +2,7 @@
 
 public enum BookKind { All=0, Customers=1, Suppliers=2, Custom=3, Employees=4, Other=5 }
 public enum OperationType { Receive, Payment, DebtToUs, DebtOnUs, Sale, Purchase, Return, Settlement, Other }
+public enum AccountNature { Debit, Credit, Flexible }
 public enum InvoiceType { Sale, Purchase }
 public enum PaymentMode { Cash, Credit, Partial }
 public enum StockMovementType { Purchase, Sale, ReturnIn, ReturnOut, AdjustmentIn, AdjustmentOut, Inventory }
@@ -12,10 +13,19 @@ public sealed record Book(Guid Id, string Name, BookKind Kind, int SortOrder, bo
 }
 public sealed record Person(Guid Id, Guid BookId, string Name, string Phone, string Note, DateTimeOffset CreatedAt)
 {
+    public string AccountCode { get; init; } = string.Empty;
+    public decimal? CreditLimit { get; init; }
+    public string Address { get; init; } = string.Empty;
+    public string SecondaryPhone { get; init; } = string.Empty;
+    public AccountNature Nature { get; init; } = AccountNature.Flexible;
+    public bool WhatsAppEnabled { get; init; } = true;
+    public DateTimeOffset UpdatedAt { get; init; } = CreatedAt;
     public override string ToString()=>Name;
 }
 public sealed record LedgerOperation(Guid Id, Guid PersonId, OperationType Type, decimal Amount, string Note, DateTimeOffset OccurredAt, Guid CreatedBy)
 {
+    public string? ReferenceNumber { get; init; }
+    public decimal RunningBalance { get; init; }
     public string TypeLabel=>Type switch { OperationType.Receive=>"استلام", OperationType.Payment=>"سداد", OperationType.DebtToUs=>"له", OperationType.DebtOnUs=>"عليه", OperationType.Sale=>"بيع آجل", OperationType.Purchase=>"شراء آجل", OperationType.Return=>"مرتجع", OperationType.Settlement=>"تسوية", _=>"أخرى" };
 };
 public sealed record OperationTypeOption(OperationType Value, string Label)
