@@ -82,7 +82,7 @@ LIMIT COALESCE($take,-1);
         return x;
     }
 
-    public async Task<Person> CreatePersonAsync(Guid bookId,string name,string phone,string note,CancellationToken ct=default){await EnsurePermissionAsync(PermissionKeys.Create,ct);var p=new Person(Guid.NewGuid(),bookId,name.Trim(),phone.Trim(),note.Trim(),DateTimeOffset.UtcNow);await using var db=database.Open();await db.OpenAsync(ct);await using var c=db.CreateCommand();c.CommandText="INSERT INTO People VALUES($id,$book,$name,$phone,$note,$created);";P(c,"$id",p.Id.ToString("N"));P(c,"$book",p.BookId.ToString("N"));P(c,"$name",p.Name);P(c,"$phone",p.Phone);P(c,"$note",p.Note);P(c,"$created",p.CreatedAt.ToString("O"));await c.ExecuteNonQueryAsync(ct);return p;}
+    public async Task<Person> CreatePersonAsync(Guid bookId,string name,string phone,string note,CancellationToken ct=default){await EnsurePermissionAsync(PermissionKeys.Create,ct);var p=new Person(Guid.NewGuid(),bookId,name.Trim(),phone.Trim(),note.Trim(),DateTimeOffset.UtcNow);await using var db=database.Open();await db.OpenAsync(ct);await using var c=db.CreateCommand();c.CommandText="INSERT INTO People(Id,BookId,Name,Phone,Note,CreatedAt) VALUES($id,$book,$name,$phone,$note,$created);";P(c,"$id",p.Id.ToString("N"));P(c,"$book",p.BookId.ToString("N"));P(c,"$name",p.Name);P(c,"$phone",p.Phone);P(c,"$note",p.Note);P(c,"$created",p.CreatedAt.ToString("O"));await c.ExecuteNonQueryAsync(ct);return p;}
     public async Task<Person> CreatePersonWithOpeningBalanceAsync(Guid bookId,string name,string phone,string note,decimal openingBalance,OperationType openingDirection,CancellationToken ct=default)
     {
         await EnsurePermissionAsync(PermissionKeys.Create,ct);
@@ -98,7 +98,7 @@ LIMIT COALESCE($take,-1);
             var operation=new LedgerOperation(Guid.NewGuid(),p.Id,openingDirection,decimal.Round(openingBalance,2),"رصيد افتتاحي",DateTimeOffset.UtcNow,appSession?.CurrentUser?.Id ?? Guid.Empty);
             if(operation.CreatedBy==Guid.Empty) throw new InvalidOperationException("لا توجد جلسة مستخدم صالحة لتسجيل الرصيد الافتتاحي.");
             if(!await ExistsAsync(c,"Users",operation.CreatedBy,ct)) throw new InvalidOperationException("المستخدم المنفذ للعملية غير موجود.");
-            c.Parameters.Clear(); c.CommandText="INSERT INTO Operations VALUES($id,$person,$type,$amount,$note,$when,$user);"; P(c,"$id",operation.Id.ToString("N")); P(c,"$person",operation.PersonId.ToString("N")); P(c,"$type",(int)operation.Type); P(c,"$amount",S(operation.Amount)); P(c,"$note",operation.Note); P(c,"$when",operation.OccurredAt.ToString("O")); P(c,"$user",operation.CreatedBy.ToString("N")); await c.ExecuteNonQueryAsync(ct);
+            c.Parameters.Clear(); c.CommandText="INSERT INTO Operations(Id,PersonId,Type,Amount,Note,OccurredAt,CreatedBy) VALUES($id,$person,$type,$amount,$note,$when,$user);"; P(c,"$id",operation.Id.ToString("N")); P(c,"$person",operation.PersonId.ToString("N")); P(c,"$type",(int)operation.Type); P(c,"$amount",S(operation.Amount)); P(c,"$note",operation.Note); P(c,"$when",operation.OccurredAt.ToString("O")); P(c,"$user",operation.CreatedBy.ToString("N")); await c.ExecuteNonQueryAsync(ct);
         }
         await tx.CommitAsync(ct);
         if(openingBalance>0 && appSession?.CurrentUser is AppUser user) await audit.LogActionAsync(user.Id,"PERSON_CREATE","Person",p.Id,new { p.Name,OpeningBalance=openingBalance,OpeningDirection=openingDirection },ct);
