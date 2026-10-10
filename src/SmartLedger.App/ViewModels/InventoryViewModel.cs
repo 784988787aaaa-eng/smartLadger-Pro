@@ -57,6 +57,10 @@ public partial class InventoryViewModel(IAppRepository repo) : ObservableObject
     public decimal StockValue => Products.Sum(x => x.StockSmallUnits * x.PurchasePrice);
     public decimal RetailStockValue => Products.Sum(x => x.StockSmallUnits * x.SalePrice);
     public string SelectedProductStockBreakdown => SelectedProduct is { } p ? InventoryUnitConverter.BreakDown(p.StockSmallUnits, Math.Max(1m,p.ConversionFactor), p.LargeUnit, p.SmallUnit).Formatted : "—";
+    public decimal SelectedProductCostValue => SelectedProduct is { } p ? p.StockSmallUnits * p.PurchasePrice : 0m;
+    public decimal SelectedProductRetailValue => SelectedProduct is { } p ? p.StockSmallUnits * p.SellingPriceMinor : 0m;
+    public decimal SelectedProductIncomingQuantity => SelectedProductMovements.Where(m => m.TypeLabel.Contains("وارد", StringComparison.Ordinal) || m.TypeLabel.Contains("افتتاحي", StringComparison.Ordinal)).Sum(m => m.QuantitySmallUnits);
+    public decimal SelectedProductOutgoingQuantity => SelectedProductMovements.Where(m => m.TypeLabel.Contains("منصرف", StringComparison.Ordinal)).Sum(m => m.QuantitySmallUnits);
     public int LowStockCount => Products.Count(x => x.StockSmallUnits <= x.AlertThreshold);
     public string SelectedProductSupplier => SelectedProduct?.DefaultSupplierName ?? "بدون مورد";
     public string SelectedProductLocation => string.IsNullOrWhiteSpace(SelectedProduct?.ShelfLocation) ? "غير محدد" : SelectedProduct!.ShelfLocation;
@@ -114,6 +118,10 @@ public partial class InventoryViewModel(IAppRepository repo) : ObservableObject
 
     partial void OnSelectedProductChanged(Product? value)
     {
+        OnPropertyChanged(nameof(SelectedProductCostValue));
+        OnPropertyChanged(nameof(SelectedProductRetailValue));
+        OnPropertyChanged(nameof(SelectedProductIncomingQuantity));
+        OnPropertyChanged(nameof(SelectedProductOutgoingQuantity));
         OnPropertyChanged(nameof(SelectedProductSupplier));
         OnPropertyChanged(nameof(SelectedProductLocation));
         OnPropertyChanged(nameof(SelectedProductStockBreakdown));
@@ -125,6 +133,8 @@ public partial class InventoryViewModel(IAppRepository repo) : ObservableObject
         if (productId is Guid id)
         {
             SelectedProductMovements = await repo.GetProductMovementsAsync(id, 30);
+            OnPropertyChanged(nameof(SelectedProductIncomingQuantity));
+            OnPropertyChanged(nameof(SelectedProductOutgoingQuantity));
             SelectedProductBatches = await repo.GetProductBatchesAsync(id);
         }
         else
