@@ -7,4 +7,10 @@ public sealed record InvoiceDraftLine(
     string Unit,
     decimal UnitPrice,
     decimal LineTotal,
-    decimal QuantitySmallUnits);
+    decimal QuantitySmallUnits)
+{
+    public decimal DiscountAmount { get; init; }
+    public decimal CostPriceSnapshot { get; init; }
+    public string Barcode { get; init; } = string.Empty;
+    public decimal ConversionFactorApplied { get; init; } = 1m;
+}
