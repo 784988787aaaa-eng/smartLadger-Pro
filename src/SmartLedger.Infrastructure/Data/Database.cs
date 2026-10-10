@@ -16,7 +16,7 @@ public sealed class Database
         await using var db=Open(); await db.OpenAsync(ct);
         await ExecuteAsync(db,"PRAGMA journal_mode=WAL; PRAGMA synchronous=NORMAL; PRAGMA busy_timeout=10000; PRAGMA foreign_keys=ON; PRAGMA temp_store=MEMORY;",ct);
         var version=await ScalarLongAsync(db,"PRAGMA user_version;",ct);
-        if(version<1)await MigrationV1Async(db,ct); if(version<2)await MigrationV2Async(db,ct); if(version<3)await MigrationV3Async(db,ct); if(version<4)await MigrationV4Async(db,ct); if(version<5)await MigrationV5Async(db,ct); if(version<6)await MigrationV6Async(db,ct); if(version<7)await MigrationV7Async(db,ct); if(version<8)await MigrationV8Async(db,ct); if(version<9)await MigrationV9Async(db,ct); if(version<10)await MigrationV10Async(db,ct); if(version<11)await MigrationV11Async(db,ct); if(version<12)await MigrationV12Async(db,ct); if(version<13)await MigrationV13Async(db,ct); await SeedAsync(db,ct);
+        if(version<1)await MigrationV1Async(db,ct); if(version<2)await MigrationV2Async(db,ct); if(version<3)await MigrationV3Async(db,ct); if(version<4)await MigrationV4Async(db,ct); if(version<5)await MigrationV5Async(db,ct); if(version<6)await MigrationV6Async(db,ct); if(version<7)await MigrationV7Async(db,ct); if(version<8)await MigrationV8Async(db,ct); if(version<9)await MigrationV9Async(db,ct); if(version<10)await MigrationV10Async(db,ct); if(version<11)await MigrationV11Async(db,ct); if(version<12)await MigrationV12Async(db,ct); if(version<13)await MigrationV13Async(db,ct); if(version<14)await MigrationV14Async(db,ct); await SeedAsync(db,ct);
     }
     private static async Task MigrationV1Async(SqliteConnection db,CancellationToken ct)
     {
@@ -71,6 +71,34 @@ public sealed class Database
             await ExecuteAsync(db,"CREATE INDEX IF NOT EXISTS IX_Operations_Person_OccurredAt ON Operations(PersonId,OccurredAt);",ct);
         await SetVersionAsync(db,10,ct);
     }
+    private static async Task MigrationV14Async(SqliteConnection db,CancellationToken ct)
+    {
+        // Additive Phase 4 purchasing, expense cash-flow and runtime preference schema.
+        if(await TableExistsAsync(db,"Expenses"))
+        {
+            await EnsureColumnAsync(db,"Expenses","CategoryId","TEXT NOT NULL DEFAULT ''",ct);
+            await EnsureColumnAsync(db,"Expenses","PaymentMethod","TEXT NOT NULL DEFAULT 'Cash'",ct);
+        }
+        await ExecuteAsync(db,"""
+            CREATE TABLE IF NOT EXISTS ExpenseCashEntries(
+                Id TEXT PRIMARY KEY,
+                ExpenseId TEXT NOT NULL UNIQUE REFERENCES Expenses(Id) ON DELETE CASCADE,
+                Amount TEXT NOT NULL,
+                EntryType TEXT NOT NULL DEFAULT 'EXPENSE_PAYMENT',
+                OccurredAt TEXT NOT NULL,
+                CreatedBy TEXT NOT NULL REFERENCES Users(Id)
+            );
+            CREATE INDEX IF NOT EXISTS IX_ExpenseCashEntries_Date ON ExpenseCashEntries(OccurredAt);
+            CREATE TABLE IF NOT EXISTS AppPreferences(
+                [Key] TEXT PRIMARY KEY,
+                [Value] TEXT NOT NULL DEFAULT '',
+                UpdatedAt TEXT NOT NULL
+            );
+            CREATE INDEX IF NOT EXISTS IX_Expenses_Category_Date ON Expenses(Category,OccurredAt);
+            """,ct);
+        await SetVersionAsync(db,14,ct);
+    }
+
     private static async Task MigrationV13Async(SqliteConnection db,CancellationToken ct)
     {
         // Follow-up additive settings migration so installations already at v12 also receive invoice identity fields.
