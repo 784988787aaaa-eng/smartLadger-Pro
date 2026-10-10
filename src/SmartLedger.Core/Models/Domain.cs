@@ -101,7 +101,11 @@ public sealed record InvoiceLine(Guid Id, Guid InvoiceId, Guid ProductId, string
     public decimal QuantityMinor { get; init; } = Quantity;
     public decimal CostPriceSnapshot { get; init; }
 };
-public sealed record Expense(Guid Id, Guid? PersonId, string Category, decimal Amount, string Note, DateTimeOffset OccurredAt, Guid CreatedBy);
+public sealed record Expense(Guid Id, Guid? PersonId, string Category, decimal Amount, string Note, DateTimeOffset OccurredAt, Guid CreatedBy)
+{
+    public string CategoryId { get; init; } = string.Empty;
+    public string PaymentMethod { get; init; } = "Cash";
+}
 public sealed record AppUser(Guid Id, string UserName, string DisplayName, bool IsAdministrator, bool IsActive);
 public sealed record User(Guid Id, string UserName, string DisplayName, string PasswordHash, string RecoveryHash, string RecoveryHint, bool IsAdministrator, bool IsActive);
 public sealed record AdminSetup(string UserName, string PasswordHash, string RecoveryHash, string RecoveryHint);
@@ -121,3 +125,16 @@ public sealed record DeletedItem(Guid Id,string EntityType,Guid EntityId,DateTim
 }
 public sealed record MessageTemplate(Guid Id,string Name,string Body,bool IsSystem);
 public sealed record AuditEntry(Guid Id,Guid? UserId,string UserName,string Action,string EntityType,Guid? EntityId,string Details,DateTimeOffset OccurredAt);
+public sealed record ExpenseCategory(string Id,string Name,bool IsActive=true);
+public sealed record RuntimeDiagnostics(string ProductVersion,string RuntimeVersion,long DatabaseSizeBytes,long ManagedMemoryBytes,int SchemaVersion,long ProductCount,long InvoiceCount,long PeopleCount,long ExpenseCount);
+public static class MessageTemplateEngine
+{
+    public static string Render(string template,IReadOnlyDictionary<string,string?> values)
+    {
+        ArgumentNullException.ThrowIfNull(template);
+        ArgumentNullException.ThrowIfNull(values);
+        var result=template;
+        foreach(var pair in values)result=result.Replace("{"+pair.Key+"}",pair.Value??string.Empty,StringComparison.OrdinalIgnoreCase);
+        return result;
+    }
+}
