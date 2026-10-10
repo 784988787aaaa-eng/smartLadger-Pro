@@ -464,6 +464,9 @@
                     </DataGridTemplateColumn.CellTemplate>
                   </DataGridTemplateColumn>
 
+                  <DataGridTemplateColumn Header="رقم المرجع" Width="100">
+                    <DataGridTemplateColumn.CellTemplate><DataTemplate><TextBlock Text="{Binding ReferenceNumber}" HorizontalAlignment="Center" FlowDirection="LeftToRight" Foreground="{StaticResource BrushMuted}"/></DataTemplate></DataGridTemplateColumn.CellTemplate>
+                  </DataGridTemplateColumn>
                   <DataGridTemplateColumn Header="البيان / التفاصيل" Width="1.7*">
                     <DataGridTemplateColumn.HeaderTemplate>
                       <DataTemplate><TextBlock Text="البيان / التفاصيل" HorizontalAlignment="Center" TextAlignment="Center" FontWeight="SemiBold" FontSize="12.5"/></DataTemplate>
@@ -522,6 +525,12 @@
                     </DataGridTemplateColumn.CellTemplate>
                   </DataGridTemplateColumn>
 
+                  <DataGridTemplateColumn Header="عليه (مدين)" Width="105">
+                    <DataGridTemplateColumn.CellTemplate><DataTemplate><TextBlock Text="{Binding Debit,Converter={StaticResource PrivacyMoneyConverter}}" Foreground="#EF4444" FlowDirection="LeftToRight" HorizontalAlignment="Right" TextAlignment="Right" FontWeight="SemiBold"/></DataTemplate></DataGridTemplateColumn.CellTemplate>
+                  </DataGridTemplateColumn>
+                  <DataGridTemplateColumn Header="له (دائن)" Width="105">
+                    <DataGridTemplateColumn.CellTemplate><DataTemplate><TextBlock Text="{Binding Credit,Converter={StaticResource PrivacyMoneyConverter}}" Foreground="#10B981" FlowDirection="LeftToRight" HorizontalAlignment="Right" TextAlignment="Right" FontWeight="SemiBold"/></DataTemplate></DataGridTemplateColumn.CellTemplate>
+                  </DataGridTemplateColumn>
                   <DataGridTemplateColumn Header="الوقت والتاريخ" Width="185">
                     <DataGridTemplateColumn.HeaderTemplate>
                       <DataTemplate><TextBlock Text="الوقت والتاريخ" HorizontalAlignment="Center" TextAlignment="Center" FontWeight="SemiBold" FontSize="12.5"/></DataTemplate>
@@ -558,6 +567,16 @@
                         </TextBlock>
                       </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
+                  </DataGridTemplateColumn>
+                  <DataGridTemplateColumn Header="إجراءات" Width="112">
+                    <DataGridTemplateColumn.CellTemplate><DataTemplate>
+                      <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                        <Button Content="واتساب" Padding="5,2" Margin="1" ToolTip="إرسال السند عبر واتساب"
+                          Command="{Binding DataContext.SendVoucherWhatsAppCommand,RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}" CommandParameter="{Binding Operation}"/>
+                        <Button Content="عكس" Padding="5,2" Margin="1" ToolTip="حذف/عكس الحركة"
+                          Command="{Binding DataContext.DeleteOperationCommand,RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}" CommandParameter="{Binding Operation}"/>
+                      </StackPanel>
+                    </DataTemplate></DataGridTemplateColumn.CellTemplate>
                   </DataGridTemplateColumn>
                 </DataGrid.Columns>
               </DataGrid>
