@@ -324,7 +324,7 @@ FROM Operations;
     public Task<Invoice> SaveSalesInvoiceAsync(Invoice invoice,IReadOnlyList<InvoiceLine> lines,IReadOnlyList<StockMovement> movements,LedgerOperation? operation,CancellationToken ct=default)=>CreateInvoiceTransactionWithMovementsAsync(invoice,lines,movements,operation,ct);
     public Task<Invoice> CreateInvoiceTransactionAsync(Invoice i,IReadOnlyList<InvoiceLine> lines,StockMovement? movement,LedgerOperation? operation,CancellationToken ct=default)=>CreateInvoiceTransactionWithMovementsAsync(i,lines,movement is null?Array.Empty<StockMovement>():new[]{movement!},operation,ct);
     public async Task<Invoice> CreateInvoiceTransactionWithMovementsAsync(Invoice i,IReadOnlyList<InvoiceLine> lines,IReadOnlyList<StockMovement> movements,LedgerOperation? operation,CancellationToken ct=default){await EnsurePermissionAsync(PermissionKeys.Create,ct);
-        if(i.Subtotal<0||i.Discount<0||i.Total<=0||i.Paid<0||i.Paid>i.Total)throw new ArgumentOutOfRangeException(nameof(i),"قيم الفاتورة غير منطقية.");
+        if(i.Subtotal<0||i.Discount<0||i.TaxAmount<0||i.Discount>i.Subtotal||i.Total<=0||i.Paid<0||i.Paid>i.Total)throw new ArgumentOutOfRangeException(nameof(i),"قيم الفاتورة غير منطقية.");
         if(decimal.Round(i.Subtotal-i.Discount+i.TaxAmount,2)!=decimal.Round(i.Total,2))throw new InvalidOperationException("إجمالي الفاتورة لا يطابق الإجمالي بعد الخصم والضريبة.");
         if(i.PaymentMode==PaymentMode.Cash&&i.Paid!=i.Total)throw new InvalidOperationException("الفاتورة النقدية يجب أن تكون مسددة بالكامل.");
         if(i.PaymentMode==PaymentMode.Credit&&i.Paid!=0)throw new InvalidOperationException("الفاتورة الآجلة يجب ألا تحتوي دفعة مقدمة.");
