@@ -41,7 +41,7 @@ COALESCE(SUM(CASE
     WHEN o.Type=1 THEN CAST(o.Amount AS REAL)
     ELSE 0
 END),0),
-MAX(o.OccurredAt)
+MAX(o.OccurredAt),p.AccountCode,p.CreditLimit,p.Address,p.SecondaryPhone,p.AccountNature,p.WhatsAppEnabled,p.UpdatedAt
 FROM People p
 JOIN Books b ON b.Id=p.BookId
 LEFT JOIN Operations o ON o.PersonId=p.Id
@@ -60,7 +60,16 @@ LIMIT COALESCE($take,-1);
             var netBalance=r.GetDecimal(7);
             var split=balanceEngine.Split(netBalance);
             x.Add(new PersonSummary(
-                new Person(Guid.Parse(r.GetString(0)),Guid.Parse(r.GetString(1)),r.GetString(2),r.GetString(3),r.GetString(4),DateTimeOffset.Parse(r.GetString(5))),
+                new Person(Guid.Parse(r.GetString(0)),Guid.Parse(r.GetString(1)),r.GetString(2),r.GetString(3),r.GetString(4),DateTimeOffset.Parse(r.GetString(5)))
+                {
+                    AccountCode=r.IsDBNull(9) ? string.Empty : r.GetString(9),
+                    CreditLimit=r.IsDBNull(10) ? null : decimal.Parse(r.GetString(10),CultureInfo.InvariantCulture),
+                    Address=r.IsDBNull(11) ? string.Empty : r.GetString(11),
+                    SecondaryPhone=r.IsDBNull(12) ? string.Empty : r.GetString(12),
+                    Nature=Enum.TryParse<AccountNature>(r.IsDBNull(13) ? string.Empty : r.GetString(13),true,out var nature) ? nature : AccountNature.Flexible,
+                    WhatsAppEnabled=!r.IsDBNull(14) && (r.GetValue(14) is long enabled ? enabled!=0 : Convert.ToInt32(r.GetValue(14),CultureInfo.InvariantCulture)!=0),
+                    UpdatedAt=r.IsDBNull(15) || string.IsNullOrWhiteSpace(r.GetString(15)) ? DateTimeOffset.Parse(r.GetString(5),CultureInfo.InvariantCulture) : DateTimeOffset.Parse(r.GetString(15),CultureInfo.InvariantCulture)
+                },
                 r.GetString(6),
                 split.OwedToUs,
                 split.WeOwe,
