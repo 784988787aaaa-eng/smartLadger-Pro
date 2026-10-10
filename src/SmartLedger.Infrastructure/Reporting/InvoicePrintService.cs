@@ -22,7 +22,7 @@ public sealed class InvoicePrintService : IInvoicePrintService
                 var fontPath = Path.Combine(fontsDirectory, fontName);
                 if (!File.Exists(fontPath)) continue;
                 using var fontStream = File.OpenRead(fontPath);
-                FontManager.RegisterFont(fontStream);
+                FontManager.RegisterFontFromStream(fontStream);
             }
         }
     }
