@@ -74,7 +74,7 @@ public sealed class Database
     private static async Task MigrationV14Async(SqliteConnection db,CancellationToken ct)
     {
         // Additive Phase 4 purchasing, expense cash-flow and runtime preference schema.
-        if(await TableExistsAsync(db,"Expenses"))
+        if(await TableExistsAsync(db,"Expenses",ct))
         {
             await EnsureColumnAsync(db,"Expenses","CategoryId","TEXT NOT NULL DEFAULT ''",ct);
             await EnsureColumnAsync(db,"Expenses","PaymentMethod","TEXT NOT NULL DEFAULT 'Cash'",ct);

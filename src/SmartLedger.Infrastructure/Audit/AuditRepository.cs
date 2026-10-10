@@ -1,4 +1,5 @@
 ﻿using System.Text.Json;
+using System.Text.Encodings.Web;
 using Microsoft.Data.Sqlite;
 using SmartLedger.Infrastructure.Data;
 using SmartLedger.Core.Models;
@@ -27,6 +28,6 @@ public sealed class AuditRepository(Database database)
         return items;
     }
 
-    private static string Sanitize(object? value){if(value is null)return "{}";using var doc=JsonDocument.Parse(JsonSerializer.Serialize(value));using var stream=new MemoryStream();using(var w=new Utf8JsonWriter(stream)){Write(w,doc.RootElement);w.Flush();}return System.Text.Encoding.UTF8.GetString(stream.ToArray());}
+    private static string Sanitize(object? value){if(value is null)return "{}";using var doc=JsonDocument.Parse(JsonSerializer.Serialize(value));using var stream=new MemoryStream();using(var w=new Utf8JsonWriter(stream,new JsonWriterOptions{Encoder=JavaScriptEncoder.UnsafeRelaxedJsonEscaping})){Write(w,doc.RootElement);w.Flush();}return System.Text.Encoding.UTF8.GetString(stream.ToArray());}
     private static void Write(Utf8JsonWriter w,JsonElement e){if(e.ValueKind==JsonValueKind.Object){w.WriteStartObject();foreach(var p in e.EnumerateObject()){if(Sensitive.Any(s=>p.Name.Contains(s,StringComparison.OrdinalIgnoreCase)))continue;w.WritePropertyName(p.Name);Write(w,p.Value);}w.WriteEndObject();}else if(e.ValueKind==JsonValueKind.Array){w.WriteStartArray();foreach(var x in e.EnumerateArray())Write(w,x);w.WriteEndArray();}else e.WriteTo(w);}
 }

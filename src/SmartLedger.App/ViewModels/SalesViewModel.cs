@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using System.Diagnostics;
 using System.IO;
+using System.Globalization;
 using System.Collections.ObjectModel;
 using SmartLedger.Core.Abstractions;
 using SmartLedger.Core.Models;
@@ -227,9 +228,9 @@ public partial class SalesViewModel(IAppRepository repo,IAppSession session):Obs
             var values=new Dictionary<string,string?>
             {
                 ["StoreName"]=identity.BusinessName,["CustomerName"]=LastSavedCustomerName,
-                ["InvoiceNumber"]=invoice.InvoiceNumber,["TotalAmount"]=invoice.Total.ToString("N2"),
-                ["PaidAmount"]=invoice.Paid.ToString("N2"),["RemainingAmount"]=invoice.RemainingAmount.ToString("N2"),
-                ["Currency"]=identity.Currency,["Date"]=invoice.IssuedAt.ToString("yyyy/MM/dd HH:mm")
+                ["InvoiceNumber"]=invoice.InvoiceNumber,["TotalAmount"]=invoice.Total.ToString("N2",System.Globalization.CultureInfo.InvariantCulture),
+                ["PaidAmount"]=invoice.Paid.ToString("N2",System.Globalization.CultureInfo.InvariantCulture),["RemainingAmount"]=invoice.RemainingAmount.ToString("N2",System.Globalization.CultureInfo.InvariantCulture),
+                ["Currency"]=identity.Currency,["Date"]=invoice.IssuedAt.ToString("yyyy/MM/dd HH:mm",System.Globalization.CultureInfo.InvariantCulture)
             };
             var message=MessageTemplateEngine.Render(template?.Body??fallback,values);
             new WhatsAppService().OpenWhatsApp(LastSavedCustomerPhone,message);StatusText="تم فتح واتساب برسالة الفاتورة المخصصة؛ راجعها قبل الإرسال.";
