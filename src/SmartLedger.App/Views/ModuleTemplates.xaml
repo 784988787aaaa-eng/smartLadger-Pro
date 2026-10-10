@@ -771,11 +771,12 @@
               <StackPanel Grid.Column="4" Margin="4"><TextBlock Text="الوحدة" Style="{StaticResource SectionLabel}"/><ComboBox ItemsSource="{Binding QuantityUnits}" SelectedItem="{Binding SelectedQuantityUnit,Mode=TwoWay}" Height="44" TabIndex="4" AutomationProperties.Name="وحدة الكمية"/></StackPanel>
             </Grid>
             <Grid Grid.Row="2" Margin="0,0,0,12">
-              <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions>
+              <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/><ColumnDefinition/><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions>
               <StackPanel Margin="4"><TextBlock Text="السعر *" Style="{StaticResource SectionLabel}"/><TextBox TabIndex="5" Style="{StaticResource NumericField}" Text="{Binding PriceText,UpdateSourceTrigger=PropertyChanged}" Height="44"/></StackPanel>
               <StackPanel Grid.Column="1" Margin="4"><TextBlock Text="المدفوع" Style="{StaticResource SectionLabel}"/><TextBox TabIndex="6" Style="{StaticResource NumericField}" Text="{Binding PaidText,UpdateSourceTrigger=PropertyChanged}" Height="44"/></StackPanel>
               <StackPanel Grid.Column="2" Margin="4"><TextBlock Text="الخصم" Style="{StaticResource SectionLabel}"/><TextBox TabIndex="7" Style="{StaticResource NumericField}" Text="{Binding InvoiceDiscountText,UpdateSourceTrigger=PropertyChanged}" Height="44"/></StackPanel>
-              <StackPanel Grid.Column="3" Margin="4"><TextBlock Text="البيان" Style="{StaticResource SectionLabel}"/><TextBox TabIndex="7" Style="{StaticResource Field}" Text="{Binding Note,UpdateSourceTrigger=PropertyChanged}" Height="44"/></StackPanel>
+              <StackPanel Grid.Column="3" Margin="4"><TextBlock Text="الضريبة %" Style="{StaticResource SectionLabel}"/><TextBox TabIndex="8" Style="{StaticResource NumericField}" Text="{Binding TaxPercentText,UpdateSourceTrigger=PropertyChanged}" Height="44"/></StackPanel>
+              <StackPanel Grid.Column="4" Margin="4"><TextBlock Text="البيان" Style="{StaticResource SectionLabel}"/><TextBox TabIndex="7" Style="{StaticResource Field}" Text="{Binding Note,UpdateSourceTrigger=PropertyChanged}" Height="44"/></StackPanel>
             </Grid>
             <StackPanel Grid.Row="3" Margin="4,0,4,8"><Button Content="إضافة الصنف إلى الفاتورة" Command="{Binding AddLineCommand}" Style="{StaticResource PrimaryButton}" Height="36" HorizontalAlignment="Right"/><DataGrid ItemsSource="{Binding Lines}" AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True" Height="118" Margin="0,6,0,0" FlowDirection="RightToLeft" HeadersVisibility="Column"><DataGrid.Columns><DataGridTextColumn Header="الصنف" Binding="{Binding ProductName}" Width="2*"/><DataGridTextColumn Header="الكمية" Binding="{Binding Quantity}" Width="*"/><DataGridTextColumn Header="الوحدة" Binding="{Binding Unit}" Width="*"/><DataGridTextColumn Header="السعر" Binding="{Binding UnitPrice}" Width="*"/><DataGridTextColumn Header="الإجمالي" Binding="{Binding LineTotal}" Width="*"/><DataGridTemplateColumn Header="حذف" Width="60"><DataGridTemplateColumn.CellTemplate><DataTemplate><Button Content="×" Command="{Binding DataContext.RemoveLineCommand,RelativeSource={RelativeSource AncestorType=DataGrid}}" CommandParameter="{Binding}" Style="{StaticResource GhostButton}" Padding="5,0"/></DataTemplate></DataGridTemplateColumn.CellTemplate></DataGridTemplateColumn></DataGrid.Columns></DataGrid></StackPanel>
             <StackPanel Grid.Row="4" Margin="4,0,4,12">
@@ -787,10 +788,13 @@
               </UniformGrid>
             </StackPanel>
             <Border Grid.Row="5" Style="{StaticResource Card}" Padding="12" Margin="4,0,4,10">
-              <Grid><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions>
-                <StackPanel><TextBlock Text="الإجمالي" Style="{StaticResource CaptionText}"/><TextBlock Text="{Binding Total,Converter={StaticResource PrivacyMoneyConverter}}" Style="{StaticResource MetricText}"/></StackPanel>
-                <StackPanel Grid.Column="1"><TextBlock Text="المدفوع" Style="{StaticResource CaptionText}"/><TextBlock Text="{Binding PaidText}" Style="{StaticResource MetricText}"/></StackPanel>
-                <StackPanel Grid.Column="2"><TextBlock Text="{Binding BalanceLabel}" Style="{StaticResource CaptionText}"/><TextBlock Text="{Binding Remaining,Converter={StaticResource PrivacyMoneyConverter}}" Style="{StaticResource MetricText}" Foreground="{StaticResource BrushWarning}"/></StackPanel>
+              <Grid><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/><ColumnDefinition/><ColumnDefinition/><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions>
+                <StackPanel><TextBlock Text="إجمالي الأصناف" Style="{StaticResource CaptionText}"/><TextBlock Text="{Binding LinesTotal,Converter={StaticResource PrivacyMoneyConverter}}" Style="{StaticResource MetricText}"/></StackPanel>
+                <StackPanel Grid.Column="1"><TextBlock Text="الخصم" Style="{StaticResource CaptionText}"/><TextBlock Text="{Binding DiscountAmountDisplay,Converter={StaticResource PrivacyMoneyConverter}}" Style="{StaticResource MetricText}"/></StackPanel>
+                <StackPanel Grid.Column="2"><TextBlock Text="الضريبة" Style="{StaticResource CaptionText}"/><TextBlock Text="{Binding TaxAmountDisplay,Converter={StaticResource PrivacyMoneyConverter}}" Style="{StaticResource MetricText}"/></StackPanel>
+                <StackPanel Grid.Column="3"><TextBlock Text="الصافي" Style="{StaticResource CaptionText}"/><TextBlock Text="{Binding Total,Converter={StaticResource PrivacyMoneyConverter}}" Style="{StaticResource MetricText}"/></StackPanel>
+                <StackPanel Grid.Column="4"><TextBlock Text="المدفوع" Style="{StaticResource CaptionText}"/><TextBlock Text="{Binding PaidText}" Style="{StaticResource MetricText}"/></StackPanel>
+                <StackPanel Grid.Column="5"><TextBlock Text="{Binding BalanceLabel}" Style="{StaticResource CaptionText}"/><TextBlock Text="{Binding Remaining,Converter={StaticResource PrivacyMoneyConverter}}" Style="{StaticResource MetricText}" Foreground="{StaticResource BrushWarning}"/></StackPanel>
               </Grid>
             </Border>
             <Grid Grid.Row="6" Margin="4,0,4,0">
