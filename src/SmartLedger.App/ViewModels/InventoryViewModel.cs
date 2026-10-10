@@ -140,6 +140,8 @@ public partial class InventoryViewModel(IAppRepository repo) : ObservableObject
         else
         {
             SelectedProductMovements = Array.Empty<ProductMovementRow>();
+            OnPropertyChanged(nameof(SelectedProductIncomingQuantity));
+            OnPropertyChanged(nameof(SelectedProductOutgoingQuantity));
             SelectedProductBatches = Array.Empty<ProductBatch>();
         }
     }
