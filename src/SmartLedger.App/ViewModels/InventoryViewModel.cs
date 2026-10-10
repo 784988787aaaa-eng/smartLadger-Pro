@@ -20,6 +20,7 @@ public partial class InventoryViewModel(IAppRepository repo) : ObservableObject
     [ObservableProperty] private string newBatchExpiry = "";
 
     [ObservableProperty] private string search = "";
+    [ObservableProperty] private bool isSearchFocusRequested;
     [ObservableProperty] private bool isDialogOpen;
     [ObservableProperty] private bool isSaving;
     [ObservableProperty] private bool isEditing;
@@ -46,6 +47,7 @@ public partial class InventoryViewModel(IAppRepository repo) : ObservableObject
     [ObservableProperty] private string stockFilter = "All";
     private bool _syncingUnits;
 
+    public IReadOnlyList<string> Categories => _allProducts.Select(p => p.Category).Where(x => !string.IsNullOrWhiteSpace(x)).Distinct(StringComparer.CurrentCultureIgnoreCase).OrderBy(x => x).Prepend("عام").Distinct(StringComparer.CurrentCultureIgnoreCase).ToArray();
     public IReadOnlyList<string> Warehouses => Products.Select(p => p.WarehouseName).Where(x => !string.IsNullOrWhiteSpace(x)).Distinct().OrderBy(x => x).Prepend("الكل").ToArray();
     public IReadOnlyList<string> ProductWarehouses => _allProducts.Select(p => p.WarehouseName).Where(x => !string.IsNullOrWhiteSpace(x)).Distinct().OrderBy(x => x).DefaultIfEmpty("المخزن الرئيسي").ToArray();
     public decimal ProfitPerUnit => Math.Max(0m, ParseDecimal(NewSalePrice) - ParseDecimal(NewPurchasePrice));
@@ -77,6 +79,7 @@ public partial class InventoryViewModel(IAppRepository repo) : ObservableObject
         OnPropertyChanged(nameof(LowStockCount));
         OnPropertyChanged(nameof(Warehouses));
         OnPropertyChanged(nameof(ProductWarehouses));
+        OnPropertyChanged(nameof(Categories));
         if (SelectedProduct is not null)
             await LoadMovementsAsync(SelectedProduct.Id);
     }
@@ -112,6 +115,9 @@ public partial class InventoryViewModel(IAppRepository repo) : ObservableObject
         NewSalePrice = (ParseDecimal(NewMajorSalePrice) / factor).ToString("0.##", CultureInfo.CurrentCulture);
         _syncingUnits = false;
     }
+
+    [RelayCommand]
+    private void FocusSearch() => IsSearchFocusRequested = true;
 
     [RelayCommand]
     private void SetFilter(string filter) => StockFilter = filter;
