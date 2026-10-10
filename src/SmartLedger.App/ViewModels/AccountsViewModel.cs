@@ -35,6 +35,7 @@ public partial class AccountsViewModel(IAppRepository repo,IAppSession session):
     [ObservableProperty] private bool isDialogOpen;
     [ObservableProperty] private bool isSaving;
     [ObservableProperty] private string newName="";
+    [ObservableProperty] private string newAccountCode="";
     [ObservableProperty] private string newPhone="";
     [ObservableProperty] private string newNote="";
     [ObservableProperty] private string newSecondaryPhone="";
@@ -356,6 +357,7 @@ public partial class AccountsViewModel(IAppRepository repo,IAppSession session):
     private void OpenAdd()
     {
         NewName="";
+        NewAccountCode="ACC-"+Guid.NewGuid().ToString("N")[..12].ToUpperInvariant();
         NewPhone="";
         NewNote="";
         NewSecondaryPhone="";
@@ -434,7 +436,7 @@ public partial class AccountsViewModel(IAppRepository repo,IAppSession session):
             var now=DateTimeOffset.UtcNow;
             var person=new Person(Guid.NewGuid(),book.Id,name,phone,NewNote.Trim(),now)
             {
-                SecondaryPhone=NewSecondaryPhone.Trim(), Address=NewAddress.Trim(), CreditLimit=creditLimit,
+                AccountCode=NewAccountCode.Trim(), SecondaryPhone=NewSecondaryPhone.Trim(), Address=NewAddress.Trim(), CreditLimit=creditLimit,
                 Nature=NewAccountNature, WhatsAppEnabled=NewWhatsAppEnabled, UpdatedAt=now
             };
             var direction=OpeningBalanceForUs?OperationType.DebtOnUs:OperationType.DebtToUs;
@@ -442,7 +444,7 @@ public partial class AccountsViewModel(IAppRepository repo,IAppSession session):
             await RefreshAsync();
             if(continueEntry)
             {
-                NewName=""; NewPhone=""; NewSecondaryPhone=""; NewAddress=""; NewCreditLimit=""; NewNote="";
+                NewName=""; NewAccountCode="ACC-"+Guid.NewGuid().ToString("N")[..12].ToUpperInvariant(); NewPhone=""; NewSecondaryPhone=""; NewAddress=""; NewCreditLimit=""; NewNote="";
                 OpeningBalanceText=""; NewAccountNature=AccountNature.Flexible; NewWhatsAppEnabled=true;
                 StatusText="تم حفظ الحساب. يمكنك إدخال الحساب التالي.";
             }
