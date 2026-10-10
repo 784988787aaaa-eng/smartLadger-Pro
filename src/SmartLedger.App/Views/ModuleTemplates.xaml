@@ -300,9 +300,13 @@
               <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
               <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
 
-              <StackPanel Grid.Row="0" Grid.ColumnSpan="2" Margin="0,0,0,5">
-                <TextBlock Text="اسم الحساب" Style="{StaticResource SectionLabel}" Margin="0,0,0,3"/>
+              <StackPanel Grid.Row="0" Grid.Column="0" Margin="0,0,4,5">
+                <TextBlock Text="اسم الحساب *" Style="{StaticResource SectionLabel}" Margin="0,0,0,3"/>
                 <TextBox Style="{StaticResource DialogField}" AutomationProperties.Name="اسم الحساب" Text="{Binding NewName,UpdateSourceTrigger=PropertyChanged}" FlowDirection="RightToLeft" TextAlignment="Right" HorizontalContentAlignment="Right" Language="ar-SA" InputMethod.IsInputMethodEnabled="True" InputMethod.PreferredImeState="On" InputMethod.PreferredImeConversionMode="Native" Padding="10,4,8,4" CaretBrush="#EAF4FF" SelectionBrush="#356FB5" TabIndex="0" Height="44"/>
+              </StackPanel>
+              <StackPanel Grid.Row="0" Grid.Column="1" Margin="4,0,0,5">
+                <TextBlock Text="رمز الحساب (تلقائي)" Style="{StaticResource SectionLabel}" Margin="0,0,0,3"/>
+                <TextBox Style="{StaticResource DialogField}" Text="{Binding NewAccountCode}" IsReadOnly="True" AutomationProperties.Name="رمز الحساب" Height="44" FlowDirection="LeftToRight" TextAlignment="Center"/>
               </StackPanel>
 
               <StackPanel Grid.Row="1" Grid.Column="0" Margin="0,0,4,5">
