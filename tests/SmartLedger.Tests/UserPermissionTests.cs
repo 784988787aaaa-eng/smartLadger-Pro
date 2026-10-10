@@ -102,7 +102,7 @@ public sealed class UserPermissionTests
             await c.OpenAsync();
             await using var q = c.CreateCommand();
             q.CommandText = "PRAGMA user_version;";
-            Assert.Equal(9L, Convert.ToInt64(await q.ExecuteScalarAsync()));
+            Assert.Equal(10L, Convert.ToInt64(await q.ExecuteScalarAsync()));
         }
         finally { SqliteConnection.ClearAllPools(); DeleteRoot(root); }
     }
