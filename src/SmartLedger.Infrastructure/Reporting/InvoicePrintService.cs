@@ -39,6 +39,7 @@ public sealed class InvoicePrintService : IInvoicePrintService
         ArgumentNullException.ThrowIfNull(lines);
         ArgumentNullException.ThrowIfNull(identity);
         var qrPayload = $"رقم الفاتورة={invoice.InvoiceNumber};الإجمالي={invoice.Total:N2};العملة={identity.Currency};التاريخ={invoice.IssuedAt:yyyy/MM/dd HH:mm}";
+        var logoBytes = !string.IsNullOrWhiteSpace(identity.LogoPath) && File.Exists(identity.LogoPath) ? File.ReadAllBytes(identity.LogoPath) : null;
         using var qrGenerator = new QRCodeGenerator();
         using var qrData = qrGenerator.CreateQrCode(qrPayload, QRCodeGenerator.ECCLevel.Q);
         var qrBytes = new PngByteQRCode(qrData).GetGraphic(5);
@@ -52,11 +53,16 @@ public sealed class InvoicePrintService : IInvoicePrintService
                 page.Content().Column(column =>
                 {
                     column.Spacing(thermal ? 4 : 8);
+                    if (!thermal && logoBytes is not null) column.Item().AlignCenter().Height(70).Image(logoBytes);
                     column.Item().AlignCenter().Text(identity.BusinessName).FontSize(thermal ? 13 : 20).Bold();
                     if (!string.IsNullOrWhiteSpace(identity.Address))
                         column.Item().AlignCenter().Text(identity.Address);
                     if (!string.IsNullOrWhiteSpace(identity.Phone))
                         column.Item().AlignCenter().Text(identity.Phone);
+                    if (!string.IsNullOrWhiteSpace(identity.CommercialRegistrationNumber))
+                        column.Item().AlignCenter().Text($"السجل التجاري: {identity.CommercialRegistrationNumber}");
+                    if (!string.IsNullOrWhiteSpace(identity.TaxRegistrationNumber))
+                        column.Item().AlignCenter().Text($"الرقم الضريبي: {identity.TaxRegistrationNumber}");
                     column.Item().AlignCenter().Text(thermal ? "إيصال مبيعات" : "فاتورة مبيعات").Bold();
                     column.Item().Text($"رقم الفاتورة: {invoice.InvoiceNumber}");
                     column.Item().Text($"التاريخ: {invoice.IssuedAt:yyyy/MM/dd HH:mm}");
@@ -99,6 +105,8 @@ public sealed class InvoicePrintService : IInvoicePrintService
                     column.Item().AlignCenter().Text(invoice.RemainingAmount > 0 ? "فاتورة آجلة / جزئية" : "مدفوعة بالكامل").Bold();
                     if (!string.IsNullOrWhiteSpace(invoice.Note))
                         column.Item().Text($"ملاحظات: {invoice.Note}");
+                    if (!string.IsNullOrWhiteSpace(identity.InvoiceTerms))
+                        column.Item().Text($"الشروط والأحكام: {identity.InvoiceTerms}");
                     column.Item().AlignCenter().Text("شكراً لزيارتكم").Bold();
                     column.Item().AlignCenter().Height(thermal ? 64 : 88).Image(qrBytes);
                     column.Item().AlignCenter().Text("رمز الفاتورة").FontSize(7);
