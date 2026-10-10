@@ -75,9 +75,9 @@ public sealed class SalesInvoiceTests
             Assert.NotNull(admin);
             var repository=new AppRepository(database);
             var product=await repository.CreateProductAsync(new Product(Guid.NewGuid(),"صنف نقدي","CASH-001","عام","علبة","حبة",6m,1m,2m,10m,1m,DateTimeOffset.UtcNow));
-            var invoice=new Invoice(Guid.NewGuid(),InvoiceType.Sale,null,DateTimeOffset.UtcNow,4m,0m,4m,4m,PaymentMode.Cash,"",admin!.Id);
-            var line=new InvoiceLine(Guid.NewGuid(),invoice.Id,product.Id,product.Name,2m,product.SmallUnit,2m,0m,4m){QuantityMinor=2m,UnitSelected=product.SmallUnit,CostPriceSnapshot=product.PurchasePrice};
-            var movement=new StockMovement(Guid.NewGuid(),product.Id,StockMovementType.Sale,2m,2m,"",DateTimeOffset.UtcNow,admin.Id);
+            var invoice=new Invoice(Guid.NewGuid(),InvoiceType.Sale,null,DateTimeOffset.UtcNow,5m,1m,4m,4m,PaymentMode.Cash,"",admin!.Id);
+            var line=new InvoiceLine(Guid.NewGuid(),invoice.Id,product.Id,product.Name,2m,product.SmallUnit,2.5m,1m,4m){QuantityMinor=2m,UnitSelected=product.SmallUnit,CostPriceSnapshot=product.PurchasePrice};
+            var movement=new StockMovement(Guid.NewGuid(),product.Id,StockMovementType.Sale,2m,2.5m,"",DateTimeOffset.UtcNow,admin.Id);
             var saved=await repository.SaveSalesInvoiceAsync(invoice,new[]{line},new[]{movement},null);
             await using var connection=database.Open();
             await connection.OpenAsync();
