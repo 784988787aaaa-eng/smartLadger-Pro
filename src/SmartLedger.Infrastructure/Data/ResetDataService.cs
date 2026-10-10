@@ -254,7 +254,7 @@ public sealed class ResetDataService
         }
         await using var version = connection.CreateCommand();
         version.CommandText = "PRAGMA user_version;";
-        if (Convert.ToInt32(await version.ExecuteScalarAsync(ct)) != 11) throw new InvalidDataException("Database schema version changed unexpectedly during reset.");
+        if (Convert.ToInt32(await version.ExecuteScalarAsync(ct)) != 12) throw new InvalidDataException("Database schema version changed unexpectedly during reset.");
     }
 
     private static async Task ExecuteAsync(SqliteConnection connection, SqliteTransaction? transaction, string sql, CancellationToken ct)
