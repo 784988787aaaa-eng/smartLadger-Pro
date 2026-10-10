@@ -69,6 +69,12 @@ public sealed class WhatsAppService
         return $"مرحباً {accountName}،\nكشف حسابكم لدى {storeName}:\nالرصيد السابق: {openingBalance:N2} {currency}\nإجمالي الحركات: {totalMovements:N2} {currency}\nالرصيد المستحق الحالي: {Math.Abs(currentBalance):N2} {currency} ({status})\nالتاريخ: {date:yyyy/MM/dd HH:mm}\nشكراً لتعاملكم معنا.";
     }
 
+    public bool OpenWhatsApp(string phone, string message) => OpenMessage(phone, message);
+
+    public static string BuildVoucherMessage(string accountName, string docNo, decimal amount, string currency,
+        string movementType, string description, decimal newBalance, DateTimeOffset date)
+        => BuildVoucher(accountName, docNo, amount, currency, movementType, description, newBalance, date);
+
     public static string BuildVoucher(string accountName, string docNo, decimal amount, string currency,
         string movementType, string description, decimal newBalance, DateTimeOffset date)
         => $"مرحباً {accountName}،\nتم تسجيل سند رقم: #{docNo}\nالمبلغ: {amount:N2} {currency} ({movementType})\nالبيان: {description}\nالرصيد المتبقي: {newBalance:N2} {currency}\nالتاريخ: {date:yyyy/MM/dd HH:mm}";
