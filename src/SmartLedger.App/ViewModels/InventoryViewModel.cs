@@ -117,7 +117,9 @@ public partial class InventoryViewModel(IAppRepository repo) : ObservableObject
     }
 
     [RelayCommand]
-    private void OpenAdd()
+    private void OpenAdd() => ResetEntryForm(openDialog: true);
+
+    private void ResetEntryForm(bool openDialog)
     {
         IsEditing = false;
         SelectedProduct = null;
@@ -140,7 +142,7 @@ public partial class InventoryViewModel(IAppRepository repo) : ObservableObject
         NewMajorSalePrice = "0";
         NewOpeningLargeQuantity = "0";
         StatusText = "";
-        IsDialogOpen = true;
+        IsDialogOpen = openDialog;
     }
 
     [RelayCommand]
@@ -178,32 +180,59 @@ public partial class InventoryViewModel(IAppRepository repo) : ObservableObject
     }
 
     [RelayCommand]
-    private async Task SaveNewAsync()
+    private Task SaveNewAsync() => SaveProductAsync(keepOpenForNext: false);
+
+    [RelayCommand]
+    private Task SaveAndAddAnotherAsync() => SaveProductAsync(keepOpenForNext: true);
+
+    private async Task SaveProductAsync(bool keepOpenForNext)
     {
         if (IsSaving) return;
         if (string.IsNullOrWhiteSpace(NewName)) { StatusText = "أدخل اسم الصنف."; return; }
-        if (!decimal.TryParse(NewConversion, NumberStyles.Number, CultureInfo.CurrentCulture, out var conversion) || conversion <= 0) { StatusText = "أدخل معامل تحويل صحيحًا."; return; }
-        if (!decimal.TryParse(NewPurchasePrice, NumberStyles.Number, CultureInfo.CurrentCulture, out var purchase) || purchase < 0) { StatusText = "أدخل سعر شراء صحيحًا."; return; }
-        if (!decimal.TryParse(NewSalePrice, NumberStyles.Number, CultureInfo.CurrentCulture, out var sale) || sale < 0) { StatusText = "أدخل سعر بيع صحيحًا."; return; }
-        if (!decimal.TryParse(NewAlert, NumberStyles.Number, CultureInfo.CurrentCulture, out var alert) || alert < 0) { StatusText = "أدخل حد تنبيه صحيحًا."; return; }
-        if (!IsEditing && ((!EnableMajorUnit && (!decimal.TryParse(NewOpeningQuantity, NumberStyles.Number, CultureInfo.CurrentCulture, out var opening) || opening < 0)) || (EnableMajorUnit && (!decimal.TryParse(NewOpeningLargeQuantity, NumberStyles.Number, CultureInfo.CurrentCulture, out var boxes) || boxes < 0)))) { StatusText = "أدخل الرصيد الافتتاحي الصحيح."; return; }
-        var openingQuantity = IsEditing ? SelectedProduct?.StockSmallUnits ?? 0m : NetOpeningSmallUnits;
+        if (string.IsNullOrWhiteSpace(NewSmallUnit)) { StatusText = "أدخل اسم الوحدة الأساسية."; return; }
+        if (EnableMajorUnit && string.IsNullOrWhiteSpace(NewLargeUnit)) { StatusText = "أدخل اسم الوحدة الكبرى."; return; }
+
+        var conversion = 1m;
+        if (EnableMajorUnit &&
+            (!decimal.TryParse(NewConversion, NumberStyles.Number, CultureInfo.CurrentCulture, out conversion) || conversion <= 0))
+        {
+            StatusText = "أدخل معامل تحويل أكبر من صفر.";
+            return;
+        }
+
+        if (!decimal.TryParse(NewPurchasePrice, NumberStyles.Number, CultureInfo.CurrentCulture, out var purchase) || purchase < 0)
+        { StatusText = "أدخل سعر شراء صحيحًا غير سالب."; return; }
+        if (!decimal.TryParse(NewSalePrice, NumberStyles.Number, CultureInfo.CurrentCulture, out var sale) || sale < 0)
+        { StatusText = "أدخل سعر بيع صحيحًا غير سالب."; return; }
+        if (!decimal.TryParse(NewAlert, NumberStyles.Number, CultureInfo.CurrentCulture, out var alert) || alert < 0)
+        { StatusText = "أدخل حد تنبيه صحيحًا غير سالب."; return; }
+
+        if (!IsEditing &&
+            ((!EnableMajorUnit && (!decimal.TryParse(NewOpeningQuantity, NumberStyles.Number, CultureInfo.CurrentCulture, out var opening) || opening < 0)) ||
+             (EnableMajorUnit && (!decimal.TryParse(NewOpeningLargeQuantity, NumberStyles.Number, CultureInfo.CurrentCulture, out var boxes) || boxes < 0))))
+        {
+            StatusText = "أدخل الرصيد الافتتاحي الصحيح.";
+            return;
+        }
+
+        var wasEditing = IsEditing;
+        var openingQuantity = wasEditing ? SelectedProduct?.StockSmallUnits ?? 0m : NetOpeningSmallUnits;
 
         IsSaving = true;
-        StatusText = IsEditing ? "جارٍ حفظ التعديل…" : "جارٍ حفظ الصنف…";
+        StatusText = wasEditing ? "جارٍ حفظ التعديل…" : "جارٍ حفظ الصنف…";
         try
         {
             Product saved;
-            if (IsEditing && SelectedProduct is not null)
+            if (wasEditing && SelectedProduct is not null)
             {
                 saved = await repo.UpdateProductAsync(SelectedProduct with
                 {
                     Name = NewName.Trim(),
                     Barcode = NewBarcode.Trim(),
                     Category = NewCategory.Trim(),
-                    LargeUnit = NewLargeUnit.Trim(),
+                    LargeUnit = EnableMajorUnit ? NewLargeUnit.Trim() : NewSmallUnit.Trim(),
                     SmallUnit = NewSmallUnit.Trim(),
-                    ConversionFactor = conversion,
+                    ConversionFactor = EnableMajorUnit ? conversion : 1m,
                     PurchasePrice = purchase,
                     SalePrice = sale,
                     AlertThreshold = alert,
@@ -230,12 +259,21 @@ public partial class InventoryViewModel(IAppRepository repo) : ObservableObject
                 });
             }
 
-            StatusText = IsEditing ? "تم تحديث الصنف بنجاح." : "تم حفظ الصنف بنجاح.";
-            IsDialogOpen = false;
-            SelectedProduct = saved;
-            await LoadAsync();
+            if (keepOpenForNext && !wasEditing)
+            {
+                await LoadAsync();
+                ResetEntryForm(openDialog: true);
+                StatusText = "تم حفظ الصنف بنجاح. يمكنك إدخال الصنف التالي.";
+            }
+            else
+            {
+                StatusText = wasEditing ? "تم تحديث الصنف بنجاح." : "تم حفظ الصنف بنجاح.";
+                IsDialogOpen = false;
+                SelectedProduct = saved;
+                await LoadAsync();
+            }
         }
-        catch (Exception ex) { StatusText = ex.Message; }
+        catch (Exception ex) { StatusText = $"تعذر حفظ الصنف: {ex.Message}"; }
         finally { IsSaving = false; }
     }
 
