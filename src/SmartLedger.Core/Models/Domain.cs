@@ -57,6 +57,18 @@ public sealed record Product(Guid Id, string Name, string Barcode, string Catego
     public decimal ReorderPoint { get; init; } = AlertThreshold;
     public decimal LowStockThreshold { get; init; } = AlertThreshold;
     public decimal TotalStockMinor => StockSmallUnits;
+    public string StockDisplay
+    {
+        get
+        {
+            var factor = ConversionFactor > 0 ? ConversionFactor : 1m;
+            var major = decimal.Floor(StockSmallUnits / factor);
+            var minor = StockSmallUnits - major * factor;
+            if (major > 0 && minor > 0) return $"{major:0.##} {LargeUnit} + {minor:0.##} {SmallUnit}";
+            if (major > 0) return $"{major:0.##} {LargeUnit}";
+            return $"{minor:0.##} {SmallUnit}";
+        }
+    }
     public DateTimeOffset UpdatedAt { get; init; } = CreatedAt;
     public Guid? DefaultSupplierId { get; init; }
     public string DefaultSupplierName { get; init; } = "";
