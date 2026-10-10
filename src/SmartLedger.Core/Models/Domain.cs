@@ -3,7 +3,7 @@
 public enum BookKind { All=0, Customers=1, Suppliers=2, Custom=3, Employees=4, Other=5 }
 public enum OperationType { Receive, Payment, DebtToUs, DebtOnUs, Sale, Purchase, Return, Settlement, Other }
 public enum AccountNature { Debit, Credit, Flexible }
-public enum InvoiceType { Sale, Purchase }
+public enum InvoiceType { Sale=0, Purchase=1, SaleReturn=2, PurchaseReturn=3 }
 public enum PaymentMode { Cash, Credit, Partial }
 public enum StockMovementType { Purchase, Sale, ReturnIn, ReturnOut, AdjustmentIn, AdjustmentOut, Inventory }
 public enum ExpenseCategoryKind { Rent, Electricity, Maintenance, Transport, Salaries, Other }
@@ -83,8 +83,24 @@ public sealed record StockMovement(Guid Id, Guid ProductId, StockMovementType Ty
     public Guid? InvoiceId { get; init; }
 };
 public sealed record ProductMovementRow(DateTimeOffset OccurredAt, string TypeLabel, decimal QuantitySmallUnits, decimal RunningBalance, string Note, Guid? InvoiceId);
-public sealed record Invoice(Guid Id, InvoiceType Type, Guid? PersonId, DateTimeOffset IssuedAt, decimal Subtotal, decimal Discount, decimal Total, decimal Paid, PaymentMode PaymentMode, string Note, Guid CreatedBy);
-public sealed record InvoiceLine(Guid Id, Guid InvoiceId, Guid ProductId, string Description, decimal Quantity, string Unit, decimal UnitPrice, decimal Discount, decimal LineTotal);
+public sealed record Invoice(Guid Id, InvoiceType Type, Guid? PersonId, DateTimeOffset IssuedAt, decimal Subtotal, decimal Discount, decimal Total, decimal Paid, PaymentMode PaymentMode, string Note, Guid CreatedBy)
+{
+    public string InvoiceNumber { get; init; } = string.Empty;
+    public decimal DiscountPercentage { get; init; }
+    public decimal TaxAmount { get; init; }
+    public decimal RemainingAmount => Math.Max(0m, Total - Paid);
+    public string CustomerName { get; init; } = string.Empty;
+    public string Currency { get; init; } = "ريال";
+    public string StoreName { get; init; } = "SmartLedger";
+};
+public sealed record InvoiceLine(Guid Id, Guid InvoiceId, Guid ProductId, string Description, decimal Quantity, string Unit, decimal UnitPrice, decimal Discount, decimal LineTotal)
+{
+    public string Barcode { get; init; } = string.Empty;
+    public string UnitSelected { get; init; } = string.Empty;
+    public decimal ConversionFactorApplied { get; init; } = 1m;
+    public decimal QuantityMinor { get; init; } = Quantity;
+    public decimal CostPriceSnapshot { get; init; }
+};
 public sealed record Expense(Guid Id, Guid? PersonId, string Category, decimal Amount, string Note, DateTimeOffset OccurredAt, Guid CreatedBy);
 public sealed record AppUser(Guid Id, string UserName, string DisplayName, bool IsAdministrator, bool IsActive);
 public sealed record User(Guid Id, string UserName, string DisplayName, string PasswordHash, string RecoveryHash, string RecoveryHint, bool IsAdministrator, bool IsActive);
