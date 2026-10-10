@@ -20,14 +20,14 @@ public static class InventoryUnitConverter
     {
         ArgumentOutOfRangeException.ThrowIfNegative(majorUnits);
         ArgumentOutOfRangeException.ThrowIfNegative(minorUnits);
-        if (conversionFactor <= 0) throw new ArgumentOutOfRangeException(nameof(conversionFactor));
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(conversionFactor);
         return majorUnits * conversionFactor + minorUnits;
     }
 
     public static decimal UnitPriceFromMajor(decimal majorPrice, decimal conversionFactor)
     {
-        if (majorPrice < 0) throw new ArgumentOutOfRangeException(nameof(majorPrice));
-        if (conversionFactor <= 0) throw new ArgumentOutOfRangeException(nameof(conversionFactor));
+        ArgumentOutOfRangeException.ThrowIfNegative(majorPrice);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(conversionFactor);
         return decimal.Round(majorPrice / conversionFactor, 4, MidpointRounding.AwayFromZero);
     }
 }
