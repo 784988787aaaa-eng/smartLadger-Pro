@@ -9,7 +9,7 @@ public sealed record BackupInfo(string FilePath, string Sha256, int Schema, Date
 
 public sealed class BackupService
 {
-    private const int SupportedSchema = 11;
+    private const int SupportedSchema = 12;
     private readonly string rootPath;
     private readonly Action<string, string> replaceFile;
 
