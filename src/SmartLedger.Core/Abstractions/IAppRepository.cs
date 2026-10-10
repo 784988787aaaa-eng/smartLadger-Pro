@@ -47,6 +47,7 @@ public interface IAppRepository
     Task<IReadOnlyList<DeletedItem>> GetDeletedItemsAsync(CancellationToken ct = default);
     Task RestoreDeletedItemAsync(Guid id, CancellationToken ct = default);
     Task HardDeleteDeletedItemAsync(Guid id, CancellationToken ct = default);
+    Task<CashRegisterSummary> GetCashRegisterSummaryAsync(DateTimeOffset? from = null, DateTimeOffset? toDate = null, CancellationToken ct = default);
     Task<string?> GetPreferenceAsync(string key, CancellationToken ct = default);
     Task SavePreferenceAsync(string key, string value, CancellationToken ct = default);
     Task<IReadOnlyList<MessageTemplate>> GetMessageTemplatesAsync(CancellationToken ct = default);
