@@ -5,6 +5,7 @@ namespace SmartLedger.Tests;
 
 public sealed class LedgerCalculationTests
 {
+    private static readonly decimal[] ExpectedRunningBalances = { 100m, 70m, 120m, 140m };
     [Fact]
     public void RunningBalances_AccumulateDebitsAndCreditsChronologically()
     {
@@ -19,7 +20,7 @@ public sealed class LedgerCalculationTests
             new LedgerOperation(Guid.NewGuid(),person,OperationType.Payment,20m,"سداد",start.AddHours(3),user)
         };
         var rows=LedgerBalanceCalculator.CalculateRunningBalances(operations);
-        Assert.Equal(new[] { 100m, 70m, 120m, 140m },rows.Select(x=>x.RunningBalance));
+        Assert.Equal(ExpectedRunningBalances,rows.Select(x=>x.RunningBalance));
         Assert.Equal(140m,LedgerBalanceCalculator.CalculateNetBalance(operations));
     }
 
