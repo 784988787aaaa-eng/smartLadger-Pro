@@ -175,7 +175,7 @@ public partial class SalesViewModel(IAppRepository repo,IAppSession session):Obs
     {
         var previousId=LastSavedInvoice?.Id;
         await SaveAsync();
-        if(LastSavedInvoice is { } invoice&&invoice.Id!=previousId)await PrintLastInvoiceAsync();
+        if(LastSavedInvoice is { } invoice&&invoice.Id!=previousId)await PrintDirectlyAsync();
     }
     [RelayCommand] private async Task PrintLastInvoiceAsync()
     {
@@ -190,6 +190,20 @@ public partial class SalesViewModel(IAppRepository repo,IAppSession session):Obs
             StatusText="تم إنشاء إيصال PDF وفتحه للمعاينة والطباعة.";
         }
         catch(Exception ex){StatusText=ex.Message;}
+    }
+    [RelayCommand] private async Task PrintDirectlyAsync()
+    {
+        if(LastSavedInvoice is not { } invoice||LastSavedLines.Count==0){StatusText="احفظ الفاتورة أولًا قبل الطباعة.";return;}
+        try
+        {
+            var identity=await repo.GetIdentityAsync();
+            var pdf=new InvoicePrintService().RenderThermalReceipt(invoice,LastSavedLines,identity);
+            var path=Path.Combine(Path.GetTempPath(),$"SmartLedger-{invoice.InvoiceNumber}.pdf");
+            await File.WriteAllBytesAsync(path,pdf);
+            Process.Start(new ProcessStartInfo(path){UseShellExecute=true,Verb="print"});
+            StatusText="تم تمرير الإيصال إلى أمر الطباعة الافتراضي في Windows.";
+        }
+        catch(Exception ex){StatusText=$"تعذرت الطباعة المباشرة؛ استخدم المعاينة بدلًا منها. {ex.Message}";}
     }
     [RelayCommand] private async Task SendWhatsAppAsync()
     {
