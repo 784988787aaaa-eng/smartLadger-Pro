@@ -474,35 +474,57 @@ public partial class AccountsViewModel(IAppRepository repo,IAppSession session):
     }
 
     [RelayCommand]
-    private void SendStatementWhatsApp()
+    private async Task SendStatementWhatsAppAsync()
     {
-        if(SelectedPerson is null){AccountStatementStatus="اختر حساباً أولاً.";return;}
+        if (SelectedPerson is null) { AccountStatementStatus = "اختر حساباً أولاً."; return; }
         try
         {
-            var identity=repo.GetIdentityAsync().GetAwaiter().GetResult();
-            var message=WhatsAppService.BuildStatementSummary(SelectedPerson.Person.Name,identity.BusinessName,
-                0m,TotalDebit+TotalCredit,NetBalance,Currency,DateTimeOffset.Now);
-            new WhatsAppService().OpenWhatsApp(SelectedPerson.Person.Phone,message);
-            AccountStatementStatus="تم فتح واتساب لإرسال ملخص كشف الحساب.";
+            var identity = await repo.GetIdentityAsync();
+            var templates = await repo.GetMessageTemplatesAsync();
+            var template = templates.FirstOrDefault(x => x.Name.Contains("كشف حساب العميل", StringComparison.OrdinalIgnoreCase));
+            const string fallback = "مرحباً {CustomerName}،\\nكشف حسابكم لدى {StoreName} بتاريخ {Date}.\\nإجمالي الحركات: {TotalAmount} {Currency}.\\nالرصيد الحالي: {RemainingAmount} {Currency}.\\nشكراً لتعاملكم معنا.";
+            var values = new Dictionary<string, string?>
+            {
+                ["CustomerName"] = SelectedPerson.Person.Name,
+                ["StoreName"] = identity.BusinessName,
+                ["Date"] = DateTimeOffset.Now.ToString("yyyy/MM/dd HH:mm", System.Globalization.CultureInfo.InvariantCulture),
+                ["TotalAmount"] = (TotalDebit + TotalCredit).ToString("N2", System.Globalization.CultureInfo.InvariantCulture),
+                ["RemainingAmount"] = Math.Abs(NetBalance).ToString("N2", System.Globalization.CultureInfo.InvariantCulture),
+                ["Currency"] = identity.Currency
+            };
+            var message = MessageTemplateEngine.Render(template?.Body, values, fallback);
+            new WhatsAppService().OpenWhatsApp(SelectedPerson.Person.Phone, message);
+            AccountStatementStatus = "تم فتح واتساب برسالة كشف الحساب المخصصة.";
         }
-        catch(Exception ex){AccountStatementStatus=ex.Message;}
+        catch (Exception ex) { AccountStatementStatus = ex.Message; }
     }
 
     [RelayCommand]
-    private void SendVoucherWhatsApp(LedgerOperation? operation)
+    private async Task SendVoucherWhatsAppAsync(LedgerOperation? operation)
     {
-        if(operation is null || SelectedPerson is null){AccountStatementStatus="اختر حركة من كشف الحساب.";return;}
+        if (operation is null || SelectedPerson is null) { AccountStatementStatus = "اختر حركة من كشف الحساب."; return; }
         try
         {
-            var message=WhatsAppService.BuildVoucherMessage(SelectedPerson.Person.Name,
-                operation.ReferenceNumber ?? operation.Id.ToString("N")[..8].ToUpperInvariant(),
-                operation.Amount,Currency,operation.TypeLabel,operation.Note,
-                SelectedAccountStatementRows.FirstOrDefault(x=>x.Id==operation.Id)?.CumulativeBalance ?? NetBalance,
-                operation.OccurredAt);
-            new WhatsAppService().OpenMessage(SelectedPerson.Person.Phone,message);
-            AccountStatementStatus="تم فتح واتساب للسند.";
+            var identity = await repo.GetIdentityAsync();
+            var templates = await repo.GetMessageTemplatesAsync();
+            var template = templates.FirstOrDefault(x => x.Name.Contains("سند قبض", StringComparison.OrdinalIgnoreCase) || x.Name.Contains("سند صرف", StringComparison.OrdinalIgnoreCase));
+            var balance = SelectedAccountStatementRows.FirstOrDefault(x => x.Id == operation.Id)?.CumulativeBalance ?? NetBalance;
+            const string fallback = "مرحباً {CustomerName}،\\nسند رقم: #{InvoiceNumber} من {StoreName}.\\nالمبلغ: {TotalAmount} {Currency}.\\nالبيان: {Description}.\\nالرصيد المتبقي: {RemainingAmount} {Currency}.\\nالتاريخ: {Date}.";
+            var values = new Dictionary<string, string?>
+            {
+                ["CustomerName"] = SelectedPerson.Person.Name, ["StoreName"] = identity.BusinessName,
+                ["InvoiceNumber"] = operation.ReferenceNumber ?? operation.Id.ToString("N")[..8].ToUpperInvariant(),
+                ["TotalAmount"] = operation.Amount.ToString("N2", System.Globalization.CultureInfo.InvariantCulture),
+                ["RemainingAmount"] = Math.Abs(balance).ToString("N2", System.Globalization.CultureInfo.InvariantCulture),
+                ["PaidAmount"] = operation.Amount.ToString("N2", System.Globalization.CultureInfo.InvariantCulture),
+                ["Currency"] = identity.Currency, ["Date"] = operation.OccurredAt.ToString("yyyy/MM/dd HH:mm", System.Globalization.CultureInfo.InvariantCulture),
+                ["Description"] = operation.Note, ["PaymentType"] = operation.TypeLabel
+            };
+            var message = MessageTemplateEngine.Render(template?.Body, values, fallback);
+            new WhatsAppService().OpenMessage(SelectedPerson.Person.Phone, message);
+            AccountStatementStatus = "تم فتح واتساب برسالة السند المخصصة.";
         }
-        catch(Exception ex){AccountStatementStatus=ex.Message;}
+        catch (Exception ex) { AccountStatementStatus = ex.Message; }
     }
 
     [RelayCommand]
