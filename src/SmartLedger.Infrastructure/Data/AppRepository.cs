@@ -82,17 +82,44 @@ LIMIT COALESCE($take,-1);
         return x;
     }
 
-    public async Task<Person> CreatePersonAsync(Guid bookId,string name,string phone,string note,CancellationToken ct=default){await EnsurePermissionAsync(PermissionKeys.Create,ct);var p=new Person(Guid.NewGuid(),bookId,name.Trim(),phone.Trim(),note.Trim(),DateTimeOffset.UtcNow);await using var db=database.Open();await db.OpenAsync(ct);await using var c=db.CreateCommand();c.CommandText="INSERT INTO People(Id,BookId,Name,Phone,Note,CreatedAt) VALUES($id,$book,$name,$phone,$note,$created);";P(c,"$id",p.Id.ToString("N"));P(c,"$book",p.BookId.ToString("N"));P(c,"$name",p.Name);P(c,"$phone",p.Phone);P(c,"$note",p.Note);P(c,"$created",p.CreatedAt.ToString("O"));await c.ExecuteNonQueryAsync(ct);return p;}
+    public async Task<Person> CreatePersonAsync(Guid bookId,string name,string phone,string note,CancellationToken ct=default)
+    {
+        await EnsurePermissionAsync(PermissionKeys.Create,ct);
+        var now=DateTimeOffset.UtcNow;
+        var p=new Person(Guid.NewGuid(),bookId,name.Trim(),phone.Trim(),note.Trim(),now)
+        {
+            AccountCode="ACC-"+Guid.NewGuid().ToString("N")[..12].ToUpperInvariant(),
+            WhatsAppEnabled=!string.IsNullOrWhiteSpace(phone),
+            UpdatedAt=now
+        };
+        await using var db=database.Open(); await db.OpenAsync(ct);
+        await using var tx=await db.BeginTransactionAsync(ct);
+        await using var c=db.CreateCommand(); c.Transaction=(SqliteTransaction)tx;
+        if(!await ExistsAsync(c,"Books",bookId,ct)) throw new InvalidOperationException("الدفتر المحدد غير موجود.");
+        c.Parameters.Clear();
+        c.CommandText="INSERT INTO People(Id,BookId,Name,Phone,Note,CreatedAt,AccountCode,CreditLimit,Address,SecondaryPhone,AccountNature,WhatsAppEnabled,UpdatedAt) VALUES($id,$book,$name,$phone,$note,$created,$code,NULL,'','',$nature,$whatsapp,$updated);";
+        P(c,"$id",p.Id.ToString("N")); P(c,"$book",p.BookId.ToString("N")); P(c,"$name",p.Name); P(c,"$phone",p.Phone); P(c,"$note",p.Note); P(c,"$created",p.CreatedAt.ToString("O")); P(c,"$code",p.AccountCode); P(c,"$nature",(int)p.Nature); P(c,"$whatsapp",p.WhatsAppEnabled?1:0); P(c,"$updated",p.UpdatedAt.ToString("O"));
+        await c.ExecuteNonQueryAsync(ct); await tx.CommitAsync(ct); return p;
+    }
+
     public async Task<Person> CreatePersonWithOpeningBalanceAsync(Guid bookId,string name,string phone,string note,decimal openingBalance,OperationType openingDirection,CancellationToken ct=default)
     {
         await EnsurePermissionAsync(PermissionKeys.Create,ct);
         if(openingBalance<0) throw new ArgumentOutOfRangeException(nameof(openingBalance),"الرصيد الافتتاحي لا يمكن أن يكون سالباً.");
         if(openingBalance>0 && openingDirection is not (OperationType.DebtToUs or OperationType.DebtOnUs)) throw new ArgumentException("اتجاه الرصيد الافتتاحي غير صالح.",nameof(openingDirection));
-        var p=new Person(Guid.NewGuid(),bookId,name.Trim(),phone.Trim(),note.Trim(),DateTimeOffset.UtcNow);
+        var now=DateTimeOffset.UtcNow;
+        var p=new Person(Guid.NewGuid(),bookId,name.Trim(),phone.Trim(),note.Trim(),now)
+        {
+            AccountCode="ACC-"+Guid.NewGuid().ToString("N")[..12].ToUpperInvariant(),
+            WhatsAppEnabled=!string.IsNullOrWhiteSpace(phone),
+            UpdatedAt=now
+        };
         await using var db=database.Open(); await db.OpenAsync(ct); await using var tx=await db.BeginTransactionAsync(ct); await using var c=db.CreateCommand(); c.Transaction=(SqliteTransaction)tx;
         if(!await ExistsAsync(c,"Books",bookId,ct)) throw new InvalidOperationException("الدفتر المحدد غير موجود.");
         c.Parameters.Clear();
-        P(c,"$id",p.Id.ToString("N")); P(c,"$book",p.BookId.ToString("N")); P(c,"$name",p.Name); P(c,"$phone",p.Phone); P(c,"$note",p.Note); P(c,"$created",p.CreatedAt.ToString("O")); c.CommandText="INSERT INTO People VALUES($id,$book,$name,$phone,$note,$created);"; await c.ExecuteNonQueryAsync(ct);
+        c.CommandText="INSERT INTO People(Id,BookId,Name,Phone,Note,CreatedAt,AccountCode,CreditLimit,Address,SecondaryPhone,AccountNature,WhatsAppEnabled,UpdatedAt) VALUES($id,$book,$name,$phone,$note,$created,$code,NULL,'','',$nature,$whatsapp,$updated);";
+        P(c,"$id",p.Id.ToString("N")); P(c,"$book",p.BookId.ToString("N")); P(c,"$name",p.Name); P(c,"$phone",p.Phone); P(c,"$note",p.Note); P(c,"$created",p.CreatedAt.ToString("O")); P(c,"$code",p.AccountCode); P(c,"$nature",(int)p.Nature); P(c,"$whatsapp",p.WhatsAppEnabled?1:0); P(c,"$updated",p.UpdatedAt.ToString("O"));
+        await c.ExecuteNonQueryAsync(ct);
         if(openingBalance>0)
         {
             var operation=new LedgerOperation(Guid.NewGuid(),p.Id,openingDirection,decimal.Round(openingBalance,2),"رصيد افتتاحي",DateTimeOffset.UtcNow,appSession?.CurrentUser?.Id ?? Guid.Empty);
