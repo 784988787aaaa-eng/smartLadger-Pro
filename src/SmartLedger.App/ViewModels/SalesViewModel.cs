@@ -1,4 +1,4 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System.Diagnostics;
 using System.IO;
@@ -304,4 +304,17 @@ public partial class SalesViewModel(IAppRepository repo,IAppSession session):Obs
         catch(Exception ex){StatusText=ex.Message;}
         finally{IsSaving=false;}
     }
-}
+    [RelayCommand]
+    private async Task ReverseInvoiceAsync(int invoiceId)
+    {
+        if (IsSaving) return;
+        try
+        {
+            IsSaving = true;
+            var reversed = await repo.ReverseInvoiceAsync(invoiceId, "User requested refund/reversal", session.CurrentUser!.Id.ToString());
+            StatusText = reversed ? $"Invoice {invoiceId} reversed successfully." : $"Invoice {invoiceId} was not found or was already reversed.";
+            await LoadAsync();
+        }
+        catch (Exception ex) { StatusText = ex.Message; }
+        finally { IsSaving = false; }
+    }}

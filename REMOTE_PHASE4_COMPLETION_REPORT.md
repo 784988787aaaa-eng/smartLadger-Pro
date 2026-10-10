@@ -1,4 +1,4 @@
-﻿# SmartLedger Phase 4 Remote Execution Report
+# SmartLedger Phase 4 Remote Execution Report
 
 **Timestamp:** 2026-10-11 00:17:52 +03:00
 **Host:** 
@@ -260,3 +260,16 @@ Operational logs were intentionally kept out of the source commit. Existing unre
 
 ### Remaining scope / acceptance
 This pass adds the About window, language dictionaries, direction/resource switching, and audit event aliases. It does **not** prove full bilingual parity for every hard-coded label across all screens; the resource keys still need to be bound throughout the XAML templates. The current application has no verified invoice reversal/deletion workflow to attach `INVOICE_REVERSED` to, so the new audit test confirms storage/search of that action code, not an end-to-end invoice reversal mutation. Accordingly, Phase 4 is still **PARTIAL / NOT certified 100%** pending those end-to-end items. No unsupported production acceptance claim is made.
+
+
+## Follow-up execution record — 2026-10-11
+
+- Added `IAppRepository.ReverseInvoiceAsync(int invoiceId, string reason, string userId)` and a transactional repository implementation using the existing schema (`StockSmallUnits`, `InvoiceNumber`, `Operations`, `StockMovements`, and `CashRegisterEntries`).
+- Added an idempotent `Invoices.Status` column check after existing migrations without changing the established database schema version.
+- Added a SalesViewModel reversal command and a test that verifies a missing invoice is safely rejected. The test is not an end-to-end stock/ledger reversal integration test.
+- Added symmetric bilingual resource keys in `Strings.ar.xaml` and `Strings.en.xaml`, and applied `DynamicResource` bindings to the matched labels in `ModuleTemplates.xaml`.
+- Build verification after the repository, migration, and ViewModel edits: Release build succeeded with 0 warnings and 0 errors. Test run including `InvoiceReversalTests`: 96 passed, 0 failed.
+
+### Production certification status
+
+**Phase 4 remains NOT certified as 100% production-complete.** The current automated reversal test covers only the missing-invoice path, not stock restoration, batch handling, customer/supplier ledger reversal, cash refund, or audit record creation in one successful invoice reversal. The command is not yet connected to a complete invoice-history selection/confirmation UI, and the XAML binding pass covers mapped labels rather than proving every static label is localized. Do not represent this revision as full production sign-off until those end-to-end scenarios are implemented and tested.

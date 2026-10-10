@@ -1,4 +1,4 @@
-﻿using SmartLedger.Core.Models;
+using SmartLedger.Core.Models;
 
 namespace SmartLedger.Core.Abstractions;
 
@@ -33,6 +33,7 @@ public interface IAppRepository
     Task<IReadOnlyList<ProductMovementRow>> GetProductMovementsAsync(Guid productId, int take = 30, CancellationToken ct = default);
     Task<StockMovement> CreateStockMovementAsync(StockMovement movement, CancellationToken ct = default);
     Task DeleteStockMovementAsync(Guid id, Guid deletedBy, CancellationToken ct = default);
+    Task<bool> ReverseInvoiceAsync(int invoiceId, string reason, string userId);
     Task<Invoice> CreateInvoiceAsync(Invoice invoice, IReadOnlyList<InvoiceLine> lines, CancellationToken ct = default);
     Task<Invoice> SaveSalesInvoiceAsync(Invoice invoice, IReadOnlyList<InvoiceLine> lines, IReadOnlyList<StockMovement> movements, LedgerOperation? operation, CancellationToken ct = default);
     Task<Invoice> CreateInvoiceTransactionAsync(Invoice invoice, IReadOnlyList<InvoiceLine> lines, StockMovement? movement, LedgerOperation? operation, CancellationToken ct = default);

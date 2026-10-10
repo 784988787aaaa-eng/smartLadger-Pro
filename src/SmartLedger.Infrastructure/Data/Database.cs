@@ -16,7 +16,7 @@ public sealed class Database
         await using var db=Open(); await db.OpenAsync(ct);
         await ExecuteAsync(db,"PRAGMA journal_mode=WAL; PRAGMA synchronous=NORMAL; PRAGMA busy_timeout=10000; PRAGMA foreign_keys=ON; PRAGMA temp_store=MEMORY;",ct);
         var version=await ScalarLongAsync(db,"PRAGMA user_version;",ct);
-        if(version<1)await MigrationV1Async(db,ct); if(version<2)await MigrationV2Async(db,ct); if(version<3)await MigrationV3Async(db,ct); if(version<4)await MigrationV4Async(db,ct); if(version<5)await MigrationV5Async(db,ct); if(version<6)await MigrationV6Async(db,ct); if(version<7)await MigrationV7Async(db,ct); if(version<8)await MigrationV8Async(db,ct); if(version<9)await MigrationV9Async(db,ct); if(version<10)await MigrationV10Async(db,ct); if(version<11)await MigrationV11Async(db,ct); if(version<12)await MigrationV12Async(db,ct); if(version<13)await MigrationV13Async(db,ct); if(version<14)await MigrationV14Async(db,ct); await SeedAsync(db,ct);
+        if(version<1)await MigrationV1Async(db,ct); if(version<2)await MigrationV2Async(db,ct); if(version<3)await MigrationV3Async(db,ct); if(version<4)await MigrationV4Async(db,ct); if(version<5)await MigrationV5Async(db,ct); if(version<6)await MigrationV6Async(db,ct); if(version<7)await MigrationV7Async(db,ct); if(version<8)await MigrationV8Async(db,ct); if(version<9)await MigrationV9Async(db,ct); if(version<10)await MigrationV10Async(db,ct); if(version<11)await MigrationV11Async(db,ct); if(version<12)await MigrationV12Async(db,ct); if(version<13)await MigrationV13Async(db,ct); if(version<14)await MigrationV14Async(db,ct); await EnsureColumnAsync(db,"Invoices","Status","TEXT NOT NULL DEFAULT 'Posted'",ct); await SeedAsync(db,ct);
     }
     private static async Task MigrationV1Async(SqliteConnection db,CancellationToken ct)
     {
@@ -136,6 +136,7 @@ public sealed class Database
         await EnsureColumnAsync(db,"InvoiceLines","QuantityMinor","TEXT NOT NULL DEFAULT '0'",ct);
         await EnsureColumnAsync(db,"InvoiceLines","CostPriceSnapshot","TEXT NOT NULL DEFAULT '0'",ct);
         await ExecuteAsync(db,"UPDATE InvoiceLines SET UnitSelected=Unit WHERE trim(UnitSelected)=''; UPDATE InvoiceLines SET QuantityMinor=Quantity WHERE CAST(QuantityMinor AS REAL)=0; CREATE UNIQUE INDEX IF NOT EXISTS UX_Invoices_InvoiceNumber ON Invoices(InvoiceNumber) WHERE trim(InvoiceNumber)<>''; CREATE INDEX IF NOT EXISTS IX_Invoices_PersonId ON Invoices(PersonId); CREATE INDEX IF NOT EXISTS IX_Invoices_CreatedAt ON Invoices(IssuedAt); CREATE INDEX IF NOT EXISTS IX_InvoiceLines_InvoiceId ON InvoiceLines(InvoiceId); CREATE TABLE IF NOT EXISTS CashRegisterEntries(Id TEXT PRIMARY KEY,InvoiceId TEXT NOT NULL REFERENCES Invoices(Id),Amount TEXT NOT NULL,EntryType TEXT NOT NULL,OccurredAt TEXT NOT NULL,CreatedBy TEXT NOT NULL REFERENCES Users(Id)); CREATE INDEX IF NOT EXISTS IX_CashRegisterEntries_InvoiceId ON CashRegisterEntries(InvoiceId);",ct);
+        await EnsureColumnAsync(db,"Invoices","Status","TEXT NOT NULL DEFAULT 'Posted'",ct);
         await SetVersionAsync(db,12,ct);
     }
     private static async Task MigrationV11Async(SqliteConnection db,CancellationToken ct)
@@ -185,4 +186,3 @@ public sealed class Database
     private static async Task<long> ScalarLongAsync(SqliteConnection db,string sql,CancellationToken ct){await using var c=db.CreateCommand();c.CommandText=sql;return Convert.ToInt64(await c.ExecuteScalarAsync(ct));}
     private static Task SetVersionAsync(SqliteConnection db,int version,CancellationToken ct)=>ExecuteAsync(db,$"PRAGMA user_version={version};",ct);
 }
-
