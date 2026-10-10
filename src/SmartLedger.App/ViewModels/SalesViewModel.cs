@@ -221,8 +221,18 @@ public partial class SalesViewModel(IAppRepository repo,IAppSession session):Obs
         try
         {
             var identity=await repo.GetIdentityAsync();
-            var message=$"مرحباً {LastSavedCustomerName}،\\nفاتورة مبيعات رقم: #{invoice.InvoiceNumber}\\nالمحل: {identity.BusinessName}\\nإجمالي الفاتورة: {invoice.Total:N2} {identity.Currency}\\nالمدفوع: {invoice.Paid:N2} {identity.Currency}\\nالمتبقي: {invoice.RemainingAmount:N2} {identity.Currency}\\nالتاريخ: {invoice.IssuedAt:yyyy/MM/dd HH:mm}\\nشكراً لزيارتكم!";
-            new WhatsAppService().OpenWhatsApp(LastSavedCustomerPhone,message);StatusText="تم فتح واتساب برسالة الفاتورة؛ راجعها قبل الإرسال.";
+            var templates=await repo.GetMessageTemplatesAsync();
+            var template=templates.FirstOrDefault(x=>x.Name.Contains("فاتورة مبيعات",StringComparison.OrdinalIgnoreCase));
+            var fallback="مرحباً {CustomerName}،\\nفاتورة مبيعات رقم: #{InvoiceNumber}\\nالمحل: {StoreName}\\nإجمالي الفاتورة: {TotalAmount} {Currency}\\nالمدفوع: {PaidAmount} {Currency}\\nالمتبقي: {RemainingAmount} {Currency}\\nالتاريخ: {Date}\\nشكراً لزيارتكم!";
+            var values=new Dictionary<string,string?>
+            {
+                ["StoreName"]=identity.BusinessName,["CustomerName"]=LastSavedCustomerName,
+                ["InvoiceNumber"]=invoice.InvoiceNumber,["TotalAmount"]=invoice.Total.ToString("N2"),
+                ["PaidAmount"]=invoice.Paid.ToString("N2"),["RemainingAmount"]=invoice.RemainingAmount.ToString("N2"),
+                ["Currency"]=identity.Currency,["Date"]=invoice.IssuedAt.ToString("yyyy/MM/dd HH:mm")
+            };
+            var message=MessageTemplateEngine.Render(template?.Body??fallback,values);
+            new WhatsAppService().OpenWhatsApp(LastSavedCustomerPhone,message);StatusText="تم فتح واتساب برسالة الفاتورة المخصصة؛ راجعها قبل الإرسال.";
         }
         catch(Exception ex){StatusText=ex.Message;}
     }
