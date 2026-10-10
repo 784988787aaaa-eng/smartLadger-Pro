@@ -164,6 +164,19 @@ public partial class SalesViewModel(IAppRepository repo,IAppSession session):Obs
         StatusText="تم استئناف آخر فاتورة معلقة.";
     }
     [RelayCommand] private void FocusBarcode(){StatusText="حقل الباركود جاهز للمسح؛ اضغط Enter لإضافة الصنف.";}
+    [RelayCommand] private void FocusCustomer(){StatusText="ابحث عن العميل في حقل العميل أعلى الفاتورة.";}
+    [RelayCommand] private void ToggleSelectedUnit()
+    {
+        var product=_allProducts.FirstOrDefault(x=>x.Id==ProductId);
+        if(product is null){StatusText="اختر صنفًا أولًا لتبديل الوحدة.";return;}
+        SelectedQuantityUnit=string.Equals(SelectedQuantityUnit,product.SmallUnit,StringComparison.OrdinalIgnoreCase)?product.LargeUnit:product.SmallUnit;
+    }
+    [RelayCommand] private async Task SaveAndPrintAsync()
+    {
+        var previousId=LastSavedInvoice?.Id;
+        await SaveAsync();
+        if(LastSavedInvoice is { } invoice&&invoice.Id!=previousId)await PrintLastInvoiceAsync();
+    }
     [RelayCommand] private async Task PrintLastInvoiceAsync()
     {
         if(LastSavedInvoice is not { } invoice||LastSavedLines.Count==0){StatusText="احفظ الفاتورة أولًا قبل الطباعة.";return;}
