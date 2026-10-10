@@ -1,6 +1,5 @@
 using System.IO;
 using System.Globalization;
-using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Media.Imaging;
 using Microsoft.Win32;
