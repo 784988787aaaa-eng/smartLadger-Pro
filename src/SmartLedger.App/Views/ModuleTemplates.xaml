@@ -1051,7 +1051,7 @@
           <StackPanel>
             <DockPanel><TextBlock Text="SmartLedger Pro — Enterprise Commercial Suite" FontSize="18" FontWeight="SemiBold" Foreground="{StaticResource BrushText}"/><Button Content="تحديث التشخيصات" Command="{Binding RefreshDiagnosticsCommand}" Style="{StaticResource GhostButton}" Margin="8,0,0,0"/></DockPanel>
             <TextBlock Text="Giant Enterprise Software Studio | Version 1.4.0 (Commercial Edition) | Engine Build 2026.10 | © 2026 SmartLedger" Style="{StaticResource CaptionText}" Margin="0,6,0,8"/>
-            <TextBlock Text="مرخص تجارياً — نسخة المؤسسات (Enterprise Active License)" FontWeight="SemiBold" Margin="0,4,0,6"/><TextBlock Text="{Binding Phone, StringFormat=Support &amp; inquiries: {0}}" Style="{StaticResource CaptionText}" Margin="0,0,0,8"/><TextBlock Text="{Binding DiagnosticsText}" Style="{StaticResource CaptionText}" TextWrapping="Wrap"/>
+            <TextBlock Text="مرخص تجارياً — نسخة المؤسسات (Enterprise Active License)" FontWeight="SemiBold" Margin="0,4,0,6"/><TextBlock Text="الدعم والاستفسارات" Style="{StaticResource CaptionText}"/><TextBlock Text="{Binding Phone}" Style="{StaticResource CaptionText}" Margin="0,0,0,8"/><TextBlock Text="{Binding DiagnosticsText}" Style="{StaticResource CaptionText}" TextWrapping="Wrap"/>
           </StackPanel>
         </Border>
         <Border Style="{StaticResource ElevatedCard}" Padding="20" Margin="0,0,0,14" BorderBrush="#7F1D1D" BorderThickness="1">
