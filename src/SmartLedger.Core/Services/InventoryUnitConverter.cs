@@ -6,8 +6,8 @@ public static class InventoryUnitConverter
 {
     public static DualUnitQuantity BreakDown(decimal totalMinorUnits, decimal conversionFactor, string majorUnit, string minorUnit)
     {
-        if (totalMinorUnits < 0) throw new ArgumentOutOfRangeException(nameof(totalMinorUnits));
-        if (conversionFactor <= 0) throw new ArgumentOutOfRangeException(nameof(conversionFactor));
+        ArgumentOutOfRangeException.ThrowIfNegative(totalMinorUnits);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(conversionFactor);
         var major = decimal.Floor(totalMinorUnits / conversionFactor);
         var minor = totalMinorUnits - major * conversionFactor;
         var formatted = major > 0 && minor > 0 ? $"{major:0.##} {majorUnit} و {minor:0.##} {minorUnit}"
@@ -18,7 +18,8 @@ public static class InventoryUnitConverter
 
     public static decimal ToMinorUnits(decimal majorUnits, decimal minorUnits, decimal conversionFactor)
     {
-        if (majorUnits < 0 || minorUnits < 0) throw new ArgumentOutOfRangeException(nameof(majorUnits));
+        ArgumentOutOfRangeException.ThrowIfNegative(majorUnits);
+        ArgumentOutOfRangeException.ThrowIfNegative(minorUnits);
         if (conversionFactor <= 0) throw new ArgumentOutOfRangeException(nameof(conversionFactor));
         return majorUnits * conversionFactor + minorUnits;
     }
