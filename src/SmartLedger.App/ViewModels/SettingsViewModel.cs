@@ -75,6 +75,27 @@ public partial class SettingsViewModel : ObservableObject
             LoadLogoPreview();
             SelectedLanguage = await repo.GetPreferenceAsync("language", CancellationToken.None) ?? "ar-YE";
             MessageTemplates = await repo.GetMessageTemplatesAsync();
+            if (MessageTemplates.Count == 0)
+            {
+                var defaults = new[]
+                {
+                    new MessageTemplate(Guid.NewGuid(), "رسالة كشف حساب العميل", "مرحباً {CustomerName}، كشف حساب من {StoreName} بتاريخ {Date}. الرصيد: {RemainingAmount} {Currency}.", true),
+                    new MessageTemplate(Guid.NewGuid(), "رسالة سند قبض / صرف", "مرحباً {CustomerName}، سند رقم {InvoiceNumber} من {StoreName}. المبلغ: {TotalAmount} {Currency}. التاريخ: {Date}.", true),
+                    new MessageTemplate(Guid.NewGuid(), "رسالة فاتورة مبيعات", "مرحباً {CustomerName}، فاتورة {InvoiceNumber} من {StoreName}. الإجمالي: {TotalAmount} {Currency}، المدفوع: {PaidAmount}، المتبقي: {RemainingAmount}. التاريخ: {Date}.", true)
+                };
+                var saved = new List<MessageTemplate>();
+                foreach (var template in defaults)
+                {
+                    try { saved.Add(await repo.SaveMessageTemplateAsync(template)); }
+                    catch { break; }
+                }
+                if (saved.Count > 0) MessageTemplates = saved;
+            }
+            var initialCulture = CultureInfo.GetCultureInfo(SelectedLanguage);
+            CultureInfo.DefaultThreadCurrentCulture = initialCulture;
+            CultureInfo.DefaultThreadCurrentUICulture = initialCulture;
+            var initialDirection = SelectedLanguage.StartsWith("en", StringComparison.OrdinalIgnoreCase) ? FlowDirection.LeftToRight : FlowDirection.RightToLeft;
+            foreach (Window window in Application.Current.Windows) window.FlowDirection = initialDirection;
             await RefreshDiagnosticsAsync();
             var current = session.CurrentUser;
             CanResetData = current is { IsAdministrator: true } && await users.CanAsync(current.Id, PermissionKeys.ResetData);
