@@ -215,7 +215,13 @@ public partial class InventoryViewModel(IAppRepository repo) : ObservableObject
                     DefaultSupplierId = NewSupplierId,
                     Note = NewNote.Trim(),
                     ShelfLocation = NewShelfLocation.Trim(),
-                    WarehouseName = NewWarehouse.Trim()
+                    WarehouseName = NewWarehouse.Trim(),
+                    SellingPriceMajor = ParseDecimal(NewMajorSalePrice),
+                    SellingPriceMinor = sale,
+                    MinimumSellingPrice = purchase,
+                    ReorderPoint = alert,
+                    LowStockThreshold = alert,
+                    UpdatedAt = DateTimeOffset.UtcNow
                 });
             }
             else
@@ -231,7 +237,13 @@ public partial class InventoryViewModel(IAppRepository repo) : ObservableObject
                     DefaultSupplierId = NewSupplierId,
                     Note = NewNote.Trim(),
                     ShelfLocation = NewShelfLocation.Trim(),
-                    WarehouseName = NewWarehouse.Trim()
+                    WarehouseName = NewWarehouse.Trim(),
+                    SellingPriceMajor = ParseDecimal(NewMajorSalePrice),
+                    SellingPriceMinor = sale,
+                    MinimumSellingPrice = purchase,
+                    ReorderPoint = alert,
+                    LowStockThreshold = alert,
+                    UpdatedAt = DateTimeOffset.UtcNow
                 });
             }
 
