@@ -58,9 +58,9 @@ public sealed class PurchaseInvoiceTests
             var savedProduct = Assert.Single(await repository.GetProductsAsync("PHASE4-TEST-123"));
             Assert.Equal(12m, savedProduct.StockSmallUnits);
             var batch = Assert.Single(await repository.GetProductBatchesAsync(product.Id));
-            Assert.Equal("LOT-PHASE4-01", batch.BatchCode);
+            Assert.Equal("LOT-PHASE4-01", batch.BatchNumber);
             Assert.Equal(12m, batch.QuantityMinor);
-            Assert.Equal(supplier.Id, batch.SupplierId);
+            Assert.Equal<Guid?>(supplier.Id, batch.SupplierId);
             var operations = await repository.GetOperationsAsync(supplier.Id);
             Assert.Contains(operations, x => x.Type == OperationType.DebtToUs && x.Amount == 50m);
         }
