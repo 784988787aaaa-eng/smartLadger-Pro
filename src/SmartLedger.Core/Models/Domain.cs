@@ -132,12 +132,13 @@ public sealed record RuntimeDiagnostics(string ProductVersion,string RuntimeVers
 public sealed record CashRegisterSummary(decimal CashIn,decimal CashOut,decimal Balance,int EntryCount);
 public static class MessageTemplateEngine
 {
-    public static string Render(string template,IReadOnlyDictionary<string,string?> values)
+    public static string Render(string? template, IReadOnlyDictionary<string, string?> values, string fallback = "")
     {
-        ArgumentNullException.ThrowIfNull(template);
         ArgumentNullException.ThrowIfNull(values);
-        var result=template;
-        foreach(var pair in values)result=result.Replace("{"+pair.Key+"}",pair.Value??string.Empty,StringComparison.OrdinalIgnoreCase);
+        var result = string.IsNullOrWhiteSpace(template) ? fallback : template;
+        if (string.IsNullOrWhiteSpace(result)) return string.Empty;
+        foreach (var pair in values)
+            result = result.Replace("{" + pair.Key + "}", pair.Value ?? string.Empty, StringComparison.OrdinalIgnoreCase);
         return result;
     }
 }
