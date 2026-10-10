@@ -1,0 +1,28 @@
+﻿SMARTLEDGER PRO - PRODUCT ENTRY FORM CLOSURE VERIFICATION
+Generated: 2026-10-11 01:21:33
+Source commit: 28f66a5e33d8b469d7253cd61f1ac49ad88eab64
+Branch: main
+
+VERIFIED BUILD AND TEST RESULTS
+- Release solution build: PASS; 0 warnings; 0 errors.
+- Unit tests: PASS; 97 passed, 0 failed, 0 skipped.
+- Publish: PASS; win-x64, framework-dependent output in .\publish.
+- Executable exists: True.
+- XAML well-formed XML parse: PASS.
+- DynamicResource scan: 17 distinct keys found; no unresolved keys reported by scan.
+
+PRODUCT FORM ELEMENTS FOUND IN ModuleTemplates.xaml
+- Product identity: name, barcode generation, category, warehouse, shelf, supplier.
+- Unit packaging: small/large unit toggle, conversion factor, packaging preview.
+- Opening stock and low-stock alert fields.
+- Pricing: small-unit purchase/sale, large-unit purchase/sale, live profit margin and profit per unit.
+- Keyboard actions: Escape, Ctrl+Enter, Ctrl+S.
+
+VIEWMODEL SOURCE COMMIT
+- Added calculated unit cost, profit per unit/major unit, margin, below-cost flag, and property-change notifications.
+- Commit: 28f66a5e33d8b469d7253cd61f1ac49ad88eab64
+
+SCOPE / HONEST LIMITATION
+- The product form markup was already present in the worktree; this closure verified it rather than claiming a new full XAML rewrite.
+- Other pre-existing modified files were intentionally not staged or committed to avoid publishing unrelated work.
+- Runtime launch is attempted by this closure; process verification follows separately.
