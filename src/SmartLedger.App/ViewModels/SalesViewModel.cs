@@ -1,10 +1,13 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using System.Diagnostics;
+using System.IO;
 using System.Collections.ObjectModel;
 using SmartLedger.Core.Abstractions;
 using SmartLedger.Core.Models;
 using SmartLedger.Core.Services;
 using SmartLedger.Infrastructure.Integrations;
+using SmartLedger.Infrastructure.Reporting;
 
 namespace SmartLedger.App.ViewModels;
 
@@ -17,11 +20,14 @@ public partial class SalesViewModel(IAppRepository repo,IAppSession session):Obs
     private IReadOnlyList<Book> _books=Array.Empty<Book>();
     private bool _settingProductSelection;
     private decimal _lastUnitFactor=1m;
+    private readonly List<HeldInvoiceDraft> _heldInvoices=new();
+    private sealed record HeldInvoiceDraft(IReadOnlyList<InvoiceDraftLine> Lines,Guid? PersonId,string CustomerSearch,string Note,PaymentMode PaymentMode,string PaidText,string DiscountText);
     [ObservableProperty] private string customerSearch="";
     [ObservableProperty] private string productSearch="";
     [ObservableProperty] private string barcodeInput="";
     [ObservableProperty] private string invoiceDiscountText="0";
     [ObservableProperty] private Invoice? lastSavedInvoice;
+    [ObservableProperty] private IReadOnlyList<InvoiceLine> lastSavedLines=Array.Empty<InvoiceLine>();
     [ObservableProperty] private string lastSavedCustomerPhone="";
     [ObservableProperty] private string lastSavedCustomerName="";
     [ObservableProperty] private bool isCustomerSuggestionsOpen;
@@ -55,6 +61,7 @@ public partial class SalesViewModel(IAppRepository repo,IAppSession session):Obs
     public ObservableCollection<InvoiceDraftLine> Lines { get; } = new();
     public decimal LinesTotal => Lines.Sum(x=>x.LineTotal);
     public bool IsCartEmpty => Lines.Count == 0;
+    public int HeldInvoiceCount => _heldInvoices.Count;
 
     public IReadOnlyList<string> QuantityUnits { get { var p=_allProducts.FirstOrDefault(x=>x.Id==ProductId); return p is null?Array.Empty<string>():new[]{p.SmallUnit,p.LargeUnit}.Where(x=>!string.IsNullOrWhiteSpace(x)).Distinct(StringComparer.OrdinalIgnoreCase).ToArray(); } }
     private decimal QuantityFactor(Product p)=>!string.IsNullOrWhiteSpace(p.LargeUnit)&&!string.Equals(p.LargeUnit,p.SmallUnit,StringComparison.OrdinalIgnoreCase)&&string.Equals(SelectedQuantityUnit,p.LargeUnit,StringComparison.OrdinalIgnoreCase)?p.ConversionFactor:1m;
@@ -138,7 +145,39 @@ public partial class SalesViewModel(IAppRepository repo,IAppSession session):Obs
     }
     [RelayCommand] private void ApplyDiscount(){StatusText="أدخل قيمة الخصم الإجمالية في حقل الخصم ثم أكمل الفاتورة.";}
     [RelayCommand] private void ClearInvoice(){if(IsSaving)return;Lines.Clear();OnPropertyChanged(nameof(LinesTotal));OnPropertyChanged(nameof(IsCartEmpty));ProductId=null;ProductSearch="";BarcodeInput="";QuantityText="1";PriceText="";InvoiceDiscountText="0";Note="";Recalc();StatusText="تم تفريغ الفاتورة الحالية.";}
-    [RelayCommand] private void HoldInvoice(){StatusText="ميزة تعليق الفاتورة ستُفعّل بعد إضافة تخزين محلي للمسودات.";}
+    [RelayCommand] private void HoldInvoice()
+    {
+        if(Lines.Count==0){StatusText="لا توجد بنود لتعليقها.";return;}
+        _heldInvoices.Add(new HeldInvoiceDraft(Lines.ToArray(),PersonId,CustomerSearch,Note,PaymentMode,PaidText,InvoiceDiscountText));
+        Lines.Clear();OnPropertyChanged(nameof(LinesTotal));OnPropertyChanged(nameof(IsCartEmpty));OnPropertyChanged(nameof(HeldInvoiceCount));
+        PersonId=null;CustomerSearch="";ProductId=null;ProductSearch="";BarcodeInput="";QuantityText="1";PriceText="";PaidText="0";InvoiceDiscountText="0";Note="";Recalc();
+        StatusText=$"تم تعليق الفاتورة. عدد الفواتير المعلقة: {_heldInvoices.Count}.";
+    }
+    [RelayCommand] private void ResumeHeldInvoice()
+    {
+        if(_heldInvoices.Count==0){StatusText="لا توجد فواتير معلقة.";return;}
+        if(Lines.Count>0){StatusText="علّق الفاتورة الحالية أو أفرغها قبل استئناف فاتورة أخرى.";return;}
+        var held=_heldInvoices[^1];_heldInvoices.RemoveAt(_heldInvoices.Count-1);
+        foreach(var line in held.Lines)Lines.Add(line);
+        PersonId=held.PersonId;CustomerSearch=held.CustomerSearch;Note=held.Note;PaymentMode=held.PaymentMode;PaidText=held.PaidText;InvoiceDiscountText=held.DiscountText;
+        OnPropertyChanged(nameof(LinesTotal));OnPropertyChanged(nameof(IsCartEmpty));OnPropertyChanged(nameof(HeldInvoiceCount));Recalc();
+        StatusText="تم استئناف آخر فاتورة معلقة.";
+    }
+    [RelayCommand] private void FocusBarcode(){StatusText="حقل الباركود جاهز للمسح؛ اضغط Enter لإضافة الصنف.";}
+    [RelayCommand] private async Task PrintLastInvoiceAsync()
+    {
+        if(LastSavedInvoice is not { } invoice||LastSavedLines.Count==0){StatusText="احفظ الفاتورة أولًا قبل الطباعة.";return;}
+        try
+        {
+            var identity=await repo.GetIdentityAsync();
+            var pdf=new InvoicePrintService().RenderThermalReceipt(invoice,LastSavedLines,identity);
+            var path=Path.Combine(Path.GetTempPath(),$"SmartLedger-{invoice.InvoiceNumber}.pdf");
+            await File.WriteAllBytesAsync(path,pdf);
+            Process.Start(new ProcessStartInfo(path){UseShellExecute=true});
+            StatusText="تم إنشاء إيصال PDF وفتحه للمعاينة والطباعة.";
+        }
+        catch(Exception ex){StatusText=ex.Message;}
+    }
     [RelayCommand] private void SendWhatsApp()
     {
         if(LastSavedInvoice is not { } invoice){StatusText="احفظ الفاتورة أولًا قبل إرسالها عبر واتساب.";return;}
