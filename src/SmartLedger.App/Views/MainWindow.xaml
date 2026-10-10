@@ -47,6 +47,7 @@
           </StackPanel>
           <StackPanel DockPanel.Dock="Bottom">
             <Border Height="1" Background="#1B2945" Margin="3,8,3,8"/>
+            <Button Style="{StaticResource NavButton}" Click="About_Click" ToolTip="عن التطبيق والهوية"><StackPanel Orientation="Horizontal" FlowDirection="RightToLeft"><Path Style="{StaticResource SideIcon}" Data="{StaticResource ReportIcon}"/><TextBlock Text="عن التطبيق والهوية / About" Margin="13,0,0,0" VerticalAlignment="Center" Visibility="{Binding SidebarTextVisibility}"/></StackPanel></Button>
             <Button Style="{StaticResource NavButton}" Command="{Binding NavigateCommand}" CommandParameter="{x:Static vm:AppPage.Settings}" Background="{Binding DataContext.CurrentPage, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource ActivePageBackgroundConverter}, ConverterParameter={x:Static vm:AppPage.Settings}}"><StackPanel Orientation="Horizontal" FlowDirection="RightToLeft"><Path Style="{StaticResource SideIcon}" Data="{StaticResource GearIcon}"/><TextBlock Text="الإعدادات" Margin="13,0,0,0" VerticalAlignment="Center" Visibility="{Binding SidebarTextVisibility}"/></StackPanel></Button>
             <Button Style="{StaticResource GhostButton}" Command="{Binding ToggleSidebarCommand}" Height="40" ToolTip="تصغير أو توسيع القائمة"><Path Width="19" Height="19" Stretch="Uniform" Stroke="#8BA8C9" StrokeThickness="1.7" Data="{StaticResource MenuIcon}"/></Button>
           </StackPanel>

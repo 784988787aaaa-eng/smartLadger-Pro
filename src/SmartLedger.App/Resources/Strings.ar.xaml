@@ -1,0 +1,37 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:sys="clr-namespace:System;assembly=mscorlib">
+  <sys:String x:Key="Nav.Home">الرئيسية</sys:String>
+  <sys:String x:Key="Nav.Accounts">الدفاتر والحسابات</sys:String>
+  <sys:String x:Key="Nav.Inventory">المخزون</sys:String>
+  <sys:String x:Key="Nav.Sales">المبيعات ونقاط البيع</sys:String>
+  <sys:String x:Key="Nav.Purchases">المشتريات</sys:String>
+  <sys:String x:Key="Nav.Expenses">المصروفات التشغيلية</sys:String>
+  <sys:String x:Key="Nav.Audit">سجل النشاطات والتدقيق</sys:String>
+  <sys:String x:Key="Nav.Settings">إعدادات النظام</sys:String>
+  <sys:String x:Key="Accounts.Name">اسم الحساب</sys:String>
+  <sys:String x:Key="Accounts.Phone">الهاتف</sys:String>
+  <sys:String x:Key="Accounts.Debit">مدين (عليه)</sys:String>
+  <sys:String x:Key="Accounts.Credit">دائن (له)</sys:String>
+  <sys:String x:Key="Accounts.Balance">الرصيد التراكمي</sys:String>
+  <sys:String x:Key="Action.SaveNew">حفظ ومتابعة</sys:String>
+  <sys:String x:Key="Action.SaveClose">حفظ وإغلاق</sys:String>
+  <sys:String x:Key="Inventory.Name">اسم الصنف</sys:String>
+  <sys:String x:Key="Inventory.Barcode">الباركود</sys:String>
+  <sys:String x:Key="Inventory.Stock">الرصيد المتوفر</sys:String>
+  <sys:String x:Key="Inventory.Cost">سعر التكلفة</sys:String>
+  <sys:String x:Key="Inventory.Retail">سعر التجزئة</sys:String>
+  <sys:String x:Key="Inventory.Wholesale">سعر الجملة</sys:String>
+  <sys:String x:Key="Sales.InvoiceNumber">رقم الفاتورة</sys:String>
+  <sys:String x:Key="Sales.Subtotal">المجموع</sys:String>
+  <sys:String x:Key="Sales.Discount">الخصم</sys:String>
+  <sys:String x:Key="Sales.NetTotal">المبلغ الصافي</sys:String>
+  <sys:String x:Key="Sales.Print">طباعة الفاتورة</sys:String>
+  <sys:String x:Key="Sales.Hold">تعليق الفاتورة</sys:String>
+  <sys:String x:Key="Expenses.Amount">المبلغ</sys:String>
+  <sys:String x:Key="Expenses.Category">تصنيف المصروف</sys:String>
+  <sys:String x:Key="Expenses.CashOutflow">صرف نقدي</sys:String>
+  <sys:String x:Key="Audit.Action">العملية</sys:String>
+  <sys:String x:Key="Audit.User">المستخدم</sys:String>
+  <sys:String x:Key="Audit.Timestamp">التاريخ والوقت</sys:String>
+  <sys:String x:Key="Settings.Language">اللغة</sys:String>
+  <sys:String x:Key="Settings.WhatsApp">قوالب واتساب</sys:String>
+</ResourceDictionary>

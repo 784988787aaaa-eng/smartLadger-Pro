@@ -241,3 +241,22 @@ Only the five reviewed application source files and this report are intended for
 Build, tests, publishing, and live process launch are verified. Phase 4 is NOT certified 100% complete by this run because the previously documented source-scope gaps have not all been implemented and verified: full English localization across every module, a dedicated About/Brand dialog directly accessible from primary navigation, and end-to-end audit coverage for every required mutation (including invoice reversal). The current product identity/diagnostics content is present in Settings, but that does not prove the requested navigation-accessible modal or complete bilingual parity. No claim of zero defects or full production acceptance is made without those checks.
 
 Operational logs were intentionally kept out of the source commit. Existing unrelated PDF changes and temporary artifacts were not staged.
+
+
+## Final three-items implementation pass — 2026-10-11
+
+### Code written
+- Added `src/SmartLedger.App/Views/AboutWindow.xaml` and `.xaml.cs`: dark-navy commercial About window, studio/product identity, license badge, copyright, support phone `774004399`, runtime/memory/database-size diagnostics, and SQLite table row counts refreshed every two seconds.
+- Updated `src/SmartLedger.App/Views/MainWindow.xaml` and `.xaml.cs`: About & Brand button in the sidebar opens the modal window.
+- Added `src/SmartLedger.App/Resources/Strings.ar.xaml` and `Strings.en.xaml` with Arabic/English keys for navigation and the requested primary account, inventory, sales, expenses, audit, and settings labels. `App.xaml` loads Arabic resources by default; `SettingsViewModel.ApplyLanguageAsync` switches dictionaries and layout direction when language changes.
+- Updated `src/SmartLedger.Infrastructure/Data/AppRepository.cs` to emit explicit `BALANCE_ADJUSTED`, `TRANSACTION_DELETED`, and `PRODUCT_PRICE_UPDATED` audit actions in addition to existing action records.
+- Added `tests/SmartLedger.Tests/AuditLogCoverageTests.cs` to verify the audit repository persists/searches the required action codes.
+
+### Verification
+- `dotnet build SmartLedger.sln -c Release -warnaserror`: PASS, 0 warnings, 0 errors.
+- `dotnet test tests\SmartLedger.Tests\SmartLedger.Tests.csproj -c Release --no-build`: PASS, 95 passed, 0 failed, 0 skipped.
+- `dotnet publish src\SmartLedger.App\SmartLedger.App.csproj -c Release -r win-x64 --self-contained false -o .\publish`: PASS.
+- Published `publish\SmartLedger.App.exe` launched and process confirmed running (PID 18436 at verification time; 174,592 bytes).
+
+### Remaining scope / acceptance
+This pass adds the About window, language dictionaries, direction/resource switching, and audit event aliases. It does **not** prove full bilingual parity for every hard-coded label across all screens; the resource keys still need to be bound throughout the XAML templates. The current application has no verified invoice reversal/deletion workflow to attach `INVOICE_REVERSED` to, so the new audit test confirms storage/search of that action code, not an end-to-end invoice reversal mutation. Accordingly, Phase 4 is still **PARTIAL / NOT certified 100%** pending those end-to-end items. No unsupported production acceptance claim is made.

@@ -1,0 +1,37 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:sys="clr-namespace:System;assembly=mscorlib">
+  <sys:String x:Key="Nav.Home">Home</sys:String>
+  <sys:String x:Key="Nav.Accounts">Accounts &amp; Ledgers</sys:String>
+  <sys:String x:Key="Nav.Inventory">Inventory</sys:String>
+  <sys:String x:Key="Nav.Sales">POS &amp; Sales</sys:String>
+  <sys:String x:Key="Nav.Purchases">Purchases</sys:String>
+  <sys:String x:Key="Nav.Expenses">Operating Expenses</sys:String>
+  <sys:String x:Key="Nav.Audit">Audit Trail &amp; Activity Log</sys:String>
+  <sys:String x:Key="Nav.Settings">System Settings</sys:String>
+  <sys:String x:Key="Accounts.Name">Account Name</sys:String>
+  <sys:String x:Key="Accounts.Phone">Phone</sys:String>
+  <sys:String x:Key="Accounts.Debit">Debit</sys:String>
+  <sys:String x:Key="Accounts.Credit">Credit</sys:String>
+  <sys:String x:Key="Accounts.Balance">Running Balance</sys:String>
+  <sys:String x:Key="Action.SaveNew">Save &amp; New</sys:String>
+  <sys:String x:Key="Action.SaveClose">Save &amp; Close</sys:String>
+  <sys:String x:Key="Inventory.Name">Product Name</sys:String>
+  <sys:String x:Key="Inventory.Barcode">Barcode</sys:String>
+  <sys:String x:Key="Inventory.Stock">Available Stock</sys:String>
+  <sys:String x:Key="Inventory.Cost">Cost Price</sys:String>
+  <sys:String x:Key="Inventory.Retail">Retail Price</sys:String>
+  <sys:String x:Key="Inventory.Wholesale">Wholesale Price</sys:String>
+  <sys:String x:Key="Sales.InvoiceNumber">Invoice Number</sys:String>
+  <sys:String x:Key="Sales.Subtotal">Subtotal</sys:String>
+  <sys:String x:Key="Sales.Discount">Discount</sys:String>
+  <sys:String x:Key="Sales.NetTotal">Net Total</sys:String>
+  <sys:String x:Key="Sales.Print">Print Invoice</sys:String>
+  <sys:String x:Key="Sales.Hold">Hold Invoice</sys:String>
+  <sys:String x:Key="Expenses.Amount">Amount</sys:String>
+  <sys:String x:Key="Expenses.Category">Expense Category</sys:String>
+  <sys:String x:Key="Expenses.CashOutflow">Cash Outflow</sys:String>
+  <sys:String x:Key="Audit.Action">Action</sys:String>
+  <sys:String x:Key="Audit.User">User</sys:String>
+  <sys:String x:Key="Audit.Timestamp">Timestamp</sys:String>
+  <sys:String x:Key="Settings.Language">Language</sys:String>
+  <sys:String x:Key="Settings.WhatsApp">WhatsApp Templates</sys:String>
+</ResourceDictionary>

@@ -127,8 +127,13 @@ public partial class SettingsViewModel : ObservableObject
             CultureInfo.DefaultThreadCurrentCulture = culture;
             CultureInfo.DefaultThreadCurrentUICulture = culture;
             var direction = SelectedLanguage.StartsWith("en", StringComparison.OrdinalIgnoreCase) ? FlowDirection.LeftToRight : FlowDirection.RightToLeft;
+            var dictionaries = Application.Current.Resources.MergedDictionaries;
+            var existingStrings = dictionaries.FirstOrDefault(d => d.Source is not null && d.Source.OriginalString.Contains("Resources/Strings.", StringComparison.OrdinalIgnoreCase));
+            if (existingStrings is not null) dictionaries.Remove(existingStrings);
+            var languageFile = SelectedLanguage.StartsWith("en", StringComparison.OrdinalIgnoreCase) ? "Strings.en.xaml" : "Strings.ar.xaml";
+            dictionaries.Add(new ResourceDictionary { Source = new Uri($"/SmartLedger.App;component/Resources/{languageFile}", UriKind.Relative) });
             foreach (Window window in Application.Current.Windows) window.FlowDirection = direction;
-            StatusText = SelectedLanguage == "en-US" ? "Language and layout direction updated. Some screen labels remain Arabic." : "تم تحديث اللغة واتجاه الواجهة دون إعادة تشغيل.";
+            StatusText = SelectedLanguage == "en-US" ? "English resources and left-to-right layout applied; screens with hard-coded labels may still show Arabic." : "تم تطبيق موارد العربية واتجاه الواجهة من اليمين إلى اليسار.";
         }
         catch (Exception ex) { StatusText = $"تعذر تطبيق اللغة: {ex.Message}"; }
     }
