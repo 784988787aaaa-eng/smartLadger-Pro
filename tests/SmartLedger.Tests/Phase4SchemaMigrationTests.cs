@@ -31,6 +31,7 @@ public sealed class Phase4SchemaMigrationTests
         }
         finally
         {
+            SqliteConnection.ClearAllPools();
             if (Directory.Exists(root)) Directory.Delete(root, true);
         }
     }
