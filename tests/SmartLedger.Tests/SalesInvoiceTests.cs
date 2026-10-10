@@ -24,7 +24,7 @@ public sealed class SalesInvoiceTests
             var repository=new AppRepository(database);
             var customerBook=(await repository.GetBooksAsync()).Single(x=>x.Kind==BookKind.Customers);
             var customer=await repository.CreatePersonAsync(customerBook.Id,"عميل اختبار المبيعات","7770000","");
-            var product=await repository.CreateProductAsync(new Product(Guid.NewGuid(),"صنف اختبار البيع","SALE-001","عام","كرتون","حبة",12m,2m,3m,30m,2m,DateTimeOffset.UtcNow));
+            var product=await repository.CreateProductAsync(new Product(Guid.NewGuid(),"صنف اختبار البيع","SALE-001","عام","كرتون","حبة",12m,2m,3m,0m,2m,DateTimeOffset.UtcNow));
             await repository.AddStockBatchAsync(new ProductBatch(Guid.NewGuid(),product.Id,"EARLY",DateTimeOffset.UtcNow.AddMonths(1),10m,1.5m,null,"PUR-1",DateTimeOffset.UtcNow.AddDays(-2)));
             await repository.AddStockBatchAsync(new ProductBatch(Guid.NewGuid(),product.Id,"LATER",DateTimeOffset.UtcNow.AddMonths(4),20m,1.8m,null,"PUR-2",DateTimeOffset.UtcNow.AddDays(-1)));
             var invoice=new Invoice(Guid.NewGuid(),InvoiceType.Sale,customer.Id,DateTimeOffset.UtcNow,36m,0m,36m,0m,PaymentMode.Credit,"اختبار بيع ذري",admin!.Id);
