@@ -774,7 +774,10 @@
                         <TextBlock Text="معاينة التحويل" Style="{StaticResource CaptionText}" HorizontalAlignment="Center" Margin="0,0,0,8"/>
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
                           <Border Background="#142B49" BorderBrush="#31577E" BorderThickness="1" CornerRadius="8" Padding="15,9">
-                            <TextBlock Text="{Binding NewLargeUnit}" FontSize="15" FontWeight="SemiBold" TextAlignment="Center"/>
+                            <StackPanel Orientation="Horizontal">
+                              <TextBlock Text="١" FontSize="15" FontWeight="Bold" Foreground="#DCEBFF" Margin="0,0,6,0"/>
+                              <TextBlock Text="{Binding NewLargeUnit}" FontSize="15" FontWeight="SemiBold"/>
+                            </StackPanel>
                           </Border>
                           <TextBlock Text="=" FontSize="19" Foreground="{StaticResource BrushMuted}" VerticalAlignment="Center" Margin="12,0"/>
                           <Border Background="#12334B" BorderBrush="#23617A" BorderThickness="1" CornerRadius="8" Padding="15,9">
@@ -783,9 +786,6 @@
                               <TextBlock Text="{Binding NewSmallUnit}" FontSize="15" FontWeight="SemiBold"/>
                             </StackPanel>
                           </Border>
-                          <TextBlock Text="١" Foreground="{StaticResource BrushMuted}" VerticalAlignment="Center" Margin="0,0,6,0">
-                            <TextBlock.Style><Style TargetType="TextBlock"><Setter Property="Visibility" Value="Visible"/><Style.Triggers><DataTrigger Binding="{Binding EnableMajorUnit}" Value="False"><Setter Property="Visibility" Value="Collapsed"/></DataTrigger></Style.Triggers></Style></TextBlock.Style>
-                          </TextBlock>
                         </StackPanel>
                         <TextBlock Text="الصنف يستخدم وحدة أساسية واحدة؛ لا يلزم معامل تحويل." Foreground="{StaticResource BrushMuted}" HorizontalAlignment="Center" Margin="0,7,0,0">
                           <TextBlock.Style><Style TargetType="TextBlock"><Setter Property="Visibility" Value="Collapsed"/><Style.Triggers><DataTrigger Binding="{Binding EnableMajorUnit}" Value="False"><Setter Property="Visibility" Value="Visible"/></DataTrigger></Style.Triggers></Style></TextBlock.Style>
@@ -807,18 +807,18 @@
                       <Border Grid.Row="1" Grid.Column="0" Background="#101D34" Padding="11,10" Margin="0,2,0,0"><TextBlock Text="{Binding NewSmallUnit}" FontWeight="SemiBold" VerticalAlignment="Center"/></Border>
                       <Border Grid.Row="1" Grid.Column="1" Background="#101D34" Padding="7,4" Margin="0,2,0,0"><TextBox Style="{StaticResource NumericField}" Text="{Binding NewPurchasePrice,UpdateSourceTrigger=PropertyChanged}" AutomationProperties.Name="سعر شراء الوحدة الأساسية"/></Border>
                       <Border Grid.Row="1" Grid.Column="2" Background="#101D34" Padding="7,4" Margin="0,2,0,0"><TextBox Style="{StaticResource NumericField}" Text="{Binding NewSalePrice,UpdateSourceTrigger=PropertyChanged}" AutomationProperties.Name="سعر بيع الوحدة الأساسية"/></Border>
-                      <Border Grid.Row="2" Grid.Column="0" Background="#101D34" Padding="11,10" Margin="0,2,0,0">
+                      <Border Grid.Row="2" Grid.Column="0" Background="#101D34" Padding="11,10" Margin="0,2,0,0" Visibility="{Binding EnableMajorUnit,Converter={StaticResource BoolToVisibility}}">
                         <TextBlock Text="{Binding NewLargeUnit}" FontWeight="SemiBold" VerticalAlignment="Center">
                           <TextBlock.Style><Style TargetType="TextBlock"><Setter Property="Visibility" Value="Visible"/><Style.Triggers><DataTrigger Binding="{Binding EnableMajorUnit}" Value="False"><Setter Property="Visibility" Value="Collapsed"/></DataTrigger></Style.Triggers></Style></TextBlock.Style>
                         </TextBlock>
                       </Border>
-                      <Border Grid.Row="2" Grid.Column="1" Background="#101D34" Padding="7,4" Margin="0,2,0,0">
-                        <TextBox Style="{StaticResource NumericField}" Text="{Binding NewMajorPurchasePrice,UpdateSourceTrigger=PropertyChanged}" AutomationProperties.Name="سعر شراء الوحدة الكبرى">
+                      <Border Grid.Row="2" Grid.Column="1" Background="#101D34" Padding="7,4" Margin="0,2,0,0" Visibility="{Binding EnableMajorUnit,Converter={StaticResource BoolToVisibility}}">
+                        <TextBox Text="{Binding NewMajorPurchasePrice,UpdateSourceTrigger=PropertyChanged}" AutomationProperties.Name="سعر شراء الوحدة الكبرى">
                           <TextBox.Style><Style TargetType="TextBox" BasedOn="{StaticResource NumericField}"><Setter Property="Visibility" Value="Visible"/><Style.Triggers><DataTrigger Binding="{Binding EnableMajorUnit}" Value="False"><Setter Property="Visibility" Value="Collapsed"/></DataTrigger></Style.Triggers></Style></TextBox.Style>
                         </TextBox>
                       </Border>
-                      <Border Grid.Row="2" Grid.Column="2" Background="#101D34" Padding="7,4" Margin="0,2,0,0">
-                        <TextBox Style="{StaticResource NumericField}" Text="{Binding NewMajorSalePrice,UpdateSourceTrigger=PropertyChanged}" AutomationProperties.Name="سعر بيع الوحدة الكبرى">
+                      <Border Grid.Row="2" Grid.Column="2" Background="#101D34" Padding="7,4" Margin="0,2,0,0" Visibility="{Binding EnableMajorUnit,Converter={StaticResource BoolToVisibility}}">
+                        <TextBox Text="{Binding NewMajorSalePrice,UpdateSourceTrigger=PropertyChanged}" AutomationProperties.Name="سعر بيع الوحدة الكبرى">
                           <TextBox.Style><Style TargetType="TextBox" BasedOn="{StaticResource NumericField}"><Setter Property="Visibility" Value="Visible"/><Style.Triggers><DataTrigger Binding="{Binding EnableMajorUnit}" Value="False"><Setter Property="Visibility" Value="Collapsed"/></DataTrigger></Style.Triggers></Style></TextBox.Style>
                         </TextBox>
                       </Border>
@@ -879,18 +879,18 @@
               <Grid FlowDirection="RightToLeft">
                 <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
                 <StackPanel VerticalAlignment="Center" Margin="4,0,12,8">
-                  <TextBlock Text="{Binding StatusText}" Style="{StaticResource CaptionText}" TextWrapping="Wrap" MaxWidth="390">
+                  <TextBlock Text="{Binding StatusText}" TextWrapping="Wrap" MaxWidth="390">
                     <TextBlock.Style><Style TargetType="TextBlock" BasedOn="{StaticResource CaptionText}"><Setter Property="Foreground" Value="{StaticResource BrushMuted}"/><Style.Triggers><DataTrigger Binding="{Binding IsSaving}" Value="True"><Setter Property="Foreground" Value="{StaticResource BrushAccent2}"/></DataTrigger></Style.Triggers></Style></TextBlock.Style>
                   </TextBlock>
                 </StackPanel>
-                <Button Grid.Column="1" Content="إلغاء" Command="{Binding CloseDialogCommand}" Style="{StaticResource GhostButton}" MinWidth="92" Margin="0,0,8,8">
+                <Button Grid.Column="1" Content="إلغاء" Command="{Binding CloseDialogCommand}" MinWidth="92" Margin="0,0,8,8">
                   <Button.Style><Style TargetType="Button" BasedOn="{StaticResource GhostButton}"><Style.Triggers><DataTrigger Binding="{Binding IsSaving}" Value="True"><Setter Property="IsEnabled" Value="False"/></DataTrigger></Style.Triggers></Style></Button.Style>
                 </Button>
-                <Button Grid.Column="2" Command="{Binding SaveAndAddAnotherCommand}" Style="{StaticResource GhostButton}" Margin="0,0,8,8" MinWidth="155">
+                <Button Grid.Column="2" Command="{Binding SaveAndAddAnotherCommand}" Margin="0,0,8,8" MinWidth="155">
                   <Button.Content><TextBlock Text="حفظ وإضافة صنف آخر" TextWrapping="NoWrap"/></Button.Content>
                   <Button.Style><Style TargetType="Button" BasedOn="{StaticResource GhostButton}"><Setter Property="Visibility" Value="Visible"/><Style.Triggers><DataTrigger Binding="{Binding IsEditing}" Value="True"><Setter Property="Visibility" Value="Collapsed"/></DataTrigger><DataTrigger Binding="{Binding IsSaving}" Value="True"><Setter Property="IsEnabled" Value="False"/></DataTrigger></Style.Triggers></Style></Button.Style>
                 </Button>
-                <Button Grid.Column="3" Command="{Binding SaveNewCommand}" Style="{StaticResource PrimaryButton}" MinWidth="145" Margin="0,0,0,8">
+                <Button Grid.Column="3" Command="{Binding SaveNewCommand}" MinWidth="145" Margin="0,0,0,8">
                   <Button.Content><TextBlock Text="حفظ الصنف"><TextBlock.Style><Style TargetType="TextBlock"><Setter Property="Text" Value="حفظ الصنف"/><Style.Triggers><DataTrigger Binding="{Binding IsSaving}" Value="True"><Setter Property="Text" Value="جارٍ الحفظ…"/></DataTrigger></Style.Triggers></Style></TextBlock.Style></TextBlock></Button.Content>
                   <Button.Style><Style TargetType="Button" BasedOn="{StaticResource PrimaryButton}"><Style.Triggers><DataTrigger Binding="{Binding IsSaving}" Value="True"><Setter Property="IsEnabled" Value="False"/></DataTrigger></Style.Triggers></Style></Button.Style>
                 </Button>
