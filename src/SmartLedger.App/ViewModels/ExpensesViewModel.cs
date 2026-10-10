@@ -1,4 +1,4 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using SmartLedger.Core.Abstractions;
 using SmartLedger.Core.Models;
@@ -14,6 +14,7 @@ public partial class ExpensesViewModel(IAppRepository repo,IAppSession session):
  [ObservableProperty] private bool isDialogOpen;
  [ObservableProperty] private bool isSaving;
  [ObservableProperty] private string statusText="";
+ public IReadOnlyList<string> SuggestedCategories { get; } = new[] { "إيجار", "كهرباء ومياه", "رواتب وأجور", "صيانة", "نقل وشحن", "بوفيه ونثريات", "مشتريات تشغيلية", "رسوم حكومية", "اتصالات وإنترنت", "عام" };
  public async Task LoadAsync(){Expenses=await repo.GetExpensesAsync();CashSummary=await repo.GetCashRegisterSummaryAsync(DateTimeOffset.Now.Date,DateTimeOffset.Now);}
  [RelayCommand] private void OpenAdd(){Category="عام";PaymentMethod="Cash";AmountText="";Note="";StatusText="";IsDialogOpen=true;}
  [RelayCommand] private void CloseDialog(){if(!IsSaving)IsDialogOpen=false;}
