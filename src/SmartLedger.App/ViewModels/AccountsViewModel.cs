@@ -48,6 +48,11 @@ public partial class AccountsViewModel(IAppRepository repo,IAppSession session):
     public decimal SelectedAccountBalance => SelectedPerson?.NetBalance ?? 0m;
     public decimal SelectedAccountOwedToUs => SelectedPerson?.OwedToUs ?? 0m;
     public decimal SelectedAccountWeOwe => SelectedPerson?.WeOwe ?? 0m;
+    public decimal TotalDebit => SelectedAccountOperations.Where(x=>x.Type is OperationType.DebtOnUs or OperationType.Sale or OperationType.Payment or OperationType.Settlement).Sum(x=>x.Amount);
+    public decimal TotalCredit => SelectedAccountOperations.Where(x=>x.Type is OperationType.Receive or OperationType.Return or OperationType.DebtToUs or OperationType.Purchase).Sum(x=>x.Amount);
+    public decimal NetBalance => decimal.Round(TotalDebit-TotalCredit,2,MidpointRounding.AwayFromZero);
+    public string BalanceStatusText => NetBalance<0 ? "له (دائن)" : NetBalance>0 ? "عليه (مدين)" : "رصيد خالص";
+    public string BalanceStatusColor => NetBalance<0 ? "#10B981" : NetBalance>0 ? "#EF4444" : "#64748B";
     public decimal TotalOwedToUs => People.Sum(x => x.OwedToUs);
     public decimal TotalWeOwe => People.Sum(x => x.WeOwe);
     public int VisibleAccountsCount => People.Count;
@@ -418,6 +423,11 @@ public partial class AccountsViewModel(IAppRepository repo,IAppSession session):
         {
             AccountStatementStatus="جاري تحميل كشف الحساب…";
             SelectedAccountOperations=await repo.GetOperationsAsync(SelectedPerson.Person.Id,1000);
+            OnPropertyChanged(nameof(TotalDebit));
+            OnPropertyChanged(nameof(TotalCredit));
+            OnPropertyChanged(nameof(NetBalance));
+            OnPropertyChanged(nameof(BalanceStatusText));
+            OnPropertyChanged(nameof(BalanceStatusColor));
             var running=0m;
             var chronological=SelectedAccountOperations.OrderBy(x=>x.OccurredAt).ThenBy(x=>x.Id).ToArray();
             var rows=new List<AccountStatementRow>(chronological.Length);
