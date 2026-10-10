@@ -198,6 +198,11 @@ LIMIT COALESCE($take,-1);
             await c.ExecuteNonQueryAsync(ct);
         }
         await tx.CommitAsync(ct);
+        if (openingBalance > 0)
+            await audit.LogActionAsync(userId, "MANUAL_BALANCE_ADJUSTMENT", "Person", p.Id,
+                new { PersonName = p.Name, OpeningBalance = openingBalance, Direction = openingDirection.ToString() }, ct);
+        else
+            await audit.LogActionAsync(userId, "PERSON_CREATE", "Person", p.Id, new { PersonName = p.Name }, ct);
         return p;
     }
 
