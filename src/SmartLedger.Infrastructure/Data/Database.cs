@@ -74,6 +74,8 @@ public sealed class Database
     private static async Task MigrationV11Async(SqliteConnection db,CancellationToken ct)
     {
         // Additive inventory migration; the partial barcode index preserves legacy blank barcodes.
+        if (await TableExistsAsync(db,"Products",ct))
+        {
         await EnsureColumnAsync(db,"Products","CategoryId","TEXT NOT NULL DEFAULT ''",ct);
         await EnsureColumnAsync(db,"Products","MajorUnit","TEXT NOT NULL DEFAULT ''",ct);
         await EnsureColumnAsync(db,"Products","MinorUnit","TEXT NOT NULL DEFAULT ''",ct);
@@ -89,6 +91,7 @@ public sealed class Database
         var duplicateBarcodeGroups = await ScalarLongAsync(db,"SELECT COUNT(*) FROM (SELECT lower(trim(Barcode)) FROM Products WHERE trim(Barcode)<>'' GROUP BY lower(trim(Barcode)) HAVING COUNT(*)>1);",ct);
         if (duplicateBarcodeGroups == 0)
             await ExecuteAsync(db,"CREATE UNIQUE INDEX IF NOT EXISTS UX_Products_Barcode_NonEmpty ON Products(Barcode) WHERE trim(Barcode)<>'';",ct);
+        }
         await SetVersionAsync(db,11,ct);
     }
     private static async Task MigrationV9Async(SqliteConnection db,CancellationToken ct){await ExecuteAsync(db,"CREATE TABLE IF NOT EXISTS UserPermissions(UserId TEXT NOT NULL REFERENCES Users(Id) ON DELETE CASCADE,Permission TEXT NOT NULL,PRIMARY KEY(UserId,Permission)); CREATE INDEX IF NOT EXISTS IX_UserPermissions_User ON UserPermissions(UserId);",ct); await ExecuteAsync(db,"INSERT OR IGNORE INTO UserPermissions(UserId,Permission) SELECT Id,'reset_data' FROM Users WHERE IsAdministrator=1;",ct); await SetVersionAsync(db,9,ct);}
