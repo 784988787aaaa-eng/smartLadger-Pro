@@ -271,6 +271,60 @@ public partial class InventoryViewModel(IAppRepository repo) : ObservableObject
 
 
     [RelayCommand]
+    private async Task AddStockBatchAsync()
+    {
+        if (IsSaving) return;
+        if (SelectedProduct is not { } product)
+        {
+            StatusText = "اختر صنفًا من القائمة قبل إضافة دفعة.";
+            return;
+        }
+        if (!decimal.TryParse(NewBatchQuantity, NumberStyles.Number, CultureInfo.CurrentCulture, out var quantity) || quantity <= 0m)
+        {
+            StatusText = "أدخل كمية دفعة أكبر من صفر.";
+            return;
+        }
+        if (!decimal.TryParse(NewBatchCost, NumberStyles.Number, CultureInfo.CurrentCulture, out var cost) || cost < 0m)
+        {
+            StatusText = "أدخل تكلفة صحيحة غير سالبة.";
+            return;
+        }
+        DateTimeOffset? expiry = null;
+        if (!string.IsNullOrWhiteSpace(NewBatchExpiry))
+        {
+            if (!DateTimeOffset.TryParse(NewBatchExpiry, CultureInfo.CurrentCulture, DateTimeStyles.AssumeLocal, out var parsedExpiry))
+            {
+                StatusText = "أدخل تاريخ انتهاء صحيحًا أو اترك الحقل فارغًا.";
+                return;
+            }
+            expiry = parsedExpiry;
+        }
+
+        IsSaving = true;
+        try
+        {
+            await repo.AddStockBatchAsync(new ProductBatch(
+                Guid.NewGuid(), product.Id, NewBatchNumber.Trim(), expiry, quantity, cost,
+                product.DefaultSupplierId, null, DateTimeOffset.UtcNow));
+            NewBatchNumber = "";
+            NewBatchQuantity = "0";
+            NewBatchCost = "0";
+            NewBatchExpiry = "";
+            StatusText = "تمت إضافة الدفعة وتحديث رصيد الصنف بنجاح.";
+            await LoadAsync();
+            SelectedProduct = _allProducts.FirstOrDefault(p => p.Id == product.Id);
+        }
+        catch (Exception ex)
+        {
+            StatusText = ex.Message;
+        }
+        finally
+        {
+            IsSaving = false;
+        }
+    }
+
+    [RelayCommand]
     private async Task SaveAndNewProductAsync()
     {
         await SaveNewAsync();
