@@ -14,6 +14,10 @@ public partial class InventoryViewModel(IAppRepository repo) : ObservableObject
     [ObservableProperty] private IReadOnlyList<PersonSummary> suppliers = Array.Empty<PersonSummary>();
     [ObservableProperty] private IReadOnlyList<ProductMovementRow> selectedProductMovements = Array.Empty<ProductMovementRow>();
     [ObservableProperty] private IReadOnlyList<ProductBatch> selectedProductBatches = Array.Empty<ProductBatch>();
+    [ObservableProperty] private string newBatchNumber = "";
+    [ObservableProperty] private string newBatchQuantity = "0";
+    [ObservableProperty] private string newBatchCost = "0";
+    [ObservableProperty] private string newBatchExpiry = "";
     [ObservableProperty] private IReadOnlyList<ProductBatch> selectedProductBatches = Array.Empty<ProductBatch>();
     [ObservableProperty] private string search = "";
     [ObservableProperty] private bool isDialogOpen;
