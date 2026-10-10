@@ -49,7 +49,7 @@ public sealed record DashboardSummary(decimal OwedToUs, decimal WeOwe, decimal S
 };
 public sealed record Product(Guid Id, string Name, string Barcode, string Category, string LargeUnit, string SmallUnit, decimal ConversionFactor, decimal PurchasePrice, decimal SalePrice, decimal StockSmallUnits, decimal AlertThreshold, DateTimeOffset CreatedAt)
 {
-    public string ProductCode { get; init; } = string.Empty;
+    public string ProductCode => Barcode;
     public string CategoryId { get; init; } = string.Empty;
     public decimal SellingPriceMajor { get; init; } = SalePrice * ConversionFactor;
     public decimal SellingPriceMinor { get; init; } = SalePrice;
