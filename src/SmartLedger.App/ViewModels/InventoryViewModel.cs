@@ -50,8 +50,12 @@ public partial class InventoryViewModel(IAppRepository repo) : ObservableObject
     public IReadOnlyList<string> Categories => _allProducts.Select(p => p.Category).Where(x => !string.IsNullOrWhiteSpace(x)).Distinct(StringComparer.CurrentCultureIgnoreCase).OrderBy(x => x).Prepend("عام").Distinct(StringComparer.CurrentCultureIgnoreCase).ToArray();
     public IReadOnlyList<string> Warehouses => Products.Select(p => p.WarehouseName).Where(x => !string.IsNullOrWhiteSpace(x)).Distinct().OrderBy(x => x).Prepend("الكل").ToArray();
     public IReadOnlyList<string> ProductWarehouses => _allProducts.Select(p => p.WarehouseName).Where(x => !string.IsNullOrWhiteSpace(x)).Distinct().OrderBy(x => x).DefaultIfEmpty("المخزن الرئيسي").ToArray();
-    public decimal ProfitPerUnit => Math.Max(0m, ParseDecimal(NewSalePrice) - ParseDecimal(NewPurchasePrice));
-    public decimal ProfitMargin => ParseDecimal(NewPurchasePrice) > 0m ? decimal.Round(((ParseDecimal(NewSalePrice) - ParseDecimal(NewPurchasePrice)) / ParseDecimal(NewPurchasePrice)) * 100m, 1) : 0m;
+    public decimal CalculatedUnitCostMinor => EnableMajorUnit ? ParseDecimal(NewMajorPurchasePrice) / Math.Max(1m, ParseDecimal(NewConversion)) : ParseDecimal(NewPurchasePrice);
+    public decimal ProfitPerUnit => ParseDecimal(NewSalePrice) - CalculatedUnitCostMinor;
+    public decimal ProfitPerMajor => ParseDecimal(NewMajorSalePrice) - ParseDecimal(NewMajorPurchasePrice);
+    public decimal ProfitMargin => CalculatedUnitCostMinor > 0m ? decimal.Round((ProfitPerUnit / CalculatedUnitCostMinor) * 100m, 1) : 0m;
+    public bool IsSellingBelowCost => ParseDecimal(NewSalePrice) < CalculatedUnitCostMinor;
+    public string PackagingSummary => EnableMajorUnit ? $"1 {NewLargeUnit} = {ParseDecimal(NewConversion):0.##} {NewSmallUnit}" : $"الوحدة: {NewSmallUnit}";
     public decimal NetOpeningSmallUnits => EnableMajorUnit ? ParseDecimal(NewOpeningLargeQuantity) * Math.Max(1m, ParseDecimal(NewConversion)) : ParseDecimal(NewOpeningQuantity);
     [ObservableProperty] private string statusText = "";
 
@@ -86,19 +90,32 @@ public partial class InventoryViewModel(IAppRepository repo) : ObservableObject
 
     partial void OnSearchChanged(string value) => _ = LoadAsync();
 
+    partial void OnNewNameChanged(string value) => OnPropertyChanged(nameof(BarcodePreview));
+    partial void OnNewBarcodeChanged(string value) => OnPropertyChanged(nameof(BarcodePreview));
+    partial void OnNewSmallUnitChanged(string value) => NotifyPackaging();
+    partial void OnNewLargeUnitChanged(string value) => NotifyPackaging();
     partial void OnNewPurchasePriceChanged(string value) { if (!_syncingUnits) SyncMajorFromMinor(); NotifyProfit(); }
     partial void OnNewSalePriceChanged(string value) { if (!_syncingUnits) SyncMajorFromMinor(); NotifyProfit(); }
     partial void OnNewMajorPurchasePriceChanged(string value) { if (!_syncingUnits) SyncMinorFromMajor(); NotifyProfit(); }
     partial void OnNewMajorSalePriceChanged(string value) { if (!_syncingUnits) SyncMinorFromMajor(); NotifyProfit(); }
-    partial void OnNewConversionChanged(string value) { if (!_syncingUnits) { SyncMajorFromMinor(); OnPropertyChanged(nameof(NetOpeningSmallUnits)); } }
+    partial void OnNewConversionChanged(string value) { if (!_syncingUnits) SyncMajorFromMinor(); OnPropertyChanged(nameof(NetOpeningSmallUnits)); NotifyProfit(); NotifyPackaging(); }
+    partial void OnEnableMajorUnitChanged(bool value) { OnPropertyChanged(nameof(NetOpeningSmallUnits)); NotifyProfit(); NotifyPackaging(); if (value) SyncMajorFromMinor(); }
     partial void OnNewOpeningLargeQuantityChanged(string value) => OnPropertyChanged(nameof(NetOpeningSmallUnits));
     partial void OnNewOpeningQuantityChanged(string value) => OnPropertyChanged(nameof(NetOpeningSmallUnits));
-    partial void OnEnableMajorUnitChanged(bool value) { OnPropertyChanged(nameof(NetOpeningSmallUnits)); if (value) SyncMajorFromMinor(); }
     partial void OnSelectedWarehouseChanged(string value) => ApplyFilter();
     partial void OnStockFilterChanged(string value) => ApplyFilter();
 
     private static decimal ParseDecimal(string value) => decimal.TryParse(value, NumberStyles.Number, CultureInfo.CurrentCulture, out var n) ? n : 0m;
-    private void NotifyProfit() { OnPropertyChanged(nameof(ProfitPerUnit)); OnPropertyChanged(nameof(ProfitMargin)); }
+    public string BarcodePreview => string.IsNullOrWhiteSpace(NewBarcode) ? "سيُنشأ عند الطلب" : NewBarcode;
+    private void NotifyPackaging() { OnPropertyChanged(nameof(PackagingSummary)); }
+    private void NotifyProfit()
+    {
+        OnPropertyChanged(nameof(CalculatedUnitCostMinor));
+        OnPropertyChanged(nameof(ProfitPerUnit));
+        OnPropertyChanged(nameof(ProfitPerMajor));
+        OnPropertyChanged(nameof(ProfitMargin));
+        OnPropertyChanged(nameof(IsSellingBelowCost));
+    }
     private void SyncMajorFromMinor()
     {
         if (!EnableMajorUnit) return;
