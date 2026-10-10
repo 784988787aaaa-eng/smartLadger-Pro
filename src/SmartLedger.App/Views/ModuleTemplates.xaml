@@ -749,7 +749,7 @@
           <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
             <TextBlock Text="لا توجد فواتير بيع بعد" FontSize="19" FontWeight="SemiBold" HorizontalAlignment="Center"/>
             <TextBlock Text="نقطة بيع سريعة — امسح الباركود، اختر العميل، راجع الخصم ثم احفظ واطبع." Style="{StaticResource CaptionText}" TextWrapping="Wrap" MaxWidth="720" TextAlignment="Center" HorizontalAlignment="Center" Margin="0,7,0,10"/><TextBlock Text="F1 الباركود  •  F2 العميل  •  F3 تبديل الوحدة  •  F4 الخصم  •  F5 حفظ وطباعة  •  F6 تعليق  •  Esc تفريغ" Style="{StaticResource CaptionText}" TextWrapping="Wrap" MaxWidth="900" TextAlignment="Center" HorizontalAlignment="Center" Margin="0,0,0,16"/>
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center"><Button Content="إنشاء فاتورة بيع" Command="{Binding OpenNewCommand}" Style="{StaticResource PrimaryButton}" Width="160" Height="44" Margin="4"/><Button Content="طباعة آخر إيصال" Command="{Binding PrintLastInvoiceCommand}" Style="{StaticResource GhostButton}" Width="145" Height="44" Margin="4"/><Button Content="إرسال لواتساب" Command="{Binding SendWhatsAppCommand}" Style="{StaticResource GhostButton}" Width="135" Height="44" Margin="4"/></StackPanel>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center"><Button Content="إنشاء فاتورة بيع" Command="{Binding OpenNewCommand}" Style="{StaticResource PrimaryButton}" Width="160" Height="44" Margin="4"/><Button Content="معاينة آخر إيصال" Command="{Binding PrintLastInvoiceCommand}" Style="{StaticResource GhostButton}" Width="145" Height="44" Margin="4"/><Button Content="طباعة مباشرة" Command="{Binding PrintDirectlyCommand}" Style="{StaticResource GhostButton}" Width="125" Height="44" Margin="4"/><Button Content="إرسال لواتساب" Command="{Binding SendWhatsAppCommand}" Style="{StaticResource GhostButton}" Width="135" Height="44" Margin="4"/></StackPanel>
           </StackPanel>
         </Grid>
       </Border>
@@ -799,7 +799,8 @@
             <StackPanel Grid.Row="7" Orientation="Horizontal" HorizontalAlignment="Left" Margin="4,14,4,0">
               <Button Content="حفظ وطباعة (F5)" Command="{Binding SaveAndPrintCommand}" Style="{StaticResource PrimaryButton}" Width="170" Height="44"/>
               <Button Content="حفظ فقط (Ctrl+S)" Command="{Binding SaveCommand}" Style="{StaticResource GhostButton}" Width="145" Height="44" Margin="8,0,0,0"/>
-              <Button Content="طباعة آخر إيصال" Command="{Binding PrintLastInvoiceCommand}" Style="{StaticResource GhostButton}" Width="145" Height="44" Margin="8,0,0,0"/>
+              <Button Content="معاينة آخر إيصال" Command="{Binding PrintLastInvoiceCommand}" Style="{StaticResource GhostButton}" Width="145" Height="44" Margin="8,0,0,0"/>
+              <Button Content="طباعة مباشرة" Command="{Binding PrintDirectlyCommand}" Style="{StaticResource GhostButton}" Width="125" Height="44" Margin="8,0,0,0"/>
               <Button Content="إرسال لواتساب" Command="{Binding SendWhatsAppCommand}" Style="{StaticResource GhostButton}" Width="135" Height="44" Margin="8,0,0,0"/>
               <Button Content="تعليق (F6)" Command="{Binding HoldInvoiceCommand}" Style="{StaticResource GhostButton}" Width="110" Height="44" Margin="8,0,0,0"/>
               <Button Content="استئناف معلقة" Command="{Binding ResumeHeldInvoiceCommand}" Style="{StaticResource GhostButton}" Width="130" Height="44" Margin="8,0,0,0"/>
