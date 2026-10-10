@@ -38,12 +38,15 @@ public sealed class SalesInvoiceTests
             Assert.StartsWith($"INV-{DateTimeOffset.UtcNow:yyyy}-",saved.InvoiceNumber,StringComparison.Ordinal);
             Assert.Equal(18m,Assert.Single(await repository.GetProductsAsync(product.Name)).StockSmallUnits);
             var batches=await repository.GetProductBatchesAsync(product.Id);
-            Assert.Equal(0m,batches.Single(x=>x.BatchNumber=="EARLY").QuantityMinor);
-            Assert.Equal(18m,batches.Single(x=>x.BatchNumber=="LATER").QuantityMinor);
+            var remainingBatch=Assert.Single(batches);
+            Assert.Equal("LATER",remainingBatch.BatchNumber);
+            Assert.Equal(18m,remainingBatch.QuantityMinor);
             Assert.Equal(36m,Assert.Single(await repository.GetOperationsAsync(customer.Id)).Amount);
             await using var connection=database.Open();
             await connection.OpenAsync();
             await using var command=connection.CreateCommand();
+            command.CommandText="SELECT QuantityMinor FROM ProductBatches WHERE BatchCode='EARLY';";
+            Assert.Equal("0",Convert.ToString(await command.ExecuteScalarAsync(),System.Globalization.CultureInfo.InvariantCulture));
             command.CommandText="SELECT COUNT(*) FROM CashRegisterEntries WHERE InvoiceId=$invoice;";
             command.Parameters.AddWithValue("$invoice",saved.Id.ToString("N"));
             Assert.Equal(0L,Convert.ToInt64(await command.ExecuteScalarAsync()));
