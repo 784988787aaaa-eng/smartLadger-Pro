@@ -52,10 +52,9 @@ These presentation-scope notes do not affect the successful build, test, or publ
 ## Commit highlights
 - `b4cd4ab363c737ab0aa99b41287bd4438ae3d902` — schema v10 foundation.
 - `9cbe6f0d2c0bf178da55bbc311182246a22f6e4f` — transactional person creation and generated account codes.
-- `d849d1a67314fb0976eb9efd82b6ecead6a835d1` — full account metadata create/update persistence.
-- `4c7ab53126f1970bdbc0bf972c4d00eba6e40ffc` — save workflows, validation, WhatsApp and operation reversal commands.
-- `c94551d9cb3dfe4df39b17669eba1249cd188227` — shared ledger balance calculator.
+- `886b10a25ed9eeb2f59b3e2440d4e761cb614591` — statement KPI properties.
 - `ff22891691413ca166407ce19b1bb37737431c60` — resilient schema v10 migration.
 - `63e6f0d72725c97239f7aed791d813b87ae252d0` — backup support for schema v10.
+- `fec0a79400435c61012fc60e4fe4ace44dbe3754` — SQLite operation soft-delete/recalculation integration test.
 - `45752c83c8215e0facbbd1305f47f4ebeda0f4c6` — reset schema verification for v10.
-- `f8f4fefd885bdb8a464d60a03e5afc2e786b15c7` — verified account-statement KPI brush binding; source commit used by the successful Windows build/test/publish run.
+- `f8f4fefd885bdb8a464d60a03e5afc2e786b15c7` — verified source commit for the successful Windows build/test/publish run.
