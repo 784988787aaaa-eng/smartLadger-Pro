@@ -76,6 +76,7 @@
   <local:LatinNumberConverter x:Key="LatinNumberConverter"/>
   <local:SerialNumberConverter x:Key="SerialNumberConverter"/>
   <local:ArabicDateTimeConverter x:Key="ArabicDateTimeConverter"/>
+  <local:LedgerDateTimeConverter x:Key="LedgerDateTimeConverter"/>
   <local:AuditDisplayConverter x:Key="AuditDisplayConverter"/>
   <local:InverseBooleanToVisibilityConverter x:Key="InverseBoolToVisibility"/>
   <DataTemplate DataType="{x:Type vm:DashboardViewModel}">
@@ -542,7 +543,7 @@
                     </DataGridTemplateColumn.HeaderTemplate>
                     <DataGridTemplateColumn.CellTemplate>
                       <DataTemplate>
-                        <TextBlock Text="{Binding OccurredAt,Converter={StaticResource ArabicDateTimeConverter}}"
+                        <TextBlock Text="{Binding OccurredAt,Converter={StaticResource LedgerDateTimeConverter}}"
                                    HorizontalAlignment="Center" TextAlignment="Center" FlowDirection="LeftToRight"
                                    Foreground="{StaticResource BrushMuted}" FontSize="12.5"/>
                       </DataTemplate>
