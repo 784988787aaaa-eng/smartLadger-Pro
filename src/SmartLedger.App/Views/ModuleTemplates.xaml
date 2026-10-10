@@ -336,12 +336,39 @@
                   </UniformGrid>
                 </StackPanel>
               </Grid>
+              <Grid Grid.Row="4" Grid.ColumnSpan="2" Margin="0,5,0,5">
+                <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="0" Margin="0,0,4,0">
+                  <TextBlock Text="رقم هاتف إضافي (اختياري)" Style="{StaticResource SectionLabel}" Margin="0,0,0,3"/>
+                  <TextBox Style="{StaticResource DialogField}" Text="{Binding NewSecondaryPhone,UpdateSourceTrigger=PropertyChanged}" AutomationProperties.Name="رقم هاتف إضافي" Height="40" FlowDirection="LeftToRight" TextAlignment="Right"/>
+                </StackPanel>
+                <StackPanel Grid.Column="1" Margin="4,0,0,0">
+                  <TextBlock Text="العنوان" Style="{StaticResource SectionLabel}" Margin="0,0,0,3"/>
+                  <TextBox Style="{StaticResource DialogField}" Text="{Binding NewAddress,UpdateSourceTrigger=PropertyChanged}" AutomationProperties.Name="العنوان" Height="40" FlowDirection="RightToLeft" TextAlignment="Right"/>
+                </StackPanel>
+              </Grid>
+              <Grid Grid.Row="5" Grid.ColumnSpan="2" Margin="0,0,0,5">
+                <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="0" Margin="0,0,4,0">
+                  <TextBlock Text="حد الائتمان (اختياري)" Style="{StaticResource SectionLabel}" Margin="0,0,0,3"/>
+                  <TextBox Style="{StaticResource DialogNumericField}" Text="{Binding NewCreditLimit,UpdateSourceTrigger=PropertyChanged}" AutomationProperties.Name="حد الائتمان" Height="40" FlowDirection="LeftToRight" TextAlignment="Right"/>
+                </StackPanel>
+                <StackPanel Grid.Column="1" Margin="4,0,0,0">
+                  <TextBlock Text="طبيعة الحساب" Style="{StaticResource SectionLabel}" Margin="0,0,0,3"/>
+                  <ComboBox Style="{StaticResource DialogComboBox}" SelectedValue="{Binding NewAccountNature}" SelectedValuePath="Tag" Height="40">
+                    <ComboBoxItem Content="مرن" Tag="{x:Static core:AccountNature.Flexible}"/>
+                    <ComboBoxItem Content="مدين" Tag="{x:Static core:AccountNature.Debit}"/>
+                    <ComboBoxItem Content="دائن" Tag="{x:Static core:AccountNature.Credit}"/>
+                  </ComboBox>
+                </StackPanel>
+              </Grid>
+              <CheckBox Grid.Row="6" Content="تفعيل واتساب لهذا الحساب" IsChecked="{Binding NewWhatsAppEnabled}" HorizontalAlignment="Right" Margin="0,2,0,5" Foreground="{StaticResource BrushText}"/>
             </Grid>
             <Grid Grid.Row="2" Margin="0,6,0,0">
               <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
               <TextBlock Grid.Column="1" Text="{Binding StatusText}" Foreground="{StaticResource BrushMuted}" FontSize="11" VerticalAlignment="Center" TextWrapping="Wrap" MaxWidth="210" FlowDirection="RightToLeft"/>
               <StackPanel Grid.Column="0" Orientation="Horizontal" FlowDirection="RightToLeft">
-                <Button Command="{Binding SaveNewCommand}" Content="حفظ الحساب" Width="112" Height="36" Margin="0,0,5,0" AutomationProperties.Name="حفظ الحساب">
+                <Button Command="{Binding SaveAndNewCommand}" Content="حفظ ومتابعة" Width="112" Height="36" Margin="0,0,5,0" AutomationProperties.Name="حفظ ومتابعة">
                   <Button.Style>
                     <Style TargetType="Button" BasedOn="{StaticResource PrimaryButton}">
                       <Style.Triggers>
@@ -353,7 +380,7 @@
                     </Style>
                   </Button.Style>
                 </Button>
-                <Button Content="إلغاء" Command="{Binding CloseDialogCommand}" Style="{StaticResource GhostButton}" Width="68" Height="36" IsCancel="True" AutomationProperties.Name="إلغاء"/>
+                <Button Content="حفظ وإغلاق" Command="{Binding SaveAndCloseCommand}" Style="{StaticResource PrimaryButton}" Width="104" Height="36" Margin="0,0,5,0" AutomationProperties.Name="حفظ وإغلاق"/>\n                <Button Content="إلغاء" Command="{Binding CloseDialogCommand}" Style="{StaticResource GhostButton}" Width="68" Height="36" IsCancel="True" AutomationProperties.Name="إلغاء"/>
               </StackPanel>
             </Grid>
           </Grid>
