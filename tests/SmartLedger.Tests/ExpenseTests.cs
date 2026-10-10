@@ -47,6 +47,9 @@ public sealed class ExpenseTests
             Assert.True(await reader.ReadAsync());
             Assert.Equal("350", reader.GetString(0));
             Assert.Equal("EXPENSE_PAYMENT:Cash", reader.GetString(1));
+            var summary = await repository.GetCashRegisterSummaryAsync(DateTimeOffset.UtcNow.AddDays(-1), DateTimeOffset.UtcNow.AddDays(1));
+            Assert.Equal(350m, summary.CashOut);
+            Assert.Equal(-350m, summary.Balance);
         }
         finally
         {
