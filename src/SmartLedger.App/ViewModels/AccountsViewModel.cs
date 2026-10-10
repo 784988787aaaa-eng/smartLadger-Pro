@@ -408,7 +408,7 @@ public partial class AccountsViewModel(IAppRepository repo,IAppSession session):
             var digits=new string(phone.Where(char.IsDigit).ToArray());
             if(digits.Length is < 7 or > 15 || phone.Any(ch=>!char.IsDigit(ch) && ch is not ('+' or ' ' or '-' or '(' or ')' or '.')))
             {StatusText="رقم الهاتف غير صالح؛ استخدم 7 إلى 15 رقماً.";return;}
-            if(People.Any(x=>!string.IsNullOrWhiteSpace(x.Person.Phone) && string.Equals(new string(x.Person.Phone.Where(char.IsDigit).ToArray()),digits,StringComparison.Ordinal)))
+            if(People.Any(x=>!string.IsNullOrWhiteSpace(x.Person.Phone) && string.Equals(NormalizePhoneForValidation(x.Person.Phone),NormalizePhoneForValidation(phone),StringComparison.Ordinal)))
             {StatusText="رقم الهاتف مسجل مسبقاً في قائمة الحسابات المحملة.";return;}
         }
 
@@ -465,6 +465,12 @@ public partial class AccountsViewModel(IAppRepository repo,IAppSession session):
         else if(normalized.Contains(',')) normalized=normalized.Replace(',', '.');
         return decimal.TryParse(normalized,System.Globalization.NumberStyles.Number,
             System.Globalization.CultureInfo.InvariantCulture,out value);
+    }
+
+    private static string NormalizePhoneForValidation(string phone)
+    {
+        try { return WhatsAppService.NormalizePhone(phone); }
+        catch (ArgumentException) { return new string(phone.Where(char.IsDigit).ToArray()); }
     }
 
     [RelayCommand]
