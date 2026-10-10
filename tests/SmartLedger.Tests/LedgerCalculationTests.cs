@@ -1,4 +1,5 @@
 using SmartLedger.Core.Models;
+using SmartLedger.Infrastructure.Data;
 using Xunit;
 
 namespace SmartLedger.Tests;
@@ -22,6 +23,39 @@ public sealed class LedgerCalculationTests
         var rows=LedgerBalanceCalculator.CalculateRunningBalances(operations);
         Assert.Equal(ExpectedRunningBalances,rows.Select(x=>x.RunningBalance));
         Assert.Equal(140m,LedgerBalanceCalculator.CalculateNetBalance(operations));
+    }
+
+    [Fact]
+    public async Task RepositoryDeleteOperation_SoftDeletesAtomicallyAndRecalculatesLedger()
+    {
+        var root=Path.Combine(Path.GetTempPath(),"SmartLedgerTests",Guid.NewGuid().ToString("N"));
+        try
+        {
+            var database=new Database(root);
+            await database.InitializeAsync();
+            var users=new UserRepository(database);
+            await users.CreateAdministratorAsync(new AdminSetup("ledger_test_admin","test-hash","recovery-hash","hint"));
+            var user=await users.FindAsync("ledger_test_admin") ?? throw new InvalidOperationException("Test user was not created.");
+            var repository=new AppRepository(database);
+            var book=(await repository.GetBooksAsync()).First(x=>x.Kind==BookKind.Customers);
+            var now=DateTimeOffset.UtcNow;
+            var person=await repository.CreatePersonAsync(new Person(Guid.NewGuid(),book.Id,"حساب اختبار","","",now));
+            var debit1=await repository.CreateOperationAsync(new LedgerOperation(Guid.NewGuid(),person.Id,OperationType.DebtOnUs,100m,"مدين أول",now,user.Id));
+            var credit=await repository.CreateOperationAsync(new LedgerOperation(Guid.NewGuid(),person.Id,OperationType.Receive,20m,"تحصيل",now.AddMinutes(1),user.Id));
+            await repository.CreateOperationAsync(new LedgerOperation(Guid.NewGuid(),person.Id,OperationType.Sale,30m,"مدين ثان",now.AddMinutes(2),user.Id));
+            Assert.Equal(110m,LedgerBalanceCalculator.CalculateNetBalance(await repository.GetOperationsAsync(person.Id,1000)));
+            await repository.DeleteOperationAsync(credit.Id,user.Id);
+            var remaining=await repository.GetOperationsAsync(person.Id,1000);
+            Assert.DoesNotContain(remaining,x=>x.Id==credit.Id);
+            Assert.Contains((await repository.GetDeletedItemsAsync()),x=>x.EntityType=="Operation" && x.EntityId==credit.Id);
+            Assert.Equal(130m,LedgerBalanceCalculator.CalculateNetBalance(remaining));
+            Assert.Contains(remaining,x=>x.Id==debit1.Id);
+        }
+        finally
+        {
+            Microsoft.Data.Sqlite.SqliteConnection.ClearAllPools();
+            if(Directory.Exists(root)) Directory.Delete(root,true);
+        }
     }
 
     [Fact]
