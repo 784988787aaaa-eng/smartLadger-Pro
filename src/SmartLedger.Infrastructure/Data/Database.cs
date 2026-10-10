@@ -62,8 +62,13 @@ public sealed class Database
         await EnsureColumnAsync(db,"People","WhatsAppEnabled","INTEGER NOT NULL DEFAULT 1",ct);
         await EnsureColumnAsync(db,"People","UpdatedAt","TEXT NOT NULL DEFAULT ''",ct);
         await EnsureColumnAsync(db,"Operations","ReferenceNumber","TEXT NULL",ct);
-        await ExecuteAsync(db,"UPDATE People SET AccountCode='ACC-'||substr(replace(Id,'-',''),1,12) WHERE AccountCode IS NULL OR trim(AccountCode)=''; UPDATE People SET UpdatedAt=CreatedAt WHERE UpdatedAt IS NULL OR trim(UpdatedAt)=''; UPDATE People SET WhatsAppEnabled=CASE WHEN trim(Phone)<>'' THEN 1 ELSE 0 END;",ct);
-        await ExecuteAsync(db,"CREATE UNIQUE INDEX IF NOT EXISTS UX_People_AccountCode ON People(AccountCode); CREATE INDEX IF NOT EXISTS IX_People_Phone ON People(Phone); CREATE INDEX IF NOT EXISTS IX_Operations_Person_OccurredAt ON Operations(PersonId,OccurredAt);",ct);
+        if(await TableExistsAsync(db,"People",ct))
+        {
+            await ExecuteAsync(db,"UPDATE People SET AccountCode='ACC-'||substr(replace(Id,'-',''),1,12) WHERE AccountCode IS NULL OR trim(AccountCode)=''; UPDATE People SET UpdatedAt=CreatedAt WHERE UpdatedAt IS NULL OR trim(UpdatedAt)=''; UPDATE People SET WhatsAppEnabled=CASE WHEN trim(Phone)<>'' THEN 1 ELSE 0 END;",ct);
+            await ExecuteAsync(db,"CREATE UNIQUE INDEX IF NOT EXISTS UX_People_AccountCode ON People(AccountCode); CREATE INDEX IF NOT EXISTS IX_People_Phone ON People(Phone);",ct);
+        }
+        if(await TableExistsAsync(db,"Operations",ct))
+            await ExecuteAsync(db,"CREATE INDEX IF NOT EXISTS IX_Operations_Person_OccurredAt ON Operations(PersonId,OccurredAt);",ct);
         await SetVersionAsync(db,10,ct);
     }
     private static async Task MigrationV9Async(SqliteConnection db,CancellationToken ct){await ExecuteAsync(db,"CREATE TABLE IF NOT EXISTS UserPermissions(UserId TEXT NOT NULL REFERENCES Users(Id) ON DELETE CASCADE,Permission TEXT NOT NULL,PRIMARY KEY(UserId,Permission)); CREATE INDEX IF NOT EXISTS IX_UserPermissions_User ON UserPermissions(UserId);",ct); await ExecuteAsync(db,"INSERT OR IGNORE INTO UserPermissions(UserId,Permission) SELECT Id,'reset_data' FROM Users WHERE IsAdministrator=1;",ct); await SetVersionAsync(db,9,ct);}
@@ -78,6 +83,13 @@ public sealed class Database
     }
     private static async Task RepairOccurredAtAsync(SqliteConnection db,string table,CancellationToken ct){var columns=new HashSet<string>(StringComparer.OrdinalIgnoreCase);await using(var c=db.CreateCommand()){c.CommandText=$"PRAGMA table_info({table});";await using var r=await c.ExecuteReaderAsync(ct);while(await r.ReadAsync(ct))columns.Add(r.GetString(1));}if(columns.Contains("OccurredAt"))return;if(columns.Contains("OccrredAt")){await ExecuteAsync(db,$"ALTER TABLE {table} RENAME COLUMN OccrredAt TO OccurredAt;",ct);return;}await ExecuteAsync(db,$"ALTER TABLE {table} ADD COLUMN OccurredAt TEXT NOT NULL DEFAULT ''",ct);}
     private static async Task SeedAsync(SqliteConnection db,CancellationToken ct){await ExecuteAsync(db,"INSERT OR IGNORE INTO Books VALUES('00000000000000000000000000000001','كل الحسابات',0,0,1,'#00B4D8','all');INSERT OR IGNORE INTO Books VALUES('00000000000000000000000000000002','العملاء',1,1,1,'#06D6A0','users');INSERT OR IGNORE INTO Books VALUES('00000000000000000000000000000003','الموردون',2,2,1,'#FFD166','truck');INSERT OR IGNORE INTO Books VALUES('00000000000000000000000000000004','العاملون',4,3,1,'#9B8AFB','users');INSERT OR IGNORE INTO Books VALUES('00000000000000000000000000000005','أخرى',5,4,1,'#7C8AA5','folder');",ct);if(await ScalarLongAsync(db,"SELECT COUNT(*) FROM BusinessIdentity;",ct)==0)await ExecuteAsync(db,"INSERT INTO BusinessIdentity VALUES(1,'الدفتر الذكي','','','','ريال');",ct);if(await ScalarLongAsync(db,"SELECT COUNT(*) FROM MessageTemplates;",ct)==0)await ExecuteAsync(db,"INSERT INTO MessageTemplates VALUES('00000000000000000000000000000001','تذكير رصيد','السلام عليكم {الاسم}، نذكركم بأن الرصيد الحالي هو {الرصيد}. نشكركم.',1);INSERT INTO MessageTemplates VALUES('00000000000000000000000000000002','تأكيد عملية','السلام عليكم {الاسم}، تم تسجيل العملية رقم {رقم العملية} بتاريخ {التاريخ} بمبلغ {المبلغ}.',1);",ct);}
+    private static async Task<bool> TableExistsAsync(SqliteConnection db,string table,CancellationToken ct)
+    {
+        await using var command=db.CreateCommand();
+        command.CommandText="SELECT EXISTS(SELECT 1 FROM sqlite_master WHERE type='table' AND name=$table);";
+        command.Parameters.AddWithValue("$table",table);
+        return Convert.ToInt32(await command.ExecuteScalarAsync(ct))==1;
+    }
     private static async Task EnsureColumnAsync(SqliteConnection db,string table,string column,string definition,CancellationToken ct){await using var c=db.CreateCommand();c.CommandText="SELECT EXISTS(SELECT 1 FROM sqlite_master WHERE type='table' AND name=$table);";c.Parameters.AddWithValue("$table",table);if(Convert.ToInt32(await c.ExecuteScalarAsync(ct))==0)return;c.Parameters.Clear();c.CommandText=$"PRAGMA table_info({table});";var exists=false;await using var r=await c.ExecuteReaderAsync(ct);while(await r.ReadAsync(ct))if(string.Equals(r.GetString(1),column,StringComparison.OrdinalIgnoreCase))exists=true;if(!exists)await ExecuteAsync(db,$"ALTER TABLE {table} ADD COLUMN {column} {definition};",ct);}
     private static async Task ExecuteAsync(SqliteConnection db,string sql,CancellationToken ct){await using var c=db.CreateCommand();c.CommandText=sql;await c.ExecuteNonQueryAsync(ct);}
     private static async Task<long> ScalarLongAsync(SqliteConnection db,string sql,CancellationToken ct){await using var c=db.CreateCommand();c.CommandText=sql;return Convert.ToInt64(await c.ExecuteScalarAsync(ct));}
