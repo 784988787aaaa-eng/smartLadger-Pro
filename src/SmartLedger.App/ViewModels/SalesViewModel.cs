@@ -152,7 +152,7 @@ public partial class SalesViewModel(IAppRepository repo,IAppSession session):Obs
         if(AddCurrentLine()){BarcodeInput="";StatusText=$"أُضيف {product.Name} من الباركود.";}
     }
     [RelayCommand] private void ApplyDiscount(){StatusText="أدخل قيمة الخصم الإجمالية في حقل الخصم ثم أكمل الفاتورة.";}
-    [RelayCommand] private void ClearInvoice(){if(IsSaving)return;Lines.Clear();OnPropertyChanged(nameof(LinesTotal));OnPropertyChanged(nameof(IsCartEmpty));ProductId=null;ProductSearch="";BarcodeInput="";QuantityText="1";PriceText="";InvoiceDiscountText="0";Note="";Recalc();StatusText="تم تفريغ الفاتورة الحالية.";}
+    [RelayCommand] private void ClearInvoice(){if(IsSaving)return;Lines.Clear();OnPropertyChanged(nameof(LinesTotal));OnPropertyChanged(nameof(IsCartEmpty));PersonId=null;CustomerSearch="";ProductId=null;ProductSearch="";BarcodeInput="";QuantityText="1";PriceText="";InvoiceDiscountText="0";TaxPercentText="0";Note="";Recalc();StatusText="تم تفريغ الفاتورة الحالية.";}
     partial void OnTaxPercentTextChanged(string value)=>Recalc();
     [RelayCommand] private void HoldInvoice()
     {
