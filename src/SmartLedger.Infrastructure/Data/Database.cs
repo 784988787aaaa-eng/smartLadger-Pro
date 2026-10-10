@@ -16,7 +16,7 @@ public sealed class Database
         await using var db=Open(); await db.OpenAsync(ct);
         await ExecuteAsync(db,"PRAGMA journal_mode=WAL; PRAGMA synchronous=NORMAL; PRAGMA busy_timeout=10000; PRAGMA foreign_keys=ON; PRAGMA temp_store=MEMORY;",ct);
         var version=await ScalarLongAsync(db,"PRAGMA user_version;",ct);
-        if(version<1)await MigrationV1Async(db,ct); if(version<2)await MigrationV2Async(db,ct); if(version<3)await MigrationV3Async(db,ct); if(version<4)await MigrationV4Async(db,ct); if(version<5)await MigrationV5Async(db,ct); if(version<6)await MigrationV6Async(db,ct); if(version<7)await MigrationV7Async(db,ct); if(version<8)await MigrationV8Async(db,ct); if(version<9)await MigrationV9Async(db,ct); if(version<10)await MigrationV10Async(db,ct); await SeedAsync(db,ct);
+        if(version<1)await MigrationV1Async(db,ct); if(version<2)await MigrationV2Async(db,ct); if(version<3)await MigrationV3Async(db,ct); if(version<4)await MigrationV4Async(db,ct); if(version<5)await MigrationV5Async(db,ct); if(version<6)await MigrationV6Async(db,ct); if(version<7)await MigrationV7Async(db,ct); if(version<8)await MigrationV8Async(db,ct); if(version<9)await MigrationV9Async(db,ct); if(version<10)await MigrationV10Async(db,ct); if(version<11)await MigrationV11Async(db,ct); await SeedAsync(db,ct);
     }
     private static async Task MigrationV1Async(SqliteConnection db,CancellationToken ct)
     {
@@ -70,6 +70,22 @@ public sealed class Database
         if(await TableExistsAsync(db,"Operations",ct))
             await ExecuteAsync(db,"CREATE INDEX IF NOT EXISTS IX_Operations_Person_OccurredAt ON Operations(PersonId,OccurredAt);",ct);
         await SetVersionAsync(db,10,ct);
+    }
+    private static async Task MigrationV11Async(SqliteConnection db,CancellationToken ct)
+    {
+        // Additive inventory migration; the partial barcode index preserves legacy blank barcodes.
+        await EnsureColumnAsync(db,"Products","CategoryId","TEXT NOT NULL DEFAULT ''",ct);
+        await EnsureColumnAsync(db,"Products","MajorUnit","TEXT NOT NULL DEFAULT ''",ct);
+        await EnsureColumnAsync(db,"Products","MinorUnit","TEXT NOT NULL DEFAULT ''",ct);
+        await EnsureColumnAsync(db,"Products","ConversionFactor","TEXT NOT NULL DEFAULT '1'",ct);
+        await EnsureColumnAsync(db,"Products","SellingPriceMajor","TEXT NOT NULL DEFAULT '0'",ct);
+        await EnsureColumnAsync(db,"Products","SellingPriceMinor","TEXT NOT NULL DEFAULT '0'",ct);
+        await EnsureColumnAsync(db,"Products","MinSellingPrice","TEXT NOT NULL DEFAULT '0'",ct);
+        await EnsureColumnAsync(db,"Products","ReorderLevel","TEXT NOT NULL DEFAULT '0'",ct);
+        await EnsureColumnAsync(db,"Products","UpdatedAt","TEXT NOT NULL DEFAULT ''",ct);
+        await ExecuteAsync(db,"UPDATE Products SET MajorUnit=LargeUnit WHERE trim(MajorUnit)=''; UPDATE Products SET MinorUnit=SmallUnit WHERE trim(MinorUnit)=''; UPDATE Products SET SellingPriceMajor=CAST(SalePrice AS REAL)*CAST(ConversionFactor AS REAL) WHERE CAST(SellingPriceMajor AS REAL)=0; UPDATE Products SET SellingPriceMinor=SalePrice WHERE CAST(SellingPriceMinor AS REAL)=0; UPDATE Products SET MinSellingPrice=PurchasePrice WHERE CAST(MinSellingPrice AS REAL)=0; UPDATE Products SET ReorderLevel=AlertThreshold WHERE CAST(ReorderLevel AS REAL)=0; UPDATE Products SET UpdatedAt=CreatedAt WHERE trim(UpdatedAt)='';",ct);
+        await ExecuteAsync(db,"CREATE TABLE IF NOT EXISTS ProductBatches(Id TEXT PRIMARY KEY,ProductId TEXT NOT NULL REFERENCES Products(Id),BatchCode TEXT NOT NULL DEFAULT '',CostPrice TEXT NOT NULL,QuantityMinor TEXT NOT NULL,ExpiryDate TEXT NULL,SupplierId TEXT NULL REFERENCES People(Id),PurchaseInvoiceRef TEXT NULL,CreatedAt TEXT NOT NULL); CREATE INDEX IF NOT EXISTS IX_Products_CategoryId ON Products(CategoryId); CREATE UNIQUE INDEX IF NOT EXISTS UX_Products_Barcode_NonEmpty ON Products(Barcode) WHERE trim(Barcode)<>''; CREATE INDEX IF NOT EXISTS IX_ProductBatches_ProductId ON ProductBatches(ProductId);",ct);
+        await SetVersionAsync(db,11,ct);
     }
     private static async Task MigrationV9Async(SqliteConnection db,CancellationToken ct){await ExecuteAsync(db,"CREATE TABLE IF NOT EXISTS UserPermissions(UserId TEXT NOT NULL REFERENCES Users(Id) ON DELETE CASCADE,Permission TEXT NOT NULL,PRIMARY KEY(UserId,Permission)); CREATE INDEX IF NOT EXISTS IX_UserPermissions_User ON UserPermissions(UserId);",ct); await ExecuteAsync(db,"INSERT OR IGNORE INTO UserPermissions(UserId,Permission) SELECT Id,'reset_data' FROM Users WHERE IsAdministrator=1;",ct); await SetVersionAsync(db,9,ct);}
     private static async Task MigrationV6Async(SqliteConnection db,CancellationToken ct)
