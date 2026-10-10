@@ -49,6 +49,15 @@ public sealed record DashboardSummary(decimal OwedToUs, decimal WeOwe, decimal S
 };
 public sealed record Product(Guid Id, string Name, string Barcode, string Category, string LargeUnit, string SmallUnit, decimal ConversionFactor, decimal PurchasePrice, decimal SalePrice, decimal StockSmallUnits, decimal AlertThreshold, DateTimeOffset CreatedAt)
 {
+    public string ProductCode { get; init; } = string.Empty;
+    public string CategoryId { get; init; } = string.Empty;
+    public decimal SellingPriceMajor { get; init; } = SalePrice * ConversionFactor;
+    public decimal SellingPriceMinor { get; init; } = SalePrice;
+    public decimal MinimumSellingPrice { get; init; } = PurchasePrice;
+    public decimal ReorderPoint { get; init; } = AlertThreshold;
+    public decimal LowStockThreshold { get; init; } = AlertThreshold;
+    public decimal TotalStockMinor => StockSmallUnits;
+    public DateTimeOffset UpdatedAt { get; init; } = CreatedAt;
     public Guid? DefaultSupplierId { get; init; }
     public string DefaultSupplierName { get; init; } = "";
     public string Note { get; init; } = "";
@@ -56,6 +65,7 @@ public sealed record Product(Guid Id, string Name, string Barcode, string Catego
     public string WarehouseName { get; init; } = "المخزن الرئيسي";
     public string AvailabilityLabel => StockSmallUnits <= 0 ? "نفد" : StockSmallUnits <= AlertThreshold ? "منخفض" : "متوفر";
 };
+public sealed record ProductBatch(Guid Id, Guid ProductId, string BatchNumber, DateTimeOffset? ExpiryDate, decimal QuantityMinor, decimal CostPrice, Guid? SupplierId, string? PurchaseInvoiceRef, DateTimeOffset CreatedAt);
 public sealed record StockMovement(Guid Id, Guid ProductId, StockMovementType Type, decimal QuantitySmallUnits, decimal UnitPrice, string Note, DateTimeOffset OccurredAt, Guid CreatedBy)
 {
     public Guid? InvoiceId { get; init; }
