@@ -105,7 +105,12 @@ public sealed record Expense(Guid Id, Guid? PersonId, string Category, decimal A
 public sealed record AppUser(Guid Id, string UserName, string DisplayName, bool IsAdministrator, bool IsActive);
 public sealed record User(Guid Id, string UserName, string DisplayName, string PasswordHash, string RecoveryHash, string RecoveryHint, bool IsAdministrator, bool IsActive);
 public sealed record AdminSetup(string UserName, string PasswordHash, string RecoveryHash, string RecoveryHint);
-public sealed record BusinessIdentity(string BusinessName, string LogoPath, string Phone, string Address, string Currency);
+public sealed record BusinessIdentity(string BusinessName, string LogoPath, string Phone, string Address, string Currency)
+{
+    public string TaxRegistrationNumber { get; init; } = string.Empty;
+    public string CommercialRegistrationNumber { get; init; } = string.Empty;
+    public string InvoiceTerms { get; init; } = string.Empty;
+}
 public sealed record RecentOperationRow(DateTimeOffset Date, string PersonName, string Type, decimal Amount, string Note);
 public sealed record GlobalSearchResult(Guid Id, string Category, string Title, string Detail, string EntityType);
 public sealed record ReportSummary(decimal Sales, decimal Purchases, decimal Expenses, decimal Receivables, decimal Payables, decimal StockValue);
