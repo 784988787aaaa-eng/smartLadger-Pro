@@ -61,7 +61,7 @@ public partial class AccountsViewModel(IAppRepository repo,IAppSession session):
     public decimal SelectedAccountWeOwe => SelectedPerson?.WeOwe ?? 0m;
     public decimal TotalDebit => SelectedAccountOperations.Where(x=>x.Type is OperationType.DebtOnUs or OperationType.Sale or OperationType.Payment or OperationType.Settlement).Sum(x=>x.Amount);
     public decimal TotalCredit => SelectedAccountOperations.Where(x=>x.Type is OperationType.Receive or OperationType.Return or OperationType.DebtToUs or OperationType.Purchase).Sum(x=>x.Amount);
-    public decimal NetBalance => decimal.Round(TotalDebit-TotalCredit,2,MidpointRounding.AwayFromZero);
+    public decimal NetBalance => LedgerBalanceCalculator.CalculateNetBalance(SelectedAccountOperations);
     public string BalanceStatusText => NetBalance<0 ? "له (دائن)" : NetBalance>0 ? "عليه (مدين)" : "رصيد خالص";
     public string BalanceStatusColor => NetBalance<0 ? "#10B981" : NetBalance>0 ? "#EF4444" : "#64748B";
     public decimal TotalOwedToUs => People.Sum(x => x.OwedToUs);
@@ -528,25 +528,13 @@ public partial class AccountsViewModel(IAppRepository repo,IAppSession session):
             OnPropertyChanged(nameof(NetBalance));
             OnPropertyChanged(nameof(BalanceStatusText));
             OnPropertyChanged(nameof(BalanceStatusColor));
-            var running=0m;
-            var chronological=SelectedAccountOperations.OrderBy(x=>x.OccurredAt).ThenBy(x=>x.Id).ToArray();
-            var rows=new List<AccountStatementRow>(chronological.Length);
-            foreach(var operation in chronological)
+            var calculated=LedgerBalanceCalculator.CalculateRunningBalances(SelectedAccountOperations);
+            var rows=new List<AccountStatementRow>(calculated.Count);
+            foreach(var entry in calculated)
             {
-                running+=operation.Type switch
-                {
-                    OperationType.DebtOnUs or OperationType.Sale or OperationType.Payment or OperationType.Settlement=>operation.Amount,
-                    OperationType.Receive or OperationType.Return or OperationType.DebtToUs or OperationType.Purchase=>-operation.Amount,
-                    _=>0m
-                };
-                rows.Add(new AccountStatementRow(
-                    operation.Id,
-                    operation.Note,
-                    operation.TypeLabel,
-                    operation.Amount,
-                    operation.OccurredAt,
-                    decimal.Round(running,2,MidpointRounding.AwayFromZero),
-                    operation));
+                var operation=entry.Operation;
+                rows.Add(new AccountStatementRow(operation.Id,operation.Note,operation.TypeLabel,
+                    operation.Amount,operation.OccurredAt,entry.RunningBalance,operation));
             }
             SelectedAccountStatementRows=rows.AsEnumerable().Reverse().ToArray();
             IsAccountOpen=true;
