@@ -672,19 +672,231 @@
         </Grid></Border>
       </Grid>
             <Grid Style="{StaticResource DialogOverlay}" Visibility="{Binding IsDialogOpen,Converter={StaticResource BoolToVisibility}}">
-        <Border Width="820" MaxWidth="960" MaxHeight="900" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{StaticResource DialogShell}" Padding="22">
-          <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-            <Grid FlowDirection="RightToLeft" KeyboardNavigation.TabNavigation="Local" behaviors:InputDialogBehavior.IsEnabled="True">
-              <Grid.InputBindings><KeyBinding Key="Escape" Command="{Binding CloseDialogCommand}"/></Grid.InputBindings>
-              <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
-              <DockPanel Grid.Row="0" Margin="0,0,0,16"><Button DockPanel.Dock="Left" Command="{Binding CloseDialogCommand}" Style="{StaticResource IconButton}" ToolTip="إغلاق" AutomationProperties.Name="إغلاق" Width="36" Height="36"><Path Width="14" Height="14" Stretch="Uniform" Stroke="#9DB7D4" StrokeThickness="1.6" Data="{StaticResource CloseIcon}"/></Button><StackPanel Margin="0,0,12,0"><TextBlock FontSize="22" FontWeight="SemiBold"><TextBlock.Style><Style TargetType="TextBlock"><Setter Property="Text" Value="إضافة صنف جديد"/><Style.Triggers><DataTrigger Binding="{Binding IsEditing}" Value="True"><Setter Property="Text" Value="تعديل بيانات الصنف"/></DataTrigger></Style.Triggers></Style></TextBlock.Style></TextBlock><TextBlock Text="إدخال سريع، وحدات مرنة، ورصيد واضح" Style="{StaticResource CaptionText}" Margin="0,4,0,0"/></StackPanel></DockPanel>
-              <Border Grid.Row="1" Style="{StaticResource Card}" Padding="16" Margin="0,0,0,12"><StackPanel><TextBlock Text="١. معلومات الصنف" FontSize="15" FontWeight="SemiBold" Margin="2,0,2,10"/><Grid><Grid.ColumnDefinitions><ColumnDefinition Width="2*"/><ColumnDefinition Width="1.2*"/><ColumnDefinition Width="1.2*"/></Grid.ColumnDefinitions><StackPanel Margin="4"><TextBlock Text="اسم الصنف *" Style="{StaticResource SectionLabel}"/><TextBox Style="{StaticResource Field}" FontSize="15" Text="{Binding NewName,UpdateSourceTrigger=PropertyChanged}"/></StackPanel><StackPanel Grid.Column="1" Margin="4"><TextBlock Text="الباركود" Style="{StaticResource SectionLabel}"/><TextBox Style="{StaticResource Field}" Text="{Binding NewBarcode,UpdateSourceTrigger=PropertyChanged}" FlowDirection="LeftToRight"/></StackPanel><StackPanel Grid.Column="2" Margin="4"><TextBlock Text="التصنيف" Style="{StaticResource SectionLabel}"/><TextBox Style="{StaticResource Field}" Text="{Binding NewCategory,UpdateSourceTrigger=PropertyChanged}"/></StackPanel></Grid><Grid Margin="0,4,0,0"><Grid.ColumnDefinitions><ColumnDefinition Width="1.2*"/><ColumnDefinition Width="1.2*"/><ColumnDefinition Width="1.2*"/></Grid.ColumnDefinitions><StackPanel Margin="4"><TextBlock Text="المخزن" Style="{StaticResource SectionLabel}"/><ComboBox Height="44" IsEditable="True" IsTextSearchEnabled="True" ItemsSource="{Binding ProductWarehouses}" Text="{Binding NewWarehouse,UpdateSourceTrigger=PropertyChanged}" ToolTip="اختر مخزنًا أو اكتب اسمًا جديدًا"/></StackPanel><StackPanel Grid.Column="1" Margin="4"><TextBlock Text="موقع التخزين" Style="{StaticResource SectionLabel}"/><TextBox Style="{StaticResource Field}" Text="{Binding NewShelfLocation,UpdateSourceTrigger=PropertyChanged}" ToolTip="رف أو ممر (اختياري)"/></StackPanel><StackPanel Grid.Column="2" Margin="4"><TextBlock Text="المورد الافتراضي" Style="{StaticResource SectionLabel}"/><ComboBox ItemsSource="{Binding Suppliers}" DisplayMemberPath="PersonName" SelectedValuePath="PersonId" SelectedValue="{Binding NewSupplierId,Mode=TwoWay}" Height="44"/></StackPanel></Grid></StackPanel></Border>
-              <Border Grid.Row="2" Style="{StaticResource Card}" Padding="16" Margin="0,0,0,12"><StackPanel><Grid Margin="2,0,2,10"><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions><StackPanel><TextBlock Text="٢. الوحدات والتحويل" FontSize="15" FontWeight="SemiBold"/><TextBlock Text="وحدة واحدة للصنف البسيط، أو وحدتان عند البيع والشراء بالتجزئة والجملة" Style="{StaticResource CaptionText}" Margin="0,4,0,0"/></StackPanel><CheckBox Grid.Column="1" Content="تفعيل وحدة كبرى" IsChecked="{Binding EnableMajorUnit}" VerticalAlignment="Center" Margin="12,0,0,0" FontWeight="SemiBold"/></Grid><Grid><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions><StackPanel Margin="4"><TextBlock Text="الوحدة الأساسية" Style="{StaticResource SectionLabel}"/><TextBox Style="{StaticResource Field}" Text="{Binding NewSmallUnit,UpdateSourceTrigger=PropertyChanged}" ToolTip="مثل حبة أو قارورة أو علبة"/></StackPanel><StackPanel Grid.Column="1" Margin="4"><StackPanel.Style><Style TargetType="StackPanel"><Setter Property="Visibility" Value="Collapsed"/><Style.Triggers><DataTrigger Binding="{Binding EnableMajorUnit}" Value="True"><Setter Property="Visibility" Value="Visible"/></DataTrigger></Style.Triggers></Style></StackPanel.Style><TextBlock Text="الوحدة الكبرى" Style="{StaticResource SectionLabel}"/><TextBox Style="{StaticResource Field}" Text="{Binding NewLargeUnit,UpdateSourceTrigger=PropertyChanged}" ToolTip="مثل كرتون أو صندوق"/></StackPanel><StackPanel Grid.Column="2" Margin="4"><StackPanel.Style><Style TargetType="StackPanel"><Setter Property="Visibility" Value="Collapsed"/><Style.Triggers><DataTrigger Binding="{Binding EnableMajorUnit}" Value="True"><Setter Property="Visibility" Value="Visible"/></DataTrigger></Style.Triggers></Style></StackPanel.Style><TextBlock Text="عدد الوحدات الأساسية في الكبرى" Style="{StaticResource SectionLabel}"/><TextBox Style="{StaticResource NumericField}" Text="{Binding NewConversion,UpdateSourceTrigger=PropertyChanged}" ToolTip="مثال: 24 قارورة في الكرتون"/></StackPanel></Grid><Border Background="#0B162C" BorderBrush="{StaticResource BrushLine}" BorderThickness="1" CornerRadius="8" Padding="10" Margin="4,8,4,0"><StackPanel Orientation="Horizontal" HorizontalAlignment="Center"><TextBlock Text="معاينة: " Foreground="{StaticResource BrushMuted}" VerticalAlignment="Center"/><TextBlock Text="{Binding NewLargeUnit}" FontWeight="SemiBold" VerticalAlignment="Center"><TextBlock.Style><Style TargetType="TextBlock"><Setter Property="Visibility" Value="Collapsed"/><Style.Triggers><DataTrigger Binding="{Binding EnableMajorUnit}" Value="True"><Setter Property="Visibility" Value="Visible"/></DataTrigger></Style.Triggers></Style></TextBlock.Style></TextBlock><TextBlock Text=" = " Foreground="{StaticResource BrushMuted}" VerticalAlignment="Center"><TextBlock.Style><Style TargetType="TextBlock"><Setter Property="Visibility" Value="Collapsed"/><Style.Triggers><DataTrigger Binding="{Binding EnableMajorUnit}" Value="True"><Setter Property="Visibility" Value="Visible"/></DataTrigger></Style.Triggers></Style></TextBlock.Style></TextBlock><TextBlock Text="{Binding NewConversion}" FontWeight="SemiBold" Foreground="{StaticResource BrushAccent2}" VerticalAlignment="Center"><TextBlock.Style><Style TargetType="TextBlock"><Setter Property="Visibility" Value="Collapsed"/><Style.Triggers><DataTrigger Binding="{Binding EnableMajorUnit}" Value="True"><Setter Property="Visibility" Value="Visible"/></DataTrigger></Style.Triggers></Style></TextBlock.Style></TextBlock><TextBlock Text="{Binding NewSmallUnit}" FontWeight="SemiBold" Margin="5,0,0,0" VerticalAlignment="Center"/><TextBlock Text="منتج بوحدة واحدة؛ لا يلزم تحويل" Foreground="{StaticResource BrushMuted}" VerticalAlignment="Center"><TextBlock.Style><Style TargetType="TextBlock"><Setter Property="Visibility" Value="Visible"/><Style.Triggers><DataTrigger Binding="{Binding EnableMajorUnit}" Value="True"><Setter Property="Visibility" Value="Collapsed"/></DataTrigger></Style.Triggers></Style></TextBlock.Style></TextBlock></StackPanel></Border></StackPanel></Border>
-              <Border Grid.Row="3" Style="{StaticResource Card}" Padding="16" Margin="0,0,0,12"><StackPanel><TextBlock Text="٣. الرصيد الافتتاحي والتنبيه" FontSize="15" FontWeight="SemiBold" Margin="2,0,2,10"/><Grid><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions><StackPanel Margin="4"><TextBlock Text="الكمية الافتتاحية" Style="{StaticResource SectionLabel}"/><Grid><TextBox Text="{Binding NewOpeningQuantity,UpdateSourceTrigger=PropertyChanged}"><TextBox.Style><Style TargetType="TextBox" BasedOn="{StaticResource NumericField}"><Setter Property="Visibility" Value="Visible"/><Style.Triggers><DataTrigger Binding="{Binding EnableMajorUnit}" Value="True"><Setter Property="Visibility" Value="Collapsed"/></DataTrigger></Style.Triggers></Style></TextBox.Style></TextBox><TextBox Text="{Binding NewOpeningLargeQuantity,UpdateSourceTrigger=PropertyChanged}"><TextBox.Style><Style TargetType="TextBox" BasedOn="{StaticResource NumericField}"><Setter Property="Visibility" Value="Collapsed"/><Style.Triggers><DataTrigger Binding="{Binding EnableMajorUnit}" Value="True"><Setter Property="Visibility" Value="Visible"/></DataTrigger></Style.Triggers></Style></TextBox.Style></TextBox></Grid><TextBlock Text="{Binding NetOpeningSmallUnits,StringFormat={}الرصيد المعادل: {0:0.##} وحدة أساسية}" Foreground="{StaticResource BrushAccent2}" Margin="2,5,0,0"/></StackPanel><StackPanel Grid.Column="1" Margin="4"><TextBlock Text="حد تنبيه انخفاض المخزون" Style="{StaticResource SectionLabel}"/><TextBox Style="{StaticResource NumericField}" Text="{Binding NewAlert,UpdateSourceTrigger=PropertyChanged}"/></StackPanel><StackPanel Grid.Column="2" Margin="4"><TextBlock Text="ملاحظة داخلية" Style="{StaticResource SectionLabel}"/><TextBox Style="{StaticResource Field}" Text="{Binding NewNote,UpdateSourceTrigger=PropertyChanged}"/></StackPanel></Grid></StackPanel></Border>
-              <Border Grid.Row="4" Style="{StaticResource Card}" Padding="16" Margin="0,0,0,14"><StackPanel><TextBlock Text="٤. التسعير" FontSize="15" FontWeight="SemiBold" Margin="2,0,2,10"/><Grid><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/><ColumnDefinition Width="1.1*"/></Grid.ColumnDefinitions><StackPanel Margin="4"><TextBlock Text="{Binding NewSmallUnit,StringFormat={}سعر الشراء / {0}}" Style="{StaticResource SectionLabel}"/><TextBox Style="{StaticResource NumericField}" Text="{Binding NewPurchasePrice,UpdateSourceTrigger=PropertyChanged}"/></StackPanel><StackPanel Grid.Column="1" Margin="4"><TextBlock Text="{Binding NewSmallUnit,StringFormat={}سعر البيع / {0}}" Style="{StaticResource SectionLabel}"/><TextBox Style="{StaticResource NumericField}" Text="{Binding NewSalePrice,UpdateSourceTrigger=PropertyChanged}"/></StackPanel><Border Grid.Column="2" Background="#0B162C" BorderBrush="{StaticResource BrushLine}" BorderThickness="1" CornerRadius="8" Padding="10" Margin="4"><StackPanel VerticalAlignment="Center"><TextBlock Text="هامش الربح التقديري" Style="{StaticResource SectionLabel}"/><TextBlock Text="{Binding ProfitMargin,StringFormat={}{0:0.0}%}" FontSize="19" FontWeight="SemiBold" Foreground="{StaticResource BrushAccent2}"/><TextBlock Text="{Binding ProfitPerUnit,StringFormat={}الربح للوحدة: {0:0.##}}" Style="{StaticResource CaptionText}"/></StackPanel></Border></Grid><Grid IsEnabled="{Binding EnableMajorUnit}" Margin="0,5,0,0"><Grid.Style><Style TargetType="Grid"><Setter Property="Visibility" Value="Collapsed"/><Style.Triggers><DataTrigger Binding="{Binding EnableMajorUnit}" Value="True"><Setter Property="Visibility" Value="Visible"/></DataTrigger></Style.Triggers></Style></Grid.Style><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/><ColumnDefinition Width="1.1*"/></Grid.ColumnDefinitions><StackPanel Margin="4"><TextBlock Text="{Binding NewLargeUnit,StringFormat={}سعر الشراء / {0}}" Style="{StaticResource SectionLabel}"/><TextBox Style="{StaticResource NumericField}" Text="{Binding NewMajorPurchasePrice,UpdateSourceTrigger=PropertyChanged}"/></StackPanel><StackPanel Grid.Column="1" Margin="4"><TextBlock Text="{Binding NewLargeUnit,StringFormat={}سعر البيع / {0}}" Style="{StaticResource SectionLabel}"/><TextBox Style="{StaticResource NumericField}" Text="{Binding NewMajorSalePrice,UpdateSourceTrigger=PropertyChanged}"/></StackPanel><StackPanel Grid.Column="2" Margin="4" VerticalAlignment="Center"><TextBlock Text="يمكن تعديل سعر الوحدة الكبرى يدويًا" Style="{StaticResource CaptionText}" TextWrapping="Wrap"/></StackPanel></Grid></StackPanel></Border>
-              <Grid Grid.Row="5"><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions><TextBlock Text="{Binding StatusText}" Style="{StaticResource CaptionText}" VerticalAlignment="Center" TextWrapping="Wrap" Margin="2,0,12,0"/><Button Grid.Column="1" Content="إلغاء" Command="{Binding CloseDialogCommand}" Style="{StaticResource GhostButton}" Width="100" Margin="0,0,8,0"/><Button Grid.Column="2" Content="حفظ الصنف" Command="{Binding SaveNewCommand}" Style="{StaticResource PrimaryButton}" Width="145"/></Grid>
-            </Grid>
-          </ScrollViewer>
+        <Border Width="900" MaxWidth="1040" MaxHeight="900" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{StaticResource DialogShell}" Padding="22">
+          <Grid FlowDirection="RightToLeft" KeyboardNavigation.TabNavigation="Local" behaviors:InputDialogBehavior.IsEnabled="True">
+            <Grid.InputBindings><KeyBinding Key="Escape" Command="{Binding CloseDialogCommand}"/></Grid.InputBindings>
+            <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+
+            <!-- Header: persistent title and a quiet three-step visual guide. -->
+            <StackPanel Grid.Row="0" Margin="0,0,0,14">
+              <DockPanel LastChildFill="True" Margin="0,0,0,14">
+                <Button DockPanel.Dock="Left" Command="{Binding CloseDialogCommand}" Style="{StaticResource IconButton}" ToolTip="إغلاق" AutomationProperties.Name="إغلاق" Width="38" Height="38">
+                  <Path Width="14" Height="14" Stretch="Uniform" Stroke="#9DB7D4" StrokeThickness="1.6" Data="{StaticResource CloseIcon}"/>
+                </Button>
+                <StackPanel Margin="0,0,12,0">
+                  <TextBlock FontSize="23" FontWeight="SemiBold">
+                    <TextBlock.Style><Style TargetType="TextBlock"><Setter Property="Text" Value="إضافة صنف جديد"/><Style.Triggers><DataTrigger Binding="{Binding IsEditing}" Value="True"><Setter Property="Text" Value="تعديل بيانات الصنف"/></DataTrigger></Style.Triggers></Style></TextBlock.Style>
+                  </TextBlock>
+                  <TextBlock Text="بيانات دقيقة، وحدات واضحة، وأسعار ومخزون في مكان واحد" Style="{StaticResource CaptionText}" Margin="0,4,0,0"/>
+                </StackPanel>
+              </DockPanel>
+              <Grid FlowDirection="RightToLeft">
+                <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="10"/><ColumnDefinition/><ColumnDefinition Width="10"/><ColumnDefinition/></Grid.ColumnDefinitions>
+                <Border Grid.Column="0" Background="#12334B" BorderBrush="#23617A" BorderThickness="1" CornerRadius="8" Padding="10,8"><StackPanel Orientation="Horizontal" HorizontalAlignment="Center"><TextBlock Text="١" Foreground="#66D9EF" FontWeight="Bold" Margin="0,0,7,0"/><TextBlock Text="بيانات الصنف" FontWeight="SemiBold" Foreground="#EAFBFF"/></StackPanel></Border>
+                <Border Grid.Column="2" Background="#111F38" BorderBrush="#2B4163" BorderThickness="1" CornerRadius="8" Padding="10,8"><StackPanel Orientation="Horizontal" HorizontalAlignment="Center"><TextBlock Text="٢" Foreground="{StaticResource BrushAccent2}" FontWeight="Bold" Margin="0,0,7,0"/><TextBlock Text="الوحدات والأسعار" Foreground="{StaticResource BrushText}"/></StackPanel></Border>
+                <Border Grid.Column="4" Background="#111F38" BorderBrush="#2B4163" BorderThickness="1" CornerRadius="8" Padding="10,8"><StackPanel Orientation="Horizontal" HorizontalAlignment="Center"><TextBlock Text="٣" Foreground="{StaticResource BrushAccent2}" FontWeight="Bold" Margin="0,0,7,0"/><TextBlock Text="المخزون والتنبيهات" Foreground="{StaticResource BrushText}"/></StackPanel></Border>
+              </Grid>
+            </StackPanel>
+
+            <!-- Scrollable form; action bar remains visible below. -->
+            <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Padding="0,0,4,0">
+              <StackPanel FlowDirection="RightToLeft">
+
+                <Border Style="{StaticResource Card}" Padding="17" Margin="0,0,0,12">
+                  <StackPanel>
+                    <DockPanel Margin="2,0,2,12">
+                      <Border DockPanel.Dock="Right" Width="4" Height="22" Background="{StaticResource BrushAccent}" CornerRadius="2" Margin="0,0,0,0"/>
+                      <TextBlock Text="بيانات الصنف الأساسية" FontSize="16" FontWeight="SemiBold" Margin="9,0,0,0"/>
+                      <TextBlock Text="الحقول المعلّمة بـ * مطلوبة" Style="{StaticResource CaptionText}" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                    </DockPanel>
+                    <Grid>
+                      <Grid.ColumnDefinitions><ColumnDefinition Width="2*"/><ColumnDefinition Width="1.2*"/><ColumnDefinition Width="1.2*"/></Grid.ColumnDefinitions>
+                      <StackPanel Margin="4">
+                        <TextBlock Text="اسم الصنف *" Style="{StaticResource SectionLabel}"/>
+                        <TextBox Style="{StaticResource Field}" FontSize="16" Height="46" Text="{Binding NewName,UpdateSourceTrigger=PropertyChanged}" AutomationProperties.Name="اسم الصنف"/>
+                      </StackPanel>
+                      <StackPanel Grid.Column="1" Margin="4">
+                        <TextBlock Text="الباركود" Style="{StaticResource SectionLabel}"/>
+                        <TextBox Style="{StaticResource Field}" Text="{Binding NewBarcode,UpdateSourceTrigger=PropertyChanged}" FlowDirection="LeftToRight" AutomationProperties.Name="الباركود"/>
+                      </StackPanel>
+                      <StackPanel Grid.Column="2" Margin="4">
+                        <TextBlock Text="التصنيف" Style="{StaticResource SectionLabel}"/>
+                        <TextBox Style="{StaticResource Field}" Text="{Binding NewCategory,UpdateSourceTrigger=PropertyChanged}" AutomationProperties.Name="التصنيف"/>
+                      </StackPanel>
+                    </Grid>
+                    <Grid Margin="0,5,0,0">
+                      <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions>
+                      <StackPanel Margin="4">
+                        <TextBlock Text="المخزن" Style="{StaticResource SectionLabel}"/>
+                        <ComboBox Style="{StaticResource DialogComboBox}" IsEditable="True" IsTextSearchEnabled="True" ItemsSource="{Binding ProductWarehouses}" Text="{Binding NewWarehouse,UpdateSourceTrigger=PropertyChanged}" ToolTip="اختر مخزنًا موجودًا أو اكتب اسم مخزن جديد" AutomationProperties.Name="المخزن"/>
+                      </StackPanel>
+                      <StackPanel Grid.Column="1" Margin="4">
+                        <TextBlock Text="موقع التخزين" Style="{StaticResource SectionLabel}"/>
+                        <TextBox Style="{StaticResource Field}" Text="{Binding NewShelfLocation,UpdateSourceTrigger=PropertyChanged}" ToolTip="رف أو ممر (اختياري)"/>
+                      </StackPanel>
+                      <StackPanel Grid.Column="2" Margin="4">
+                        <TextBlock Text="المورد الافتراضي" Style="{StaticResource SectionLabel}"/>
+                        <ComboBox Style="{StaticResource DialogComboBox}" ItemsSource="{Binding Suppliers}" DisplayMemberPath="PersonName" SelectedValuePath="PersonId" SelectedValue="{Binding NewSupplierId,Mode=TwoWay}" AutomationProperties.Name="المورد الافتراضي"/>
+                      </StackPanel>
+                    </Grid>
+                  </StackPanel>
+                </Border>
+
+                <Border Style="{StaticResource Card}" Padding="17" Margin="0,0,0,12">
+                  <StackPanel>
+                    <Grid Margin="2,0,2,12">
+                      <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                      <StackPanel>
+                        <TextBlock Text="الوحدات والتحويل" FontSize="16" FontWeight="SemiBold"/>
+                        <TextBlock Text="حدد الوحدة الأساسية، ثم فعّل الوحدة الكبرى عند الحاجة." Style="{StaticResource CaptionText}" Margin="0,4,0,0"/>
+                      </StackPanel>
+                      <CheckBox Grid.Column="1" Content="الصنف يدعم وحدة كبرى" IsChecked="{Binding EnableMajorUnit}" VerticalAlignment="Center" Margin="12,0,0,0" FontWeight="SemiBold" AutomationProperties.Name="تفعيل الوحدة الكبرى"/>
+                    </Grid>
+                    <Grid>
+                      <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions>
+                      <StackPanel Margin="4">
+                        <TextBlock Text="الوحدة الأساسية *" Style="{StaticResource SectionLabel}"/>
+                        <TextBox Style="{StaticResource Field}" Text="{Binding NewSmallUnit,UpdateSourceTrigger=PropertyChanged}" ToolTip="مثال: حبة، قارورة، علبة"/>
+                      </StackPanel>
+                      <StackPanel Grid.Column="1" Margin="4">
+                        <StackPanel.Style><Style TargetType="StackPanel"><Setter Property="Visibility" Value="Collapsed"/><Style.Triggers><DataTrigger Binding="{Binding EnableMajorUnit}" Value="True"><Setter Property="Visibility" Value="Visible"/></DataTrigger></Style.Triggers></Style></StackPanel.Style>
+                        <TextBlock Text="الوحدة الكبرى *" Style="{StaticResource SectionLabel}"/>
+                        <TextBox Style="{StaticResource Field}" Text="{Binding NewLargeUnit,UpdateSourceTrigger=PropertyChanged}" ToolTip="مثال: كرتون، صندوق"/>
+                      </StackPanel>
+                      <StackPanel Grid.Column="2" Margin="4">
+                        <StackPanel.Style><Style TargetType="StackPanel"><Setter Property="Visibility" Value="Collapsed"/><Style.Triggers><DataTrigger Binding="{Binding EnableMajorUnit}" Value="True"><Setter Property="Visibility" Value="Visible"/></DataTrigger></Style.Triggers></Style></StackPanel.Style>
+                        <TextBlock Text="عدد الوحدات الأساسية في الوحدة الكبرى *" Style="{StaticResource SectionLabel}"/>
+                        <TextBox Style="{StaticResource NumericField}" Text="{Binding NewConversion,UpdateSourceTrigger=PropertyChanged}" ToolTip="مثال: 24 حبة في الكرتون"/>
+                      </StackPanel>
+                    </Grid>
+                    <Border Background="#0B162C" BorderBrush="#2B496A" BorderThickness="1" CornerRadius="10" Padding="12" Margin="4,8,4,0">
+                      <StackPanel>
+                        <TextBlock Text="معاينة التحويل" Style="{StaticResource CaptionText}" HorizontalAlignment="Center" Margin="0,0,0,8"/>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                          <Border Background="#142B49" BorderBrush="#31577E" BorderThickness="1" CornerRadius="8" Padding="15,9">
+                            <TextBlock Text="{Binding NewLargeUnit}" FontSize="15" FontWeight="SemiBold" TextAlignment="Center"/>
+                          </Border>
+                          <TextBlock Text="=" FontSize="19" Foreground="{StaticResource BrushMuted}" VerticalAlignment="Center" Margin="12,0"/>
+                          <Border Background="#12334B" BorderBrush="#23617A" BorderThickness="1" CornerRadius="8" Padding="15,9">
+                            <StackPanel Orientation="Horizontal">
+                              <TextBlock Text="{Binding NewConversion}" FontSize="16" FontWeight="Bold" Foreground="#66D9EF" Margin="0,0,6,0"/>
+                              <TextBlock Text="{Binding NewSmallUnit}" FontSize="15" FontWeight="SemiBold"/>
+                            </StackPanel>
+                          </Border>
+                          <TextBlock Text="١" Foreground="{StaticResource BrushMuted}" VerticalAlignment="Center" Margin="0,0,6,0">
+                            <TextBlock.Style><Style TargetType="TextBlock"><Setter Property="Visibility" Value="Visible"/><Style.Triggers><DataTrigger Binding="{Binding EnableMajorUnit}" Value="False"><Setter Property="Visibility" Value="Collapsed"/></DataTrigger></Style.Triggers></Style></TextBlock.Style>
+                          </TextBlock>
+                        </StackPanel>
+                        <TextBlock Text="الصنف يستخدم وحدة أساسية واحدة؛ لا يلزم معامل تحويل." Foreground="{StaticResource BrushMuted}" HorizontalAlignment="Center" Margin="0,7,0,0">
+                          <TextBlock.Style><Style TargetType="TextBlock"><Setter Property="Visibility" Value="Collapsed"/><Style.Triggers><DataTrigger Binding="{Binding EnableMajorUnit}" Value="False"><Setter Property="Visibility" Value="Visible"/></DataTrigger></Style.Triggers></Style></TextBlock.Style>
+                        </TextBlock>
+                      </StackPanel>
+                    </Border>
+                  </StackPanel>
+                </Border>
+
+                <Border Style="{StaticResource Card}" Padding="17" Margin="0,0,0,12">
+                  <StackPanel>
+                    <TextBlock Text="الأسعار" FontSize="16" FontWeight="SemiBold" Margin="2,0,2,12"/>
+                    <Grid FlowDirection="RightToLeft">
+                      <Grid.ColumnDefinitions><ColumnDefinition Width="1.1*"/><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions>
+                      <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+                      <Border Grid.Row="0" Grid.Column="0" Background="#0B1326" Padding="11,9" CornerRadius="0,8,0,0"><TextBlock Text="الوحدة" Foreground="{StaticResource BrushMuted}" FontWeight="SemiBold"/></Border>
+                      <Border Grid.Row="0" Grid.Column="1" Background="#0B1326" Padding="11,9"><TextBlock Text="سعر الشراء" Foreground="{StaticResource BrushMuted}" FontWeight="SemiBold"/></Border>
+                      <Border Grid.Row="0" Grid.Column="2" Background="#0B1326" Padding="11,9" CornerRadius="8,0,0,0"><TextBlock Text="سعر البيع" Foreground="{StaticResource BrushMuted}" FontWeight="SemiBold"/></Border>
+                      <Border Grid.Row="1" Grid.Column="0" Background="#101D34" Padding="11,10" Margin="0,2,0,0"><TextBlock Text="{Binding NewSmallUnit}" FontWeight="SemiBold" VerticalAlignment="Center"/></Border>
+                      <Border Grid.Row="1" Grid.Column="1" Background="#101D34" Padding="7,4" Margin="0,2,0,0"><TextBox Style="{StaticResource NumericField}" Text="{Binding NewPurchasePrice,UpdateSourceTrigger=PropertyChanged}" AutomationProperties.Name="سعر شراء الوحدة الأساسية"/></Border>
+                      <Border Grid.Row="1" Grid.Column="2" Background="#101D34" Padding="7,4" Margin="0,2,0,0"><TextBox Style="{StaticResource NumericField}" Text="{Binding NewSalePrice,UpdateSourceTrigger=PropertyChanged}" AutomationProperties.Name="سعر بيع الوحدة الأساسية"/></Border>
+                      <Border Grid.Row="2" Grid.Column="0" Background="#101D34" Padding="11,10" Margin="0,2,0,0">
+                        <TextBlock Text="{Binding NewLargeUnit}" FontWeight="SemiBold" VerticalAlignment="Center">
+                          <TextBlock.Style><Style TargetType="TextBlock"><Setter Property="Visibility" Value="Visible"/><Style.Triggers><DataTrigger Binding="{Binding EnableMajorUnit}" Value="False"><Setter Property="Visibility" Value="Collapsed"/></DataTrigger></Style.Triggers></Style></TextBlock.Style>
+                        </TextBlock>
+                      </Border>
+                      <Border Grid.Row="2" Grid.Column="1" Background="#101D34" Padding="7,4" Margin="0,2,0,0">
+                        <TextBox Style="{StaticResource NumericField}" Text="{Binding NewMajorPurchasePrice,UpdateSourceTrigger=PropertyChanged}" AutomationProperties.Name="سعر شراء الوحدة الكبرى">
+                          <TextBox.Style><Style TargetType="TextBox" BasedOn="{StaticResource NumericField}"><Setter Property="Visibility" Value="Visible"/><Style.Triggers><DataTrigger Binding="{Binding EnableMajorUnit}" Value="False"><Setter Property="Visibility" Value="Collapsed"/></DataTrigger></Style.Triggers></Style></TextBox.Style>
+                        </TextBox>
+                      </Border>
+                      <Border Grid.Row="2" Grid.Column="2" Background="#101D34" Padding="7,4" Margin="0,2,0,0">
+                        <TextBox Style="{StaticResource NumericField}" Text="{Binding NewMajorSalePrice,UpdateSourceTrigger=PropertyChanged}" AutomationProperties.Name="سعر بيع الوحدة الكبرى">
+                          <TextBox.Style><Style TargetType="TextBox" BasedOn="{StaticResource NumericField}"><Setter Property="Visibility" Value="Visible"/><Style.Triggers><DataTrigger Binding="{Binding EnableMajorUnit}" Value="False"><Setter Property="Visibility" Value="Collapsed"/></DataTrigger></Style.Triggers></Style></TextBox.Style>
+                        </TextBox>
+                      </Border>
+                    </Grid>
+                    <Grid Margin="4,10,4,0">
+                      <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                      <StackPanel>
+                        <TextBlock Text="يمكن تعديل سعر الوحدة الكبرى يدويًا بما يناسب سياسة البيع." Style="{StaticResource CaptionText}" TextWrapping="Wrap"/>
+                      </StackPanel>
+                      <Border Grid.Column="1" Background="#102D2B" BorderBrush="#24665D" BorderThickness="1" CornerRadius="9" Padding="14,8" Margin="12,0,0,0">
+                        <StackPanel>
+                          <TextBlock Text="هامش الربح التقديري" Foreground="#8DDAC8" FontSize="12"/>
+                          <TextBlock Text="{Binding ProfitMargin,StringFormat={}{0:0.0}%}" FontSize="20" FontWeight="Bold" Foreground="#65D6B8"/>
+                          <TextBlock Text="{Binding ProfitPerUnit,StringFormat={}الربح للوحدة: {0:0.##}}" Foreground="#A8CFC7" FontSize="12"/>
+                        </StackPanel>
+                      </Border>
+                    </Grid>
+                  </StackPanel>
+                </Border>
+
+                <Border Style="{StaticResource Card}" Padding="17" Margin="0,0,0,12">
+                  <StackPanel>
+                    <TextBlock Text="المخزون والتنبيهات" FontSize="16" FontWeight="SemiBold" Margin="2,0,2,12"/>
+                    <Grid>
+                      <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/><ColumnDefinition Width="1.25*"/></Grid.ColumnDefinitions>
+                      <StackPanel Margin="4">
+                        <TextBlock Text="الرصيد الافتتاحي" Style="{StaticResource SectionLabel}"/>
+                        <TextBox Text="{Binding NewOpeningQuantity,UpdateSourceTrigger=PropertyChanged}">
+                          <TextBox.Style><Style TargetType="TextBox" BasedOn="{StaticResource NumericField}"><Setter Property="Visibility" Value="Visible"/><Setter Property="IsEnabled" Value="True"/><Style.Triggers><DataTrigger Binding="{Binding EnableMajorUnit}" Value="True"><Setter Property="Visibility" Value="Collapsed"/></DataTrigger><DataTrigger Binding="{Binding IsEditing}" Value="True"><Setter Property="IsEnabled" Value="False"/></DataTrigger></Style.Triggers></Style></TextBox.Style>
+                        </TextBox>
+                        <TextBox Text="{Binding NewOpeningLargeQuantity,UpdateSourceTrigger=PropertyChanged}">
+                          <TextBox.Style><Style TargetType="TextBox" BasedOn="{StaticResource NumericField}"><Setter Property="Visibility" Value="Collapsed"/><Setter Property="IsEnabled" Value="True"/><Style.Triggers><DataTrigger Binding="{Binding EnableMajorUnit}" Value="True"><Setter Property="Visibility" Value="Visible"/></DataTrigger><DataTrigger Binding="{Binding IsEditing}" Value="True"><Setter Property="IsEnabled" Value="False"/></DataTrigger></Style.Triggers></Style></TextBox.Style>
+                        </TextBox>
+                        <TextBlock Text="{Binding NetOpeningSmallUnits,StringFormat={}الرصيد المكافئ: {0:0.##} وحدة أساسية}" Foreground="{StaticResource BrushAccent2}" Margin="2,5,0,0">
+                          <TextBlock.Style><Style TargetType="TextBlock"><Setter Property="Visibility" Value="Visible"/><Style.Triggers><DataTrigger Binding="{Binding IsEditing}" Value="True"><Setter Property="Visibility" Value="Collapsed"/></DataTrigger></Style.Triggers></Style></TextBlock.Style>
+                        </TextBlock>
+                        <TextBlock Text="الرصيد الحالي محفوظ؛ استخدم حركة مخزون لتعديله." Foreground="{StaticResource BrushMuted}" FontSize="12" TextWrapping="Wrap" Margin="2,5,0,0">
+                          <TextBlock.Style><Style TargetType="TextBlock"><Setter Property="Visibility" Value="Collapsed"/><Style.Triggers><DataTrigger Binding="{Binding IsEditing}" Value="True"><Setter Property="Visibility" Value="Visible"/></DataTrigger></Style.Triggers></Style></TextBlock.Style>
+                        </TextBlock>
+                      </StackPanel>
+                      <StackPanel Grid.Column="1" Margin="4">
+                        <TextBlock Text="حد تنبيه انخفاض المخزون" Style="{StaticResource SectionLabel}"/>
+                        <TextBox Style="{StaticResource NumericField}" Text="{Binding NewAlert,UpdateSourceTrigger=PropertyChanged}" AutomationProperties.Name="حد تنبيه انخفاض المخزون"/>
+                        <TextBlock Text="ينبهك النظام عند انخفاض الكمية إلى هذا الحد." Style="{StaticResource CaptionText}" TextWrapping="Wrap" Margin="2,4,0,0"/>
+                      </StackPanel>
+                      <StackPanel Grid.Column="2" Margin="4">
+                        <TextBlock Text="ملاحظات إضافية" Style="{StaticResource SectionLabel}"/>
+                        <TextBox Style="{StaticResource Field}" Height="70" VerticalContentAlignment="Top" TextWrapping="Wrap" AcceptsReturn="True" Text="{Binding NewNote,UpdateSourceTrigger=PropertyChanged}" AutomationProperties.Name="ملاحظات إضافية"/>
+                      </StackPanel>
+                    </Grid>
+                  </StackPanel>
+                </Border>
+              </StackPanel>
+            </ScrollViewer>
+
+            <!-- Persistent action footer with save state and a fast-entry option. -->
+            <Border Grid.Row="2" Background="#0B1326" BorderBrush="#263A5A" BorderThickness="1,1,1,0" CornerRadius="10,10,0,0" Padding="12,12,4,0" Margin="0,12,0,0">
+              <Grid FlowDirection="RightToLeft">
+                <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                <StackPanel VerticalAlignment="Center" Margin="4,0,12,8">
+                  <TextBlock Text="{Binding StatusText}" Style="{StaticResource CaptionText}" TextWrapping="Wrap" MaxWidth="390">
+                    <TextBlock.Style><Style TargetType="TextBlock" BasedOn="{StaticResource CaptionText}"><Setter Property="Foreground" Value="{StaticResource BrushMuted}"/><Style.Triggers><DataTrigger Binding="{Binding IsSaving}" Value="True"><Setter Property="Foreground" Value="{StaticResource BrushAccent2}"/></DataTrigger></Style.Triggers></Style></TextBlock.Style>
+                  </TextBlock>
+                </StackPanel>
+                <Button Grid.Column="1" Content="إلغاء" Command="{Binding CloseDialogCommand}" Style="{StaticResource GhostButton}" MinWidth="92" Margin="0,0,8,8">
+                  <Button.Style><Style TargetType="Button" BasedOn="{StaticResource GhostButton}"><Style.Triggers><DataTrigger Binding="{Binding IsSaving}" Value="True"><Setter Property="IsEnabled" Value="False"/></DataTrigger></Style.Triggers></Style></Button.Style>
+                </Button>
+                <Button Grid.Column="2" Command="{Binding SaveAndAddAnotherCommand}" Style="{StaticResource GhostButton}" Margin="0,0,8,8" MinWidth="155">
+                  <Button.Content><TextBlock Text="حفظ وإضافة صنف آخر" TextWrapping="NoWrap"/></Button.Content>
+                  <Button.Style><Style TargetType="Button" BasedOn="{StaticResource GhostButton}"><Setter Property="Visibility" Value="Visible"/><Style.Triggers><DataTrigger Binding="{Binding IsEditing}" Value="True"><Setter Property="Visibility" Value="Collapsed"/></DataTrigger><DataTrigger Binding="{Binding IsSaving}" Value="True"><Setter Property="IsEnabled" Value="False"/></DataTrigger></Style.Triggers></Style></Button.Style>
+                </Button>
+                <Button Grid.Column="3" Command="{Binding SaveNewCommand}" Style="{StaticResource PrimaryButton}" MinWidth="145" Margin="0,0,0,8">
+                  <Button.Content><TextBlock Text="حفظ الصنف"><TextBlock.Style><Style TargetType="TextBlock"><Setter Property="Text" Value="حفظ الصنف"/><Style.Triggers><DataTrigger Binding="{Binding IsSaving}" Value="True"><Setter Property="Text" Value="جارٍ الحفظ…"/></DataTrigger></Style.Triggers></Style></TextBlock.Style></TextBlock></Button.Content>
+                  <Button.Style><Style TargetType="Button" BasedOn="{StaticResource PrimaryButton}"><Style.Triggers><DataTrigger Binding="{Binding IsSaving}" Value="True"><Setter Property="IsEnabled" Value="False"/></DataTrigger></Style.Triggers></Style></Button.Style>
+                </Button>
+              </Grid>
+            </Border>
+          </Grid>
         </Border>
       </Grid>
     </Grid>
