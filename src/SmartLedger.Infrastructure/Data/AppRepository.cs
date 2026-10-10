@@ -567,6 +567,25 @@ FROM Operations;
         await audit.LogActionAsync(appSession?.CurrentUser?.Id,"RECYCLE_RESTORE",type,id,new { EntityType=type },ct);
     }
     public async Task HardDeleteDeletedItemAsync(Guid id,CancellationToken ct=default){await EnsurePermissionAsync(PermissionKeys.Delete,ct);await using var db=database.Open();await db.OpenAsync(ct);await using var c=db.CreateCommand();c.CommandText="DELETE FROM DeletedItems WHERE Id=$id;";P(c,"$id",id.ToString("N"));await c.ExecuteNonQueryAsync(ct);await audit.LogActionAsync(appSession?.CurrentUser?.Id, "RECYCLE_HARD_DELETE", "DeletedItem", id,null,ct);}
+    public async Task<CashRegisterSummary> GetCashRegisterSummaryAsync(DateTimeOffset? from=null,DateTimeOffset? toDate=null,CancellationToken ct=default)
+    {
+        await EnsurePermissionAsync(PermissionKeys.View,ct);
+        await using var db=database.Open();await db.OpenAsync(ct);await using var c=db.CreateCommand();
+        P(c,"$from",from?.ToString("O")??(object)DBNull.Value);P(c,"$to",toDate?.ToString("O")??(object)DBNull.Value);
+        c.CommandText="""
+            SELECT
+              COALESCE((SELECT SUM(CAST(Amount AS REAL)) FROM CashRegisterEntries WHERE EntryType='SALE_RECEIPT' AND ($from IS NULL OR OccurredAt >= $from) AND ($to IS NULL OR OccurredAt <= $to)),0),
+              COALESCE((SELECT SUM(CAST(Amount AS REAL)) FROM CashRegisterEntries WHERE EntryType='PURCHASE_PAYMENT' AND ($from IS NULL OR OccurredAt >= $from) AND ($to IS NULL OR OccurredAt <= $to)),0)
+              + COALESCE((SELECT SUM(CAST(Amount AS REAL)) FROM ExpenseCashEntries WHERE EntryType='EXPENSE_PAYMENT:Cash' AND ($from IS NULL OR OccurredAt >= $from) AND ($to IS NULL OR OccurredAt <= $to)),0),
+              (SELECT COUNT(*) FROM CashRegisterEntries WHERE ($from IS NULL OR OccurredAt >= $from) AND ($to IS NULL OR OccurredAt <= $to))
+              + (SELECT COUNT(*) FROM ExpenseCashEntries WHERE EntryType='EXPENSE_PAYMENT:Cash' AND ($from IS NULL OR OccurredAt >= $from) AND ($to IS NULL OR OccurredAt <= $to));
+            """;
+        await using var reader=await c.ExecuteReaderAsync(ct);
+        if(!await reader.ReadAsync(ct))return new CashRegisterSummary(0m,0m,0m,0);
+        var cashIn=Convert.ToDecimal(reader.GetValue(0),CultureInfo.InvariantCulture);
+        var cashOut=Convert.ToDecimal(reader.GetValue(1),CultureInfo.InvariantCulture);
+        return new CashRegisterSummary(cashIn,cashOut,decimal.Round(cashIn-cashOut,2),reader.GetInt32(2));
+    }
     public async Task<string?> GetPreferenceAsync(string key,CancellationToken ct=default)
     {
         if(string.IsNullOrWhiteSpace(key))throw new ArgumentException("مفتاح الإعداد مطلوب.",nameof(key));
