@@ -1,4 +1,5 @@
 using QuestPDF.Fluent;
+using QuestPDF.Drawing;
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
 using QRCoder;
@@ -9,7 +10,18 @@ namespace SmartLedger.Infrastructure.Reporting;
 
 public sealed class InvoicePrintService : IInvoicePrintService
 {
-    public InvoicePrintService() => QuestPDF.Settings.License = LicenseType.Community;
+    public InvoicePrintService()
+    {
+        QuestPDF.Settings.License = LicenseType.Community;
+        var fontsDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Fonts);
+        foreach (var fontName in new[] { "tahoma.ttf", "arial.ttf" })
+        {
+            var fontPath = Path.Combine(fontsDirectory, fontName);
+            if (!File.Exists(fontPath)) continue;
+            using var fontStream = File.OpenRead(fontPath);
+            FontManager.RegisterFont(fontStream);
+        }
+    }
 
     public byte[] RenderThermalReceipt(Invoice invoice, IReadOnlyList<InvoiceLine> lines, BusinessIdentity identity)
         => Render(invoice, lines, identity, true);
@@ -32,7 +44,7 @@ public sealed class InvoicePrintService : IInvoicePrintService
             {
                 page.Size(thermal ? new PageSize(226.77f, 720f) : PageSizes.A4);
                 page.Margin(thermal ? 8 : 28);
-                page.DefaultTextStyle(style => style.FontFamily("Arial").FontSize(thermal ? 8 : 10));
+                page.DefaultTextStyle(style => style.FontFamily("Tahoma").FontSize(thermal ? 8 : 10));
                 page.Content().Column(column =>
                 {
                     column.Spacing(thermal ? 4 : 8);
