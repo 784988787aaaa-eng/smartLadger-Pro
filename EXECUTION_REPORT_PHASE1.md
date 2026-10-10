@@ -54,3 +54,37 @@ Branch: main
 - `903dd36c49dbde4b546d542483b5275e2360d60c` — typography polish
 - `50ed6913d285ec3eaae3c77856881b6874dbdfa1` — domain model extensions
 - `f74a5916aee8287471fbf4de258da5a1e9d0f2db` — WhatsApp tests
+
+
+---
+
+## Completion-directive follow-up (2026-10-10)
+
+### Additional changes committed after the initial report
+- `src/SmartLedger.Infrastructure/Data/AppRepository.cs`
+  - Replaced positional People/Operations inserts with explicit column lists so additive schema columns do not break legacy insert paths.
+  - Person creation now occurs in an explicit SQLite transaction, checks that the target book exists, generates a unique `ACC-` account code, sets UTC CreatedAt/UpdatedAt, and defaults WhatsAppEnabled based on phone presence.
+  - Opening-balance account creation now writes the new account metadata columns inside the same transaction as the opening operation.
+  - Operation listing now reads ReferenceNumber; normal, opening-balance, and invoice-associated operation inserts include the nullable reference column.
+  - People list projection maps migrated account metadata into the Person domain model.
+- `src/SmartLedger.App/ViewModels/AccountsViewModel.cs`
+  - Exposed TotalDebit, TotalCredit, NetBalance, BalanceStatusText, and BalanceStatusColor statement metrics and raises property-change notifications after statement load.
+
+### Verification state and outstanding work
+**The Phase 1 completion directive is not yet fully satisfied. Do not treat this report as a production sign-off.**
+- The GitHub Actions workflow for the newest commit was queued when checked; there is no verified green build/test result in this report.
+- This session did not run `dotnet build` or `dotnet test` locally.
+- Full editable-property persistence (CreditLimit, Address, SecondaryPhone, AccountNature, WhatsAppEnabled) is not yet exposed through the current IAppRepository create/update API. The current creation workflow initializes defaults; a complete edit/update API and UI binding are still required.
+- AccountsViewModel SaveAndNew/SaveAndClose commands, full input validation and duplicate-phone warning, WhatsApp statement/voucher commands, and atomic user-confirmed operation-delete workflow are not complete.
+- The requested two-column account form, keyboard bindings, validation visuals, full statement KPI strip, debit/credit/reference/action columns, and row hover/alternation XAML work are not complete.
+- Persistence round-trip, unique-code, running-balance reversal, and ViewModel workflow integration tests requested in the directive have not yet been added or run.
+- Existing soft-delete logic for operations stores a deleted-item payload and removes the operation transactionally; a dedicated reversal-specific integration test is still needed.
+
+### Recent follow-up commits
+- `9fa58f3b975188dd9d70d5845933d6f27d891a59` — explicit-column inserts for schema compatibility
+- `1f1a22be05647a9cc17be325c610e4e7a412f1b7` — initial reference-number retrieval and persistence wiring
+- `4b87bd6a43225396b77a20f7adfc30861d58b000` — complete reference-number persistence in operation listing
+- `9cbe6f0d2c0bf178da55bbc311182246a22f6e4f` — transactional person creation with generated account code/default metadata
+- `056185b8b76ea6e2a704af646f7ada69a0de0e58` — map migrated metadata into person summaries
+- `886b10a25ed9eeb2f59b3e2440d4e761cb614591` — expose account statement KPIs
+- `eb1b12d6375000838db285e7607c718bad278187` — fix invoice-associated operation insert for migrated reference column
