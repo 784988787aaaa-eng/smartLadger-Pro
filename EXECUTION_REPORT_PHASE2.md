@@ -65,3 +65,4 @@ Branch: main
 - `ae8e92f456b50c56c89c109c629b72c2f02d15db`, `566fd6aac4baa90704e5e4a2b9f9f85e273e9651`, `b96d6634e0a574c63e10f3af5872a1745114cd1e` — batch integration tests
 - `c12a3c13b58ab2eb494d9f1bca447061e22d1c35` — schema bootstrap test update
 - `8a213e78a319a73ddb8320c9ccb9d2184e9b370b` — formatted dual-unit stock display
+- `d2294410d6186a53b8181ed44511b6f4803d13fe` — use barcode as the persisted product-code identity
