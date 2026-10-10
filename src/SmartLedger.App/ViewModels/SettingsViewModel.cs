@@ -28,6 +28,9 @@ public partial class SettingsViewModel : ObservableObject
     [ObservableProperty] private string phone = "";
     [ObservableProperty] private string address = "";
     [ObservableProperty] private string currency = "ريال";
+    [ObservableProperty] private string taxRegistrationNumber = "";
+    [ObservableProperty] private string commercialRegistrationNumber = "";
+    [ObservableProperty] private string invoiceTerms = "";
     [ObservableProperty] private bool isBusy;
     [ObservableProperty] private string statusText = "";
     [ObservableProperty] private string lastBackupText = "لم تُنفذ عملية نسخ احتياطي من هذه الجلسة.";
@@ -56,6 +59,9 @@ public partial class SettingsViewModel : ObservableObject
             Phone = x.Phone;
             Address = x.Address;
             Currency = x.Currency;
+            TaxRegistrationNumber = x.TaxRegistrationNumber;
+            CommercialRegistrationNumber = x.CommercialRegistrationNumber;
+            InvoiceTerms = x.InvoiceTerms;
             logoPath = x.LogoPath;
             LoadLogoPreview();
             var current = session.CurrentUser;
@@ -101,11 +107,14 @@ public partial class SettingsViewModel : ObservableObject
         StatusText = "جارٍ حفظ إعدادات المنشأة...";
         try
         {
-            await repo.SaveIdentityAsync(new BusinessIdentity(name, logoPath, phoneValue, addressValue, currencyValue));
+            await repo.SaveIdentityAsync(new BusinessIdentity(name, logoPath, phoneValue, addressValue, currencyValue) { TaxRegistrationNumber = TaxRegistrationNumber.Trim(), CommercialRegistrationNumber = CommercialRegistrationNumber.Trim(), InvoiceTerms = InvoiceTerms.Trim() });
             BusinessName = name;
             Phone = phoneValue;
             Address = addressValue;
             Currency = currencyValue;
+            TaxRegistrationNumber = TaxRegistrationNumber.Trim();
+            CommercialRegistrationNumber = CommercialRegistrationNumber.Trim();
+            InvoiceTerms = InvoiceTerms.Trim();
             StatusText = "تم حفظ إعدادات المنشأة بنجاح. ستستخدم التقارير هذه البيانات عند إنشائها.";
         }
         catch (Exception ex)
