@@ -16,7 +16,7 @@ public sealed class Database
         await using var db=Open(); await db.OpenAsync(ct);
         await ExecuteAsync(db,"PRAGMA journal_mode=WAL; PRAGMA synchronous=NORMAL; PRAGMA busy_timeout=10000; PRAGMA foreign_keys=ON; PRAGMA temp_store=MEMORY;",ct);
         var version=await ScalarLongAsync(db,"PRAGMA user_version;",ct);
-        if(version<1)await MigrationV1Async(db,ct); if(version<2)await MigrationV2Async(db,ct); if(version<3)await MigrationV3Async(db,ct); if(version<4)await MigrationV4Async(db,ct); if(version<5)await MigrationV5Async(db,ct); if(version<6)await MigrationV6Async(db,ct); if(version<7)await MigrationV7Async(db,ct); if(version<8)await MigrationV8Async(db,ct); if(version<9)await MigrationV9Async(db,ct); if(version<10)await MigrationV10Async(db,ct); if(version<11)await MigrationV11Async(db,ct); if(version<12)await MigrationV12Async(db,ct); await SeedAsync(db,ct);
+        if(version<1)await MigrationV1Async(db,ct); if(version<2)await MigrationV2Async(db,ct); if(version<3)await MigrationV3Async(db,ct); if(version<4)await MigrationV4Async(db,ct); if(version<5)await MigrationV5Async(db,ct); if(version<6)await MigrationV6Async(db,ct); if(version<7)await MigrationV7Async(db,ct); if(version<8)await MigrationV8Async(db,ct); if(version<9)await MigrationV9Async(db,ct); if(version<10)await MigrationV10Async(db,ct); if(version<11)await MigrationV11Async(db,ct); if(version<12)await MigrationV12Async(db,ct); if(version<13)await MigrationV13Async(db,ct); await SeedAsync(db,ct);
     }
     private static async Task MigrationV1Async(SqliteConnection db,CancellationToken ct)
     {
@@ -71,6 +71,18 @@ public sealed class Database
             await ExecuteAsync(db,"CREATE INDEX IF NOT EXISTS IX_Operations_Person_OccurredAt ON Operations(PersonId,OccurredAt);",ct);
         await SetVersionAsync(db,10,ct);
     }
+    private static async Task MigrationV13Async(SqliteConnection db,CancellationToken ct)
+    {
+        // Follow-up additive settings migration so installations already at v12 also receive invoice identity fields.
+        if (await TableExistsAsync(db,"BusinessIdentity",ct))
+        {
+            await EnsureColumnAsync(db,"BusinessIdentity","TaxRegistrationNumber","TEXT NOT NULL DEFAULT ''",ct);
+            await EnsureColumnAsync(db,"BusinessIdentity","CommercialRegistrationNumber","TEXT NOT NULL DEFAULT ''",ct);
+            await EnsureColumnAsync(db,"BusinessIdentity","InvoiceTerms","TEXT NOT NULL DEFAULT ''",ct);
+        }
+        await SetVersionAsync(db,13,ct);
+    }
+
     private static async Task MigrationV12Async(SqliteConnection db,CancellationToken ct)
     {
         // Additive commercial invoice migration. Legacy invoices receive stable identifiers.
