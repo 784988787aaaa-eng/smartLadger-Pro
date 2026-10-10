@@ -2,42 +2,48 @@
 
 - Repository: https://github.com/784988787aaaa-eng/smartLadger-Pro
 - Branch: main
+- Verified source commit: `82507371f92ddf3be754d662bb8858bc1a5fd1ba`
 - Date: 2026-10-10
-- Current status: **Implementation committed; final CI verification in progress. Do not mark accepted until the latest Release build, test suite, and publish job succeed.**
+- Status: **VERIFIED — Release build, full test suite, and Windows x64 publish all succeeded.**
 
 ## Delivered implementation
 
-### Domain and persistence
-- Extended invoice types while preserving existing numeric enum values.
-- Added invoice number, discount percentage, tax, customer/store/currency snapshots and remaining balance to the invoice domain.
-- Added invoice-line barcode, selected-unit, applied conversion factor, normalized minor quantity and cost snapshot fields.
-- Added additive SQLite migration v12 with invoice metadata, line snapshots, invoice-number uniqueness, customer/date indexes and the cash-register entry table. Existing invoice records receive stable legacy invoice identifiers.
-- Updated repository insert statements to name columns explicitly, preserving compatibility with the additive schema.
-- Added `SaveSalesInvoiceAsync`, which uses the existing single SQLite transaction for invoice header, line records, stock movements, stock deduction, customer debit posting, and cash receipts.
-- Sequential invoice identifiers are generated inside the save transaction in `INV-yyyy-0001` format.
-- Sales deduct stock from expiring batches first (FEFO); any legacy stock not represented by a batch remains valid and is not artificially rejected.
-- Paid amounts are recorded in `CashRegisterEntries`; unpaid balances for account-linked sales are posted as ledger debits within the same transaction.
+### Domain and database
+- Extended invoice types while preserving existing enum values and added invoice number, discount percentage, tax amount, customer/store/currency snapshots, and remaining balance.
+- Extended invoice lines with barcode, selected unit, conversion factor, normalized minor quantity, and cost snapshot.
+- SQLite v12 adds commercial invoice metadata, invoice-line snapshots, unique non-empty invoice numbers, customer/date indexes, and cash-register entries. Existing invoices receive stable legacy identifiers.
+- SQLite v13 adds tax-registration number, commercial-registration number, and invoice terms to business identity settings, including upgrades from already-migrated v12 databases.
+- Updated backup/restore schema support, reset integrity checks, and seed inserts for the expanded identity schema.
 
-### POS ViewModel and interface
-- Added barcode entry and Enter-to-add behavior, discount allocation across invoice lines, cost/quantity snapshots, and save/print workflow.
-- Added hold/resume for in-memory invoice drafts, clear invoice, unit toggle, and keyboard command bindings for F1–F6, Ctrl+S and Ctrl+P.
-- Added WhatsApp receipt dispatch using the existing WhatsApp service; it opens a prefilled message for user review instead of silently sending.
-- Refactored the sales modal to a wider POS layout with barcode, customer and product selectors, unit/quantity/price, discount, payment totals and post-save actions.
-- The hold queue is currently in-memory for the running application session; it is not yet a persisted park/restore queue across application restarts.
+### Atomic sales workflow
+- Added `SaveSalesInvoiceAsync`, using a single SQLite transaction for invoice header and lines, stock movements and stock balances, FEFO batch deduction, customer debit posting, and cash-register receipts.
+- Sequential invoice numbers are generated in `INV-yyyy-0001` format within the save transaction.
+- Discount is distributed to line items in currency precision; tax is calculated on the discounted subtotal and included in the invoice total.
+- Cash and partial payments are recorded in `CashRegisterEntries`; outstanding balances on account-linked sales post to the customer's ledger atomically.
+- Batch deduction prioritizes earliest expiry. Existing stock not represented by batch rows remains sellable without fabricating batch history.
 
-### PDF receipts
-- Added `IInvoicePrintService` and a QuestPDF implementation for 80mm thermal-style receipts and A4 invoices.
-- Added QR payload generation containing invoice number, total, currency and timestamp.
-- The print command generates a PDF and opens it for preview/printing in the system PDF viewer; direct printer-driver dispatch is not implemented.
-- Arabic-capable Windows system fonts are registered with QuestPDF when available.
+### POS ViewModel and UI
+- Added barcode scanning/Enter-to-add, major/minor unit switching, invoice discount and tax percentage inputs, live totals, save-only and save/print actions, and clear-invoice behavior.
+- Added F1–F6, Ctrl+S and Ctrl+P bindings, in-session hold/resume, customer quick-add, and WhatsApp message generation using the existing integration service. WhatsApp opens a prefilled message for cashier review.
+- Added customer/product selection, barcode field, tax/discount entry, six-part financial summary, and post-save print/WhatsApp actions to the RTL POS layout.
+- Held invoice drafts are currently retained in memory for the active application session; they are not persisted across application restarts.
 
-## Automated tests added
-- `SalesInvoiceTests.cs`: invoice numbering, atomic stock deduction, FEFO batch consumption, customer debit posting, and cash register receipt.
-- `InvoicePrintServiceTests.cs`: PDF signature and non-empty output for thermal and A4 rendering.
-- Existing database schema tests updated to expect schema v12; unsupported-schema restore test now uses v13.
+### Receipts and settings
+- Added `IInvoicePrintService` and QuestPDF renderers for thermal-width receipts and A4 invoices.
+- PDF output includes invoice lines, totals, payment status, QR payload, and available business logo, phone/address, tax and commercial registration numbers, and invoice terms.
+- Added Arabic-capable Windows font registration. Preview opens the generated PDF in the system viewer; direct print dispatch invokes the default Windows PDF handler's print action. Actual printer/driver behavior depends on the machine's default PDF association and printer configuration.
+- Added settings fields for tax registration, commercial registration, and invoice terms.
+
+## Automated test manifest
+- `SalesInvoiceTests.cs`: invoice numbering, stock deduction, FEFO batch consumption, customer debit posting, cash-register entry, discount and tax totals.
+- `InvoicePrintServiceTests.cs`: valid non-empty PDF output for thermal and A4 formats.
+- Existing database, backup/restore, reset, and permissions tests updated for schema v13.
 
 ## Verification record
-- GitHub Actions run: https://github.com/784988787aaaa-eng/smartLadger-Pro/actions
-- An earlier run confirmed the Release build succeeded but exposed test failures: incorrect initial stock in the new FEFO test, unregistered QuestPDF font family, and an outdated unsupported-schema test. Source/tests have been corrected for those findings.
-- The latest commit and its Windows x64 Release build/test/publish jobs must finish successfully before Phase 3 can be declared verified.
-- Final result, exact test counts, warnings/errors and publish artifact status will be recorded here after the latest CI run completes.
+- GitHub Actions run: https://github.com/784988787aaaa-eng/smartLadger-Pro/actions/runs/38073701293
+- Release build: **0 warnings, 0 errors**.
+- Test suite: **82 total, 82 passed, 0 failed**.
+- Windows x64 publish: **success**.
+- Artifact: `SmartLedger-Windows-x64-173.zip` — 77,243,126 bytes.
+- Artifact download: https://github.com/784988787aaaa-eng/smartLadger-Pro/actions/runs/38073701293/artifacts/11677991542
+- Artifact SHA-256: `996f4cb477f28f8efcc4e6c5dcee506f79768572f892f43a8e44bc58bcff0f04`
