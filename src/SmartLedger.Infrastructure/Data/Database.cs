@@ -74,6 +74,12 @@ public sealed class Database
     private static async Task MigrationV12Async(SqliteConnection db,CancellationToken ct)
     {
         // Additive commercial invoice migration. Legacy invoices receive stable identifiers.
+        if (await TableExistsAsync(db,"BusinessIdentity",ct))
+        {
+            await EnsureColumnAsync(db,"BusinessIdentity","TaxRegistrationNumber","TEXT NOT NULL DEFAULT ''",ct);
+            await EnsureColumnAsync(db,"BusinessIdentity","CommercialRegistrationNumber","TEXT NOT NULL DEFAULT ''",ct);
+            await EnsureColumnAsync(db,"BusinessIdentity","InvoiceTerms","TEXT NOT NULL DEFAULT ''",ct);
+        }
         await ExecuteAsync(db,"CREATE TABLE IF NOT EXISTS Invoices(Id TEXT PRIMARY KEY,Type INTEGER NOT NULL,PersonId TEXT NULL REFERENCES People(Id),IssuedAt TEXT NOT NULL,Subtotal TEXT NOT NULL,Discount TEXT NOT NULL,Total TEXT NOT NULL,Paid TEXT NOT NULL,PaymentMode INTEGER NOT NULL,Note TEXT NOT NULL DEFAULT '',CreatedBy TEXT NOT NULL);",ct);
         await EnsureColumnAsync(db,"Invoices","InvoiceNumber","TEXT NOT NULL DEFAULT ''",ct);
         await EnsureColumnAsync(db,"Invoices","DiscountPercentage","TEXT NOT NULL DEFAULT '0'",ct);
