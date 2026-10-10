@@ -11,7 +11,10 @@ public interface IAppRepository
     Task<IReadOnlyList<PersonSummary>> GetPeopleAsync(Guid? bookId = null, string? search = null, int? take = null, CancellationToken ct = default);
     Task<IReadOnlyDictionary<Guid,string>> GetPersonNamesAsync(CancellationToken ct = default);
     Task<Person> CreatePersonAsync(Guid bookId, string name, string phone, string note, CancellationToken ct = default);
+    Task<Person> CreatePersonAsync(Person person, CancellationToken ct = default);
+    Task UpdatePersonAsync(Person person, CancellationToken ct = default);
     Task<Person> CreatePersonWithOpeningBalanceAsync(Guid bookId, string name, string phone, string note, decimal openingBalance, OperationType openingDirection, CancellationToken ct = default);
+    Task<Person> CreatePersonWithOpeningBalanceAsync(Person person, decimal openingBalance, OperationType openingDirection, CancellationToken ct = default);
     Task<DashboardSummary> GetDashboardAsync(CancellationToken ct = default);
     Task<IReadOnlyList<LedgerOperation>> GetOperationsAsync(Guid? personId = null, int take = 100, CancellationToken ct = default);
     Task<IReadOnlyList<LedgerOperation>> GetOperationsInPeriodAsync(DateTimeOffset from, DateTimeOffset toDate, CancellationToken ct = default);
