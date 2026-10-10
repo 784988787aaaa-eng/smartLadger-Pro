@@ -16,7 +16,7 @@ public sealed class Database
         await using var db=Open(); await db.OpenAsync(ct);
         await ExecuteAsync(db,"PRAGMA journal_mode=WAL; PRAGMA synchronous=NORMAL; PRAGMA busy_timeout=10000; PRAGMA foreign_keys=ON; PRAGMA temp_store=MEMORY;",ct);
         var version=await ScalarLongAsync(db,"PRAGMA user_version;",ct);
-        if(version<1)await MigrationV1Async(db,ct); if(version<2)await MigrationV2Async(db,ct); if(version<3)await MigrationV3Async(db,ct); if(version<4)await MigrationV4Async(db,ct); if(version<5)await MigrationV5Async(db,ct); if(version<6)await MigrationV6Async(db,ct); if(version<7)await MigrationV7Async(db,ct); if(version<8)await MigrationV8Async(db,ct); if(version<9)await MigrationV9Async(db,ct); await SeedAsync(db,ct);
+        if(version<1)await MigrationV1Async(db,ct); if(version<2)await MigrationV2Async(db,ct); if(version<3)await MigrationV3Async(db,ct); if(version<4)await MigrationV4Async(db,ct); if(version<5)await MigrationV5Async(db,ct); if(version<6)await MigrationV6Async(db,ct); if(version<7)await MigrationV7Async(db,ct); if(version<8)await MigrationV8Async(db,ct); if(version<9)await MigrationV9Async(db,ct); if(version<10)await MigrationV10Async(db,ct); await SeedAsync(db,ct);
     }
     private static async Task MigrationV1Async(SqliteConnection db,CancellationToken ct)
     {
@@ -51,6 +51,21 @@ public sealed class Database
         await SetVersionAsync(db,7,ct);
     }
     private static async Task MigrationV8Async(SqliteConnection db,CancellationToken ct){await EnsureColumnAsync(db,"Products","WarehouseName","TEXT NOT NULL DEFAULT 'المخزن الرئيسي'",ct);await SetVersionAsync(db,8,ct);}
+    private static async Task MigrationV10Async(SqliteConnection db,CancellationToken ct)
+    {
+        // Additive-only migration: preserve existing people and ledger rows.
+        await EnsureColumnAsync(db,"People","AccountCode","TEXT NOT NULL DEFAULT ''",ct);
+        await EnsureColumnAsync(db,"People","CreditLimit","TEXT NULL",ct);
+        await EnsureColumnAsync(db,"People","Address","TEXT NOT NULL DEFAULT ''",ct);
+        await EnsureColumnAsync(db,"People","SecondaryPhone","TEXT NOT NULL DEFAULT ''",ct);
+        await EnsureColumnAsync(db,"People","AccountNature","TEXT NOT NULL DEFAULT 'Flexible'",ct);
+        await EnsureColumnAsync(db,"People","WhatsAppEnabled","INTEGER NOT NULL DEFAULT 1",ct);
+        await EnsureColumnAsync(db,"People","UpdatedAt","TEXT NOT NULL DEFAULT ''",ct);
+        await EnsureColumnAsync(db,"Operations","ReferenceNumber","TEXT NULL",ct);
+        await ExecuteAsync(db,"UPDATE People SET AccountCode='ACC-'||substr(replace(Id,'-',''),1,12) WHERE AccountCode IS NULL OR trim(AccountCode)=''; UPDATE People SET UpdatedAt=CreatedAt WHERE UpdatedAt IS NULL OR trim(UpdatedAt)=''; UPDATE People SET WhatsAppEnabled=CASE WHEN trim(Phone)<>'' THEN 1 ELSE 0 END;",ct);
+        await ExecuteAsync(db,"CREATE UNIQUE INDEX IF NOT EXISTS UX_People_AccountCode ON People(AccountCode); CREATE INDEX IF NOT EXISTS IX_People_Phone ON People(Phone); CREATE INDEX IF NOT EXISTS IX_Operations_Person_OccurredAt ON Operations(PersonId,OccurredAt);",ct);
+        await SetVersionAsync(db,10,ct);
+    }
     private static async Task MigrationV9Async(SqliteConnection db,CancellationToken ct){await ExecuteAsync(db,"CREATE TABLE IF NOT EXISTS UserPermissions(UserId TEXT NOT NULL REFERENCES Users(Id) ON DELETE CASCADE,Permission TEXT NOT NULL,PRIMARY KEY(UserId,Permission)); CREATE INDEX IF NOT EXISTS IX_UserPermissions_User ON UserPermissions(UserId);",ct); await ExecuteAsync(db,"INSERT OR IGNORE INTO UserPermissions(UserId,Permission) SELECT Id,'reset_data' FROM Users WHERE IsAdministrator=1;",ct); await SetVersionAsync(db,9,ct);}
     private static async Task MigrationV6Async(SqliteConnection db,CancellationToken ct)
     {
