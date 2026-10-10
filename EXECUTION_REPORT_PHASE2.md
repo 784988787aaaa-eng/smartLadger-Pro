@@ -37,6 +37,12 @@ Branch: main
 - `BatchStockTests.cs`: batch receipt, lot valuation, outbound deduction from the earliest-expiring lot, and on-hand balance consistency.
 - Updated database bootstrap test to expect schema version 11.
 
+## Follow-up review fixes (2026-10-10)
+- Removed a duplicate `SelectedProductBatches` observable-property declaration in `InventoryViewModel`, which would prevent source generation/build.
+- Implemented the `AddStockBatchCommand` consumed by the inventory XAML. It validates quantity, cost and optional expiry, writes the batch through the repository, refreshes stock and batch details, and surfaces errors in the status field.
+- Made migration v11 preserve legacy rows when duplicate non-empty barcodes already exist: it skips creating the unique barcode index in that case rather than failing the entire migration. Application-level duplicate checks remain active for new product writes. The migration does not silently rewrite or delete legacy barcodes.
+- These are source-level corrections only. A successful .NET 10 Release build and full test run have still **not** been confirmed through the connected GitHub Actions interface; do not treat Phase 2 as accepted until CI is green.
+
 ## Verification record
 - Changes were written to `main` through GitHub file commits.
 - The tests above were added/updated but **were not executed in this session**.
