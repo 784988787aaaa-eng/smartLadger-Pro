@@ -27,6 +27,8 @@ public partial class PurchasesViewModel(IAppRepository repo,IAppSession session)
     [ObservableProperty] private string priceText="";
     [ObservableProperty] private string paidText="0";
     [ObservableProperty] private string note="";
+    [ObservableProperty] private string batchNumber="";
+    [ObservableProperty] private DateTime? expiryDate;
     [ObservableProperty] private PaymentMode paymentMode=PaymentMode.Cash;
     [ObservableProperty] private bool isCashSelected=true;
     [ObservableProperty] private bool isCreditSelected;
@@ -121,7 +123,7 @@ public partial class PurchasesViewModel(IAppRepository repo,IAppSession session)
         if(!NumericNormalizer.TryParseDecimal(QuantityText,out var q)||q<=0){StatusText="أدخل كمية صحيحة.";return false;}
         if(!NumericNormalizer.TryParseDecimal(PriceText,out var price)||price<=0){StatusText="أدخل سعرًا صحيحًا أكبر من صفر.";return false;}
         var smallQuantity=q*QuantityFactor(product);if(smallQuantity<=0){StatusText="تحقق من الوحدة ومعامل التحويل.";return false;}
-        Lines.Add(new InvoiceDraftLine(product.Id,product.Name,q,SelectedQuantityUnit,price,decimal.Round(q*price,2),smallQuantity));OnPropertyChanged(nameof(LinesTotal));ProductId=null;ProductSearch="";QuantityText="1";PriceText="";IsProductSuggestionsOpen=false;Recalc();return true;
+        Lines.Add(new InvoiceDraftLine(product.Id,product.Name,q,SelectedQuantityUnit,price,decimal.Round(q*price,2),smallQuantity){BatchNumber=BatchNumber.Trim(),ExpiryDate=ExpiryDate is DateTime expiry?new DateTimeOffset(expiry.Date):null,CostPriceSnapshot=price,ConversionFactorApplied=QuantityFactor(product)});OnPropertyChanged(nameof(LinesTotal));ProductId=null;ProductSearch="";QuantityText="1";PriceText="";BatchNumber="";ExpiryDate=null;IsProductSuggestionsOpen=false;Recalc();return true;
     }
     private IReadOnlyList<PersonSummary> FilterPeople(string value)=>string.IsNullOrWhiteSpace(value)?_allPeople:_allPeople.Where(x=>ContainsArabic(x.PersonName,value)||ContainsArabic(x.Person.Phone,value)).Take(25).ToArray();
     private IReadOnlyList<Product> FilterProducts(string value)=>string.IsNullOrWhiteSpace(value)?_allProducts:_allProducts.Where(x=>ContainsArabic(x.Name,value)||ContainsArabic(x.Barcode,value)).Take(25).ToArray();
@@ -140,7 +142,7 @@ public partial class PurchasesViewModel(IAppRepository repo,IAppSession session)
         IsSaving=true;StatusText="جارٍ حفظ الفاتورة…";
         try{
             var invoice=new Invoice(Guid.NewGuid(),InvoiceType.Purchase,PersonId,DateTimeOffset.Now,total,0,total,paid,PaymentMode,Note.Trim(),session.CurrentUser!.Id);
-            var invoiceLines=Lines.Select(x=>new InvoiceLine(Guid.NewGuid(),invoice.Id,x.ProductId,x.ProductName,x.Quantity,x.Unit,x.UnitPrice,0,x.LineTotal)).ToArray();
+            var invoiceLines=Lines.Select(x=>new InvoiceLine(Guid.NewGuid(),invoice.Id,x.ProductId,x.ProductName,x.Quantity,x.Unit,x.UnitPrice,0,x.LineTotal){BatchNumber=x.BatchNumber,ExpiryDate=x.ExpiryDate,CostPriceSnapshot=x.CostPriceSnapshot,QuantityMinor=x.QuantitySmallUnits,ConversionFactorApplied=x.ConversionFactorApplied,UnitSelected=x.Unit}).ToArray();
             var movements=Lines.Select(x=>new StockMovement(Guid.NewGuid(),x.ProductId,StockMovementType.Purchase,x.QuantitySmallUnits,decimal.Round(x.UnitPrice*x.Quantity/x.QuantitySmallUnits,4),Note.Trim(),DateTimeOffset.Now,session.CurrentUser!.Id)).ToArray();
             LedgerOperation? operation=PersonId is Guid person&&invoice.Total-invoice.Paid>0?new LedgerOperation(Guid.NewGuid(),person,OperationType.DebtToUs,invoice.Total-invoice.Paid,Note.Trim(),DateTimeOffset.Now,session.CurrentUser!.Id):null;
             await repo.CreateInvoiceTransactionWithMovementsAsync(invoice,invoiceLines,movements,operation);
