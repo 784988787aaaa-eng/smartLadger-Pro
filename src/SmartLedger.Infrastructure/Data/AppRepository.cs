@@ -82,8 +82,8 @@ LIMIT COALESCE($take,-1);
     {
         if (string.IsNullOrWhiteSpace(person.Name) || person.Name.Trim().Length < 2)
             throw new ArgumentException("اسم الحساب مطلوب ويجب ألا يقل عن حرفين.", nameof(person));
-        if (person.CreditLimit is < 0)
-            throw new ArgumentOutOfRangeException(nameof(person), "حد الائتمان لا يمكن أن يكون سالباً.");
+        if (person.CreditLimit is <= 0)
+            throw new ArgumentOutOfRangeException(nameof(person), "حد الائتمان يجب أن يكون موجباً أو فارغاً.");
         foreach (var phone in new[] { person.Phone, person.SecondaryPhone })
         {
             if (string.IsNullOrWhiteSpace(phone)) continue;
