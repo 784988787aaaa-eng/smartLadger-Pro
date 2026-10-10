@@ -223,7 +223,7 @@ public partial class SalesViewModel(IAppRepository repo,IAppSession session):Obs
         {
             var identity=await repo.GetIdentityAsync();
             var templates=await repo.GetMessageTemplatesAsync();
-            var template=templates.FirstOrDefault(x=>x.Name.Contains("فاتورة مبيعات",StringComparison.OrdinalIgnoreCase));
+            var template=templates.FirstOrDefault(x=>x.Name.Contains("فاتورة مبيعات",StringComparison.OrdinalIgnoreCase)||x.Name.Contains("SalesInvoice",StringComparison.OrdinalIgnoreCase)||x.Name.Contains("Sales Invoice",StringComparison.OrdinalIgnoreCase));
             var fallback="مرحباً {CustomerName}،\\nفاتورة مبيعات رقم: #{InvoiceNumber}\\nالمحل: {StoreName}\\nإجمالي الفاتورة: {TotalAmount} {Currency}\\nالمدفوع: {PaidAmount} {Currency}\\nالمتبقي: {RemainingAmount} {Currency}\\nالتاريخ: {Date}\\nشكراً لزيارتكم!";
             var values=new Dictionary<string,string?>
             {
@@ -232,7 +232,7 @@ public partial class SalesViewModel(IAppRepository repo,IAppSession session):Obs
                 ["PaidAmount"]=invoice.Paid.ToString("N2",System.Globalization.CultureInfo.InvariantCulture),["RemainingAmount"]=invoice.RemainingAmount.ToString("N2",System.Globalization.CultureInfo.InvariantCulture),
                 ["Currency"]=identity.Currency,["Date"]=invoice.IssuedAt.ToString("yyyy/MM/dd HH:mm",System.Globalization.CultureInfo.InvariantCulture)
             };
-            var message=MessageTemplateEngine.Render(template?.Body??fallback,values);
+            var message=MessageTemplateEngine.Render(template?.Body,values,fallback);
             new WhatsAppService().OpenWhatsApp(LastSavedCustomerPhone,message);StatusText="تم فتح واتساب برسالة الفاتورة المخصصة؛ راجعها قبل الإرسال.";
         }
         catch(Exception ex){StatusText=ex.Message;}

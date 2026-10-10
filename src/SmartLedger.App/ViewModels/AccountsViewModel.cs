@@ -481,7 +481,7 @@ public partial class AccountsViewModel(IAppRepository repo,IAppSession session):
         {
             var identity = await repo.GetIdentityAsync();
             var templates = await repo.GetMessageTemplatesAsync();
-            var template = templates.FirstOrDefault(x => x.Name.Contains("كشف حساب العميل", StringComparison.OrdinalIgnoreCase));
+            var template = templates.FirstOrDefault(x => x.Name.Contains("كشف حساب العميل", StringComparison.OrdinalIgnoreCase) || x.Name.Contains("StatementSummary", StringComparison.OrdinalIgnoreCase) || x.Name.Contains("Account Statement", StringComparison.OrdinalIgnoreCase));
             const string fallback = "مرحباً {CustomerName}،\\nكشف حسابكم لدى {StoreName} بتاريخ {Date}.\\nإجمالي الحركات: {TotalAmount} {Currency}.\\nالرصيد الحالي: {RemainingAmount} {Currency}.\\nشكراً لتعاملكم معنا.";
             var values = new Dictionary<string, string?>
             {
@@ -507,7 +507,7 @@ public partial class AccountsViewModel(IAppRepository repo,IAppSession session):
         {
             var identity = await repo.GetIdentityAsync();
             var templates = await repo.GetMessageTemplatesAsync();
-            var template = templates.FirstOrDefault(x => x.Name.Contains("سند قبض", StringComparison.OrdinalIgnoreCase) || x.Name.Contains("سند صرف", StringComparison.OrdinalIgnoreCase));
+            var template = templates.FirstOrDefault(x => x.Name.Contains("سند قبض", StringComparison.OrdinalIgnoreCase) || x.Name.Contains("سند صرف", StringComparison.OrdinalIgnoreCase) || x.Name.Contains("VoucherReceipt", StringComparison.OrdinalIgnoreCase) || x.Name.Contains("Voucher Receipt", StringComparison.OrdinalIgnoreCase));
             var balance = SelectedAccountStatementRows.FirstOrDefault(x => x.Id == operation.Id)?.CumulativeBalance ?? NetBalance;
             const string fallback = "مرحباً {CustomerName}،\\nسند رقم: #{InvoiceNumber} من {StoreName}.\\nالمبلغ: {TotalAmount} {Currency}.\\nالبيان: {Description}.\\nالرصيد المتبقي: {RemainingAmount} {Currency}.\\nالتاريخ: {Date}.";
             var values = new Dictionary<string, string?>

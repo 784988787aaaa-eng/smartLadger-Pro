@@ -165,9 +165,20 @@ public partial class SettingsViewModel : ObservableObject
             await using var command = connection.CreateCommand();
             command.CommandText = "PRAGMA user_version;";
             var schema = Convert.ToInt32(await command.ExecuteScalarAsync(), CultureInfo.InvariantCulture);
-            command.CommandText = "SELECT (SELECT COUNT(*) FROM Products)+(SELECT COUNT(*) FROM Invoices)+(SELECT COUNT(*) FROM People)+(SELECT COUNT(*) FROM Expenses);";
-            var records = Convert.ToInt64(await command.ExecuteScalarAsync(), CultureInfo.InvariantCulture);
-            DiagnosticsText = $"SmartLedger Pro — Enterprise Edition | Runtime: {Environment.Version} | Schema: v{schema} | DB: {bytes / 1024d / 1024d:N2} MB | سجلات الأصناف والفواتير والحسابات والمصروفات: {records:N0} | الذاكرة المُدارة: {GC.GetTotalMemory(false) / 1024d / 1024d:N2} MB";
+            command.CommandText = "SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%' ORDER BY name;";
+            var tables = new List<string>();
+            await using (var tableReader = await command.ExecuteReaderAsync())
+            {
+                while (await tableReader.ReadAsync()) tables.Add(tableReader.GetString(0));
+            }
+            long records = 0;
+            foreach (var table in tables)
+            {
+                await using var countCommand = connection.CreateCommand();
+                countCommand.CommandText = $"SELECT COUNT(*) FROM \"{table.Replace("\"", "\"\"", StringComparison.Ordinal)}\";";
+                records += Convert.ToInt64(await countCommand.ExecuteScalarAsync(), CultureInfo.InvariantCulture);
+            }
+            DiagnosticsText = $"SmartLedger Pro — Enterprise Edition | Runtime: {Environment.Version} | Schema: v{schema} | DB: {bytes / 1024d / 1024d:N2} MB | إجمالي سجلات جميع الجداول ({tables.Count} جدولًا): {records:N0} | الذاكرة المُدارة: {GC.GetTotalMemory(false) / 1024d / 1024d:N2} MB";
         }
         catch (Exception ex) { DiagnosticsText = $"تعذر جمع التشخيصات: {ex.Message}"; }
     }
