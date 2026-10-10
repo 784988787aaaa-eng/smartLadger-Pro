@@ -584,7 +584,7 @@ FROM Operations;
         if(!await reader.ReadAsync(ct))return new CashRegisterSummary(0m,0m,0m,0);
         var cashIn=Convert.ToDecimal(reader.GetValue(0),CultureInfo.InvariantCulture);
         var cashOut=Convert.ToDecimal(reader.GetValue(1),CultureInfo.InvariantCulture);
-        return new CashRegisterSummary(cashIn,cashOut,decimal.Round(cashIn-cashOut,2),reader.GetInt32(2));
+        return new CashRegisterSummary(cashIn,cashOut,decimal.Round(cashIn-cashOut,2),Convert.ToInt32(reader.GetValue(2),CultureInfo.InvariantCulture));
     }
     public async Task<string?> GetPreferenceAsync(string key,CancellationToken ct=default)
     {
