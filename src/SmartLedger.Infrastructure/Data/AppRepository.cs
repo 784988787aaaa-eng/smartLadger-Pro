@@ -566,6 +566,24 @@ FROM Operations;
         await audit.LogActionAsync(appSession?.CurrentUser?.Id,"RECYCLE_RESTORE",type,id,new { EntityType=type },ct);
     }
     public async Task HardDeleteDeletedItemAsync(Guid id,CancellationToken ct=default){await EnsurePermissionAsync(PermissionKeys.Delete,ct);await using var db=database.Open();await db.OpenAsync(ct);await using var c=db.CreateCommand();c.CommandText="DELETE FROM DeletedItems WHERE Id=$id;";P(c,"$id",id.ToString("N"));await c.ExecuteNonQueryAsync(ct);await audit.LogActionAsync(appSession?.CurrentUser?.Id, "RECYCLE_HARD_DELETE", "DeletedItem", id,null,ct);}
+    public async Task<string?> GetPreferenceAsync(string key,CancellationToken ct=default)
+    {
+        if(string.IsNullOrWhiteSpace(key))throw new ArgumentException("مفتاح الإعداد مطلوب.",nameof(key));
+        await EnsurePermissionAsync(PermissionKeys.View,ct);
+        await using var db=database.Open();await db.OpenAsync(ct);await using var c=db.CreateCommand();
+        c.CommandText="SELECT Value FROM AppPreferences WHERE [Key]=$key;";P(c,"$key",key.Trim());
+        var value=await c.ExecuteScalarAsync(ct);return value is null or DBNull?null:Convert.ToString(value,CultureInfo.InvariantCulture);
+    }
+    public async Task SavePreferenceAsync(string key,string value,CancellationToken ct=default)
+    {
+        await EnsurePermissionAsync(PermissionKeys.Settings,ct);
+        if(string.IsNullOrWhiteSpace(key)||key.Length>120)throw new ArgumentException("مفتاح الإعداد غير صالح.",nameof(key));
+        if(value.Length>10000)throw new ArgumentOutOfRangeException(nameof(value),"قيمة الإعداد طويلة جدًا.");
+        await using var db=database.Open();await db.OpenAsync(ct);await using var c=db.CreateCommand();
+        c.CommandText="INSERT INTO AppPreferences([Key],[Value],UpdatedAt) VALUES($key,$value,$updated) ON CONFLICT([Key]) DO UPDATE SET [Value]=$value,UpdatedAt=$updated;";
+        P(c,"$key",key.Trim());P(c,"$value",value);P(c,"$updated",DateTimeOffset.UtcNow.ToString("O"));await c.ExecuteNonQueryAsync(ct);
+        await audit.LogActionAsync(appSession?.CurrentUser?.Id,"PREFERENCE_UPDATE","Settings",null,new { Key=key.Trim() },ct);
+    }
     public async Task<IReadOnlyList<MessageTemplate>> GetMessageTemplatesAsync(CancellationToken ct=default){await EnsurePermissionAsync(PermissionKeys.View,ct);var x=new List<MessageTemplate>();await using var db=database.Open();await db.OpenAsync(ct);await using var c=db.CreateCommand();c.CommandText="SELECT Id,Name,Body,IsSystem FROM MessageTemplates ORDER BY IsSystem DESC,Name;";await using var r=await c.ExecuteReaderAsync(ct);while(await r.ReadAsync(ct))x.Add(new MessageTemplate(Guid.Parse(r.GetString(0)),r.GetString(1),r.GetString(2),r.GetBoolean(3)));return x;}
     public async Task<MessageTemplate> SaveMessageTemplateAsync(MessageTemplate t,CancellationToken ct=default){await EnsurePermissionAsync(PermissionKeys.Edit,ct);await using var db=database.Open();await db.OpenAsync(ct);await using var c=db.CreateCommand();c.CommandText="INSERT INTO MessageTemplates(Id,Name,Body,IsSystem) VALUES($id,$name,$body,$system) ON CONFLICT(Id) DO UPDATE SET Name=$name,Body=$body;";P(c,"$id",t.Id.ToString("N"));P(c,"$name",t.Name);P(c,"$body",t.Body);P(c,"$system",t.IsSystem?1:0);await c.ExecuteNonQueryAsync(ct);await audit.LogActionAsync(appSession?.CurrentUser?.Id, "TEMPLATE_SAVE", "MessageTemplate", t.Id,new { t.Name },ct);return t;}
 }
