@@ -201,13 +201,13 @@ public sealed class BackupServiceHardeningTests
             {
                 await c.OpenAsync();
                 await using var q = c.CreateCommand();
-                q.CommandText = "PRAGMA user_version=12;";
+                q.CommandText = "PRAGMA user_version=13;";
                 await q.ExecuteNonQueryAsync();
             }
 
             SqliteConnection.ClearAllPools();
             var hash = Convert.ToHexString(SHA256.HashData(await File.ReadAllBytesAsync(restored)));
-            var metadata = JsonSerializer.Serialize(new { schema = 12, createdAt = DateTimeOffset.UtcNow, sha256 = hash });
+            var metadata = JsonSerializer.Serialize(new { schema = 13, createdAt = DateTimeOffset.UtcNow, sha256 = hash });
             await File.WriteAllTextAsync(Path.Combine(work, "metadata.json"), metadata);
 
             var unsupported = Path.Combine(backupDir, "unsupported-schema.zip");
