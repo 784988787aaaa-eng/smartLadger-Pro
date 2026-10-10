@@ -171,19 +171,48 @@ public partial class SalesViewModel(IAppRepository repo,IAppSession session):Obs
         if(ProductId is not null){if(!AddCurrentLine())return;}
         else if(!string.IsNullOrWhiteSpace(ProductSearch)){StatusText="اختر الصنف من الاقتراحات أو أنشئه أولًا.";return;}
         if(Lines.Count==0){StatusText="أضف صنفًا واحدًا على الأقل إلى الفاتورة.";return;}
-        var total=decimal.Round(LinesTotal,2);
+        var subtotal=decimal.Round(LinesTotal,2);
+        if(!NumericNormalizer.TryParseDecimal(InvoiceDiscountText,out var discount)||discount<0||discount>subtotal){StatusText="قيمة الخصم يجب أن تكون بين صفر وإجمالي الأصناف.";return;}
+        discount=decimal.Round(discount,2);
+        var total=decimal.Round(subtotal-discount,2);
         var paid=PaymentMode==PaymentMode.Cash?total:PaymentMode==PaymentMode.Credit?0:(NumericNormalizer.TryParseDecimal(PaidText,out var partial)?decimal.Round(partial,2):-1);
         if(total<=0||paid<0||paid>total||(PaymentMode==PaymentMode.Partial&&(paid<=0||paid>=total))){StatusText="تحقق من الإجمالي وقيمة المدفوع.";return;}
         if(PaymentMode!=PaymentMode.Cash&&PersonId is null){StatusText="اختر العميل للفواتير الآجلة أو الجزئية.";return;}
         IsSaving=true;StatusText="جارٍ حفظ الفاتورة…";
-        try{
-            var invoice=new Invoice(Guid.NewGuid(),InvoiceType.Sale,PersonId,DateTimeOffset.Now,total,0,total,paid,PaymentMode,Note.Trim(),session.CurrentUser!.Id);
-            var invoiceLines=Lines.Select(x=>new InvoiceLine(Guid.NewGuid(),invoice.Id,x.ProductId,x.ProductName,x.Quantity,x.Unit,x.UnitPrice,0,x.LineTotal)).ToArray();
+        try
+        {
+            var identity=await repo.GetIdentityAsync();
+            var invoice=new Invoice(Guid.NewGuid(),InvoiceType.Sale,PersonId,DateTimeOffset.Now,subtotal,discount,total,paid,PaymentMode,Note.Trim(),session.CurrentUser!.Id)
+            {
+                DiscountPercentage=subtotal>0?decimal.Round(discount/subtotal*100m,2):0m,
+                CustomerName=_allPeople.FirstOrDefault(x=>x.PersonId==PersonId)?.PersonName??"",
+                StoreName=identity.BusinessName,
+                Currency=identity.Currency
+            };
+            var remainingDiscount=discount;
+            var invoiceLines=Lines.Select((x,index)=>
+            {
+                var lineDiscount=index==Lines.Count-1?remainingDiscount:decimal.Round(discount*x.LineTotal/subtotal,2);
+                remainingDiscount-=lineDiscount;
+                var lineTotal=decimal.Round(x.LineTotal-lineDiscount,2);
+                return new InvoiceLine(Guid.NewGuid(),invoice.Id,x.ProductId,x.ProductName,x.Quantity,x.Unit,x.UnitPrice,lineDiscount,lineTotal)
+                {
+                    Barcode=x.Barcode,UnitSelected=x.Unit,ConversionFactorApplied=x.ConversionFactorApplied,
+                    QuantityMinor=x.QuantitySmallUnits,CostPriceSnapshot=x.CostPriceSnapshot
+                };
+            }).ToArray();
             var movements=Lines.Select(x=>new StockMovement(Guid.NewGuid(),x.ProductId,StockMovementType.Sale,x.QuantitySmallUnits,decimal.Round(x.UnitPrice*x.Quantity/x.QuantitySmallUnits,4),Note.Trim(),DateTimeOffset.Now,session.CurrentUser!.Id)).ToArray();
             LedgerOperation? operation=PersonId is Guid person&&invoice.Total-invoice.Paid>0?new LedgerOperation(Guid.NewGuid(),person,OperationType.DebtOnUs,invoice.Total-invoice.Paid,Note.Trim(),DateTimeOffset.Now,session.CurrentUser!.Id):null;
-            await repo.CreateInvoiceTransactionWithMovementsAsync(invoice,invoiceLines,movements,operation);
-            StatusText="تم حفظ الفاتورة بنجاح.";IsDialogOpen=false;Lines.Clear();OnPropertyChanged(nameof(LinesTotal));ProductId=null;ProductSearch="";QuantityText="1";PriceText="";PaidText="0";Note="";_allProducts=await repo.GetProductsAsync();Products=_allProducts;Recalc();
-        }catch(Exception ex){StatusText=ex.Message;}
+            var saved=await repo.SaveSalesInvoiceAsync(invoice,invoiceLines,movements,operation);
+            LastSavedInvoice=saved;
+            LastSavedCustomerName=_allPeople.FirstOrDefault(x=>x.PersonId==PersonId)?.PersonName??"عميل نقدي";
+            LastSavedCustomerPhone=_allPeople.FirstOrDefault(x=>x.PersonId==PersonId)?.Person.Phone??"";
+            StatusText=$"تم حفظ الفاتورة رقم {saved.InvoiceNumber} بنجاح.";
+            IsDialogOpen=false;Lines.Clear();OnPropertyChanged(nameof(LinesTotal));OnPropertyChanged(nameof(IsCartEmpty));
+            ProductId=null;ProductSearch="";BarcodeInput="";QuantityText="1";PriceText="";PaidText="0";InvoiceDiscountText="0";Note="";
+            _allProducts=await repo.GetProductsAsync();Products=_allProducts;Recalc();
+        }
+        catch(Exception ex){StatusText=ex.Message;}
         finally{IsSaving=false;}
     }
 }
