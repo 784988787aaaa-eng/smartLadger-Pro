@@ -9,7 +9,12 @@ using SmartLedger.Infrastructure.Integrations;
 
 namespace SmartLedger.App.ViewModels;
 
-public sealed record AccountStatementRow(Guid Id,string Note,string TypeLabel,decimal Amount,DateTimeOffset OccurredAt,decimal CumulativeBalance);
+public sealed record AccountStatementRow(Guid Id,string Note,string TypeLabel,decimal Amount,DateTimeOffset OccurredAt,decimal CumulativeBalance,LedgerOperation Operation)
+{
+    public string? ReferenceNumber => Operation.ReferenceNumber;
+    public decimal Debit => Operation.Type is OperationType.DebtOnUs or OperationType.Sale or OperationType.Payment or OperationType.Settlement ? Amount : 0m;
+    public decimal Credit => Operation.Type is OperationType.Receive or OperationType.Return or OperationType.DebtToUs or OperationType.Purchase ? Amount : 0m;
+}
 
 public partial class AccountsViewModel(IAppRepository repo,IAppSession session):ObservableObject
 {
@@ -540,7 +545,8 @@ public partial class AccountsViewModel(IAppRepository repo,IAppSession session):
                     operation.TypeLabel,
                     operation.Amount,
                     operation.OccurredAt,
-                    decimal.Round(running,2,MidpointRounding.AwayFromZero)));
+                    decimal.Round(running,2,MidpointRounding.AwayFromZero),
+                    operation));
             }
             SelectedAccountStatementRows=rows.AsEnumerable().Reverse().ToArray();
             IsAccountOpen=true;
