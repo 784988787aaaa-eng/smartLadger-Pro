@@ -191,13 +191,13 @@ public partial class SalesViewModel(IAppRepository repo,IAppSession session):Obs
         }
         catch(Exception ex){StatusText=ex.Message;}
     }
-    [RelayCommand] private void SendWhatsApp()
+    [RelayCommand] private async Task SendWhatsAppAsync()
     {
         if(LastSavedInvoice is not { } invoice){StatusText="احفظ الفاتورة أولًا قبل إرسالها عبر واتساب.";return;}
         if(string.IsNullOrWhiteSpace(LastSavedCustomerPhone)){StatusText="لا يوجد رقم هاتف للعميل المرتبط بالفاتورة الأخيرة.";return;}
         try
         {
-            var identity=repo.GetIdentityAsync().GetAwaiter().GetResult();
+            var identity=await repo.GetIdentityAsync();
             var message=$"مرحباً {LastSavedCustomerName}،\\nفاتورة مبيعات رقم: #{invoice.InvoiceNumber}\\nالمحل: {identity.BusinessName}\\nإجمالي الفاتورة: {invoice.Total:N2} {identity.Currency}\\nالمدفوع: {invoice.Paid:N2} {identity.Currency}\\nالمتبقي: {invoice.RemainingAmount:N2} {identity.Currency}\\nالتاريخ: {invoice.IssuedAt:yyyy/MM/dd HH:mm}\\nشكراً لزيارتكم!";
             new WhatsAppService().OpenWhatsApp(LastSavedCustomerPhone,message);StatusText="تم فتح واتساب برسالة الفاتورة؛ راجعها قبل الإرسال.";
         }
@@ -244,7 +244,7 @@ public partial class SalesViewModel(IAppRepository repo,IAppSession session):Obs
             var remainingDiscount=discount;
             var invoiceLines=Lines.Select((x,index)=>
             {
-                var lineDiscount=index==Lines.Count-1?remainingDiscount:decimal.Round(discount*x.LineTotal/subtotal,2);
+                var lineDiscount=index==Lines.Count-1?remainingDiscount:decimal.Floor(discount*x.LineTotal/subtotal*100m)/100m;
                 remainingDiscount-=lineDiscount;
                 var lineTotal=decimal.Round(x.LineTotal-lineDiscount,2);
                 return new InvoiceLine(Guid.NewGuid(),invoice.Id,x.ProductId,x.ProductName,x.Quantity,x.Unit,x.UnitPrice,lineDiscount,lineTotal)
