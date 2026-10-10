@@ -13,4 +13,6 @@ public sealed record InvoiceDraftLine(
     public decimal CostPriceSnapshot { get; init; }
     public string Barcode { get; init; } = string.Empty;
     public decimal ConversionFactorApplied { get; init; } = 1m;
+    public string BatchNumber { get; init; } = string.Empty;
+    public DateTimeOffset? ExpiryDate { get; init; }
 }
