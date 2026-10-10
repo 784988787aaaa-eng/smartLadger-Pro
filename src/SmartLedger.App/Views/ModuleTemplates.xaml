@@ -756,7 +756,7 @@
       <Grid Style="{StaticResource DialogOverlay}" Visibility="{Binding IsDialogOpen,Converter={StaticResource BoolToVisibility}}">
         <Border Width="1120" MaxHeight="900" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{StaticResource DialogShell}" Padding="22"><ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
           <Grid FlowDirection="RightToLeft" KeyboardNavigation.TabNavigation="Local" behaviors:InputDialogBehavior.IsEnabled="True">
-            <Grid.InputBindings><KeyBinding Key="F1" Command="{Binding FocusBarcodeCommand}"/><KeyBinding Key="F4" Command="{Binding ApplyDiscountCommand}"/><KeyBinding Key="F5" Command="{Binding SaveCommand}"/><KeyBinding Key="F6" Command="{Binding HoldInvoiceCommand}"/><KeyBinding Key="Escape" Command="{Binding ClearInvoiceCommand}"/><KeyBinding Key="S" Modifiers="Control" Command="{Binding SaveCommand}"/><KeyBinding Key="P" Modifiers="Control" Command="{Binding PrintLastInvoiceCommand}"/></Grid.InputBindings>
+            <Grid.InputBindings><KeyBinding Key="F1" Command="{Binding FocusBarcodeCommand}"/><KeyBinding Key="F2" Command="{Binding FocusCustomerCommand}"/><KeyBinding Key="F3" Command="{Binding ToggleSelectedUnitCommand}"/><KeyBinding Key="F4" Command="{Binding ApplyDiscountCommand}"/><KeyBinding Key="F5" Command="{Binding SaveAndPrintCommand}"/><KeyBinding Key="F6" Command="{Binding HoldInvoiceCommand}"/><KeyBinding Key="Escape" Command="{Binding ClearInvoiceCommand}"/><KeyBinding Key="S" Modifiers="Control" Command="{Binding SaveCommand}"/><KeyBinding Key="P" Modifiers="Control" Command="{Binding PrintLastInvoiceCommand}"/></Grid.InputBindings>
             <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
             <DockPanel Grid.Row="0" Margin="0,0,0,16">
               <Button DockPanel.Dock="Left" Command="{Binding CloseDialogCommand}" Style="{StaticResource IconButton}" ToolTip="إغلاق" AutomationProperties.Name="إغلاق"><Path Width="14" Height="14" Stretch="Uniform" Stroke="#9DB7D4" StrokeThickness="1.6" Data="{StaticResource CloseIcon}"/></Button>
@@ -797,7 +797,7 @@
               <TextBlock Text="{Binding StatusText}" Style="{StaticResource CaptionText}" Foreground="{StaticResource BrushNegative}" VerticalAlignment="Center" TextWrapping="Wrap"/>
             </Grid>
             <StackPanel Grid.Row="7" Orientation="Horizontal" HorizontalAlignment="Left" Margin="4,14,4,0">
-              <Button Content="حفظ وطباعة (F5)" Command="{Binding SaveCommand}" Style="{StaticResource PrimaryButton}" Width="170" Height="44"/>
+              <Button Content="حفظ وطباعة (F5)" Command="{Binding SaveAndPrintCommand}" Style="{StaticResource PrimaryButton}" Width="170" Height="44"/>
               <Button Content="طباعة آخر إيصال" Command="{Binding PrintLastInvoiceCommand}" Style="{StaticResource GhostButton}" Width="145" Height="44" Margin="8,0,0,0"/>
               <Button Content="إرسال لواتساب" Command="{Binding SendWhatsAppCommand}" Style="{StaticResource GhostButton}" Width="135" Height="44" Margin="8,0,0,0"/>
               <Button Content="تعليق (F6)" Command="{Binding HoldInvoiceCommand}" Style="{StaticResource GhostButton}" Width="110" Height="44" Margin="8,0,0,0"/>
