@@ -16,7 +16,7 @@ public sealed class Database
         await using var db=Open(); await db.OpenAsync(ct);
         await ExecuteAsync(db,"PRAGMA journal_mode=WAL; PRAGMA synchronous=NORMAL; PRAGMA busy_timeout=10000; PRAGMA foreign_keys=ON; PRAGMA temp_store=MEMORY;",ct);
         var version=await ScalarLongAsync(db,"PRAGMA user_version;",ct);
-        if(version<1)await MigrationV1Async(db,ct); if(version<2)await MigrationV2Async(db,ct); if(version<3)await MigrationV3Async(db,ct); if(version<4)await MigrationV4Async(db,ct); if(version<5)await MigrationV5Async(db,ct); if(version<6)await MigrationV6Async(db,ct); if(version<7)await MigrationV7Async(db,ct); if(version<8)await MigrationV8Async(db,ct); if(version<9)await MigrationV9Async(db,ct); if(version<10)await MigrationV10Async(db,ct); if(version<11)await MigrationV11Async(db,ct); await SeedAsync(db,ct);
+        if(version<1)await MigrationV1Async(db,ct); if(version<2)await MigrationV2Async(db,ct); if(version<3)await MigrationV3Async(db,ct); if(version<4)await MigrationV4Async(db,ct); if(version<5)await MigrationV5Async(db,ct); if(version<6)await MigrationV6Async(db,ct); if(version<7)await MigrationV7Async(db,ct); if(version<8)await MigrationV8Async(db,ct); if(version<9)await MigrationV9Async(db,ct); if(version<10)await MigrationV10Async(db,ct); if(version<11)await MigrationV11Async(db,ct); if(version<12)await MigrationV12Async(db,ct); await SeedAsync(db,ct);
     }
     private static async Task MigrationV1Async(SqliteConnection db,CancellationToken ct)
     {
@@ -70,6 +70,27 @@ public sealed class Database
         if(await TableExistsAsync(db,"Operations",ct))
             await ExecuteAsync(db,"CREATE INDEX IF NOT EXISTS IX_Operations_Person_OccurredAt ON Operations(PersonId,OccurredAt);",ct);
         await SetVersionAsync(db,10,ct);
+    }
+    private static async Task MigrationV12Async(SqliteConnection db,CancellationToken ct)
+    {
+        // Additive commercial invoice migration. Legacy invoices receive stable identifiers.
+        await ExecuteAsync(db,"CREATE TABLE IF NOT EXISTS Invoices(Id TEXT PRIMARY KEY,Type INTEGER NOT NULL,PersonId TEXT NULL REFERENCES People(Id),IssuedAt TEXT NOT NULL,Subtotal TEXT NOT NULL,Discount TEXT NOT NULL,Total TEXT NOT NULL,Paid TEXT NOT NULL,PaymentMode INTEGER NOT NULL,Note TEXT NOT NULL DEFAULT '',CreatedBy TEXT NOT NULL);",ct);
+        await EnsureColumnAsync(db,"Invoices","InvoiceNumber","TEXT NOT NULL DEFAULT ''",ct);
+        await EnsureColumnAsync(db,"Invoices","DiscountPercentage","TEXT NOT NULL DEFAULT '0'",ct);
+        await EnsureColumnAsync(db,"Invoices","TaxAmount","TEXT NOT NULL DEFAULT '0'",ct);
+        await EnsureColumnAsync(db,"Invoices","CustomerName","TEXT NOT NULL DEFAULT ''",ct);
+        await EnsureColumnAsync(db,"Invoices","StoreName","TEXT NOT NULL DEFAULT ''",ct);
+        await EnsureColumnAsync(db,"Invoices","Currency","TEXT NOT NULL DEFAULT 'ريال'",ct);
+        await EnsureColumnAsync(db,"Invoices","IssuedByUserId","TEXT NOT NULL DEFAULT ''",ct);
+        await ExecuteAsync(db,"UPDATE Invoices SET InvoiceNumber='LEGACY-'||replace(Id,'-','') WHERE trim(InvoiceNumber)=''; UPDATE Invoices SET IssuedByUserId=CreatedBy WHERE trim(IssuedByUserId)='';",ct);
+        await ExecuteAsync(db,"CREATE TABLE IF NOT EXISTS InvoiceLines(Id TEXT PRIMARY KEY,InvoiceId TEXT NOT NULL REFERENCES Invoices(Id) ON DELETE CASCADE,ProductId TEXT NOT NULL REFERENCES Products(Id),Description TEXT NOT NULL,Quantity TEXT NOT NULL,Unit TEXT NOT NULL,UnitPrice TEXT NOT NULL,Discount TEXT NOT NULL,LineTotal TEXT NOT NULL);",ct);
+        await EnsureColumnAsync(db,"InvoiceLines","Barcode","TEXT NOT NULL DEFAULT ''",ct);
+        await EnsureColumnAsync(db,"InvoiceLines","UnitSelected","TEXT NOT NULL DEFAULT ''",ct);
+        await EnsureColumnAsync(db,"InvoiceLines","ConversionFactorApplied","TEXT NOT NULL DEFAULT '1'",ct);
+        await EnsureColumnAsync(db,"InvoiceLines","QuantityMinor","TEXT NOT NULL DEFAULT '0'",ct);
+        await EnsureColumnAsync(db,"InvoiceLines","CostPriceSnapshot","TEXT NOT NULL DEFAULT '0'",ct);
+        await ExecuteAsync(db,"UPDATE InvoiceLines SET UnitSelected=Unit WHERE trim(UnitSelected)=''; UPDATE InvoiceLines SET QuantityMinor=Quantity WHERE CAST(QuantityMinor AS REAL)=0; CREATE UNIQUE INDEX IF NOT EXISTS UX_Invoices_InvoiceNumber ON Invoices(InvoiceNumber) WHERE trim(InvoiceNumber)<>''; CREATE INDEX IF NOT EXISTS IX_Invoices_PersonId ON Invoices(PersonId); CREATE INDEX IF NOT EXISTS IX_Invoices_CreatedAt ON Invoices(IssuedAt); CREATE INDEX IF NOT EXISTS IX_InvoiceLines_InvoiceId ON InvoiceLines(InvoiceId);",ct);
+        await SetVersionAsync(db,12,ct);
     }
     private static async Task MigrationV11Async(SqliteConnection db,CancellationToken ct)
     {
