@@ -1,6 +1,7 @@
 using QuestPDF.Fluent;
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
+using QRCoder;
 using SmartLedger.Core.Abstractions;
 using SmartLedger.Core.Models;
 
@@ -21,6 +22,10 @@ public sealed class InvoicePrintService : IInvoicePrintService
         ArgumentNullException.ThrowIfNull(invoice);
         ArgumentNullException.ThrowIfNull(lines);
         ArgumentNullException.ThrowIfNull(identity);
+        var qrPayload = $"رقم الفاتورة={invoice.InvoiceNumber};الإجمالي={invoice.Total:N2};العملة={identity.Currency};التاريخ={invoice.IssuedAt:yyyy/MM/dd HH:mm}";
+        using var qrGenerator = new QRCodeGenerator();
+        using var qrData = qrGenerator.CreateQrCode(qrPayload, QRCodeGenerator.ECCLevel.Q);
+        var qrBytes = new PngByteQRCode(qrData).GetGraphic(5);
         return Document.Create(document =>
         {
             document.Page(page =>
@@ -79,8 +84,8 @@ public sealed class InvoicePrintService : IInvoicePrintService
                     if (!string.IsNullOrWhiteSpace(invoice.Note))
                         column.Item().Text($"ملاحظات: {invoice.Note}");
                     column.Item().AlignCenter().Text("شكراً لزيارتكم").Bold();
-                    if (thermal)
-                        column.Item().AlignCenter().Text($"مرجع QR: {invoice.InvoiceNumber}").FontSize(7);
+                    column.Item().AlignCenter().Height(thermal ? 64 : 88).Image(qrBytes);
+                    column.Item().AlignCenter().Text("رمز الفاتورة").FontSize(7);
                 });
             });
         }).GeneratePdf();
