@@ -243,7 +243,7 @@ public partial class SalesViewModel(IAppRepository repo,IAppSession session):Obs
             var movements=Lines.Select(x=>new StockMovement(Guid.NewGuid(),x.ProductId,StockMovementType.Sale,x.QuantitySmallUnits,decimal.Round(x.UnitPrice*x.Quantity/x.QuantitySmallUnits,4),Note.Trim(),DateTimeOffset.Now,session.CurrentUser!.Id)).ToArray();
             LedgerOperation? operation=PersonId is Guid person&&invoice.Total-invoice.Paid>0?new LedgerOperation(Guid.NewGuid(),person,OperationType.DebtOnUs,invoice.Total-invoice.Paid,Note.Trim(),DateTimeOffset.Now,session.CurrentUser!.Id):null;
             var saved=await repo.SaveSalesInvoiceAsync(invoice,invoiceLines,movements,operation);
-            LastSavedInvoice=saved;
+            LastSavedInvoice=saved;LastSavedLines=invoiceLines;
             LastSavedCustomerName=_allPeople.FirstOrDefault(x=>x.PersonId==PersonId)?.PersonName??"عميل نقدي";
             LastSavedCustomerPhone=_allPeople.FirstOrDefault(x=>x.PersonId==PersonId)?.Person.Phone??"";
             StatusText=$"تم حفظ الفاتورة رقم {saved.InvoiceNumber} بنجاح.";
