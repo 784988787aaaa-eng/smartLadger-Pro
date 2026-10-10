@@ -967,7 +967,7 @@
               <TextBlock Text="تُحفظ هذه البيانات في قاعدة التطبيق وتُستخدم في مخرجات التقارير عند إنشائها." Style="{StaticResource CaptionText}" Margin="0,5,0,0" TextWrapping="Wrap" TextAlignment="Left" HorizontalAlignment="Stretch"/>
             </StackPanel>
             <Grid Grid.Row="1">
-              <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+              <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
               <Grid.ColumnDefinitions><ColumnDefinition Width="1.2*"/><ColumnDefinition Width="1*"/><ColumnDefinition Width="170"/></Grid.ColumnDefinitions>
               <StackPanel Margin="3,0,8,12">
                 <TextBlock Text="اسم المنشأة *" Style="{StaticResource SectionLabel}" Margin="0,0,0,5" TextAlignment="Left" HorizontalAlignment="Left"/>
@@ -985,7 +985,13 @@
                 <TextBlock Text="العنوان" Style="{StaticResource SectionLabel}" Margin="0,0,0,5" TextAlignment="Left" HorizontalAlignment="Left"/>
                 <TextBox Style="{StaticResource Field}" Text="{Binding Address,UpdateSourceTrigger=PropertyChanged}" TextAlignment="Left" FlowDirection="RightToLeft" MaxLength="250" AutomationProperties.Name="عنوان المنشأة"/>
               </StackPanel>
-            </Grid>
+                          <Grid Grid.Row="2" Margin="3,12,3,0">
+                <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions>
+                <StackPanel Margin="3,0,8,0"><TextBlock Text="الرقم الضريبي" Style="{StaticResource SectionLabel}" Margin="0,0,0,5"/><TextBox Style="{StaticResource Field}" Text="{Binding TaxRegistrationNumber,UpdateSourceTrigger=PropertyChanged}" FlowDirection="LeftToRight" MaxLength="80"/></StackPanel>
+                <StackPanel Grid.Column="1" Margin="8,0,8,0"><TextBlock Text="السجل التجاري" Style="{StaticResource SectionLabel}" Margin="0,0,0,5"/><TextBox Style="{StaticResource Field}" Text="{Binding CommercialRegistrationNumber,UpdateSourceTrigger=PropertyChanged}" FlowDirection="LeftToRight" MaxLength="80"/></StackPanel>
+                <StackPanel Grid.Column="2" Margin="8,0,3,0"><TextBlock Text="شروط الفاتورة" Style="{StaticResource SectionLabel}" Margin="0,0,0,5"/><TextBox Style="{StaticResource Field}" Text="{Binding InvoiceTerms,UpdateSourceTrigger=PropertyChanged}" MaxLength="500"/></StackPanel>
+              </Grid>
+</Grid>
             <Border Grid.Row="2" Margin="3,14,3,0" Padding="12" Background="#0A1428" BorderBrush="{StaticResource BrushLine}" BorderThickness="1" CornerRadius="9">
               <Grid>
                 <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
