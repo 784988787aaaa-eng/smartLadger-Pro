@@ -21,11 +21,12 @@ public partial class SalesViewModel(IAppRepository repo,IAppSession session):Obs
     private bool _settingProductSelection;
     private decimal _lastUnitFactor=1m;
     private readonly List<HeldInvoiceDraft> _heldInvoices=new();
-    private sealed record HeldInvoiceDraft(IReadOnlyList<InvoiceDraftLine> Lines,Guid? PersonId,string CustomerSearch,string Note,PaymentMode PaymentMode,string PaidText,string DiscountText);
+    private sealed record HeldInvoiceDraft(IReadOnlyList<InvoiceDraftLine> Lines,Guid? PersonId,string CustomerSearch,string Note,PaymentMode PaymentMode,string PaidText,string DiscountText,string TaxPercentText);
     [ObservableProperty] private string customerSearch="";
     [ObservableProperty] private string productSearch="";
     [ObservableProperty] private string barcodeInput="";
     [ObservableProperty] private string invoiceDiscountText="0";
+    [ObservableProperty] private string taxPercentText="0";
     [ObservableProperty] private Invoice? lastSavedInvoice;
     [ObservableProperty] private IReadOnlyList<InvoiceLine> lastSavedLines=Array.Empty<InvoiceLine>();
     [ObservableProperty] private string lastSavedCustomerPhone="";
@@ -60,6 +61,8 @@ public partial class SalesViewModel(IAppRepository repo,IAppSession session):Obs
     [ObservableProperty] private string statusText="";
     public ObservableCollection<InvoiceDraftLine> Lines { get; } = new();
     public decimal LinesTotal => Lines.Sum(x=>x.LineTotal);
+    public decimal DiscountAmountDisplay => CurrentDiscount(LinesTotal);
+    public decimal TaxAmountDisplay => CurrentTax(Math.Max(0m,LinesTotal-CurrentDiscount(LinesTotal)));
     public bool IsCartEmpty => Lines.Count == 0;
     public int HeldInvoiceCount => _heldInvoices.Count;
 
@@ -75,7 +78,7 @@ public partial class SalesViewModel(IAppRepository repo,IAppSession session):Obs
     partial void OnPersonIdChanged(Guid? value){var p=_allPeople.FirstOrDefault(x=>x.PersonId==value);if(p is not null){CustomerSearch=p.PersonName;IsCustomerSuggestionsOpen=false;}}
     partial void OnProductIdChanged(Guid? value){var p=_allProducts.FirstOrDefault(x=>x.Id==value);_settingProductSelection=true;_lastUnitFactor=1m;if(p is not null){ProductSearch=p.Name;SelectedQuantityUnit=p.SmallUnit;PriceText=p.SalePrice>0?p.SalePrice.ToString("0.##",System.Globalization.CultureInfo.InvariantCulture):"";IsProductSuggestionsOpen=false;}else{SelectedQuantityUnit="";PriceText="";}_settingProductSelection=false;OnPropertyChanged(nameof(QuantityUnits));Recalc();}
     partial void OnSelectedQuantityUnitChanged(string value){OnPropertyChanged(nameof(QuantityUnits));if(_settingProductSelection)return;var product=_allProducts.FirstOrDefault(x=>x.Id==ProductId);if(product is null)return;var nextFactor=QuantityFactor(product);if(NumericNormalizer.TryParseDecimal(PriceText,out var currentPrice)&&_lastUnitFactor>0)PriceText=(currentPrice*nextFactor/_lastUnitFactor).ToString("0.##",System.Globalization.CultureInfo.InvariantCulture);_lastUnitFactor=nextFactor;}
-    [RelayCommand] private void OpenNew(){Lines.Clear();OnPropertyChanged(nameof(LinesTotal));OnPropertyChanged(nameof(IsCartEmpty));BarcodeInput="";InvoiceDiscountText="0";LastSavedInvoice=null;PersonId=null;ProductId=null;CustomerSearch="";ProductSearch="";People=_allPeople;Products=_allProducts;IsCustomerSuggestionsOpen=false;IsProductSuggestionsOpen=false;QuantityText="1";PriceText="";PaidText="0";Note="";PaymentMode=PaymentMode.Cash;SyncPaymentChoices();StatusText="";Recalc();IsDialogOpen=true;}
+    [RelayCommand] private void OpenNew(){Lines.Clear();OnPropertyChanged(nameof(LinesTotal));OnPropertyChanged(nameof(IsCartEmpty));BarcodeInput="";InvoiceDiscountText="0";TaxPercentText="0";LastSavedInvoice=null;PersonId=null;ProductId=null;CustomerSearch="";ProductSearch="";People=_allPeople;Products=_allProducts;IsCustomerSuggestionsOpen=false;IsProductSuggestionsOpen=false;QuantityText="1";PriceText="";PaidText="0";Note="";PaymentMode=PaymentMode.Cash;SyncPaymentChoices();StatusText="";Recalc();IsDialogOpen=true;}
     [RelayCommand] private void OpenQuickPerson(){QuickPersonName=CustomerSearch.Trim();QuickPersonPhone="";QuickPersonNote="";IsQuickPersonDialogOpen=true;}
     [RelayCommand] private void CloseQuickPerson(){IsQuickPersonDialogOpen=false;}
     [RelayCommand] private async Task SaveQuickPersonAsync(){
@@ -132,7 +135,12 @@ public partial class SalesViewModel(IAppRepository repo,IAppSession session):Obs
         if(!NumericNormalizer.TryParseDecimal(InvoiceDiscountText,out var discount)||discount<0)return 0m;
         return Math.Min(decimal.Round(gross,2),decimal.Round(discount,2));
     }
-    private void Recalc(){var current=ProductId is not null&&NumericNormalizer.TryParseDecimal(QuantityText,out var q)&&q>0&&NumericNormalizer.TryParseDecimal(PriceText,out var p)&&p>0?decimal.Round(q*p,2):0m;var gross=decimal.Round(LinesTotal+current,2);Total=Math.Max(0m,decimal.Round(gross-CurrentDiscount(gross),2));}
+    private decimal CurrentTax(decimal taxable)
+    {
+        if(!NumericNormalizer.TryParseDecimal(TaxPercentText,out var percentage)||percentage<0||percentage>100)return 0m;
+        return decimal.Round(taxable*percentage/100m,2);
+    }
+    private void Recalc(){var current=ProductId is not null&&NumericNormalizer.TryParseDecimal(QuantityText,out var q)&&q>0&&NumericNormalizer.TryParseDecimal(PriceText,out var p)&&p>0?decimal.Round(q*p,2):0m;var gross=decimal.Round(LinesTotal+current,2);var taxable=Math.Max(0m,decimal.Round(gross-CurrentDiscount(gross),2));Total=decimal.Round(taxable+CurrentTax(taxable),2);OnPropertyChanged(nameof(DiscountAmountDisplay));OnPropertyChanged(nameof(TaxAmountDisplay));}
     [RelayCommand] private void AddLine(){if(AddCurrentLine())StatusText="تمت إضافة الصنف إلى بنود الفاتورة.";}
     [RelayCommand] private void AddScannedBarcode()
     {
@@ -145,12 +153,13 @@ public partial class SalesViewModel(IAppRepository repo,IAppSession session):Obs
     }
     [RelayCommand] private void ApplyDiscount(){StatusText="أدخل قيمة الخصم الإجمالية في حقل الخصم ثم أكمل الفاتورة.";}
     [RelayCommand] private void ClearInvoice(){if(IsSaving)return;Lines.Clear();OnPropertyChanged(nameof(LinesTotal));OnPropertyChanged(nameof(IsCartEmpty));ProductId=null;ProductSearch="";BarcodeInput="";QuantityText="1";PriceText="";InvoiceDiscountText="0";Note="";Recalc();StatusText="تم تفريغ الفاتورة الحالية.";}
+    partial void OnTaxPercentTextChanged(string value)=>Recalc();
     [RelayCommand] private void HoldInvoice()
     {
         if(Lines.Count==0){StatusText="لا توجد بنود لتعليقها.";return;}
-        _heldInvoices.Add(new HeldInvoiceDraft(Lines.ToArray(),PersonId,CustomerSearch,Note,PaymentMode,PaidText,InvoiceDiscountText));
+        _heldInvoices.Add(new HeldInvoiceDraft(Lines.ToArray(),PersonId,CustomerSearch,Note,PaymentMode,PaidText,InvoiceDiscountText,TaxPercentText));
         Lines.Clear();OnPropertyChanged(nameof(LinesTotal));OnPropertyChanged(nameof(IsCartEmpty));OnPropertyChanged(nameof(HeldInvoiceCount));
-        PersonId=null;CustomerSearch="";ProductId=null;ProductSearch="";BarcodeInput="";QuantityText="1";PriceText="";PaidText="0";InvoiceDiscountText="0";Note="";Recalc();
+        PersonId=null;CustomerSearch="";ProductId=null;ProductSearch="";BarcodeInput="";QuantityText="1";PriceText="";PaidText="0";InvoiceDiscountText="0";TaxPercentText="0";Note="";Recalc();
         StatusText=$"تم تعليق الفاتورة. عدد الفواتير المعلقة: {_heldInvoices.Count}.";
     }
     [RelayCommand] private void ResumeHeldInvoice()
@@ -159,7 +168,7 @@ public partial class SalesViewModel(IAppRepository repo,IAppSession session):Obs
         if(Lines.Count>0){StatusText="علّق الفاتورة الحالية أو أفرغها قبل استئناف فاتورة أخرى.";return;}
         var held=_heldInvoices[^1];_heldInvoices.RemoveAt(_heldInvoices.Count-1);
         foreach(var line in held.Lines)Lines.Add(line);
-        PersonId=held.PersonId;CustomerSearch=held.CustomerSearch;Note=held.Note;PaymentMode=held.PaymentMode;PaidText=held.PaidText;InvoiceDiscountText=held.DiscountText;
+        PersonId=held.PersonId;CustomerSearch=held.CustomerSearch;Note=held.Note;PaymentMode=held.PaymentMode;PaidText=held.PaidText;InvoiceDiscountText=held.DiscountText;TaxPercentText=held.TaxPercentText;
         OnPropertyChanged(nameof(LinesTotal));OnPropertyChanged(nameof(IsCartEmpty));OnPropertyChanged(nameof(HeldInvoiceCount));Recalc();
         StatusText="تم استئناف آخر فاتورة معلقة.";
     }
@@ -240,7 +249,9 @@ public partial class SalesViewModel(IAppRepository repo,IAppSession session):Obs
         var subtotal=decimal.Round(LinesTotal,2);
         if(!NumericNormalizer.TryParseDecimal(InvoiceDiscountText,out var discount)||discount<0||discount>subtotal){StatusText="قيمة الخصم يجب أن تكون بين صفر وإجمالي الأصناف.";return;}
         discount=decimal.Round(discount,2);
-        var total=decimal.Round(subtotal-discount,2);
+        if(!NumericNormalizer.TryParseDecimal(TaxPercentText,out var taxPercent)||taxPercent<0||taxPercent>100){StatusText="نسبة الضريبة يجب أن تكون بين 0 و100.";return;}
+        var taxAmount=decimal.Round((subtotal-discount)*taxPercent/100m,2);
+        var total=decimal.Round(subtotal-discount+taxAmount,2);
         var paid=PaymentMode==PaymentMode.Cash?total:PaymentMode==PaymentMode.Credit?0:(NumericNormalizer.TryParseDecimal(PaidText,out var partial)?decimal.Round(partial,2):-1);
         if(total<=0||paid<0||paid>total||(PaymentMode==PaymentMode.Partial&&(paid<=0||paid>=total))){StatusText="تحقق من الإجمالي وقيمة المدفوع.";return;}
         if(PaymentMode!=PaymentMode.Cash&&PersonId is null){StatusText="اختر العميل للفواتير الآجلة أو الجزئية.";return;}
@@ -251,6 +262,7 @@ public partial class SalesViewModel(IAppRepository repo,IAppSession session):Obs
             var invoice=new Invoice(Guid.NewGuid(),InvoiceType.Sale,PersonId,DateTimeOffset.Now,subtotal,discount,total,paid,PaymentMode,Note.Trim(),session.CurrentUser!.Id)
             {
                 DiscountPercentage=subtotal>0?decimal.Round(discount/subtotal*100m,2):0m,
+                TaxAmount=taxAmount,
                 CustomerName=_allPeople.FirstOrDefault(x=>x.PersonId==PersonId)?.PersonName??"",
                 StoreName=identity.BusinessName,
                 Currency=identity.Currency
@@ -275,7 +287,7 @@ public partial class SalesViewModel(IAppRepository repo,IAppSession session):Obs
             LastSavedCustomerPhone=_allPeople.FirstOrDefault(x=>x.PersonId==PersonId)?.Person.Phone??"";
             StatusText=$"تم حفظ الفاتورة رقم {saved.InvoiceNumber} بنجاح.";
             IsDialogOpen=false;Lines.Clear();OnPropertyChanged(nameof(LinesTotal));OnPropertyChanged(nameof(IsCartEmpty));
-            ProductId=null;ProductSearch="";BarcodeInput="";QuantityText="1";PriceText="";PaidText="0";InvoiceDiscountText="0";Note="";
+            ProductId=null;ProductSearch="";BarcodeInput="";QuantityText="1";PriceText="";PaidText="0";InvoiceDiscountText="0";TaxPercentText="0";Note="";
             _allProducts=await repo.GetProductsAsync();Products=_allProducts;Recalc();
         }
         catch(Exception ex){StatusText=ex.Message;}
