@@ -1,4 +1,6 @@
 using System.IO;
+using System.Globalization;
+using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Media.Imaging;
 using Microsoft.Win32;
@@ -36,6 +38,13 @@ public partial class SettingsViewModel : ObservableObject
     [ObservableProperty] private string lastBackupText = "لم تُنفذ عملية نسخ احتياطي من هذه الجلسة.";
     [ObservableProperty] private BitmapImage? logoPreview;
     [ObservableProperty] private bool showLogo;
+    [ObservableProperty] private string selectedLanguage = "ar-YE";
+    [ObservableProperty] private IReadOnlyList<string> languages = new[] { "ar-YE", "ar-SA", "en-US" };
+    [ObservableProperty] private IReadOnlyList<MessageTemplate> messageTemplates = Array.Empty<MessageTemplate>();
+    [ObservableProperty] private MessageTemplate? selectedTemplate;
+    [ObservableProperty] private string templateName = "";
+    [ObservableProperty] private string templateBody = "";
+    [ObservableProperty] private string diagnosticsText = "اضغط تحديث لعرض تشخيصات النظام.";
     [ObservableProperty] private bool canResetData;
     private readonly ResetDataService? resetService;
     private readonly Action? resetCompleted;
@@ -64,6 +73,9 @@ public partial class SettingsViewModel : ObservableObject
             InvoiceTerms = x.InvoiceTerms;
             logoPath = x.LogoPath;
             LoadLogoPreview();
+            SelectedLanguage = await repo.GetPreferenceAsync("language", CancellationToken.None) ?? "ar-YE";
+            MessageTemplates = await repo.GetMessageTemplatesAsync();
+            await RefreshDiagnosticsAsync();
             var current = session.CurrentUser;
             CanResetData = current is { IsAdministrator: true } && await users.CanAsync(current.Id, PermissionKeys.ResetData);
             StatusText = "";
@@ -72,6 +84,72 @@ public partial class SettingsViewModel : ObservableObject
         {
             StatusText = $"تعذر تحميل الإعدادات: {ex.Message}";
         }
+    }
+
+    partial void OnSelectedTemplateChanged(MessageTemplate? value)
+    {
+        TemplateName = value?.Name ?? string.Empty;
+        TemplateBody = value?.Body ?? string.Empty;
+    }
+
+    [RelayCommand]
+    private async Task ApplyLanguageAsync()
+    {
+        if (!new[] { "ar-YE", "ar-SA", "en-US" }.Contains(SelectedLanguage, StringComparer.OrdinalIgnoreCase))
+        {
+            StatusText = "اختر لغة مدعومة.";
+            return;
+        }
+        try
+        {
+            await repo.SavePreferenceAsync("language", SelectedLanguage);
+            var culture = CultureInfo.GetCultureInfo(SelectedLanguage);
+            CultureInfo.DefaultThreadCurrentCulture = culture;
+            CultureInfo.DefaultThreadCurrentUICulture = culture;
+            var direction = SelectedLanguage.StartsWith("en", StringComparison.OrdinalIgnoreCase) ? FlowDirection.LeftToRight : FlowDirection.RightToLeft;
+            foreach (Window window in Application.Current.Windows) window.FlowDirection = direction;
+            StatusText = SelectedLanguage == "en-US" ? "Language and layout direction updated. Some screen labels remain Arabic." : "تم تحديث اللغة واتجاه الواجهة دون إعادة تشغيل.";
+        }
+        catch (Exception ex) { StatusText = $"تعذر تطبيق اللغة: {ex.Message}"; }
+    }
+
+    [RelayCommand]
+    private async Task SaveTemplateAsync()
+    {
+        if (string.IsNullOrWhiteSpace(TemplateName) || string.IsNullOrWhiteSpace(TemplateBody))
+        {
+            StatusText = "أدخل اسم القالب ومحتواه.";
+            return;
+        }
+        try
+        {
+            var template = new MessageTemplate(SelectedTemplate?.Id ?? Guid.NewGuid(), TemplateName.Trim(), TemplateBody.Trim(), SelectedTemplate?.IsSystem ?? false);
+            var saved = await repo.SaveMessageTemplateAsync(template);
+            MessageTemplates = await repo.GetMessageTemplatesAsync();
+            SelectedTemplate = MessageTemplates.FirstOrDefault(x => x.Id == saved.Id);
+            StatusText = "تم حفظ قالب الرسائل.";
+        }
+        catch (Exception ex) { StatusText = ex.Message; }
+    }
+
+    [RelayCommand]
+    private async Task RefreshDiagnosticsAsync()
+    {
+        try
+        {
+            var dbPath = Path.Combine(LocalAppPaths.Root, "smartledger.db");
+            var bytes = File.Exists(dbPath) ? new FileInfo(dbPath).Length : 0L;
+            var db = new Database(LocalAppPaths.Root);
+            await using var connection = db.Open();
+            await connection.OpenAsync();
+            await using var command = connection.CreateCommand();
+            command.CommandText = "PRAGMA user_version;";
+            var schema = Convert.ToInt32(await command.ExecuteScalarAsync(), CultureInfo.InvariantCulture);
+            command.CommandText = "SELECT (SELECT COUNT(*) FROM Products)+(SELECT COUNT(*) FROM Invoices)+(SELECT COUNT(*) FROM People)+(SELECT COUNT(*) FROM Expenses);";
+            var records = Convert.ToInt64(await command.ExecuteScalarAsync(), CultureInfo.InvariantCulture);
+            DiagnosticsText = $"SmartLedger Pro — Enterprise Edition | Runtime: {Environment.Version} | Schema: v{schema} | DB: {bytes / 1024d / 1024d:N2} MB | سجلات الأصناف والفواتير والحسابات والمصروفات: {records:N0} | الذاكرة المُدارة: {GC.GetTotalMemory(false) / 1024d / 1024d:N2} MB";
+        }
+        catch (Exception ex) { DiagnosticsText = $"تعذر جمع التشخيصات: {ex.Message}"; }
     }
 
     [RelayCommand]
