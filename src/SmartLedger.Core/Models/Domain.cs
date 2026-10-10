@@ -129,6 +129,7 @@ public sealed record MessageTemplate(Guid Id,string Name,string Body,bool IsSyst
 public sealed record AuditEntry(Guid Id,Guid? UserId,string UserName,string Action,string EntityType,Guid? EntityId,string Details,DateTimeOffset OccurredAt);
 public sealed record ExpenseCategory(string Id,string Name,bool IsActive=true);
 public sealed record RuntimeDiagnostics(string ProductVersion,string RuntimeVersion,long DatabaseSizeBytes,long ManagedMemoryBytes,int SchemaVersion,long ProductCount,long InvoiceCount,long PeopleCount,long ExpenseCount);
+public sealed record CashRegisterSummary(decimal CashIn,decimal CashOut,decimal Balance,int EntryCount);
 public static class MessageTemplateEngine
 {
     public static string Render(string template,IReadOnlyDictionary<string,string?> values)
