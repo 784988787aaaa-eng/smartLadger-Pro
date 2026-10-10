@@ -5,6 +5,7 @@ using SmartLedger.Infrastructure.FinalRelease;
 using SmartLedger.Core.Abstractions;
 using SmartLedger.Core.Models;
 using SmartLedger.Core.Services;
+using SmartLedger.Infrastructure.Integrations;
 
 namespace SmartLedger.App.ViewModels;
 
@@ -31,6 +32,11 @@ public partial class AccountsViewModel(IAppRepository repo,IAppSession session):
     [ObservableProperty] private string newName="";
     [ObservableProperty] private string newPhone="";
     [ObservableProperty] private string newNote="";
+    [ObservableProperty] private string newSecondaryPhone="";
+    [ObservableProperty] private string newAddress="";
+    [ObservableProperty] private string newCreditLimit="";
+    [ObservableProperty] private AccountNature newAccountNature=AccountNature.Flexible;
+    [ObservableProperty] private bool newWhatsAppEnabled=true;
     [ObservableProperty] private string openingBalanceText="";
     [ObservableProperty] private bool openingBalanceForUs=true;
     [ObservableProperty] private bool openingBalanceAgainstUs;
@@ -346,6 +352,11 @@ public partial class AccountsViewModel(IAppRepository repo,IAppSession session):
         NewName="";
         NewPhone="";
         NewNote="";
+        NewSecondaryPhone="";
+        NewAddress="";
+        NewCreditLimit="";
+        NewAccountNature=AccountNature.Flexible;
+        NewWhatsAppEnabled=true;
         OpeningBalanceText="";
         OpeningBalanceForUs=false;
         OpeningBalanceAgainstUs=false;
@@ -370,49 +381,133 @@ public partial class AccountsViewModel(IAppRepository repo,IAppSession session):
     [RelayCommand] private void SelectOpeningAgainstUs(){OpeningBalanceForUs=false;OpeningBalanceAgainstUs=true;}
 
     [RelayCommand]
-    private async Task SaveNewAsync()
+    private Task SaveNewAsync() => SaveAccountAsync(false);
+
+    [RelayCommand]
+    private Task SaveAndNewAsync() => SaveAccountAsync(true);
+
+    [RelayCommand]
+    private Task SaveAndCloseAsync() => SaveAccountAsync(false);
+
+    private async Task SaveAccountAsync(bool continueEntry)
     {
         if(IsSaving) return;
-
         var name=NewName.Trim();
-        if(name.Length<2){StatusText="أدخل اسم الحساب.";return;}
+        if(name.Length<2){StatusText="اسم الحساب مطلوب ويجب ألا يقل عن حرفين.";return;}
+        var phone=NewPhone.Trim();
+        if(!string.IsNullOrWhiteSpace(phone))
+        {
+            var digits=new string(phone.Where(char.IsDigit).ToArray());
+            if(digits.Length is < 7 or > 15 || phone.Any(ch=>!char.IsDigit(ch) && ch is not ('+' or ' ' or '-' or '(' or ')' or '.')))
+            {StatusText="رقم الهاتف غير صالح؛ استخدم 7 إلى 15 رقماً.";return;}
+            if(People.Any(x=>!string.IsNullOrWhiteSpace(x.Person.Phone) && string.Equals(new string(x.Person.Phone.Where(char.IsDigit).ToArray()),digits,StringComparison.Ordinal)))
+            {StatusText="رقم الهاتف مسجل مسبقاً في قائمة الحسابات المحملة.";return;}
+        }
 
-        var rawOpening=OpeningBalanceText.Trim();
+        decimal? creditLimit=null;
+        if(!string.IsNullOrWhiteSpace(NewCreditLimit))
+        {
+            if(!TryParseFlexibleDecimal(NewCreditLimit,out var parsedLimit) || parsedLimit<=0)
+            {StatusText="حد الائتمان يجب أن يكون مبلغاً موجباً أو يترك فارغاً.";return;}
+            creditLimit=parsedLimit;
+        }
+
         decimal opening=0;
-        if(rawOpening.Length>0 && !NumericNormalizer.TryParseDecimal(rawOpening,out opening))
-        {
-            StatusText="أدخل مبلغًا صحيحًا.";
-            return;
-        }
-
-        if(opening<0){StatusText="الرصيد الافتتاحي لا يمكن أن يكون سالبًا.";return;}
+        if(!string.IsNullOrWhiteSpace(OpeningBalanceText) && !TryParseFlexibleDecimal(OpeningBalanceText,out opening))
+        {StatusText="أدخل مبلغاً صحيحاً؛ يمكن استخدام النقطة أو الفاصلة العشرية.";return;}
+        if(opening<0){StatusText="الرصيد الافتتاحي لا يمكن أن يكون سالباً.";return;}
         if(opening>0 && !OpeningBalanceForUs && !OpeningBalanceAgainstUs)
-        {
-            StatusText="اختر اتجاه الرصيد.";
-            return;
-        }
-
+        {StatusText="اختر اتجاه الرصيد.";return;}
         var book=SelectedGroupBook;
-        if(book is null){StatusText="اختر تصنيف الدفتر أولاً.";return;}
-        if(book.Kind==BookKind.All){StatusText="اختر تصنيفًا صالحًا للحساب.";return;}
+        if(book is null || book.Kind==BookKind.All){StatusText="اختر تصنيفاً صالحاً للحساب.";return;}
 
         try
         {
             IsSaving=true;
             StatusText="جارٍ حفظ الحساب…";
+            var now=DateTimeOffset.UtcNow;
+            var person=new Person(Guid.NewGuid(),book.Id,name,phone,NewNote.Trim(),now)
+            {
+                SecondaryPhone=NewSecondaryPhone.Trim(), Address=NewAddress.Trim(), CreditLimit=creditLimit,
+                Nature=NewAccountNature, WhatsAppEnabled=NewWhatsAppEnabled, UpdatedAt=now
+            };
             var direction=OpeningBalanceForUs?OperationType.DebtOnUs:OperationType.DebtToUs;
-            await repo.CreatePersonWithOpeningBalanceAsync(book.Id,name,NewPhone.Trim(),NewNote.Trim(),opening,direction);
-            IsDialogOpen=false;
+            await repo.CreatePersonWithOpeningBalanceAsync(person,opening,direction);
             await RefreshAsync();
+            if(continueEntry)
+            {
+                NewName=""; NewPhone=""; NewSecondaryPhone=""; NewAddress=""; NewCreditLimit=""; NewNote="";
+                OpeningBalanceText=""; NewAccountNature=AccountNature.Flexible; NewWhatsAppEnabled=true;
+                StatusText="تم حفظ الحساب. يمكنك إدخال الحساب التالي.";
+            }
+            else
+            {
+                IsDialogOpen=false;
+                StatusText="تم حفظ الحساب.";
+            }
         }
-        catch(Exception ex)
+        catch(Exception ex){StatusText=ex.Message;}
+        finally{IsSaving=false;}
+    }
+
+    private static bool TryParseFlexibleDecimal(string text,out decimal value)
+    {
+        var normalized=text.Trim().Replace("٬","").Replace("٫",".").Replace("،",",");
+        if(normalized.Contains('.') && normalized.Contains(',')) normalized=normalized.Replace(",","");
+        else if(normalized.Contains(',')) normalized=normalized.Replace(',', '.');
+        return decimal.TryParse(normalized,System.Globalization.NumberStyles.Number,
+            System.Globalization.CultureInfo.InvariantCulture,out value);
+    }
+
+    [RelayCommand]
+    private void SendStatementWhatsApp()
+    {
+        if(SelectedPerson is null){AccountStatementStatus="اختر حساباً أولاً.";return;}
+        try
         {
-            StatusText=ex.Message;
+            var identity=repo.GetIdentityAsync().GetAwaiter().GetResult();
+            var message=WhatsAppService.BuildStatementSummary(SelectedPerson.Person.Name,identity.BusinessName,
+                0m,TotalDebit+TotalCredit,NetBalance,Currency,DateTimeOffset.Now);
+            new WhatsAppService().OpenMessage(SelectedPerson.Person.Phone,message);
+            AccountStatementStatus="تم فتح واتساب لإرسال ملخص كشف الحساب.";
         }
-        finally
+        catch(Exception ex){AccountStatementStatus=ex.Message;}
+    }
+
+    [RelayCommand]
+    private void SendVoucherWhatsApp(LedgerOperation? operation)
+    {
+        if(operation is null || SelectedPerson is null){AccountStatementStatus="اختر حركة من كشف الحساب.";return;}
+        try
         {
-            IsSaving=false;
+            var message=WhatsAppService.BuildVoucher(SelectedPerson.Person.Name,
+                operation.ReferenceNumber ?? operation.Id.ToString("N")[..8].ToUpperInvariant(),
+                operation.Amount,Currency,operation.TypeLabel,operation.Note,
+                SelectedAccountStatementRows.FirstOrDefault(x=>x.Id==operation.Id)?.CumulativeBalance ?? NetBalance,
+                operation.OccurredAt);
+            new WhatsAppService().OpenMessage(SelectedPerson.Person.Phone,message);
+            AccountStatementStatus="تم فتح واتساب للسند.";
         }
+        catch(Exception ex){AccountStatementStatus=ex.Message;}
+    }
+
+    [RelayCommand]
+    private async Task DeleteOperationAsync(LedgerOperation? operation)
+    {
+        if(operation is null || session.CurrentUser is null) return;
+        var answer=System.Windows.MessageBox.Show(
+            $"سيُنقل السند «{operation.ReferenceNumber ?? operation.Id.ToString("N")[..8]}» إلى سلة المحذوفات، وسيعاد احتساب الرصيد التراكمي. هل تريد المتابعة؟",
+            "تأكيد حذف/عكس الحركة",System.Windows.MessageBoxButton.YesNo,System.Windows.MessageBoxImage.Warning);
+        if(answer!=System.Windows.MessageBoxResult.Yes) return;
+        try
+        {
+            await repo.DeleteOperationAsync(operation.Id,session.CurrentUser.Id);
+            SelectedAccountOperations=await repo.GetOperationsAsync(operation.PersonId,1000);
+            await OpenAccountAsync();
+            await RefreshAsync();
+            AccountStatementStatus="تم حذف الحركة وإعادة احتساب الأرصدة.";
+        }
+        catch(Exception ex){AccountStatementStatus=ex.Message;}
     }
 
     [RelayCommand]
