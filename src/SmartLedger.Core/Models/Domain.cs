@@ -100,6 +100,8 @@ public sealed record InvoiceLine(Guid Id, Guid InvoiceId, Guid ProductId, string
     public decimal ConversionFactorApplied { get; init; } = 1m;
     public decimal QuantityMinor { get; init; } = Quantity;
     public decimal CostPriceSnapshot { get; init; }
+    public string BatchNumber { get; init; } = string.Empty;
+    public DateTimeOffset? ExpiryDate { get; init; }
 };
 public sealed record Expense(Guid Id, Guid? PersonId, string Category, decimal Amount, string Note, DateTimeOffset OccurredAt, Guid CreatedBy)
 {
