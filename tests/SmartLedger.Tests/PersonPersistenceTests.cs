@@ -39,6 +39,7 @@ public sealed class PersonPersistenceTests
         }
         finally
         {
+            Microsoft.Data.Sqlite.SqliteConnection.ClearAllPools();
             if(Directory.Exists(root)) Directory.Delete(root,true);
         }
     }
