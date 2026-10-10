@@ -10,16 +10,20 @@ namespace SmartLedger.Infrastructure.Reporting;
 
 public sealed class InvoicePrintService : IInvoicePrintService
 {
+    private static int _fontsRegistered;
     public InvoicePrintService()
     {
         QuestPDF.Settings.License = LicenseType.Community;
-        var fontsDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Fonts);
-        foreach (var fontName in new[] { "tahoma.ttf", "arial.ttf" })
+        if (Interlocked.Exchange(ref _fontsRegistered, 1) == 0)
         {
-            var fontPath = Path.Combine(fontsDirectory, fontName);
-            if (!File.Exists(fontPath)) continue;
-            using var fontStream = File.OpenRead(fontPath);
-            FontManager.RegisterFont(fontStream);
+            var fontsDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Fonts);
+            foreach (var fontName in new[] { "tahoma.ttf", "arial.ttf" })
+            {
+                var fontPath = Path.Combine(fontsDirectory, fontName);
+                if (!File.Exists(fontPath)) continue;
+                using var fontStream = File.OpenRead(fontPath);
+                FontManager.RegisterFont(fontStream);
+            }
         }
     }
 
