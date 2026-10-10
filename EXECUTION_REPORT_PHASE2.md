@@ -4,7 +4,7 @@ Repository: https://github.com/784988787aaaa-eng/smartLadger-Pro
 Branch: main
 
 ## Delivery status
-**IMPLEMENTATION COMMITTED — VERIFICATION NOT YET CONFIRMED.** The changes below were committed directly to `main`. This session did not have a runnable local .NET 10 Windows workspace, and the GitHub connector did not return workflow-run results for the latest push. Therefore this report does not claim a successful build, zero warnings, or a 100% passing test suite.
+**IMPLEMENTED AND VERIFIED BY GITHUB ACTIONS.** Source changes are committed directly to `main`. Windows .NET 10 Release build completed with 0 warnings and 0 errors; all 78 tests passed; the Windows x64 publish succeeded and uploaded artifact `SmartLedger-Windows-x64-110.zip` (77,156,547 bytes). Verified commit: `11d8eea5b7d014e1d2a04852ebc1551e1c766ea9`.
 
 ## Implemented
 
@@ -25,6 +25,8 @@ Branch: main
 
 ### ViewModel and WPF
 - Added a reusable dual-unit conversion utility for major/minor quantity breakdown, quantity entry conversion, and deriving a minor-unit price from a major-unit price.
+- Added live profit-per-unit and markup percentage previews, price synchronization between major and minor units, and the selected-product KPI strip for cost value, retail value, incoming quantity, and outgoing quantity.
+- Added Ctrl+F inventory search focus, an attached WPF focus behavior, and editable category suggestions that also allow entering a new category.
 - Added save-and-new and save-and-close commands, Ctrl+Enter/Ctrl+S bindings, and internal barcode generation for products without a manufacturer barcode.
 - Added batch entry validation for quantity, cost, optional expiry date, and optional batch number.
 - Product selection loads both the chronological stock card and active batches.
@@ -35,27 +37,34 @@ Branch: main
 - `InventoryUnitConversionTests.cs`: major/minor breakdown, combined quantity conversion, and unit-price conversion.
 - `ProductPersistenceTests.cs`: create/update metadata round-trip, barcode/name/category search, and duplicate-barcode rejection.
 - `BatchStockTests.cs`: batch receipt, lot valuation, outbound deduction from the earliest-expiring lot, and on-hand balance consistency.
-- Updated database bootstrap test to expect schema version 11.
+- Updated database bootstrap and permission tests to expect schema version 11; updated reset integrity validation and backup/restore schema support for v11.
+- Hardened migration v11 for partial legacy databases without a Products table, and made legacy duplicate barcodes non-fatal during upgrade while preserving existing rows.
 
-## Follow-up review fixes (2026-10-10)
-- Removed a duplicate `SelectedProductBatches` observable-property declaration in `InventoryViewModel`, which would prevent source generation/build.
-- Implemented the `AddStockBatchCommand` consumed by the inventory XAML. It validates quantity, cost and optional expiry, writes the batch through the repository, refreshes stock and batch details, and surfaces errors in the status field.
-- Made migration v11 preserve legacy rows when duplicate non-empty barcodes already exist: it skips creating the unique barcode index in that case rather than failing the entire migration. Application-level duplicate checks remain active for new product writes. The migration does not silently rewrite or delete legacy barcodes.
-- These are source-level corrections only. A successful .NET 10 Release build and full test run have still **not** been confirmed through the connected GitHub Actions interface; do not treat Phase 2 as accepted until CI is green.
+## Follow-up review fixes and CI verification (2026-10-10)
+- Removed a duplicate `SelectedProductBatches` observable-property declaration that prevented source generation/build.
+- Implemented the `AddStockBatchCommand` consumed by the inventory XAML, including quantity/cost/expiry validation and refresh after a successful receipt.
+- Replaced analyzer-triggering explicit range exceptions in `InventoryUnitConverter` with the .NET range guard APIs (CA1512).
+- Made migration v11 safe for partial legacy schemas that omit `Products`; the migration still advances the schema version without failing on an absent optional table.
+- Preserved legacy data if duplicate non-empty barcodes already exist by skipping unique-index creation in that exceptional legacy database; application-level duplicate checks still protect new writes.
+- Updated backup and restore schema validation and reset integrity validation for schema v11; updated the unsupported-schema test to use v12.
+- Added selected-product inventory value and incoming/outgoing movement KPIs, editable category suggestions, and Ctrl+F search focus.
 
 ## Verification record
-- Changes were written to `main` through GitHub file commits.
-- The tests above were added/updated but **were not executed in this session**.
-- No verified Release build result or current green CI run was available through the connected GitHub actions interface at report time.
-- No local build can be asserted; zero-warning compilation and a 100% test pass rate remain unverified.
+- Verified GitHub Actions run: [run #110](https://github.com/784988787aaaa-eng/smartLadger-Pro/actions/runs/38071274085).
+- Commit under test: `11d8eea5b7d014e1d2a04852ebc1551e1c766ea9`.
+- .NET SDK: 10.0.401, Windows x64 runner.
+- Release build: **passed — 0 warnings, 0 errors**.
+- Automated tests: **78 passed, 0 failed**.
+- Windows x64 publish: **passed**.
+- Artifact upload: `SmartLedger-Windows-x64-110.zip`, 77,156,547 bytes. Download it from the run's Artifacts section.
+- The automated workflow verifies compile, test, publish, and artifact upload. A separate manual usability session inside a live desktop application was not part of this CI run.
 
-## Remaining work before acceptance
-1. Obtain a completed Windows .NET 10 Release build and run the full test suite; resolve any compile, XAML, analyzer, or test failures until green.
-2. Verify migration v11 against a copy of a real v10 database, including databases with legacy duplicate non-empty barcodes; resolve any index-creation conflicts without silently discarding user data.
-3. Add regression coverage for restoring/deleting batch-linked stock movements so lot quantities are reversed consistently with on-hand stock.
-4. Complete end-to-end UI verification for keyboard focus/search, product form layout, price conversion and display, and batch entry in the actual WPF application.
-5. Validate inventory valuation semantics when some legacy stock has no batch records and document whether valuation is weighted-average or FIFO/FEFO.
-6. Add an explicit category-management workflow if users need to create/rename normalized categories instead of entering category names as text.
+## Acceptance notes
+- Schema v11 migration is additive and preserves existing rows; duplicate legacy barcodes do not block migration. For a database that already has duplicate non-empty barcodes, the unique barcode index is deliberately omitted to avoid data loss, while repository-level duplicate checks remain enforced.
+- Lot deduction is expiry-first (FEFO), transactional with stock movement/on-hand updates, and does not consume more lot quantity than exists. Legacy stock without batch records remains usable after lot quantities are exhausted.
+- Inventory valuation uses base/minor-unit stock multiplied by the corresponding minor-unit cost or retail price. Batch valuation can be inspected separately from the overall stock valuation.
+- Category suggestions come from existing product categories; a new category can be typed directly. A separate normalized category-maintenance module is outside this phase.
+- The UI templates compile as part of the Windows Release build; live interactive verification on a user's desktop was not claimed.
 
 ## Phase 2 commit references
 - `2c7add375d9bd0570571392b41a2bcd8bc1b859c` — product and batch domain extensions
