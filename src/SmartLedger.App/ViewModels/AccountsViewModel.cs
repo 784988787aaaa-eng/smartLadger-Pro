@@ -476,7 +476,7 @@ public partial class AccountsViewModel(IAppRepository repo,IAppSession session):
             var identity=repo.GetIdentityAsync().GetAwaiter().GetResult();
             var message=WhatsAppService.BuildStatementSummary(SelectedPerson.Person.Name,identity.BusinessName,
                 0m,TotalDebit+TotalCredit,NetBalance,Currency,DateTimeOffset.Now);
-            new WhatsAppService().OpenMessage(SelectedPerson.Person.Phone,message);
+            new WhatsAppService().OpenWhatsApp(SelectedPerson.Person.Phone,message);
             AccountStatementStatus="تم فتح واتساب لإرسال ملخص كشف الحساب.";
         }
         catch(Exception ex){AccountStatementStatus=ex.Message;}
@@ -488,7 +488,7 @@ public partial class AccountsViewModel(IAppRepository repo,IAppSession session):
         if(operation is null || SelectedPerson is null){AccountStatementStatus="اختر حركة من كشف الحساب.";return;}
         try
         {
-            var message=WhatsAppService.BuildVoucher(SelectedPerson.Person.Name,
+            var message=WhatsAppService.BuildVoucherMessage(SelectedPerson.Person.Name,
                 operation.ReferenceNumber ?? operation.Id.ToString("N")[..8].ToUpperInvariant(),
                 operation.Amount,Currency,operation.TypeLabel,operation.Note,
                 SelectedAccountStatementRows.FirstOrDefault(x=>x.Id==operation.Id)?.CumulativeBalance ?? NetBalance,
