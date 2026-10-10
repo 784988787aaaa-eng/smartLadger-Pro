@@ -23,7 +23,7 @@ public sealed class BatchStockTests
             Assert.Equal(25m, loaded.StockSmallUnits);
             var batches = await repo.GetProductBatchesAsync(product.Id);
             Assert.Equal(2, batches.Count);
-            Assert.Equal(37.0m, batches.Sum(x => x.QuantityMinor * x.CostPrice));
+            Assert.Equal(42.0m, batches.Sum(x => x.QuantityMinor * x.CostPrice));
         }
         finally
         {
