@@ -48,7 +48,7 @@ public sealed class AccountsViewModelTests
         Assert.Equal("عليه (مدين)",vm.BalanceStatusText);
     }
 
-    public sealed class RepositoryNotCalledProxy : DispatchProxy
+    public class RepositoryNotCalledProxy : DispatchProxy
     {
         protected override object? Invoke(MethodInfo? targetMethod, object?[]? args)
             => throw new InvalidOperationException($"Unexpected repository call: {targetMethod?.Name}");
