@@ -158,25 +158,47 @@ LIMIT COALESCE($take,-1);
 
     public async Task<Person> CreatePersonWithOpeningBalanceAsync(Person person, decimal openingBalance, OperationType openingDirection, CancellationToken ct=default)
     {
-        if (openingBalance < 0) throw new ArgumentOutOfRangeException(nameof(openingBalance),"الرصيد الافتتاحي لا يمكن أن يكون سالباً.");
-        if (openingBalance > 0 && openingDirection is not (OperationType.DebtToUs or OperationType.DebtOnUs))
+        ArgumentNullException.ThrowIfNull(person);
+        await EnsurePermissionAsync(PermissionKeys.Create,ct);
+        ValidatePersonInput(person);
+        if(openingBalance<0) throw new ArgumentOutOfRangeException(nameof(openingBalance),"الرصيد الافتتاحي لا يمكن أن يكون سالباً.");
+        if(openingBalance>0 && openingDirection is not (OperationType.DebtToUs or OperationType.DebtOnUs))
             throw new ArgumentException("اتجاه الرصيد الافتتاحي غير صالح.",nameof(openingDirection));
-        var created = await CreatePersonAsync(person, ct);
-        if (openingBalance > 0)
+        var now=DateTimeOffset.UtcNow;
+        var code=string.IsNullOrWhiteSpace(person.AccountCode) ? "ACC-"+Guid.NewGuid().ToString("N")[..12].ToUpperInvariant() : person.AccountCode.Trim();
+        var p=person with { Name=person.Name.Trim(),Phone=person.Phone.Trim(),Note=person.Note.Trim(),AccountCode=code,UpdatedAt=now };
+        var userId=appSession?.CurrentUser?.Id ?? Guid.Empty;
+        if(openingBalance>0 && userId==Guid.Empty) throw new InvalidOperationException("لا توجد جلسة مستخدم صالحة لتسجيل الرصيد الافتتاحي.");
+        await using var db=database.Open();
+        await db.OpenAsync(ct);
+        await using var tx=await db.BeginTransactionAsync(ct);
+        await using var c=db.CreateCommand();
+        c.Transaction=(SqliteTransaction)tx;
+        if(!await ExistsAsync(c,"Books",p.BookId,ct)) throw new InvalidOperationException("الدفتر المحدد غير موجود.");
+        c.Parameters.Clear();
+        c.CommandText="SELECT COUNT(*) FROM People WHERE AccountCode=$code;";
+        P(c,"$code",p.AccountCode);
+        if(Convert.ToInt64(await c.ExecuteScalarAsync(ct),CultureInfo.InvariantCulture)>0) throw new InvalidOperationException("رمز الحساب مستخدم بالفعل.");
+        if(openingBalance>0 && !await ExistsAsync(c,"Users",userId,ct)) throw new InvalidOperationException("المستخدم المنفذ للعملية غير موجود.");
+        c.Parameters.Clear();
+        c.CommandText="INSERT INTO People(Id,BookId,Name,Phone,Note,CreatedAt,AccountCode,CreditLimit,Address,SecondaryPhone,AccountNature,WhatsAppEnabled,UpdatedAt) VALUES($id,$book,$name,$phone,$note,$created,$code,$limit,$address,$secondary,$nature,$whatsapp,$updated);";
+        P(c,"$id",p.Id.ToString("N")); P(c,"$book",p.BookId.ToString("N")); P(c,"$name",p.Name);
+        P(c,"$phone",p.Phone); P(c,"$note",p.Note); P(c,"$created",p.CreatedAt.ToString("O",CultureInfo.InvariantCulture));
+        P(c,"$code",p.AccountCode); P(c,"$limit",p.CreditLimit is null ? DBNull.Value : S(p.CreditLimit.Value));
+        P(c,"$address",p.Address.Trim()); P(c,"$secondary",p.SecondaryPhone.Trim()); P(c,"$nature",p.Nature.ToString());
+        P(c,"$whatsapp",p.WhatsAppEnabled?1:0); P(c,"$updated",p.UpdatedAt.ToString("O",CultureInfo.InvariantCulture));
+        await c.ExecuteNonQueryAsync(ct);
+        if(openingBalance>0)
         {
-            try
-            {
-                var userId=appSession?.CurrentUser?.Id ?? Guid.Empty;
-                if(userId==Guid.Empty) throw new InvalidOperationException("لا توجد جلسة مستخدم صالحة لتسجيل الرصيد الافتتاحي.");
-                await CreateOperationAsync(new LedgerOperation(Guid.NewGuid(),created.Id,openingDirection,decimal.Round(openingBalance,2,MidpointRounding.AwayFromZero),"رصيد افتتاحي",DateTimeOffset.UtcNow,userId),ct);
-            }
-            catch
-            {
-                await DeletePersonAsync(created.Id,appSession?.CurrentUser?.Id ?? Guid.Empty,ct);
-                throw;
-            }
+            c.Parameters.Clear();
+            c.CommandText="INSERT INTO Operations(Id,PersonId,Type,Amount,Note,OccurredAt,CreatedBy,ReferenceNumber) VALUES($id,$person,$type,$amount,$note,$when,$user,$reference);";
+            P(c,"$id",Guid.NewGuid().ToString("N")); P(c,"$person",p.Id.ToString("N")); P(c,"$type",(int)openingDirection);
+            P(c,"$amount",S(decimal.Round(openingBalance,2,MidpointRounding.AwayFromZero))); P(c,"$note","رصيد افتتاحي");
+            P(c,"$when",DateTimeOffset.UtcNow.ToString("O",CultureInfo.InvariantCulture)); P(c,"$user",userId.ToString("N")); P(c,"$reference",DBNull.Value);
+            await c.ExecuteNonQueryAsync(ct);
         }
-        return created;
+        await tx.CommitAsync(ct);
+        return p;
     }
 
     public async Task<IReadOnlyDictionary<Guid,string>> GetPersonNamesAsync(CancellationToken ct=default)
