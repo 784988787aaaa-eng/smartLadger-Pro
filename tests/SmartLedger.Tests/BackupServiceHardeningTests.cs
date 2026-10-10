@@ -201,7 +201,7 @@ public sealed class BackupServiceHardeningTests
             {
                 await c.OpenAsync();
                 await using var q = c.CreateCommand();
-                q.CommandText = "PRAGMA user_version=13;";
+                q.CommandText = "PRAGMA user_version=14;";
                 await q.ExecuteNonQueryAsync();
             }
 
