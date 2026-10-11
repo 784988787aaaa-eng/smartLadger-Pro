@@ -663,6 +663,31 @@ FROM Operations;
         var type=r.GetString(0); var entityId=r.GetString(1); var payload=r.GetString(2);
         await r.DisposeAsync();
 
+                // Validate business-key conflicts before restoration and return an actionable message instead of a raw SQLite constraint error.
+        if (type == "Product")
+        {
+            using var payloadDocument = System.Text.Json.JsonDocument.Parse(payload);
+            var barcode = payloadDocument.RootElement.TryGetProperty("Barcode", out var barcodeElement) ? barcodeElement.GetString() : null;
+            if (!string.IsNullOrWhiteSpace(barcode))
+            {
+                c.Parameters.Clear(); c.CommandText = "SELECT COUNT(*) FROM Products WHERE lower(trim(Barcode))=lower(trim($barcode)) AND Id<>$entityId;";
+                P(c, "$barcode", barcode); P(c, "$entityId", entityId);
+                if (Convert.ToInt64(await c.ExecuteScalarAsync(ct), CultureInfo.InvariantCulture) > 0)
+                    throw new InvalidOperationException("تعذر الاستعادة: الباركود مستخدم حالياً بواسطة صنف آخر. عالج التعارض ثم أعد المحاولة.");
+            }
+        }
+        if (type == "Person")
+        {
+            using var payloadDocument = System.Text.Json.JsonDocument.Parse(payload);
+            var accountCode = payloadDocument.RootElement.TryGetProperty("AccountCode", out var accountCodeElement) ? accountCodeElement.GetString() : null;
+            if (!string.IsNullOrWhiteSpace(accountCode))
+            {
+                c.Parameters.Clear(); c.CommandText = "SELECT COUNT(*) FROM People WHERE AccountCode=$code AND Id<>$entityId;";
+                P(c, "$code", accountCode); P(c, "$entityId", entityId);
+                if (Convert.ToInt64(await c.ExecuteScalarAsync(ct), CultureInfo.InvariantCulture) > 0)
+                    throw new InvalidOperationException("تعذر الاستعادة: رمز الحساب مستخدم حالياً بواسطة حساب آخر. عالج التعارض ثم أعد المحاولة.");
+            }
+        }
         c.Parameters.Clear();
         string insertSql=type switch
         {
@@ -720,9 +745,9 @@ FROM Operations;
 
         c.Parameters.Clear(); c.CommandText="DELETE FROM DeletedItems WHERE Id=$id;"; P(c,"$id",id.ToString("N")); await c.ExecuteNonQueryAsync(ct);
         await tx.CommitAsync(ct);
-        await audit.LogActionAsync(appSession?.CurrentUser?.Id,"RECYCLE_RESTORE",type,id,new { EntityType=type },ct);
+        await audit.LogActionAsync(appSession?.CurrentUser?.Id,"RECYCLE_RESTORE",type,Guid.Parse(entityId),new { EntityType=type, RecycleItemId=id },ct);
     }
-    public async Task HardDeleteDeletedItemAsync(Guid id,CancellationToken ct=default){await EnsurePermissionAsync(PermissionKeys.Delete,ct);await using var db=database.Open();await db.OpenAsync(ct);await using var c=db.CreateCommand();c.CommandText="DELETE FROM DeletedItems WHERE Id=$id;";P(c,"$id",id.ToString("N"));await c.ExecuteNonQueryAsync(ct);await audit.LogActionAsync(appSession?.CurrentUser?.Id, "RECYCLE_HARD_DELETE", "DeletedItem", id,null,ct);}
+    public async Task HardDeleteDeletedItemAsync(Guid id,CancellationToken ct=default){await EnsurePermissionAsync(PermissionKeys.Delete,ct);await EnsurePermissionAsync(PermissionKeys.Settings,ct);await using var db=database.Open();await db.OpenAsync(ct);await using var c=db.CreateCommand();c.CommandText="DELETE FROM DeletedItems WHERE Id=$id;";P(c,"$id",id.ToString("N"));var affected=await c.ExecuteNonQueryAsync(ct);if(affected==0)throw new InvalidOperationException("لا يمكن الحذف النهائي: العنصر غير موجود في سلة المحذوفات.");await audit.LogActionAsync(appSession?.CurrentUser?.Id,"RECYCLE_HARD_DELETE","DeletedItem",id,new { RequiresElevatedPermission=true },ct);}
     public async Task<CashRegisterSummary> GetCashRegisterSummaryAsync(DateTimeOffset? from=null,DateTimeOffset? toDate=null,CancellationToken ct=default)
     {
         await EnsurePermissionAsync(PermissionKeys.View,ct);
