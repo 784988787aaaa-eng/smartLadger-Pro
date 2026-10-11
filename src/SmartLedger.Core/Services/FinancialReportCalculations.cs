@@ -1,4 +1,4 @@
-using SmartLedger.Core.Models;
+﻿using SmartLedger.Core.Models;
 
 namespace SmartLedger.Core.Services;
 
@@ -8,12 +8,7 @@ public sealed record InventoryValuationCalculation(decimal PhysicalQuantity, dec
 /// <summary>Deterministic financial calculations shared by report presentation and automated tests.</summary>
 public static class FinancialReportCalculations
 {
-    public static decimal SignedLedgerEffect(LedgerOperation operation) => operation.Type switch
-    {
-        OperationType.DebtOnUs or OperationType.Sale or OperationType.Payment or OperationType.Settlement => operation.Amount,
-        OperationType.DebtToUs or OperationType.Receive or OperationType.Return or OperationType.Purchase => -operation.Amount,
-        _ => 0m
-    };
+    public static decimal SignedLedgerEffect(LedgerOperation operation) => LedgerBalanceCalculator.SignedEffect(operation);
 
     public static AccountStatementCalculation CalculateAccountStatement(IEnumerable<LedgerOperation> operations, DateTimeOffset fromInclusive, DateTimeOffset toInclusive)
     {
@@ -58,3 +53,4 @@ public static class FinancialReportCalculations
         return true;
     }
 }
+
