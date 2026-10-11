@@ -245,6 +245,7 @@ public partial class InventoryViewModel(IAppRepository repo) : ObservableObject
         if (!decimal.TryParse(NewConversion, NumberStyles.Number, CultureInfo.CurrentCulture, out var conversion) || conversion <= 0) { StatusText = "أدخل معامل تحويل صحيحًا."; return; }
         if (!decimal.TryParse(NewPurchasePrice, NumberStyles.Number, CultureInfo.CurrentCulture, out var purchase) || purchase < 0) { StatusText = "أدخل سعر شراء صحيحًا."; return; }
         if (!decimal.TryParse(NewSalePrice, NumberStyles.Number, CultureInfo.CurrentCulture, out var sale) || sale < 0) { StatusText = "أدخل سعر بيع صحيحًا."; return; }
+        if (!decimal.TryParse(NewMinimumSellingPrice, NumberStyles.Number, CultureInfo.CurrentCulture, out var minimumSale) || minimumSale < 0) { StatusText = "أدخل حدًا أدنى صحيحًا لسعر البيع."; return; }
         if (!decimal.TryParse(NewAlert, NumberStyles.Number, CultureInfo.CurrentCulture, out var alert) || alert < 0) { StatusText = "أدخل حد تنبيه صحيحًا."; return; }
         if (!IsEditing && ((!EnableMajorUnit && (!decimal.TryParse(NewOpeningQuantity, NumberStyles.Number, CultureInfo.CurrentCulture, out var opening) || opening < 0)) || (EnableMajorUnit && (!decimal.TryParse(NewOpeningLargeQuantity, NumberStyles.Number, CultureInfo.CurrentCulture, out var boxes) || boxes < 0)))) { StatusText = "أدخل الرصيد الافتتاحي الصحيح."; return; }
         var openingQuantity = IsEditing ? SelectedProduct?.StockSmallUnits ?? 0m : NetOpeningSmallUnits;
@@ -273,7 +274,7 @@ public partial class InventoryViewModel(IAppRepository repo) : ObservableObject
                     WarehouseName = NewWarehouse.Trim(),
                     SellingPriceMajor = ParseDecimal(NewMajorSalePrice),
                     SellingPriceMinor = sale,
-                    MinimumSellingPrice = ParseDecimal(NewMinimumSellingPrice),
+                    MinimumSellingPrice = minimumSale,
                     ReorderPoint = alert,
                     LowStockThreshold = alert,
                     UpdatedAt = DateTimeOffset.UtcNow
@@ -295,7 +296,7 @@ public partial class InventoryViewModel(IAppRepository repo) : ObservableObject
                     WarehouseName = NewWarehouse.Trim(),
                     SellingPriceMajor = ParseDecimal(NewMajorSalePrice),
                     SellingPriceMinor = sale,
-                    MinimumSellingPrice = ParseDecimal(NewMinimumSellingPrice),
+                    MinimumSellingPrice = minimumSale,
                     ReorderPoint = alert,
                     LowStockThreshold = alert,
                     UpdatedAt = DateTimeOffset.UtcNow
