@@ -156,6 +156,12 @@ public sealed class SalesInvoiceTests
             var duplicateMovement=new StockMovement(Guid.NewGuid(),product.Id,StockMovementType.Sale,1m,5m,"اختبار تكرار رقم الفاتورة",DateTimeOffset.UtcNow,admin.Id);
             var error=await Assert.ThrowsAsync<InvalidOperationException>(()=>repository.SaveSalesInvoiceAsync(duplicate,new[]{duplicateLine},new[]{duplicateMovement},null));
             Assert.Contains("رقم الفاتورة مستخدم مسبقاً",error.Message);
+
+            var invalidPartial=invoice with { Id=Guid.NewGuid(), InvoiceNumber="INVALID-PARTIAL-01", Subtotal=5m, Total=5m, Paid=0m, PaymentMode=PaymentMode.Partial };
+            var partialLine=new InvoiceLine(Guid.NewGuid(),invalidPartial.Id,product.Id,product.Name,1m,product.SmallUnit,5m,0m,5m){QuantityMinor=1m,UnitSelected=product.SmallUnit,ConversionFactorApplied=1m};
+            var partialMovement=new StockMovement(Guid.NewGuid(),product.Id,StockMovementType.Sale,1m,5m,"اختبار دفعة جزئية غير صالحة",DateTimeOffset.UtcNow,admin.Id);
+            var partialError=await Assert.ThrowsAsync<InvalidOperationException>(()=>repository.SaveSalesInvoiceAsync(invalidPartial,new[]{partialLine},new[]{partialMovement},null));
+            Assert.Contains("الفاتورة الجزئية",partialError.Message);
         }
         finally
         {
