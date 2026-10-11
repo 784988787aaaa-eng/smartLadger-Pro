@@ -444,10 +444,11 @@ FROM Operations;
             }
             if(movement.Type==StockMovementType.Sale)
             {
-                c.Parameters.Clear();c.CommandText="SELECT Id,QuantityMinor FROM ProductBatches WHERE ProductId=$product AND CAST(QuantityMinor AS REAL)>0 ORDER BY CASE WHEN ExpiryDate IS NULL OR trim(ExpiryDate)='' THEN 1 ELSE 0 END,ExpiryDate,CreatedAt;";P(c,"$product",movement.ProductId.ToString("N"));
-                var batches=new List<(string Id,decimal Quantity)>();
-                await using(var batchReader=await c.ExecuteReaderAsync(ct)){while(await batchReader.ReadAsync(ct))batches.Add((batchReader.GetString(0),D(Convert.ToString(batchReader.GetValue(1),CultureInfo.InvariantCulture)!)));}
+                c.Parameters.Clear();c.CommandText="SELECT Id,QuantityMinor,CostPrice FROM ProductBatches WHERE ProductId=$product AND CAST(QuantityMinor AS REAL)>0 ORDER BY CASE WHEN ExpiryDate IS NULL OR trim(ExpiryDate)='' THEN 1 ELSE 0 END,ExpiryDate,CreatedAt;";P(c,"$product",movement.ProductId.ToString("N"));
+                var batches=new List<(string Id,decimal Quantity,decimal CostPrice)>();
+                await using(var batchReader=await c.ExecuteReaderAsync(ct)){while(await batchReader.ReadAsync(ct))batches.Add((batchReader.GetString(0),D(Convert.ToString(batchReader.GetValue(1),CultureInfo.InvariantCulture)!),D(Convert.ToString(batchReader.GetValue(2),CultureInfo.InvariantCulture)!)));}
                 var remainingToAllocate=movement.QuantitySmallUnits;
+                var allocatedCost=0m;
                 foreach(var batch in batches)
                 {
                     if(remainingToAllocate<=0)break;
@@ -455,9 +456,15 @@ FROM Operations;
                     c.Parameters.Clear();c.CommandText="UPDATE ProductBatches SET QuantityMinor=$quantity WHERE Id=$id;";P(c,"$quantity",S(batch.Quantity-taken));P(c,"$id",batch.Id);await c.ExecuteNonQueryAsync(ct);
                     c.Parameters.Clear();c.CommandText="INSERT INTO InvoiceBatchAllocations(Id,InvoiceId,InvoiceLineId,ProductId,BatchId,QuantityMinor,CreatedAt) VALUES($id,$invoice,$line,$product,$batch,$quantity,$created);";
                     P(c,"$id",Guid.NewGuid().ToString("N"));P(c,"$invoice",i.Id.ToString("N"));P(c,"$line",lines[movementIndex].Id.ToString("N"));P(c,"$product",movement.ProductId.ToString("N"));P(c,"$batch",batch.Id);P(c,"$quantity",S(taken));P(c,"$created",i.IssuedAt.ToString("O"));await c.ExecuteNonQueryAsync(ct);
+                    allocatedCost+=taken*batch.CostPrice;
                     remainingToAllocate-=taken;
                 }
                 if(batches.Count>0&&remainingToAllocate>0)throw new InvalidOperationException("لا تكفي كميات الدفعات لتغطية بند البيع؛ لا يمكن حفظ فاتورة تُحدث فرقًا بين المخزون الإجمالي ومخزون الدفعات.");
+                if(batches.Count>0&&movement.QuantitySmallUnits>0)
+                {
+                    c.Parameters.Clear();c.CommandText="UPDATE InvoiceLines SET CostPriceSnapshot=$cost WHERE Id=$line;";
+                    P(c,"$cost",S(decimal.Round(allocatedCost/movement.QuantitySmallUnits,4)));P(c,"$line",lines[movementIndex].Id.ToString("N"));await c.ExecuteNonQueryAsync(ct);
+                }
             }
         }
         if(operation is not null){c.Parameters.Clear();c.CommandText="INSERT INTO Operations(Id,PersonId,Type,Amount,Note,OccurredAt,CreatedBy,ReferenceNumber) VALUES($id,$person,$type,$amount,$note,$when,$user,$reference);";P(c,"$id",operation.Id.ToString("N"));P(c,"$person",operation.PersonId.ToString("N"));P(c,"$type",(int)operation.Type);P(c,"$amount",S(operation.Amount));P(c,"$note",operation.Note);P(c,"$when",operation.OccurredAt.ToString("O"));P(c,"$user",operation.CreatedBy.ToString("N"));P(c,"$reference",string.IsNullOrWhiteSpace(operation.ReferenceNumber)?i.InvoiceNumber:operation.ReferenceNumber);await c.ExecuteNonQueryAsync(ct);}
