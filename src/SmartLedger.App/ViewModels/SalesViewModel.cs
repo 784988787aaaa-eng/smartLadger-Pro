@@ -16,6 +16,8 @@ public partial class SalesViewModel(IAppRepository repo,IAppSession session):Obs
 {
     [ObservableProperty] private IReadOnlyList<PersonSummary> people=Array.Empty<PersonSummary>();
     [ObservableProperty] private IReadOnlyList<Product> products=Array.Empty<Product>();
+    [ObservableProperty] private IReadOnlyList<InvoiceSummary> invoiceHistory=Array.Empty<InvoiceSummary>();
+    [ObservableProperty] private string invoiceSearch="";
     private IReadOnlyList<PersonSummary> _allPeople=Array.Empty<PersonSummary>();
     private IReadOnlyList<Product> _allProducts=Array.Empty<Product>();
     private IReadOnlyList<Book> _books=Array.Empty<Book>();
@@ -73,11 +75,20 @@ public partial class SalesViewModel(IAppRepository repo,IAppSession session):Obs
     public string BalanceLabel=>Remaining>0?"متبقي لنا":"مسدد بالكامل";
     public IReadOnlyList<PaymentModeOption> PaymentModes {get;}=new[]{new PaymentModeOption(PaymentMode.Cash,"نقدي"),new PaymentModeOption(PaymentMode.Credit,"آجل — له"),new PaymentModeOption(PaymentMode.Partial,"جزئي — المتبقي له")};
 
-    public async Task LoadAsync(){_books=await repo.GetBooksAsync();var customerBook=_books.FirstOrDefault(x=>x.Kind==BookKind.Customers);_allPeople=customerBook is null?Array.Empty<PersonSummary>():await repo.GetPeopleAsync(customerBook.Id);_allProducts=await repo.GetProductsAsync();People=_allPeople;Products=_allProducts;}
+    public async Task LoadAsync(){_books=await repo.GetBooksAsync();var customerBook=_books.FirstOrDefault(x=>x.Kind==BookKind.Customers);_allPeople=customerBook is null?Array.Empty<PersonSummary>():await repo.GetPeopleAsync(customerBook.Id);_allProducts=await repo.GetProductsAsync();People=_allPeople;Products=_allProducts;await LoadInvoiceHistoryAsync();}
+    private int _invoiceSearchRequest;
+    partial void OnInvoiceSearchChanged(string value)=>_ = LoadInvoiceHistoryAsync();
+    private async Task LoadInvoiceHistoryAsync()
+    {
+        var request = System.Threading.Interlocked.Increment(ref _invoiceSearchRequest);
+        var search = InvoiceSearch;
+        var result = await repo.GetInvoiceSummariesAsync(InvoiceType.Sale, search, 100);
+        if (request == System.Threading.Volatile.Read(ref _invoiceSearchRequest)) InvoiceHistory = result;
+    }
     partial void OnCustomerSearchChanged(string value){if(PersonId is Guid id&&_allPeople.FirstOrDefault(x=>x.PersonId==id) is { } selected&&!Normalize(value).Equals(Normalize(selected.PersonName),StringComparison.OrdinalIgnoreCase))PersonId=null;People=FilterPeople(value);IsCustomerSuggestionsOpen=!string.IsNullOrWhiteSpace(value)&&People.Count>0;}
     partial void OnProductSearchChanged(string value){if(_settingProductSelection)return;if(ProductId is Guid id&&_allProducts.FirstOrDefault(x=>x.Id==id) is { } selected&&!Normalize(value).Equals(Normalize(selected.Name),StringComparison.OrdinalIgnoreCase))ProductId=null;Products=FilterProducts(value);IsProductSuggestionsOpen=!string.IsNullOrWhiteSpace(value)&&Products.Count>0;}
     partial void OnPersonIdChanged(Guid? value){var p=_allPeople.FirstOrDefault(x=>x.PersonId==value);if(p is not null){CustomerSearch=p.PersonName;IsCustomerSuggestionsOpen=false;}}
-    partial void OnProductIdChanged(Guid? value){var p=_allProducts.FirstOrDefault(x=>x.Id==value);_settingProductSelection=true;_lastUnitFactor=1m;if(p is not null){ProductSearch=p.Name;SelectedQuantityUnit=p.SmallUnit;PriceText=p.SalePrice>0?p.SalePrice.ToString("0.##",System.Globalization.CultureInfo.InvariantCulture):"";IsProductSuggestionsOpen=false;}else{SelectedQuantityUnit="";PriceText="";}_settingProductSelection=false;OnPropertyChanged(nameof(QuantityUnits));Recalc();}
+    partial void OnProductIdChanged(Guid? value){var p=_allProducts.FirstOrDefault(x=>x.Id==value);_settingProductSelection=true;_lastUnitFactor=1m;if(p is not null){ProductSearch=p.Name;SelectedQuantityUnit=p.SmallUnit;var defaultPrice=p.SellingPriceMinor>0?p.SellingPriceMinor:p.SalePrice;PriceText=defaultPrice>0?defaultPrice.ToString("0.##",System.Globalization.CultureInfo.InvariantCulture):"";IsProductSuggestionsOpen=false;}else{SelectedQuantityUnit="";PriceText="";}_settingProductSelection=false;OnPropertyChanged(nameof(QuantityUnits));Recalc();}
     partial void OnSelectedQuantityUnitChanged(string value){OnPropertyChanged(nameof(QuantityUnits));if(_settingProductSelection)return;var product=_allProducts.FirstOrDefault(x=>x.Id==ProductId);if(product is null)return;var nextFactor=QuantityFactor(product);if(NumericNormalizer.TryParseDecimal(PriceText,out var currentPrice)&&_lastUnitFactor>0)PriceText=(currentPrice*nextFactor/_lastUnitFactor).ToString("0.##",System.Globalization.CultureInfo.InvariantCulture);_lastUnitFactor=nextFactor;}
     [RelayCommand] private void OpenNew(){Lines.Clear();OnPropertyChanged(nameof(LinesTotal));OnPropertyChanged(nameof(IsCartEmpty));BarcodeInput="";InvoiceDiscountText="0";TaxPercentText="0";LastSavedInvoice=null;PersonId=null;ProductId=null;CustomerSearch="";ProductSearch="";People=_allPeople;Products=_allProducts;IsCustomerSuggestionsOpen=false;IsProductSuggestionsOpen=false;QuantityText="1";PriceText="";PaidText="0";Note="";PaymentMode=PaymentMode.Cash;SyncPaymentChoices();StatusText="";Recalc();IsDialogOpen=true;}
     [RelayCommand] private void OpenQuickPerson(){QuickPersonName=CustomerSearch.Trim();QuickPersonPhone="";QuickPersonNote="";IsQuickPersonDialogOpen=true;}
@@ -243,9 +254,12 @@ public partial class SalesViewModel(IAppRepository repo,IAppSession session):Obs
         var product=_allProducts.FirstOrDefault(x=>x.Id==ProductId);if(product is null){StatusText="الصنف المحدد غير متاح؛ أعد اختياره.";return false;}
         if(!NumericNormalizer.TryParseDecimal(QuantityText,out var q)||q<=0){StatusText="أدخل كمية صحيحة.";return false;}
         if(!NumericNormalizer.TryParseDecimal(PriceText,out var price)||price<=0){StatusText="أدخل سعرًا صحيحًا أكبر من صفر.";return false;}
-        var smallQuantity=q*QuantityFactor(product);if(smallQuantity<=0){StatusText="تحقق من الوحدة ومعامل التحويل.";return false;}
+        var selectedUnitFactor=QuantityFactor(product);
+        var minimumPrice=product.MinimumSellingPrice*selectedUnitFactor;
+        if(minimumPrice>0&&price<minimumPrice){StatusText=$"سعر البيع أقل من الحد الأدنى المعتمد ({minimumPrice:0.##} للوحدة المحددة).";return false;}
+        var smallQuantity=q*selectedUnitFactor;if(smallQuantity<=0){StatusText="تحقق من الوحدة ومعامل التحويل.";return false;}
         var alreadyInCart=Lines.Where(x=>x.ProductId==product.Id).Sum(x=>x.QuantitySmallUnits);if(alreadyInCart+smallQuantity>product.StockSmallUnits){StatusText=$"الكمية المطلوبة تتجاوز الرصيد المتاح ({product.StockSmallUnits:0.##} {product.SmallUnit}).";return false;}
-        Lines.Add(new InvoiceDraftLine(product.Id,product.Name,q,SelectedQuantityUnit,price,decimal.Round(q*price,2),smallQuantity){CostPriceSnapshot=product.PurchasePrice,Barcode=product.Barcode,ConversionFactorApplied=QuantityFactor(product)});OnPropertyChanged(nameof(LinesTotal));OnPropertyChanged(nameof(IsCartEmpty));ProductId=null;ProductSearch="";QuantityText="1";PriceText="";IsProductSuggestionsOpen=false;Recalc();return true;
+        Lines.Add(new InvoiceDraftLine(product.Id,product.Name,q,SelectedQuantityUnit,price,decimal.Round(q*price,2),smallQuantity){CostPriceSnapshot=product.PurchasePrice,Barcode=product.Barcode,ConversionFactorApplied=selectedUnitFactor});OnPropertyChanged(nameof(LinesTotal));OnPropertyChanged(nameof(IsCartEmpty));ProductId=null;ProductSearch="";QuantityText="1";PriceText="";IsProductSuggestionsOpen=false;Recalc();return true;
     }
     private IReadOnlyList<PersonSummary> FilterPeople(string value)=>string.IsNullOrWhiteSpace(value)?_allPeople:_allPeople.Where(x=>ContainsArabic(x.PersonName,value)||ContainsArabic(x.Person.Phone,value)).Take(25).ToArray();
     private IReadOnlyList<Product> FilterProducts(string value)=>string.IsNullOrWhiteSpace(value)?_allProducts:_allProducts.Where(x=>ContainsArabic(x.Name,value)||ContainsArabic(x.Barcode,value)).Take(25).ToArray();
@@ -299,20 +313,23 @@ public partial class SalesViewModel(IAppRepository repo,IAppSession session):Obs
             StatusText=$"تم حفظ الفاتورة رقم {saved.InvoiceNumber} بنجاح.";
             IsDialogOpen=false;Lines.Clear();OnPropertyChanged(nameof(LinesTotal));OnPropertyChanged(nameof(IsCartEmpty));
             ProductId=null;ProductSearch="";BarcodeInput="";QuantityText="1";PriceText="";PaidText="0";InvoiceDiscountText="0";TaxPercentText="0";Note="";
-            _allProducts=await repo.GetProductsAsync();Products=_allProducts;Recalc();
+            _allProducts=await repo.GetProductsAsync();Products=_allProducts;await LoadInvoiceHistoryAsync();Recalc();
         }
         catch(Exception ex){StatusText=ex.Message;}
         finally{IsSaving=false;}
     }
     [RelayCommand]
-    private async Task ReverseInvoiceAsync(int invoiceId)
+    private async Task ReverseInvoiceAsync(string invoiceNumber)
     {
-        if (IsSaving) return;
+        if (IsSaving || string.IsNullOrWhiteSpace(invoiceNumber)) return;
+        var confirmation=System.Windows.MessageBox.Show($"سيتم عكس فاتورة البيع رقم {invoiceNumber} مع إنشاء قيود عكسية للمخزون والحسابات والنقد. لا يمكن التراجع عن العكس إلا بعملية جديدة. هل تريد المتابعة؟","تأكيد عكس الفاتورة",System.Windows.MessageBoxButton.YesNo,System.Windows.MessageBoxImage.Warning);
+        if(confirmation!=System.Windows.MessageBoxResult.Yes)return;
         try
         {
             IsSaving = true;
-            var reversed = await repo.ReverseInvoiceAsync(invoiceId, "User requested refund/reversal", session.CurrentUser!.Id.ToString());
-            StatusText = reversed ? $"Invoice {invoiceId} reversed successfully." : $"Invoice {invoiceId} was not found or was already reversed.";
+            var reversed = await repo.ReverseInvoiceAsync(invoiceNumber, "طلب المستخدم عكس الفاتورة", session.CurrentUser!.Id.ToString());
+            StatusText = reversed ? $"تم عكس فاتورة البيع رقم {invoiceNumber} بنجاح." : $"فاتورة البيع رقم {invoiceNumber} غير موجودة أو سبق عكسها.";
+            System.Windows.MessageBox.Show(StatusText,reversed?"تم العكس":"تعذر العكس",System.Windows.MessageBoxButton.OK,reversed?System.Windows.MessageBoxImage.Information:System.Windows.MessageBoxImage.Warning);
             await LoadAsync();
         }
         catch (Exception ex) { StatusText = ex.Message; }
