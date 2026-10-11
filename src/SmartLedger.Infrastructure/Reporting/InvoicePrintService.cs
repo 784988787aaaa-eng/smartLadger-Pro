@@ -30,6 +30,9 @@ public sealed class InvoicePrintService : IInvoicePrintService
     public byte[] RenderThermalReceipt(Invoice invoice, IReadOnlyList<InvoiceLine> lines, BusinessIdentity identity)
         => Render(invoice, lines, identity, true);
 
+    public byte[] RenderQuickReceipt(Invoice invoice, IReadOnlyList<InvoiceLine> lines, BusinessIdentity identity)
+        => Render(invoice, lines, identity, true);
+
     public byte[] RenderA4Invoice(Invoice invoice, IReadOnlyList<InvoiceLine> lines, BusinessIdentity identity)
         => Render(invoice, lines, identity, false);
 
@@ -49,6 +52,7 @@ public sealed class InvoicePrintService : IInvoicePrintService
             {
                 page.Size(thermal ? new PageSize(226.77f, 720f) : PageSizes.A4);
                 page.Margin(thermal ? 8 : 28);
+                page.ContentFromRightToLeft();
                 page.DefaultTextStyle(style => style.FontFamily("Tahoma").FontSize(thermal ? 8 : 10));
                 page.Content().Column(column =>
                 {
@@ -73,24 +77,40 @@ public sealed class InvoicePrintService : IInvoicePrintService
                     {
                         table.ColumnsDefinition(columns =>
                         {
-                            columns.RelativeColumn(4);
-                            columns.RelativeColumn(1.2f);
-                            columns.RelativeColumn(1.5f);
-                            columns.RelativeColumn(1.8f);
+                            if (thermal)
+                            {
+                                columns.RelativeColumn(3.2f);
+                                columns.RelativeColumn(1.0f);
+                                columns.RelativeColumn(1.3f);
+                                columns.RelativeColumn(1.5f);
+                            }
+                            else
+                            {
+                                columns.RelativeColumn(3.2f);
+                                columns.RelativeColumn(0.9f);
+                                columns.RelativeColumn(1.0f);
+                                columns.RelativeColumn(1.3f);
+                                columns.RelativeColumn(1.0f);
+                                columns.RelativeColumn(1.5f);
+                            }
                         });
                         table.Header(header =>
                         {
-                            header.Cell().Element(CellStyle).Text("الصنف").Bold();
-                            header.Cell().Element(CellStyle).AlignRight().Text("الكمية").Bold();
-                            header.Cell().Element(CellStyle).AlignRight().Text("السعر").Bold();
-                            header.Cell().Element(CellStyle).AlignRight().Text("الإجمالي").Bold();
+                            header.Cell().Element(CellStyle).Text("الصنف / Item").Bold();
+                            header.Cell().Element(CellStyle).AlignRight().Text("الكمية / Qty").Bold();
+                            if (!thermal) header.Cell().Element(CellStyle).AlignRight().Text("Unit").Bold();
+                            header.Cell().Element(CellStyle).AlignRight().Text("السعر / Price").Bold();
+                            if (!thermal) header.Cell().Element(CellStyle).AlignRight().Text("Discount").Bold();
+                            header.Cell().Element(CellStyle).AlignRight().Text("الإجمالي / Total").Bold();
                         });
                         foreach (var line in lines)
                         {
                             table.Cell().Element(CellStyle).Text(line.Description);
-                            table.Cell().Element(CellStyle).AlignRight().Text(line.Quantity.ToString("0.##"));
-                            table.Cell().Element(CellStyle).AlignRight().Text(line.UnitPrice.ToString("N2"));
-                            table.Cell().Element(CellStyle).AlignRight().Text(line.LineTotal.ToString("N2"));
+                            table.Cell().Element(CellStyle).AlignRight().Text(line.Quantity.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture));
+                            if (!thermal) table.Cell().Element(CellStyle).AlignRight().Text(string.IsNullOrWhiteSpace(line.UnitSelected) ? line.Unit : line.UnitSelected);
+                            table.Cell().Element(CellStyle).AlignRight().Text(line.UnitPrice.ToString("N2", System.Globalization.CultureInfo.InvariantCulture));
+                            if (!thermal) table.Cell().Element(CellStyle).AlignRight().Text(line.Discount.ToString("N2", System.Globalization.CultureInfo.InvariantCulture));
+                            table.Cell().Element(CellStyle).AlignRight().Text(line.LineTotal.ToString("N2", System.Globalization.CultureInfo.InvariantCulture));
                         }
                     });
                     column.Item().LineHorizontal(0.8f).LineColor(Colors.Grey.Lighten1);
