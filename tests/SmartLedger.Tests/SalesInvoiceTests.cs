@@ -151,7 +151,7 @@ public sealed class SalesInvoiceTests
             command.Parameters.AddWithValue("$invoice",saved.Id.ToString("N"));
             Assert.Equal(5m,Convert.ToDecimal(await command.ExecuteScalarAsync(),System.Globalization.CultureInfo.InvariantCulture));
 
-            var duplicate=invoice with { Id=Guid.NewGuid(), IssuedAt=DateTimeOffset.UtcNow, InvoiceNumber=saved.InvoiceNumber };
+            var duplicate=invoice with { Id=Guid.NewGuid(), IssuedAt=DateTimeOffset.UtcNow, InvoiceNumber=saved.InvoiceNumber, Subtotal=5m, Total=5m, Paid=5m };
             var duplicateLine=new InvoiceLine(Guid.NewGuid(),duplicate.Id,product.Id,product.Name,1m,product.SmallUnit,5m,0m,5m){QuantityMinor=1m,UnitSelected=product.SmallUnit,ConversionFactorApplied=1m};
             var duplicateMovement=new StockMovement(Guid.NewGuid(),product.Id,StockMovementType.Sale,1m,5m,"اختبار تكرار رقم الفاتورة",DateTimeOffset.UtcNow,admin.Id);
             var error=await Assert.ThrowsAsync<InvalidOperationException>(()=>repository.SaveSalesInvoiceAsync(duplicate,new[]{duplicateLine},new[]{duplicateMovement},null));
