@@ -37,7 +37,7 @@ public sealed class AppRepository(Database database, IAppSession? session = null
 SELECT p.Id,p.BookId,p.Name,p.Phone,p.Note,p.CreatedAt,b.Name,
 COALESCE(SUM(CASE
     WHEN o.Type IN(3,4,7) THEN CAST(o.Amount AS REAL)
-    WHEN o.Type IN(0,2,5) THEN -CAST(o.Amount AS REAL)
+    WHEN o.Type IN(0,2,5,6) THEN -CAST(o.Amount AS REAL)
     WHEN o.Type=1 THEN CAST(o.Amount AS REAL)
     ELSE 0
 END),0),
