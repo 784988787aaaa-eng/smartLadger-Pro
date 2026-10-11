@@ -114,7 +114,7 @@
         </Border>
         </Grid>
       </Border>
-      <ContentControl Content="{Binding}" ContentTemplate="{StaticResource AccountDialogControlTemplate}" />
+      <ContentControl Content="{Binding}" ContentTemplate="{DynamicResource AccountDialogControlTemplate}" />
       <Grid Style="{StaticResource DialogOverlay}" Visibility="{Binding IsBookDialogOpen,Converter={StaticResource BoolToVisibility}}">
         <Border Width="440" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{StaticResource DialogShell}" Padding="22">
           <Grid FlowDirection="RightToLeft" KeyboardNavigation.TabNavigation="Cycle" behaviors:InputDialogBehavior.IsEnabled="True">
