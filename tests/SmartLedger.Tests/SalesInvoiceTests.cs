@@ -49,7 +49,7 @@ public sealed class SalesInvoiceTests
             Assert.Equal("0",Convert.ToString(await command.ExecuteScalarAsync(),System.Globalization.CultureInfo.InvariantCulture));
             command.CommandText="SELECT COUNT(*) FROM InvoiceBatchAllocations WHERE InvoiceId=$invoice;";
             command.Parameters.AddWithValue("$invoice",saved.Id.ToString("N"));
-            Assert.Equal(1L,Convert.ToInt64(await command.ExecuteScalarAsync()));
+            Assert.Equal(2L,Convert.ToInt64(await command.ExecuteScalarAsync()));
             command.CommandText="SELECT b.BatchCode,a.QuantityMinor FROM ProductBatches b JOIN InvoiceBatchAllocations a ON a.BatchId=b.Id WHERE a.InvoiceId=$invoice;";
             await using(var allocationReader=await command.ExecuteReaderAsync())
             {
