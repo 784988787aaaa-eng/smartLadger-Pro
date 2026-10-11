@@ -404,6 +404,7 @@ FROM Operations;
         var outstanding=decimal.Round(i.Total-i.Paid,2);
         if(outstanding>0&&operation is null)throw new InvalidOperationException("الفاتورة غير المسددة تحتاج إلى قيد مالي مرتبط بالحساب.");
         if(operation is not null&&decimal.Round(operation.Amount,2)!=outstanding)throw new InvalidOperationException("قيمة القيد المالي يجب أن تساوي المتبقي من الفاتورة.");
+        if(operation is not null){var signedEffect=LedgerBalanceCalculator.SignedEffect(operation);if((i.Type==InvoiceType.Sale&&signedEffect<=0)||(i.Type==InvoiceType.Purchase&&signedEffect>=0))throw new InvalidOperationException("اتجاه القيد المالي لا يطابق نوع الفاتورة؛ راجع رصيد العميل أو المورد.");}
         var lineTotal=0m;
         foreach(var l in lines){if(l.InvoiceId!=i.Id||l.Quantity<=0||l.UnitPrice<0||l.Discount<0||l.LineTotal<0)throw new ArgumentException("بيانات سطر الفاتورة غير صالحة.",nameof(lines));lineTotal+=l.LineTotal;}
         if(decimal.Round(lineTotal,2)!=decimal.Round(i.Subtotal-i.Discount,2))throw new InvalidOperationException("مجموع بنود الفاتورة لا يطابق الإجمالي بعد الخصم.");
