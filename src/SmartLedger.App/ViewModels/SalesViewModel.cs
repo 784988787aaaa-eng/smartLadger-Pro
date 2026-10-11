@@ -329,6 +329,7 @@ public partial class SalesViewModel(IAppRepository repo,IAppSession session):Obs
             IsSaving = true;
             var reversed = await repo.ReverseInvoiceAsync(invoiceNumber, "طلب المستخدم عكس الفاتورة", session.CurrentUser!.Id.ToString());
             StatusText = reversed ? $"تم عكس فاتورة البيع رقم {invoiceNumber} بنجاح." : $"فاتورة البيع رقم {invoiceNumber} غير موجودة أو سبق عكسها.";
+            System.Windows.MessageBox.Show(StatusText,reversed?"تم العكس":"تعذر العكس",System.Windows.MessageBoxButton.OK,reversed?System.Windows.MessageBoxImage.Information:System.Windows.MessageBoxImage.Warning);
             await LoadAsync();
         }
         catch (Exception ex) { StatusText = ex.Message; }
