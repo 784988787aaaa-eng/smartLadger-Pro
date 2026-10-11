@@ -24,3 +24,11 @@
 - App.xaml.cs: توسيع تسجيل DispatcherUnhandledException وإضافة تسجيل AppDomain.CurrentDomain.UnhandledException.
 - SalesView.xaml وPurchasesView.xaml: فحص تطابق الأنماط؛ الحوارات الموجودة تستخدم Grid مع DialogOverlay.
 - الحالة الميدانية: إصلاح المصدر وتحقق البناء/الاختبارات مطلوبان؛ لا تُعتبر جولة التنقل البصري مكتملة حتى اختبار الشاشات تفاعلياً بعد تسجيل الدخول.
+
+
+## تشخيص StaticResourceHolder — 2026-10-12
+
+- المفتاح: ProductDialogControlTemplate (موجود في Views/Modules/ProductDialogControl.xaml لكنه يُعرّف في قاموس مدمج يأتي بعد InventoryView.xaml، لذلك فشل المرجع StaticResource وقت إنشاء القالب).
+- الإصلاح: تحويل مرجع قالب المنتج إلى DynamicResource؛ وتحويل ExpenseVoucherDialogTemplate كذلك لأنه يواجه نمط ترتيب القواميس نفسه.
+- منع شلال الرسائل: تسجيل الاستثناء كاملاً مع إظهار MessageBox واحد فقط، وإظهار رسالة InnerException النهائية.
+- التحقق: dotnet test/build وتشغيل الواجهة بعد التعديل قيد التنفيذ؛ لا يُعلن اجتياز المخزون ميدانياً إلا بعد فحصه.
