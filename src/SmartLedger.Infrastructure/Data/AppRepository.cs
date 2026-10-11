@@ -344,6 +344,19 @@ FROM Operations;
             await using (var r = await c.ExecuteReaderAsync()) { if (!await r.ReadAsync()) { await tx.RollbackAsync(); return false; } invoiceKey=r.GetString(0); invoiceNumber=r.GetString(1); type=(InvoiceType)r.GetInt32(2); personId=r.IsDBNull(3)?null:Guid.Parse(r.GetString(3)); total=D(r.GetString(4)); paid=D(r.GetString(5)); status=r.GetString(6); }
             if (string.Equals(status,"Reversed",StringComparison.OrdinalIgnoreCase)||string.Equals(status,"Cancelled",StringComparison.OrdinalIgnoreCase)) { await tx.RollbackAsync(); return false; }
             var lines=new List<(string ProductId,decimal Qty,decimal Price)>(); c.Parameters.Clear(); c.CommandText="SELECT ProductId,QuantityMinor,UnitPrice FROM InvoiceLines WHERE InvoiceId=$id;"; P(c,"$id",invoiceKey); await using(var r=await c.ExecuteReaderAsync()) while(await r.ReadAsync()) lines.Add((r.GetString(0),D(r.GetString(1)),D(r.GetString(2))));
+            if(type==InvoiceType.Sale||type==InvoiceType.SaleReturn)
+            {
+                // Restore precisely the batches consumed by this invoice. Legacy invoices without
+                // allocation rows remain supported; their original lots cannot be reconstructed.
+                var allocations=new List<(string BatchId,decimal Quantity)>();
+                c.Parameters.Clear();c.CommandText="SELECT BatchId,QuantityMinor FROM InvoiceBatchAllocations WHERE InvoiceId=$invoice;";P(c,"$invoice",invoiceKey);
+                await using(var allocationReader=await c.ExecuteReaderAsync()){while(await allocationReader.ReadAsync())allocations.Add((allocationReader.GetString(0),D(allocationReader.GetString(1))));}
+                foreach(var allocation in allocations)
+                {
+                    c.Parameters.Clear();c.CommandText="UPDATE ProductBatches SET QuantityMinor=CAST(QuantityMinor AS REAL)+CAST($quantity AS REAL) WHERE Id=$id;";P(c,"$quantity",S(allocation.Quantity));P(c,"$id",allocation.BatchId);
+                    if(await c.ExecuteNonQueryAsync()!=1)throw new InvalidOperationException("A batch referenced by the invoice no longer exists; reversal was cancelled.");
+                }
+            }
             foreach(var line in lines) { bool sale=type==InvoiceType.Sale||type==InvoiceType.SaleReturn; c.Parameters.Clear(); c.CommandText="SELECT CAST(StockSmallUnits AS REAL) FROM Products WHERE Id=$id;"; P(c,"$id",line.ProductId); var value=await c.ExecuteScalarAsync(); if(value is null||value is DBNull) throw new InvalidOperationException("Invoice references a missing product."); var next=Convert.ToDecimal(value,CultureInfo.InvariantCulture)+(sale?line.Qty:-line.Qty); if(next<0) throw new InvalidOperationException("Purchase reversal would make product stock negative."); c.Parameters.Clear(); c.CommandText="UPDATE Products SET StockSmallUnits=$stock WHERE Id=$id;"; P(c,"$stock",S(next)); P(c,"$id",line.ProductId); await c.ExecuteNonQueryAsync(); c.Parameters.Clear(); c.CommandText="INSERT INTO StockMovements(Id,ProductId,Type,QuantitySmallUnits,UnitPrice,Note,OccurredAt,CreatedBy,InvoiceId) VALUES($id,$product,$type,$qty,$price,$note,$when,$user,$invoice);"; P(c,"$id",Guid.NewGuid().ToString("N")); P(c,"$product",line.ProductId); P(c,"$type",(int)(sale?StockMovementType.ReturnIn:StockMovementType.AdjustmentOut)); P(c,"$qty",S(line.Qty)); P(c,"$price",S(line.Price)); P(c,"$note",$"Invoice reversal #{invoiceNumber}: {reason}"); P(c,"$when",now.ToString("O")); P(c,"$user",actorId.ToString("N")); P(c,"$invoice",invoiceKey); await c.ExecuteNonQueryAsync(); }
             if(personId is Guid person) { decimal amount=type==InvoiceType.Sale?Math.Max(0m,total-paid):total; if(amount>0) { c.Parameters.Clear(); c.CommandText="INSERT INTO Operations(Id,PersonId,Type,Amount,Note,OccurredAt,CreatedBy) VALUES($id,$person,$type,$amount,$note,$when,$user);"; P(c,"$id",Guid.NewGuid().ToString("N")); P(c,"$person",person.ToString("N")); P(c,"$type",(int)(type==InvoiceType.Sale?OperationType.Receive:OperationType.Payment)); P(c,"$amount",S(amount)); P(c,"$note",$"Reversal of invoice #{invoiceNumber}: {reason}"); P(c,"$when",now.ToString("O")); P(c,"$user",actorId.ToString("N")); await c.ExecuteNonQueryAsync(); } }
             if(type==InvoiceType.Sale&&paid>0) { c.Parameters.Clear(); c.CommandText="INSERT INTO CashRegisterEntries(Id,InvoiceId,Amount,EntryType,OccurredAt,CreatedBy) VALUES($id,$invoice,$amount,'Refund',$when,$user);"; P(c,"$id",Guid.NewGuid().ToString("N")); P(c,"$invoice",invoiceKey); P(c,"$amount",S(paid)); P(c,"$when",now.ToString("O")); P(c,"$user",actorId.ToString("N")); await c.ExecuteNonQueryAsync(); }
@@ -412,6 +425,8 @@ FROM Operations;
                     if(remainingToAllocate<=0)break;
                     var taken=Math.Min(batch.Quantity,remainingToAllocate);
                     c.Parameters.Clear();c.CommandText="UPDATE ProductBatches SET QuantityMinor=$quantity WHERE Id=$id;";P(c,"$quantity",S(batch.Quantity-taken));P(c,"$id",batch.Id);await c.ExecuteNonQueryAsync(ct);
+                    c.Parameters.Clear();c.CommandText="INSERT INTO InvoiceBatchAllocations(Id,InvoiceId,InvoiceLineId,ProductId,BatchId,QuantityMinor,CreatedAt) VALUES($id,$invoice,$line,$product,$batch,$quantity,$created);";
+                    P(c,"$id",Guid.NewGuid().ToString("N"));P(c,"$invoice",i.Id.ToString("N"));P(c,"$line",lines[movementIndex].Id.ToString("N"));P(c,"$product",movement.ProductId.ToString("N"));P(c,"$batch",batch.Id);P(c,"$quantity",S(taken));P(c,"$created",i.IssuedAt.ToString("O"));await c.ExecuteNonQueryAsync(ct);
                     remainingToAllocate-=taken;
                 }
             }
