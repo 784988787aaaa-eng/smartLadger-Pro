@@ -116,4 +116,52 @@ public sealed class SalesInvoiceTests
             if(Directory.Exists(root))Directory.Delete(root,true);
         }
     }
+    [Fact]
+    public async Task Sale_UsesTrackedBatchCostAndOpeningStockFallback_AndRejectsDuplicateInvoiceNumber()
+    {
+        var root=Path.Combine(Path.GetTempPath(),"SL_BATCH_COST_"+Guid.NewGuid().ToString("N"));
+        try
+        {
+            var database=new Database(root);
+            await database.InitializeAsync();
+            var users=new UserRepository(database);
+            var hasher=new PasswordHasher();
+            await users.CreateAdministratorAsync(new AdminSetup("batchcostadmin",hasher.Hash("Password!123"),hasher.Hash("recovery"),"hint"));
+            var admin=await users.FindAsync("batchcostadmin");
+            Assert.NotNull(admin);
+            var repository=new AppRepository(database);
+            var product=await repository.CreateProductAsync(new Product(Guid.NewGuid(),"صنف رصيد افتتاحي","BATCH-COST-01","عام","كرتون","حبة",10m,2m,5m,10m,1m,DateTimeOffset.UtcNow));
+            await repository.AddStockBatchAsync(new ProductBatch(Guid.NewGuid(),product.Id,"LOT-COST",DateTimeOffset.UtcNow.AddMonths(2),5m,3m,null,"PUR-COST",DateTimeOffset.UtcNow));
+            var invoice=new Invoice(Guid.NewGuid(),InvoiceType.Sale,null,DateTimeOffset.UtcNow,40m,0m,40m,40m,PaymentMode.Cash,"اختبار تكلفة الدفعات",admin!.Id);
+            var line=new InvoiceLine(Guid.NewGuid(),invoice.Id,product.Id,product.Name,8m,product.SmallUnit,5m,0m,40m)
+            {
+                QuantityMinor=8m,UnitSelected=product.SmallUnit,ConversionFactorApplied=1m,CostPriceSnapshot=product.PurchasePrice
+            };
+            var movement=new StockMovement(Guid.NewGuid(),product.Id,StockMovementType.Sale,8m,5m,"اختبار تكلفة الدفعات",DateTimeOffset.UtcNow,admin.Id);
+            var saved=await repository.SaveSalesInvoiceAsync(invoice,new[]{line},new[]{movement},null);
+            Assert.Equal(7m,Assert.Single(await repository.GetProductsAsync(product.Name)).StockSmallUnits);
+            await using var connection=database.Open();
+            await connection.OpenAsync();
+            await using var command=connection.CreateCommand();
+            command.CommandText="SELECT CostPriceSnapshot FROM InvoiceLines WHERE InvoiceId=$invoice;";
+            command.Parameters.AddWithValue("$invoice",saved.Id.ToString("N"));
+            Assert.Equal("2.625",Convert.ToString(await command.ExecuteScalarAsync(),System.Globalization.CultureInfo.InvariantCulture));
+            command.Parameters.Clear();
+            command.CommandText="SELECT SUM(CAST(QuantityMinor AS REAL)) FROM InvoiceBatchAllocations WHERE InvoiceId=$invoice;";
+            command.Parameters.AddWithValue("$invoice",saved.Id.ToString("N"));
+            Assert.Equal(5m,Convert.ToDecimal(await command.ExecuteScalarAsync(),System.Globalization.CultureInfo.InvariantCulture));
+
+            var duplicate=invoice with { Id=Guid.NewGuid(), IssuedAt=DateTimeOffset.UtcNow, InvoiceNumber=saved.InvoiceNumber };
+            var duplicateLine=new InvoiceLine(Guid.NewGuid(),duplicate.Id,product.Id,product.Name,1m,product.SmallUnit,5m,0m,5m){QuantityMinor=1m,UnitSelected=product.SmallUnit,ConversionFactorApplied=1m};
+            var duplicateMovement=new StockMovement(Guid.NewGuid(),product.Id,StockMovementType.Sale,1m,5m,"اختبار تكرار رقم الفاتورة",DateTimeOffset.UtcNow,admin.Id);
+            var error=await Assert.ThrowsAsync<InvalidOperationException>(()=>repository.SaveSalesInvoiceAsync(duplicate,new[]{duplicateLine},new[]{duplicateMovement},null));
+            Assert.Contains("رقم الفاتورة مستخدم مسبقاً",error.Message);
+        }
+        finally
+        {
+            SqliteConnection.ClearAllPools();
+            if(Directory.Exists(root))Directory.Delete(root,true);
+        }
+    }
+
 }
