@@ -852,6 +852,7 @@
             <DataGridTextColumn Header="المدفوع" Binding="{Binding Paid,Converter={StaticResource PrivacyMoneyConverter}}" Width="125" ElementStyle="{StaticResource NumericCell}"/>
             <DataGridTextColumn Header="الحالة" Binding="{Binding Status}" Width="95" ElementStyle="{StaticResource TableTextCell}"/>
             <DataGridTextColumn Header="البيان" Binding="{Binding Note}" Width="1.4*" ElementStyle="{StaticResource TableTextCell}"/>
+            <DataGridTemplateColumn Header="الإجراء" Width="105"><DataGridTemplateColumn.CellTemplate><DataTemplate><Button Content="عكس الفاتورة" Command="{Binding DataContext.ReverseInvoiceCommand,RelativeSource={RelativeSource AncestorType=DataGrid}}" CommandParameter="{Binding InvoiceNumber}" Style="{StaticResource GhostButton}" Padding="5,2" FontSize="11"/></DataTemplate></DataGridTemplateColumn.CellTemplate></DataGridTemplateColumn>
           </DataGrid.Columns>
         </DataGrid>
       </Border>
