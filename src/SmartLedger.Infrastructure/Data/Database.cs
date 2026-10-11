@@ -74,6 +74,7 @@ public sealed class Database
     private static async Task MigrationV16Async(SqliteConnection db,CancellationToken ct)
     {
         await ExecuteAsync(db,"CREATE TABLE IF NOT EXISTS OperationCashEntries(Id TEXT PRIMARY KEY,OperationId TEXT NOT NULL UNIQUE REFERENCES Operations(Id) ON DELETE CASCADE,Amount TEXT NOT NULL,EntryType TEXT NOT NULL,OccurredAt TEXT NOT NULL,CreatedBy TEXT NOT NULL REFERENCES Users(Id)); CREATE INDEX IF NOT EXISTS IX_OperationCashEntries_Date ON OperationCashEntries(OccurredAt);",ct);
+        await ExecuteAsync(db,"INSERT OR IGNORE INTO OperationCashEntries(Id,OperationId,Amount,EntryType,OccurredAt,CreatedBy) SELECT lower(hex(randomblob(16))),o.Id,o.Amount,CASE o.Type WHEN 0 THEN 'OPERATION_RECEIPT' ELSE 'OPERATION_PAYMENT' END,o.OccurredAt,o.CreatedBy FROM Operations o WHERE o.Type IN (0,1) AND NOT EXISTS(SELECT 1 FROM Invoices i WHERE trim(COALESCE(o.ReferenceNumber,''))<>'' AND lower(trim(i.InvoiceNumber))=lower(trim(o.ReferenceNumber));",ct);
         await SetVersionAsync(db,16,ct);
     }
 
