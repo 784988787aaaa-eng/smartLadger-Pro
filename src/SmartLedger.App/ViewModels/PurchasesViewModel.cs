@@ -62,6 +62,23 @@ public partial class PurchasesViewModel(IAppRepository repo,IAppSession session)
     public async Task LoadAsync(){_books=await repo.GetBooksAsync();_allPeople=await repo.GetSupplierPeopleAsync();_allProducts=await repo.GetProductsAsync();People=_allPeople;Products=_allProducts;await LoadInvoiceHistoryAsync();}
     partial void OnInvoiceSearchChanged(string value)=>_ = LoadInvoiceHistoryAsync();
     private async Task LoadInvoiceHistoryAsync()=>InvoiceHistory=await repo.GetInvoiceSummariesAsync(InvoiceType.Purchase,InvoiceSearch,100);
+    [RelayCommand] private async Task ReverseInvoiceAsync(string invoiceNumber)
+    {
+        if(IsSaving||string.IsNullOrWhiteSpace(invoiceNumber))return;
+        var confirmation=System.Windows.MessageBox.Show($"سيتم عكس فاتورة الشراء رقم {invoiceNumber} مع تحديث المخزون وحساب المورد وحركة النقد. قد يُرفض العكس إذا استُهلكت دفعات الفاتورة. هل تريد المتابعة؟","تأكيد عكس فاتورة الشراء",System.Windows.MessageBoxButton.YesNo,System.Windows.MessageBoxImage.Warning);
+        if(confirmation!=System.Windows.MessageBoxResult.Yes)return;
+        IsSaving=true;
+        try
+        {
+            var reversed=await repo.ReverseInvoiceAsync(invoiceNumber,"طلب المستخدم عكس فاتورة الشراء",session.CurrentUser!.Id.ToString());
+            if(!reversed){System.Windows.MessageBox.Show("لم تُعثر على الفاتورة أو سبق عكسها.","نتيجة العكس",System.Windows.MessageBoxButton.OK,System.Windows.MessageBoxImage.Information);return;}
+            _allProducts=await repo.GetProductsAsync();Products=_allProducts;
+            await LoadInvoiceHistoryAsync();
+            System.Windows.MessageBox.Show("تم عكس الفاتورة وتسجيل الحركات العكسية بنجاح.","تم العكس",System.Windows.MessageBoxButton.OK,System.Windows.MessageBoxImage.Information);
+        }
+        catch(Exception ex){System.Windows.MessageBox.Show(ex.Message,"تعذر عكس الفاتورة",System.Windows.MessageBoxButton.OK,System.Windows.MessageBoxImage.Warning);}
+        finally{IsSaving=false;}
+    }
     partial void OnSupplierSearchChanged(string value){if(PersonId is Guid id&&_allPeople.FirstOrDefault(x=>x.PersonId==id) is { } selected&&!Normalize(value).Equals(Normalize(selected.PersonName),StringComparison.OrdinalIgnoreCase))PersonId=null;People=FilterPeople(value);IsSupplierSuggestionsOpen=!string.IsNullOrWhiteSpace(value)&&People.Count>0;}
     partial void OnProductSearchChanged(string value){if(_settingProductSelection)return;if(ProductId is Guid id&&_allProducts.FirstOrDefault(x=>x.Id==id) is { } selected&&!Normalize(value).Equals(Normalize(selected.Name),StringComparison.OrdinalIgnoreCase))ProductId=null;Products=FilterProducts(value);IsProductSuggestionsOpen=!string.IsNullOrWhiteSpace(value)&&Products.Count>0;}
     partial void OnPersonIdChanged(Guid? value){var p=_allPeople.FirstOrDefault(x=>x.PersonId==value);if(p is not null){SupplierSearch=p.PersonName;IsSupplierSuggestionsOpen=false;}}
