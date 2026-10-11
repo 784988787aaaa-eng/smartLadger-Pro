@@ -217,7 +217,7 @@ public partial class InventoryViewModel(IAppRepository repo) : ObservableObject
         NewConversion = product.ConversionFactor.ToString("0.##", CultureInfo.InvariantCulture);
         NewOpeningQuantity = product.StockSmallUnits.ToString("0.##", CultureInfo.InvariantCulture);
         NewPurchasePrice = product.PurchasePrice.ToString("0.##", CultureInfo.InvariantCulture);
-        NewSalePrice = product.SalePrice.ToString("0.##", CultureInfo.InvariantCulture);
+        NewSalePrice = (product.SellingPriceMinor > 0m ? product.SellingPriceMinor : product.SalePrice).ToString("0.##", CultureInfo.InvariantCulture);
         NewMinimumSellingPrice = product.MinimumSellingPrice.ToString("0.##", CultureInfo.InvariantCulture);
         NewAlert = product.AlertThreshold.ToString("0.##", CultureInfo.InvariantCulture);
         NewNote = product.Note;
@@ -225,7 +225,7 @@ public partial class InventoryViewModel(IAppRepository repo) : ObservableObject
         NewWarehouse = product.WarehouseName;
         EnableMajorUnit = product.ConversionFactor > 1m;
         NewMajorPurchasePrice = (product.PurchasePrice * product.ConversionFactor).ToString("0.##", CultureInfo.CurrentCulture);
-        NewMajorSalePrice = (product.SalePrice * product.ConversionFactor).ToString("0.##", CultureInfo.CurrentCulture);
+        NewMajorSalePrice = (ParseDecimal(NewSalePrice) * product.ConversionFactor).ToString("0.##", CultureInfo.CurrentCulture);
         NewOpeningLargeQuantity = (product.StockSmallUnits / Math.Max(1m, product.ConversionFactor)).ToString("0.##", CultureInfo.CurrentCulture);
         StatusText = "تعديل البيانات — الرصيد الحالي محفوظ ولا يُعاد احتسابه.";
         IsDialogOpen = true;
