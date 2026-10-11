@@ -383,9 +383,12 @@ FROM Operations;
             // Record the cash leg of a reversal explicitly so cash-register totals can net it
             // against the original receipt/payment rather than silently retaining the old balance.
             if(paid>0 && (type==InvoiceType.Sale||type==InvoiceType.Purchase)) { c.Parameters.Clear(); c.CommandText="INSERT INTO CashRegisterEntries(Id,InvoiceId,Amount,EntryType,OccurredAt,CreatedBy) VALUES($id,$invoice,$amount,$entryType,$when,$user);"; P(c,"$id",Guid.NewGuid().ToString("N")); P(c,"$invoice",invoiceKey); P(c,"$amount",S(paid)); P(c,"$entryType",type==InvoiceType.Sale?"SALE_REFUND":"PURCHASE_REFUND"); P(c,"$when",now.ToString("O")); P(c,"$user",actorId.ToString("N")); await c.ExecuteNonQueryAsync(); }
-            c.Parameters.Clear(); c.CommandText="UPDATE Invoices SET Status='Reversed',Note=Note || $suffix WHERE Id=$id;"; P(c,"$suffix",$" [REVERSED: {reason}]"); P(c,"$id",invoiceKey); await c.ExecuteNonQueryAsync(); await tx.CommitAsync();
+            c.Parameters.Clear(); c.CommandText="UPDATE Invoices SET Status='Reversed',Note=Note || $suffix WHERE Id=$id;"; P(c,"$suffix",$" [REVERSED: {reason}]"); P(c,"$id",invoiceKey); await c.ExecuteNonQueryAsync();
+            // The reversal and its audit record must commit or roll back as one unit.
+            await audit.LogActionAsync(db, (SqliteTransaction)tx, actorId, "INVOICE_REVERSED", "Invoice", Guid.TryParse(invoiceKey, out var parsed) ? parsed : null, new { InvoiceNumber=storedInvoiceNumber, Reason=reason, Type=type.ToString(), Total=total, Paid=paid });
+            await tx.CommitAsync();
         }
-        await audit.LogActionAsync(actorId,"INVOICE_REVERSED","Invoice",Guid.TryParse(invoiceKey,out var parsed)?parsed:null,new { InvoiceNumber=storedInvoiceNumber,Reason=reason,Type=type.ToString(),Total=total,Paid=paid }); return true;
+        return true;
     }
     public async Task<IReadOnlyList<InvoiceSummary>> GetInvoiceSummariesAsync(InvoiceType? type=null,string? search=null,int take=100,CancellationToken ct=default)
     {

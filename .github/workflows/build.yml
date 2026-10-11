@@ -2,13 +2,20 @@ name: SmartLedger Build
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main
+      - 'fix/**'
   pull_request:
     branches: [ main ]
   workflow_dispatch:
 
 permissions:
   contents: read
+
+# Keep one authoritative Windows build and cancel stale runs for the same PR/ref.
+concurrency:
+  group: smartledger-ci-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
 jobs:
   build:
@@ -20,10 +27,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up .NET 10 SDK
+      - name: Set up stable .NET 10 SDK
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: 10.0.x
+          dotnet-version: '10.0.x'
+          dotnet-quality: 'ga'
 
       - name: Show .NET SDK
         run: dotnet --info
