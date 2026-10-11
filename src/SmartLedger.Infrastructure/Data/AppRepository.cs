@@ -344,6 +344,14 @@ FROM Operations;
             await using (var r = await c.ExecuteReaderAsync()) { if (!await r.ReadAsync()) { await tx.RollbackAsync(); return false; } invoiceKey=r.GetString(0); invoiceNumber=r.GetString(1); type=(InvoiceType)r.GetInt32(2); personId=r.IsDBNull(3)?null:Guid.Parse(r.GetString(3)); total=D(r.GetString(4)); paid=D(r.GetString(5)); status=r.GetString(6); }
             if (string.Equals(status,"Reversed",StringComparison.OrdinalIgnoreCase)||string.Equals(status,"Cancelled",StringComparison.OrdinalIgnoreCase)) { await tx.RollbackAsync(); return false; }
             var lines=new List<(string ProductId,decimal Qty,decimal Price)>(); c.Parameters.Clear(); c.CommandText="SELECT ProductId,QuantityMinor,UnitPrice FROM InvoiceLines WHERE InvoiceId=$id;"; P(c,"$id",invoiceKey); await using(var r=await c.ExecuteReaderAsync()) while(await r.ReadAsync()) lines.Add((r.GetString(0),D(r.GetString(1)),D(r.GetString(2))));
+            if(type==InvoiceType.Purchase)
+            {
+                // A purchase reversal must remove the lots it introduced. If any tracked sale has
+                // consumed one of those lots, refuse the reversal instead of leaving phantom stock.
+                c.Parameters.Clear();c.CommandText="SELECT EXISTS(SELECT 1 FROM ProductBatches b JOIN InvoiceBatchAllocations a ON a.BatchId=b.Id WHERE b.PurchaseInvoiceRef=$invoice);";P(c,"$invoice",invoiceNumber);
+                if(Convert.ToInt32(await c.ExecuteScalarAsync())==1)throw new InvalidOperationException("لا يمكن عكس فاتورة الشراء بعد بيع كميات من دفعاتها؛ عالج مرتجع البيع أولاً.");
+                c.Parameters.Clear();c.CommandText="DELETE FROM ProductBatches WHERE PurchaseInvoiceRef=$invoice;";P(c,"$invoice",invoiceNumber);await c.ExecuteNonQueryAsync();
+            }
             if(type==InvoiceType.Sale||type==InvoiceType.SaleReturn)
             {
                 // Restore precisely the batches consumed by this invoice. Legacy invoices without
