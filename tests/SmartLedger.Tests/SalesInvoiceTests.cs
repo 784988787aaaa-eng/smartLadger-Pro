@@ -63,6 +63,16 @@ public sealed class SalesInvoiceTests
             Assert.Equal(0L,Convert.ToInt64(await command.ExecuteScalarAsync()));
             command.CommandText="SELECT InvoiceNumber FROM Invoices WHERE Id=$invoice;";
             Assert.Equal(saved.InvoiceNumber,Convert.ToString(await command.ExecuteScalarAsync()));
+            // Exercise the reversal API's current numeric invoice-number contract and verify the
+            // exact original FEFO lots are restored, not merely the aggregate product balance.
+            command.CommandText="UPDATE Invoices SET InvoiceNumber='123' WHERE Id=$invoice;";
+            await command.ExecuteNonQueryAsync();
+            Assert.True(await repository.ReverseInvoiceAsync(123,"reversal regression test",admin.Id));
+            Assert.Equal(30m,Assert.Single(await repository.GetProductsAsync(product.Name)).StockSmallUnits);
+            var restoredBatches=await repository.GetProductBatchesAsync(product.Id);
+            Assert.Equal(2,restoredBatches.Count);
+            Assert.Equal(10m,restoredBatches.Single(x=>x.BatchNumber=="EARLY").QuantityMinor);
+            Assert.Equal(20m,restoredBatches.Single(x=>x.BatchNumber=="LATER").QuantityMinor);
         }
         finally
         {
