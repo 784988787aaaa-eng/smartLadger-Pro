@@ -303,16 +303,16 @@ FROM Operations;
         var nextDayStartText = nextDayStartUtc.ToString("O", CultureInfo.InvariantCulture);
 
         c.CommandText="SELECT COUNT(*) FROM Operations WHERE julianday(OccurredAt)>=julianday($start) AND julianday(OccurredAt)<julianday($end);";
-        P(c,"$start",dayStartText); P(c,"$end",nextDayStartText);
+        c.Parameters.Clear(); P(c,"$start",dayStartText); P(c,"$end",nextDayStartText);
         var today=Convert.ToInt32(await c.ExecuteScalarAsync(ct));
         c.CommandText="SELECT COALESCE(SUM(CAST(Total AS REAL)),0) FROM Invoices WHERE Type=0 AND COALESCE(lower(Status),'') NOT IN ('reversed','cancelled') AND julianday(IssuedAt)>=julianday($start) AND julianday(IssuedAt)<julianday($end);";
-        P(c,"$start",dayStartText); P(c,"$end",nextDayStartText);
+        c.Parameters.Clear(); P(c,"$start",dayStartText); P(c,"$end",nextDayStartText);
         var sales=Convert.ToDecimal(await c.ExecuteScalarAsync(ct));
         c.CommandText="SELECT COALESCE(SUM(CAST(Total AS REAL)),0) FROM Invoices WHERE Type=1 AND COALESCE(lower(Status),'') NOT IN ('reversed','cancelled') AND julianday(IssuedAt)>=julianday($start) AND julianday(IssuedAt)<julianday($end);";
-        P(c,"$start",dayStartText); P(c,"$end",nextDayStartText);
+        c.Parameters.Clear(); P(c,"$start",dayStartText); P(c,"$end",nextDayStartText);
         var purchases=Convert.ToDecimal(await c.ExecuteScalarAsync(ct));
         c.CommandText="SELECT COALESCE(SUM(CAST(Amount AS REAL)),0) FROM Expenses WHERE julianday(OccurredAt)>=julianday($start) AND julianday(OccurredAt)<julianday($end);";
-        P(c,"$start",dayStartText); P(c,"$end",nextDayStartText);
+        c.Parameters.Clear(); P(c,"$start",dayStartText); P(c,"$end",nextDayStartText);
         var expenses=Convert.ToDecimal(await c.ExecuteScalarAsync(ct));
         return new DashboardSummary(split.OwedToUs,split.WeOwe,stock,today,sales,purchases,expenses);
     }
