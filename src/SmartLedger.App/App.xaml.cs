@@ -11,11 +11,11 @@ using SmartLedger.Infrastructure.Audit;
 namespace SmartLedger.App;
 public partial class App : Application
 {
-    public App() => InitializeComponent();
+    public App() { InitializeComponent(); AppDomain.CurrentDomain.UnhandledException += (_, e) => { try { Directory.CreateDirectory(LocalAppPaths.Root); File.WriteAllText(Path.Combine(LocalAppPaths.Root, "unhandled-error.log"), $"Terminating: {e.IsTerminating}{Environment.NewLine}{e.ExceptionObject}"); } catch { } }; }
     protected override async void OnStartup(StartupEventArgs e)
     {
         base.OnStartup(e);
-        DispatcherUnhandledException += (_, a) => { try { Directory.CreateDirectory(LocalAppPaths.Root); File.WriteAllText(Path.Combine(LocalAppPaths.Root, "startup-error.log"), a.Exception.ToString()); } catch { } a.Handled = true; MessageBox.Show(a.Exception.Message, "SmartLedger", MessageBoxButton.OK, MessageBoxImage.Error); };
+        DispatcherUnhandledException += (_, a) => { try { Directory.CreateDirectory(LocalAppPaths.Root); File.AppendAllText(Path.Combine(LocalAppPaths.Root, "startup-error.log"), $"[{DateTimeOffset.Now:O}] {a.Exception}{Environment.NewLine}{Environment.NewLine}"); } catch { } a.Handled = true; MessageBox.Show($"حدث خطأ غير متوقع في واجهة التطبيق وتم تسجيل التفاصيل للمطور.{Environment.NewLine}{Environment.NewLine}{a.Exception.Message}", "SmartLedger — خطأ في الواجهة", MessageBoxButton.OK, MessageBoxImage.Error); };
         try
         {
             var db = await SmartLedger.Infrastructure.Infrastructure.CreateDatabaseAsync(LocalAppPaths.Root);
