@@ -12,5 +12,5 @@ public sealed record InvoiceSummary(
     PaymentMode PaymentMode,
     string Note)
 {
-    public decimal Remaining => Math.Max(0m, Total - Paid);
+    public decimal Remaining => Status is "معكوسة" or "ملغاة" ? 0m : Math.Max(0m, Total - Paid);
 }
