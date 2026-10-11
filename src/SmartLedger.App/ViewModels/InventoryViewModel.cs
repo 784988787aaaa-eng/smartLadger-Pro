@@ -98,7 +98,7 @@ public partial class InventoryViewModel(IAppRepository repo) : ObservableObject
     partial void OnNewBarcodeChanged(string value) => OnPropertyChanged(nameof(BarcodePreview));
     partial void OnNewSmallUnitChanged(string value) => NotifyPackaging();
     partial void OnNewLargeUnitChanged(string value) => NotifyPackaging();
-    partial void OnNewPurchasePriceChanged(string value) { if (!_syncingUnits) SyncMajorFromMinor(); NotifyProfit(); }
+    partial void OnNewPurchasePriceChanged(string value) { if (!_syncingUnits) SyncMajorFromMinor(); if (!IsEditing && (string.IsNullOrWhiteSpace(NewMinimumSellingPrice) || ParseDecimal(NewMinimumSellingPrice)==0m)) NewMinimumSellingPrice=value; NotifyProfit(); }
     partial void OnNewSalePriceChanged(string value) { if (!_syncingUnits) SyncMajorFromMinor(); NotifyProfit(); }
     partial void OnNewMajorPurchasePriceChanged(string value) { if (!_syncingUnits) SyncMinorFromMajor(); NotifyProfit(); }
     partial void OnNewMajorSalePriceChanged(string value) { if (!_syncingUnits) SyncMinorFromMajor(); NotifyProfit(); }
