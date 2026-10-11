@@ -23,6 +23,7 @@ public interface IAppRepository
     Task DeletePersonAsync(Guid id, Guid deletedBy, CancellationToken ct = default);
     Task DeleteProductAsync(Guid id, Guid deletedBy, CancellationToken ct = default);
     Task<IReadOnlyList<Product>> GetProductsAsync(string? search = null, CancellationToken ct = default);
+    Task<IReadOnlyDictionary<Guid, decimal>> GetProductInventoryCostValuesAsync(CancellationToken ct = default);
     Task<Product?> GetProductByBarcodeAsync(string barcode, CancellationToken ct = default);
     Task<IReadOnlyList<ProductBatch>> GetProductBatchesAsync(Guid productId, CancellationToken ct = default);
     Task<ProductBatch> AddStockBatchAsync(ProductBatch batch, CancellationToken ct = default);
