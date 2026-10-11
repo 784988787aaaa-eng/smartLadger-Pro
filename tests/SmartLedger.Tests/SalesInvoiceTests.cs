@@ -47,6 +47,17 @@ public sealed class SalesInvoiceTests
             await using var command=connection.CreateCommand();
             command.CommandText="SELECT QuantityMinor FROM ProductBatches WHERE BatchCode='EARLY';";
             Assert.Equal("0",Convert.ToString(await command.ExecuteScalarAsync(),System.Globalization.CultureInfo.InvariantCulture));
+            command.CommandText="SELECT COUNT(*) FROM InvoiceBatchAllocations WHERE InvoiceId=$invoice;";
+            command.Parameters.AddWithValue("$invoice",saved.Id.ToString("N"));
+            Assert.Equal(1L,Convert.ToInt64(await command.ExecuteScalarAsync()));
+            command.CommandText="SELECT BatchCode,QuantityMinor FROM ProductBatches b JOIN InvoiceBatchAllocations a ON a.BatchId=b.Id WHERE a.InvoiceId=$invoice;";
+            await using(var allocationReader=await command.ExecuteReaderAsync())
+            {
+                Assert.True(await allocationReader.ReadAsync());
+                Assert.Equal("EARLY",allocationReader.GetString(0));
+                Assert.Equal("10",allocationReader.GetString(1));
+            }
+            command.Parameters.Clear();
             command.CommandText="SELECT COUNT(*) FROM CashRegisterEntries WHERE InvoiceId=$invoice;";
             command.Parameters.AddWithValue("$invoice",saved.Id.ToString("N"));
             Assert.Equal(0L,Convert.ToInt64(await command.ExecuteScalarAsync()));
