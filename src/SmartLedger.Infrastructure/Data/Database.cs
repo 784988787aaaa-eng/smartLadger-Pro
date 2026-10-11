@@ -16,7 +16,7 @@ public sealed class Database
         await using var db=Open(); await db.OpenAsync(ct);
         await ExecuteAsync(db,"PRAGMA journal_mode=WAL; PRAGMA synchronous=NORMAL; PRAGMA busy_timeout=10000; PRAGMA foreign_keys=ON; PRAGMA temp_store=MEMORY;",ct);
         var version=await ScalarLongAsync(db,"PRAGMA user_version;",ct);
-        if(version<1)await MigrationV1Async(db,ct); if(version<2)await MigrationV2Async(db,ct); if(version<3)await MigrationV3Async(db,ct); if(version<4)await MigrationV4Async(db,ct); if(version<5)await MigrationV5Async(db,ct); if(version<6)await MigrationV6Async(db,ct); if(version<7)await MigrationV7Async(db,ct); if(version<8)await MigrationV8Async(db,ct); if(version<9)await MigrationV9Async(db,ct); if(version<10)await MigrationV10Async(db,ct); if(version<11)await MigrationV11Async(db,ct); if(version<12)await MigrationV12Async(db,ct); if(version<13)await MigrationV13Async(db,ct); if(version<14)await MigrationV14Async(db,ct); if(version<15)await MigrationV15Async(db,ct); if(version<16)await MigrationV16Async(db,ct); await EnsureColumnAsync(db,"Invoices","Status","TEXT NOT NULL DEFAULT 'Posted'",ct); await SeedAsync(db,ct);
+        if(version<1)await MigrationV1Async(db,ct); if(version<2)await MigrationV2Async(db,ct); if(version<3)await MigrationV3Async(db,ct); if(version<4)await MigrationV4Async(db,ct); if(version<5)await MigrationV5Async(db,ct); if(version<6)await MigrationV6Async(db,ct); if(version<7)await MigrationV7Async(db,ct); if(version<8)await MigrationV8Async(db,ct); if(version<9)await MigrationV9Async(db,ct); if(version<10)await MigrationV10Async(db,ct); if(version<11)await MigrationV11Async(db,ct); if(version<12)await MigrationV12Async(db,ct); if(version<13)await MigrationV13Async(db,ct); if(version<14)await MigrationV14Async(db,ct); if(version<15)await MigrationV15Async(db,ct); if(version<16)await MigrationV16Async(db,ct); if(version<17)await MigrationV17Async(db,ct); await EnsureColumnAsync(db,"Invoices","Status","TEXT NOT NULL DEFAULT 'Posted'",ct); await SeedAsync(db,ct);
     }
     private static async Task MigrationV1Async(SqliteConnection db,CancellationToken ct)
     {
@@ -71,6 +71,14 @@ public sealed class Database
             await ExecuteAsync(db,"CREATE INDEX IF NOT EXISTS IX_Operations_Person_OccurredAt ON Operations(PersonId,OccurredAt);",ct);
         await SetVersionAsync(db,10,ct);
     }
+    private static async Task MigrationV17Async(SqliteConnection db,CancellationToken ct)
+    {
+        // Older migrations defaulted QuantityMinor to Quantity. For lines whose saved unit factor
+        // proves that a larger unit was used, repair the base-unit quantity before reversals rely on it.
+        await ExecuteAsync(db,"UPDATE InvoiceLines SET QuantityMinor=CAST(Quantity AS REAL)*CAST(ConversionFactorApplied AS REAL) WHERE CAST(ConversionFactorApplied AS REAL)>1 AND CAST(QuantityMinor AS REAL)=CAST(Quantity AS REAL);",ct);
+        await SetVersionAsync(db,17,ct);
+    }
+
     private static async Task MigrationV16Async(SqliteConnection db,CancellationToken ct)
     {
         await ExecuteAsync(db,"CREATE TABLE IF NOT EXISTS OperationCashEntries(Id TEXT PRIMARY KEY,OperationId TEXT NOT NULL UNIQUE REFERENCES Operations(Id) ON DELETE CASCADE,Amount TEXT NOT NULL,EntryType TEXT NOT NULL,OccurredAt TEXT NOT NULL,CreatedBy TEXT NOT NULL REFERENCES Users(Id)); CREATE INDEX IF NOT EXISTS IX_OperationCashEntries_Date ON OperationCashEntries(OccurredAt);",ct);
