@@ -348,8 +348,11 @@ FROM Operations;
             {
                 // A purchase reversal must remove the lots it introduced. If any tracked sale has
                 // consumed one of those lots, refuse the reversal instead of leaving phantom stock.
-                c.Parameters.Clear();c.CommandText="SELECT EXISTS(SELECT 1 FROM ProductBatches b JOIN InvoiceBatchAllocations a ON a.BatchId=b.Id WHERE b.PurchaseInvoiceRef=$invoice);";P(c,"$invoice",invoiceNumber);
+                c.Parameters.Clear();c.CommandText="SELECT EXISTS(SELECT 1 FROM ProductBatches b JOIN InvoiceBatchAllocations a ON a.BatchId=b.Id JOIN Invoices consumed ON consumed.Id=a.InvoiceId WHERE b.PurchaseInvoiceRef=$invoice AND lower(consumed.Status) NOT IN ('reversed','cancelled'));";P(c,"$invoice",invoiceNumber);
                 if(Convert.ToInt32(await c.ExecuteScalarAsync())==1)throw new InvalidOperationException("لا يمكن عكس فاتورة الشراء بعد بيع كميات من دفعاتها؛ عالج مرتجع البيع أولاً.");
+                // Reversed sales retain allocation history. Remove those references before deleting
+                // the original purchase lots, otherwise the BatchId foreign key blocks the reversal.
+                c.Parameters.Clear();c.CommandText="DELETE FROM InvoiceBatchAllocations WHERE BatchId IN (SELECT Id FROM ProductBatches WHERE PurchaseInvoiceRef=$invoice);";P(c,"$invoice",invoiceNumber);await c.ExecuteNonQueryAsync();
                 c.Parameters.Clear();c.CommandText="DELETE FROM ProductBatches WHERE PurchaseInvoiceRef=$invoice;";P(c,"$invoice",invoiceNumber);await c.ExecuteNonQueryAsync();
             }
             if(type==InvoiceType.Sale||type==InvoiceType.SaleReturn)
