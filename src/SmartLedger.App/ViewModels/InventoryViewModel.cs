@@ -81,6 +81,7 @@ public partial class InventoryViewModel(IAppRepository repo) : ObservableObject
         ApplyFilter();
         OnPropertyChanged(nameof(ProductsCount));
         OnPropertyChanged(nameof(StockValue));
+        OnPropertyChanged(nameof(SelectedProductCostValue));
         OnPropertyChanged(nameof(RetailStockValue));
         OnPropertyChanged(nameof(LowStockCount));
         OnPropertyChanged(nameof(Warehouses));
