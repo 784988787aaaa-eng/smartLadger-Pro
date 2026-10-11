@@ -427,7 +427,7 @@ FROM Operations;
             i=i with { InvoiceNumber=prefix+nextNumber.ToString("0000",CultureInfo.InvariantCulture) };
         }
         if(string.IsNullOrWhiteSpace(i.InvoiceNumber))throw new InvalidOperationException("تعذر إنشاء رقم الفاتورة.");
-        c.Parameters.Clear();c.CommandText="SELECT EXISTS(SELECT 1 FROM Invoices WHERE lower(trim(InvoiceNumber))=lower(trim($number));";P(c,"$number",i.InvoiceNumber);
+        c.Parameters.Clear();c.CommandText="SELECT EXISTS(SELECT 1 FROM Invoices WHERE lower(trim(InvoiceNumber))=lower(trim($number)));";P(c,"$number",i.InvoiceNumber);
         if(Convert.ToInt32(await c.ExecuteScalarAsync(ct))==1)throw new InvalidOperationException("رقم الفاتورة مستخدم مسبقاً؛ أعد المحاولة لإنشاء رقم جديد.");
         foreach(var movement in movements){c.Parameters.Clear();c.CommandText="SELECT EXISTS(SELECT 1 FROM StockMovements WHERE Id=$id);";P(c,"$id",movement.Id.ToString("N"));if(Convert.ToInt32(await c.ExecuteScalarAsync(ct))==1)throw new InvalidOperationException("حركة المخزون مسجلة مسبقاً.");}
         if(operation is not null){c.Parameters.Clear();c.CommandText="SELECT EXISTS(SELECT 1 FROM Operations WHERE Id=$id);";P(c,"$id",operation.Id.ToString("N"));if(Convert.ToInt32(await c.ExecuteScalarAsync(ct))==1)throw new InvalidOperationException("القيد المالي مسجل مسبقاً.");}
