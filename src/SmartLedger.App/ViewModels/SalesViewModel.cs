@@ -76,8 +76,15 @@ public partial class SalesViewModel(IAppRepository repo,IAppSession session):Obs
     public IReadOnlyList<PaymentModeOption> PaymentModes {get;}=new[]{new PaymentModeOption(PaymentMode.Cash,"نقدي"),new PaymentModeOption(PaymentMode.Credit,"آجل — له"),new PaymentModeOption(PaymentMode.Partial,"جزئي — المتبقي له")};
 
     public async Task LoadAsync(){_books=await repo.GetBooksAsync();var customerBook=_books.FirstOrDefault(x=>x.Kind==BookKind.Customers);_allPeople=customerBook is null?Array.Empty<PersonSummary>():await repo.GetPeopleAsync(customerBook.Id);_allProducts=await repo.GetProductsAsync();People=_allPeople;Products=_allProducts;await LoadInvoiceHistoryAsync();}
+    private int _invoiceSearchRequest;
     partial void OnInvoiceSearchChanged(string value)=>_ = LoadInvoiceHistoryAsync();
-    private async Task LoadInvoiceHistoryAsync()=>InvoiceHistory=await repo.GetInvoiceSummariesAsync(InvoiceType.Sale,InvoiceSearch,100);
+    private async Task LoadInvoiceHistoryAsync()
+    {
+        var request = System.Threading.Interlocked.Increment(ref _invoiceSearchRequest);
+        var search = InvoiceSearch;
+        var result = await repo.GetInvoiceSummariesAsync(InvoiceType.Sale, search, 100);
+        if (request == System.Threading.Volatile.Read(ref _invoiceSearchRequest)) InvoiceHistory = result;
+    }
     partial void OnCustomerSearchChanged(string value){if(PersonId is Guid id&&_allPeople.FirstOrDefault(x=>x.PersonId==id) is { } selected&&!Normalize(value).Equals(Normalize(selected.PersonName),StringComparison.OrdinalIgnoreCase))PersonId=null;People=FilterPeople(value);IsCustomerSuggestionsOpen=!string.IsNullOrWhiteSpace(value)&&People.Count>0;}
     partial void OnProductSearchChanged(string value){if(_settingProductSelection)return;if(ProductId is Guid id&&_allProducts.FirstOrDefault(x=>x.Id==id) is { } selected&&!Normalize(value).Equals(Normalize(selected.Name),StringComparison.OrdinalIgnoreCase))ProductId=null;Products=FilterProducts(value);IsProductSuggestionsOpen=!string.IsNullOrWhiteSpace(value)&&Products.Count>0;}
     partial void OnPersonIdChanged(Guid? value){var p=_allPeople.FirstOrDefault(x=>x.PersonId==value);if(p is not null){CustomerSearch=p.PersonName;IsCustomerSuggestionsOpen=false;}}
