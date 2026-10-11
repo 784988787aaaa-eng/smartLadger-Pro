@@ -34,7 +34,7 @@ public partial class ReportsViewModel(IAppRepository repo) : ObservableObject
         var rows=new List<RecentOperationRow>();
         if(Summary.Sales!=0m||Summary.Purchases!=0m||Summary.Expenses!=0m||Summary.Receivables!=0m||Summary.Payables!=0m||Summary.StockValue!=0m)
         {
-            var note=$"المبيعات: {AmountFormatter.Format(Summary.Sales)}؛ المشتريات: {AmountFormatter.Format(Summary.Purchases)}؛ النفقات: {AmountFormatter.Format(Summary.Expenses)}؛ لنا: {AmountFormatter.Format(Summary.Receivables)}؛ علينا: {AmountFormatter.Format(Summary.Payables)}؛ قيمة المخزون الحالية: {AmountFormatter.Format(Summary.StockValue)}";
+            var note=$"المبيعات: {AmountFormatter.Format(Summary.Sales)}؛ المشتريات: {AmountFormatter.Format(Summary.Purchases)}؛ النفقات: {AmountFormatter.Format(Summary.Expenses)}؛ لنا: {AmountFormatter.Format(Summary.Receivables,absolute:false)}؛ علينا: {AmountFormatter.Format(Summary.Payables,absolute:false)}؛ قيمة المخزون الحالية: {AmountFormatter.Format(Summary.StockValue)}";
             rows.Add(new RecentOperationRow(new DateTimeOffset(DateTime.SpecifyKind(ToDate.Date,DateTimeKind.Local)),"ملخص الفترة","ملخص مالي",Summary.Sales-Summary.Purchases-Summary.Expenses,note));
         }
         rows.AddRange(Recent);
