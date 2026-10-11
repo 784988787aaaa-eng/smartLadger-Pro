@@ -10,6 +10,11 @@ on:
 permissions:
   contents: read
 
+# Keep one authoritative Windows build and cancel stale runs for the same PR/ref.
+concurrency:
+  group: smartledger-ci-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build:
     name: Build, test, and publish Windows x64
