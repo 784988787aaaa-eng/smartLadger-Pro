@@ -29,6 +29,18 @@ public partial class ReportsViewModel(IAppRepository repo) : ObservableObject
 
     private void NotifyPeriod() => OnPropertyChanged(nameof(PeriodText));
 
+    private IReadOnlyList<RecentOperationRow> BuildExportRows()
+    {
+        var rows=new List<RecentOperationRow>();
+        if(Summary.Sales!=0m||Summary.Purchases!=0m||Summary.Expenses!=0m||Summary.Receivables!=0m||Summary.Payables!=0m||Summary.StockValue!=0m)
+        {
+            var note=$"المبيعات: {AmountFormatter.Format(Summary.Sales)}؛ المشتريات: {AmountFormatter.Format(Summary.Purchases)}؛ النفقات: {AmountFormatter.Format(Summary.Expenses)}؛ لنا: {AmountFormatter.Format(Summary.Receivables)}؛ علينا: {AmountFormatter.Format(Summary.Payables)}؛ قيمة المخزون الحالية: {AmountFormatter.Format(Summary.StockValue)}";
+            rows.Add(new RecentOperationRow(new DateTimeOffset(DateTime.SpecifyKind(ToDate.Date,DateTimeKind.Local)),"ملخص الفترة","ملخص مالي",Summary.Sales-Summary.Purchases-Summary.Expenses,note));
+        }
+        rows.AddRange(Recent);
+        return rows;
+    }
+
     public Task LoadAsync() => RefreshAsync();
 
     [RelayCommand]
@@ -73,9 +85,10 @@ public partial class ReportsViewModel(IAppRepository repo) : ObservableObject
     [RelayCommand]
     private async Task ExportPdfAsync()
     {
-        if (IsBusy || Recent.Count == 0)
+        var exportRows=BuildExportRows();
+        if (IsBusy || exportRows.Count == 0)
         {
-            StatusText = Recent.Count == 0 ? "لا توجد بيانات لتصديرها ضمن الفترة المحددة." : "انتظر حتى يكتمل التقرير.";
+            StatusText = exportRows.Count == 0 ? "لا توجد بيانات لتصديرها ضمن الفترة المحددة." : "انتظر حتى يكتمل التقرير.";
             return;
         }
 
@@ -93,7 +106,7 @@ public partial class ReportsViewModel(IAppRepository repo) : ObservableObject
         try
         {
             var service = new PdfDocumentService(repo);
-            await service.GenerateStatementAsync(dialog.FileName, $"التقرير المالي  •  الفترة {FromDate:yyyy/MM/dd} – {ToDate:yyyy/MM/dd}", Recent, SelectedPageKind);
+            await service.GenerateStatementAsync(dialog.FileName, $"التقرير المالي  •  الفترة {FromDate:yyyy/MM/dd} – {ToDate:yyyy/MM/dd}", exportRows, SelectedPageKind);
             StatusText = $"تم تصدير PDF بنجاح: {dialog.FileName}";
         }
         catch (Exception ex)
@@ -109,9 +122,10 @@ public partial class ReportsViewModel(IAppRepository repo) : ObservableObject
     [RelayCommand]
     private async Task ExportExcelAsync()
     {
-        if (IsBusy || Recent.Count == 0)
+        var exportRows=BuildExportRows();
+        if (IsBusy || exportRows.Count == 0)
         {
-            StatusText = Recent.Count == 0 ? "لا توجد بيانات لتصديرها ضمن الفترة المحددة." : "انتظر حتى يكتمل التقرير.";
+            StatusText = exportRows.Count == 0 ? "لا توجد بيانات لتصديرها ضمن الفترة المحددة." : "انتظر حتى يكتمل التقرير.";
             return;
         }
 
@@ -130,7 +144,7 @@ public partial class ReportsViewModel(IAppRepository repo) : ObservableObject
         {
             var identity = await repo.GetIdentityAsync();
             var service = new ExcelExportService();
-            service.ExportStatement(dialog.FileName, identity.BusinessName, Recent, identity.Currency);
+            service.ExportStatement(dialog.FileName, identity.BusinessName, exportRows, identity.Currency);
             StatusText = $"تم تصدير Excel بنجاح: {dialog.FileName}";
         }
         catch (Exception ex)
