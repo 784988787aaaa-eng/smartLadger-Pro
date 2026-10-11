@@ -35,6 +35,7 @@ public partial class InventoryViewModel(IAppRepository repo) : ObservableObject
     [ObservableProperty] private string newOpeningQuantity = "0";
     [ObservableProperty] private string newPurchasePrice = "0";
     [ObservableProperty] private string newSalePrice = "0";
+    [ObservableProperty] private string newMinimumSellingPrice = "0";
     [ObservableProperty] private string newAlert = "10";
     [ObservableProperty] private string newNote = "";
     [ObservableProperty] private string newShelfLocation = "";
@@ -188,6 +189,7 @@ public partial class InventoryViewModel(IAppRepository repo) : ObservableObject
         NewOpeningQuantity = "0";
         NewPurchasePrice = "0";
         NewSalePrice = "0";
+        NewMinimumSellingPrice = "0";
         NewAlert = "10";
         NewNote = "";
         NewShelfLocation = "";
@@ -216,6 +218,7 @@ public partial class InventoryViewModel(IAppRepository repo) : ObservableObject
         NewOpeningQuantity = product.StockSmallUnits.ToString("0.##", CultureInfo.InvariantCulture);
         NewPurchasePrice = product.PurchasePrice.ToString("0.##", CultureInfo.InvariantCulture);
         NewSalePrice = product.SalePrice.ToString("0.##", CultureInfo.InvariantCulture);
+        NewMinimumSellingPrice = product.MinimumSellingPrice.ToString("0.##", CultureInfo.InvariantCulture);
         NewAlert = product.AlertThreshold.ToString("0.##", CultureInfo.InvariantCulture);
         NewNote = product.Note;
         NewShelfLocation = product.ShelfLocation;
@@ -270,7 +273,7 @@ public partial class InventoryViewModel(IAppRepository repo) : ObservableObject
                     WarehouseName = NewWarehouse.Trim(),
                     SellingPriceMajor = ParseDecimal(NewMajorSalePrice),
                     SellingPriceMinor = sale,
-                    MinimumSellingPrice = SelectedProduct.MinimumSellingPrice,
+                    MinimumSellingPrice = ParseDecimal(NewMinimumSellingPrice),
                     ReorderPoint = alert,
                     LowStockThreshold = alert,
                     UpdatedAt = DateTimeOffset.UtcNow
@@ -292,7 +295,7 @@ public partial class InventoryViewModel(IAppRepository repo) : ObservableObject
                     WarehouseName = NewWarehouse.Trim(),
                     SellingPriceMajor = ParseDecimal(NewMajorSalePrice),
                     SellingPriceMinor = sale,
-                    MinimumSellingPrice = purchase,
+                    MinimumSellingPrice = ParseDecimal(NewMinimumSellingPrice),
                     ReorderPoint = alert,
                     LowStockThreshold = alert,
                     UpdatedAt = DateTimeOffset.UtcNow
