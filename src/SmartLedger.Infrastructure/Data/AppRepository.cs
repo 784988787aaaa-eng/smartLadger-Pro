@@ -472,6 +472,32 @@ FROM Operations;
     private async Task<bool> SupplierExistsAsync(Guid id,CancellationToken ct){await using var db=database.Open();await db.OpenAsync(ct);await using var c=db.CreateCommand();c.CommandText="SELECT EXISTS(SELECT 1 FROM People p JOIN Books b ON b.Id=p.BookId WHERE p.Id=$id AND b.Kind=2);";P(c,"$id",id.ToString("N"));return Convert.ToInt32(await c.ExecuteScalarAsync(ct))==1;}
     public async Task<IReadOnlyList<PersonSummary>> GetSupplierPeopleAsync(string? search=null,CancellationToken ct=default)=>await GetPeopleAsync(new Guid("00000000000000000000000000000003"),search,null,ct);
 
+    public async Task<IReadOnlyDictionary<Guid,decimal>> GetProductInventoryCostValuesAsync(CancellationToken ct=default)
+    {
+        await EnsurePermissionAsync(PermissionKeys.View,ct);
+        var values=new Dictionary<Guid,decimal>();
+        await using var db=database.Open();await db.OpenAsync(ct);await using var c=db.CreateCommand();
+        c.CommandText="""
+            SELECT p.Id,
+                   CASE WHEN COALESCE(b.BatchQuantity,0)>0
+                        THEN COALESCE(b.BatchValue,0)+MAX(0,CAST(p.StockSmallUnits AS REAL)-COALESCE(b.BatchQuantity,0))*CAST(p.PurchasePrice AS REAL)
+                        ELSE CAST(p.StockSmallUnits AS REAL)*CAST(p.PurchasePrice AS REAL)
+                   END
+            FROM Products p
+            LEFT JOIN (
+                SELECT ProductId,
+                       SUM(CAST(QuantityMinor AS REAL)) AS BatchQuantity,
+                       SUM(CAST(QuantityMinor AS REAL)*CAST(CostPrice AS REAL)) AS BatchValue
+                FROM ProductBatches
+                WHERE CAST(QuantityMinor AS REAL)>0
+                GROUP BY ProductId
+            ) b ON b.ProductId=p.Id;
+            """;
+        await using var r=await c.ExecuteReaderAsync(ct);
+        while(await r.ReadAsync(ct))values[Guid.Parse(r.GetString(0))]=decimal.Round(Convert.ToDecimal(r.GetValue(1),CultureInfo.InvariantCulture),2);
+        return values;
+    }
+
     public async Task<Product?> GetProductByBarcodeAsync(string barcode,CancellationToken ct=default)
     {
         var normalized=(barcode??string.Empty).Trim();
