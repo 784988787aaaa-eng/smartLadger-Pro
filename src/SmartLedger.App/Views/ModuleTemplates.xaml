@@ -750,6 +750,8 @@
           <TextBox DockPanel.Dock="Right" Width="280" Margin="18,0,0,0" Style="{StaticResource Field}" Text="{Binding InvoiceSearch,UpdateSourceTrigger=PropertyChanged}" AutomationProperties.Name="بحث فواتير البيع" ToolTip="ابحث برقم الفاتورة أو اسم العميل أو البيان"/>
           <StackPanel DockPanel.Dock="Left" Orientation="Horizontal">
             <Button Content="معاينة آخر إيصال" Command="{Binding PrintLastInvoiceCommand}" Style="{StaticResource GhostButton}" Width="140" Height="42" Margin="0,0,8,0"/>
+            <Button Content="طباعة مباشرة" Command="{Binding PrintDirectlyCommand}" Style="{StaticResource GhostButton}" Width="115" Height="42" Margin="0,0,8,0"/>
+            <Button Content="إرسال لواتساب" Command="{Binding SendWhatsAppCommand}" Style="{StaticResource GhostButton}" Width="125" Height="42" Margin="0,0,8,0"/>
             <Button Content="+ إنشاء فاتورة بيع" Command="{Binding OpenNewCommand}" Style="{StaticResource PrimaryButton}" Width="165" Height="42"/>
           </StackPanel>
         </DockPanel>
@@ -761,7 +763,7 @@
             <DataGridTextColumn Header="التاريخ" Binding="{Binding IssuedAt,Converter={StaticResource ArabicDateTimeConverter}}" Width="175" ElementStyle="{StaticResource TableTextCell}"/>
             <DataGridTextColumn Header="العميل" Binding="{Binding PersonName}" Width="1.3*" ElementStyle="{StaticResource TableTextCell}"/>
             <DataGridTextColumn Header="الإجمالي" Binding="{Binding Total,Converter={StaticResource PrivacyMoneyConverter}}" Width="125" ElementStyle="{StaticResource NumericCell}"/>
-            <DataGridTextColumn Header="المدفوع" Binding="{Binding Paid,Converter={StaticResource PrivacyMoneyConverter}}" Width="125" ElementStyle="{StaticResource NumericCell}"/>
+            <DataGridTextColumn Header="المدفوع" Binding="{Binding Paid,Converter={StaticResource PrivacyMoneyConverter}}" Width="115" ElementStyle="{StaticResource NumericCell}"/><DataGridTextColumn Header="المتبقي" Binding="{Binding Remaining,Converter={StaticResource PrivacyMoneyConverter}}" Width="115" ElementStyle="{StaticResource NumericCell}"/>
             <DataGridTextColumn Header="الحالة" Binding="{Binding Status}" Width="95" ElementStyle="{StaticResource TableTextCell}"/>
             <DataGridTextColumn Header="البيان" Binding="{Binding Note}" Width="1.4*" ElementStyle="{StaticResource TableTextCell}"/>
             <DataGridTemplateColumn Header="الإجراء" Width="105"><DataGridTemplateColumn.CellTemplate><DataTemplate><Button Content="عكس الفاتورة" Command="{Binding DataContext.ReverseInvoiceCommand,RelativeSource={RelativeSource AncestorType=DataGrid}}" CommandParameter="{Binding InvoiceNumber}" Style="{StaticResource GhostButton}" Padding="5,2" FontSize="11"/></DataTemplate></DataGridTemplateColumn.CellTemplate></DataGridTemplateColumn>
@@ -849,7 +851,7 @@
             <DataGridTextColumn Header="التاريخ" Binding="{Binding IssuedAt,Converter={StaticResource ArabicDateTimeConverter}}" Width="175" ElementStyle="{StaticResource TableTextCell}"/>
             <DataGridTextColumn Header="المورد" Binding="{Binding PersonName}" Width="1.3*" ElementStyle="{StaticResource TableTextCell}"/>
             <DataGridTextColumn Header="الإجمالي" Binding="{Binding Total,Converter={StaticResource PrivacyMoneyConverter}}" Width="125" ElementStyle="{StaticResource NumericCell}"/>
-            <DataGridTextColumn Header="المدفوع" Binding="{Binding Paid,Converter={StaticResource PrivacyMoneyConverter}}" Width="125" ElementStyle="{StaticResource NumericCell}"/>
+            <DataGridTextColumn Header="المدفوع" Binding="{Binding Paid,Converter={StaticResource PrivacyMoneyConverter}}" Width="115" ElementStyle="{StaticResource NumericCell}"/><DataGridTextColumn Header="المتبقي" Binding="{Binding Remaining,Converter={StaticResource PrivacyMoneyConverter}}" Width="115" ElementStyle="{StaticResource NumericCell}"/>
             <DataGridTextColumn Header="الحالة" Binding="{Binding Status}" Width="95" ElementStyle="{StaticResource TableTextCell}"/>
             <DataGridTextColumn Header="البيان" Binding="{Binding Note}" Width="1.4*" ElementStyle="{StaticResource TableTextCell}"/>
             <DataGridTemplateColumn Header="الإجراء" Width="105"><DataGridTemplateColumn.CellTemplate><DataTemplate><Button Content="عكس الفاتورة" Command="{Binding DataContext.ReverseInvoiceCommand,RelativeSource={RelativeSource AncestorType=DataGrid}}" CommandParameter="{Binding InvoiceNumber}" Style="{StaticResource GhostButton}" Padding="5,2" FontSize="11"/></DataTemplate></DataGridTemplateColumn.CellTemplate></DataGridTemplateColumn>

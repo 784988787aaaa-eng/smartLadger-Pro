@@ -10,4 +10,7 @@ public sealed record InvoiceSummary(
     decimal Paid,
     string Status,
     PaymentMode PaymentMode,
-    string Note);
+    string Note)
+{
+    public decimal Remaining => Status is "معكوسة" or "ملغاة" ? 0m : Math.Max(0m, Total - Paid);
+}
