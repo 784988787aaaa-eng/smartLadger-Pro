@@ -1,4 +1,4 @@
-﻿namespace SmartLedger.Core.Models;
+namespace SmartLedger.Core.Models;
 
 public enum BookKind { All=0, Customers=1, Suppliers=2, Custom=3, Employees=4, Other=5 }
 public enum OperationType { Receive, Payment, DebtToUs, DebtOnUs, Sale, Purchase, Return, Settlement, Other }
@@ -25,6 +25,8 @@ public sealed record Person(Guid Id, Guid BookId, string Name, string Phone, str
 public sealed record LedgerOperation(Guid Id, Guid PersonId, OperationType Type, decimal Amount, string Note, DateTimeOffset OccurredAt, Guid CreatedBy)
 {
     public string? ReferenceNumber { get; init; }
+    public Guid? SourceInvoiceId { get; init; }
+    public Guid? SourceStockMovementId { get; init; }
     public decimal RunningBalance { get; init; }
     public decimal Debit => Type is OperationType.DebtOnUs or OperationType.Sale or OperationType.Payment or OperationType.Settlement ? Amount : 0m;
     public decimal Credit => Type is OperationType.Receive or OperationType.Return or OperationType.DebtToUs or OperationType.Purchase ? Amount : 0m;

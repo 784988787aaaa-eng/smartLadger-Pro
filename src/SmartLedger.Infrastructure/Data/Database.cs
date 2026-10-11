@@ -62,6 +62,8 @@ public sealed class Database
         await EnsureColumnAsync(db,"People","WhatsAppEnabled","INTEGER NOT NULL DEFAULT 1",ct);
         await EnsureColumnAsync(db,"People","UpdatedAt","TEXT NOT NULL DEFAULT ''",ct);
         await EnsureColumnAsync(db,"Operations","ReferenceNumber","TEXT NULL",ct);
+        await EnsureColumnAsync(db,"Operations","SourceInvoiceId","TEXT NULL",ct);
+        await EnsureColumnAsync(db,"Operations","SourceStockMovementId","TEXT NULL",ct);
         if(await TableExistsAsync(db,"People",ct))
         {
             await ExecuteAsync(db,"UPDATE People SET AccountCode='ACC-'||substr(replace(Id,'-',''),1,12) WHERE AccountCode IS NULL OR trim(AccountCode)=''; UPDATE People SET UpdatedAt=CreatedAt WHERE UpdatedAt IS NULL OR trim(UpdatedAt)=''; UPDATE People SET WhatsAppEnabled=CASE WHEN trim(Phone)<>'' THEN 1 ELSE 0 END;",ct);

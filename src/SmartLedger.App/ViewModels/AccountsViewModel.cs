@@ -12,6 +12,9 @@ namespace SmartLedger.App.ViewModels;
 public sealed record AccountStatementRow(Guid Id,string Note,string TypeLabel,decimal Amount,DateTimeOffset OccurredAt,decimal CumulativeBalance,LedgerOperation Operation)
 {
     public string? ReferenceNumber => Operation.ReferenceNumber;
+    public Guid? SourceInvoiceId => Operation.SourceInvoiceId;
+    public Guid? SourceStockMovementId => Operation.SourceStockMovementId;
+    public string DocumentTypeLabel => Operation.TypeLabel;
     public decimal Debit => Operation.Type is OperationType.DebtOnUs or OperationType.Sale or OperationType.Payment or OperationType.Settlement ? Amount : 0m;
     public decimal Credit => Operation.Type is OperationType.Receive or OperationType.Return or OperationType.DebtToUs or OperationType.Purchase ? Amount : 0m;
 }
@@ -51,6 +54,10 @@ public partial class AccountsViewModel(IAppRepository repo,IAppSession session):
     [ObservableProperty] private IReadOnlyList<LedgerOperation> selectedAccountOperations=Array.Empty<LedgerOperation>();
     [ObservableProperty] private IReadOnlyList<AccountStatementRow> selectedAccountStatementRows=Array.Empty<AccountStatementRow>();
     [ObservableProperty] private string accountStatementStatus="";
+    [ObservableProperty] private DateTime? statementFromDate;
+    [ObservableProperty] private DateTime? statementToDate;
+    [ObservableProperty] private AccountStatementKindFilter statementKindFilter=AccountStatementKindFilter.All;
+    [ObservableProperty] private string statementSearch="";
     [ObservableProperty] private string currency="ريال";
     private bool syncingGroupAndType;
 
@@ -107,6 +114,11 @@ public partial class AccountsViewModel(IAppRepository repo,IAppSession session):
     }
 
     partial void OnSearchChanged(string value)=>_=RefreshAsync();
+    partial void OnStatementFromDateChanged(DateTime? value)=>ApplyStatementFilters();
+    partial void OnStatementToDateChanged(DateTime? value)=>ApplyStatementFilters();
+    partial void OnStatementKindFilterChanged(AccountStatementKindFilter value)=>ApplyStatementFilters();
+    partial void OnStatementSearchChanged(string value)=>ApplyStatementFilters();
+    public IReadOnlyList<AccountStatementKindFilter> StatementKindOptions { get; } = Enum.GetValues<AccountStatementKindFilter>();
     partial void OnSelectedBookIdChanged(Guid? value)
     {
         if(syncingGroupAndType) return;
@@ -560,21 +572,68 @@ public partial class AccountsViewModel(IAppRepository repo,IAppSession session):
             OnPropertyChanged(nameof(NetBalance));
             OnPropertyChanged(nameof(BalanceStatusText));
             OnPropertyChanged(nameof(BalanceStatusColor));
-            var calculated=LedgerBalanceCalculator.CalculateRunningBalances(SelectedAccountOperations);
-            var rows=new List<AccountStatementRow>(calculated.Count);
-            foreach(var entry in calculated)
-            {
-                var operation=entry.Operation;
-                rows.Add(new AccountStatementRow(operation.Id,operation.Note,operation.TypeLabel,
-                    operation.Amount,operation.OccurredAt,entry.RunningBalance,operation));
-            }
-            SelectedAccountStatementRows=rows.AsEnumerable().Reverse().ToArray();
+            ApplyStatementFilters();
             IsAccountOpen=true;
             AccountStatementStatus=$"تم تحميل {SelectedAccountOperations.Count} حركة.";
         }
         catch(Exception ex) { AccountStatementStatus=$"تعذر فتح الحساب: {ex.Message}"; }
     }
 
+    private void ApplyStatementFilters()
+    {
+        if (SelectedAccountOperations.Count == 0)
+        {
+            SelectedAccountStatementRows = Array.Empty<AccountStatementRow>();
+            OnPropertyChanged(nameof(StatementOpeningBalance));
+            OnPropertyChanged(nameof(StatementClosingBalance));
+            return;
+        }
+        var from = StatementFromDate.HasValue
+            ? new DateTimeOffset(DateTime.SpecifyKind(StatementFromDate.Value.Date, DateTimeKind.Local)).ToUniversalTime()
+            : SelectedAccountOperations.Min(x => x.OccurredAt);
+        var to = StatementToDate.HasValue
+            ? new DateTimeOffset(DateTime.SpecifyKind(StatementToDate.Value.Date.AddDays(1).AddTicks(-1), DateTimeKind.Local)).ToUniversalTime()
+            : SelectedAccountOperations.Max(x => x.OccurredAt);
+        if (to < from)
+        {
+            SelectedAccountStatementRows = Array.Empty<AccountStatementRow>();
+            AccountStatementStatus = "End date must not precede start date.";
+            return;
+        }
+        var calculation = AccountStatementFilter.Apply(SelectedAccountOperations, from, to, StatementKindFilter, StatementSearch);
+        SelectedAccountStatementRows = calculation.Movements.Select(operation => new AccountStatementRow(
+            operation.Id, operation.Note, operation.TypeLabel, operation.Amount, operation.OccurredAt,
+            operation.RunningBalance, operation)).Reverse().ToArray();
+        OnPropertyChanged(nameof(StatementOpeningBalance));
+        OnPropertyChanged(nameof(StatementClosingBalance));
+    }
+
+    public decimal StatementOpeningBalance
+    {
+        get
+        {
+            if (SelectedAccountOperations.Count == 0) return 0m;
+            var from = StatementFromDate.HasValue
+                ? new DateTimeOffset(DateTime.SpecifyKind(StatementFromDate.Value.Date, DateTimeKind.Local)).ToUniversalTime()
+                : SelectedAccountOperations.Min(x => x.OccurredAt);
+            return SelectedAccountOperations.Where(x => x.OccurredAt < from).Sum(LedgerBalanceCalculator.SignedEffect);
+        }
+    }
+
+    public decimal StatementClosingBalance
+    {
+        get
+        {
+            if (SelectedAccountOperations.Count == 0) return 0m;
+            var from = StatementFromDate.HasValue
+                ? new DateTimeOffset(DateTime.SpecifyKind(StatementFromDate.Value.Date, DateTimeKind.Local)).ToUniversalTime()
+                : SelectedAccountOperations.Min(x => x.OccurredAt);
+            var to = StatementToDate.HasValue
+                ? new DateTimeOffset(DateTime.SpecifyKind(StatementToDate.Value.Date.AddDays(1).AddTicks(-1), DateTimeKind.Local)).ToUniversalTime()
+                : SelectedAccountOperations.Max(x => x.OccurredAt);
+            return FinancialReportCalculations.CalculateAccountStatement(SelectedAccountOperations, from, to).ClosingBalance;
+        }
+    }
     [RelayCommand]
     private void CloseAccount()
     {
