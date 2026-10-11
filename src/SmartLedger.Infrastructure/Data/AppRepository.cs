@@ -488,7 +488,7 @@ FROM Operations;
         c.CommandText="""
             SELECT p.Id,
                    CASE WHEN COALESCE(b.BatchQuantity,0)>0
-                        THEN COALESCE(b.BatchValue,0)+MAX(0,CAST(p.StockSmallUnits AS REAL)-COALESCE(b.BatchQuantity,0))*CAST(p.PurchasePrice AS REAL)
+                        THEN (COALESCE(b.BatchValue,0)/b.BatchQuantity)*MIN(CAST(p.StockSmallUnits AS REAL),b.BatchQuantity)+MAX(0,CAST(p.StockSmallUnits AS REAL)-b.BatchQuantity)*CAST(p.PurchasePrice AS REAL)
                         ELSE CAST(p.StockSmallUnits AS REAL)*CAST(p.PurchasePrice AS REAL)
                    END
             FROM Products p
