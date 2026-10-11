@@ -1,0 +1,1020 @@
+﻿ControlType.Pane ID=303 NAME= ENABLED=True
+ControlType.Pane ID=40965 NAME= ENABLED=True
+ControlType.Pane ID=TaskbarFrame NAME= ENABLED=True
+ControlType.Button ID=WidgetsButton NAME=عناصر واجهة المستخدم 15°C صافٍ غالبًا ENABLED=True
+ControlType.Image ID=BadgeAnchorLargeTicker NAME= ENABLED=True
+ControlType.Image ID=BadgeAnchorLargeTicker NAME= ENABLED=True
+ControlType.Button ID=StartButton NAME=البدء ENABLED=True
+ControlType.Button ID=SearchButton NAME=بحث ENABLED=True
+ControlType.Text ID=SearchBoxTextBlock NAME=بحث ENABLED=True
+ControlType.Button ID=SearchGleamButton NAME=بحث - Babcock State Park, West Virginia, USA ENABLED=True
+ControlType.Image ID=DynamicSearchBoxGleamImage NAME= ENABLED=True
+ControlType.Button ID=TaskViewButton NAME=عرض المهمة ENABLED=True
+ControlType.Button ID=Appid: C:\Users\pc\Desktop\SmartLedger_Old_Versions_Archive_2026-10-06\SmartLedger_Release\SmartLedger.exe NAME=دفتر الحسابات الذكي ENABLED=True
+ControlType.Button ID=Appid: Microsoft.Windows.Explorer NAME=مستكشف الملفات - 2 نافذة (نوافذ) قيد التشغيل ENABLED=True
+ControlType.Button ID=Appid: {7C5A40EF-A0FB-4BFC-874A-C0F2E0B9FA8E}\NetBalancer\SeriousBit.NetBalancer.UI.exe NAME=NetBalancer ENABLED=True
+ControlType.Button ID=Appid: 5319275A.WhatsAppDesktop_cv1g1gvanyjgm!App NAME=‏‏WhatsApp - 1نافذة قيد التشغيل ENABLED=True
+ControlType.Text ID=BadgeText NAME=٣ ENABLED=True
+ControlType.Button ID=Appid: Chrome.UserData.Profile2 NAME=‏‏Anwar - Chrome - 1نافذة قيد التشغيل ENABLED=True
+ControlType.Button ID=Appid: Microsoft.WindowsTerminal_8wekyb3d8bbwe!App NAME=‏‏الوحدة الطرفية - 1نافذة قيد التشغيل ENABLED=True
+ControlType.Button ID=Appid: Microsoft.WindowsNotepad_8wekyb3d8bbwe!App NAME=‏‏المفكرة - 1نافذة قيد التشغيل ENABLED=True
+ControlType.Button ID=SystemTrayIcon NAME=عرض الأيقونات المخفية إظهار الأيقونات المخفية ENABLED=True
+ControlType.Button ID=NotifyItemIcon NAME= OneDrive - شخصي
+اكتمل النسخ الاحتياطي والمزامنة ENABLED=True
+ControlType.Button ID=SystemTrayIcon NAME=مؤشر الإدخال في أدوات النظام العربية (اليمن)‏
+العربية (101)
+
+لتبديل أساليب الإدخال، اضغط على مفتاح Windows + مفتاح المسافة. ENABLED=True
+ControlType.Button ID=SystemTrayIcon NAME=الشبكة HUAWEI_B535_5764_5G
+وصول للإنترنت ENABLED=True
+ControlType.Button ID=SystemTrayIcon NAME=مستوى الصوت Speaker/HP (Realtek High Definition Audio): 100% ENABLED=True
+ControlType.Button ID=SystemTrayIcon NAME=القوة حالة البطارية: 98% متبق ENABLED=True
+ControlType.Button ID=SystemTrayIcon NAME=الساعة 03:41 ص
+‏11/‏10/‏2026 ENABLED=True
+ControlType.Button ID=SystemTrayIcon NAME=إظهار سطح المكتب ENABLED=True
+ControlType.Window ID= NAME=SCREEN_BY_SCREEN_FIX_AND_VERIFY_REPORT.md - المفكرة ENABLED=True
+ControlType.Tab ID=Tabs NAME= ENABLED=True
+ControlType.List ID=TabListView NAME= ENABLED=True
+ControlType.TabItem ID= NAME=SmartLedger_QuickAction_Audit.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=SmartLedger_Fix_ProductDialog.txt. غير معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=SmartLedger_Dynamic_Units_Audit.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=SmartLedger_DbContext_Check.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=SmartLedger_Schema_Inspect.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=SmartLedger_Dynamic_Units_Master.txt. غير معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=SmartLedger_Units_Settings_Audit.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=SmartLedger_Dynamic_Units_Engine.txt. غير معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=SmartLedger_Fix_Warehouse_Notes.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=SmartLedger_Fix_Triple_Errors.txt. غير معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=SmartLedger_Product_Save_Diagnostic.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=SmartLedger_Deep_Fix_Audit.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=SmartLedger_Accounting_Init_Check.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=SmartLedger_Master_Product_Fix.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=SmartLedger_Fix_Inventory_History.txt. غير معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=SmartLedger_Fix_Inventory_Grid.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=SmartLedger_Clean_Grid_Column.txt. غير معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=SmartLedger_Audit_01.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=SmartLedger_Audit_02.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=SmartLedger_Audit_03.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=SmartLedger_Audit_04.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=SmartLedger_Audit_05.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=SmartLedger_Fix_Result.txt. غير معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=SmartLedger_Audit_Reqs.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=SmartLedger_Audit_AccService.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=SmartLedger_Audit_CashAndSettings.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=SmartLedger_Apply_Reqs.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=SmartLedger_Audit_Syntax.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=SmartLedger_Clean_Fix.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=SmartLedger_Audit_Interface.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=SmartLedger_Build_Final.txt. غير معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=SmartLedger_Audit_Purchases.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=SmartLedger_Audit_CashDialog.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=SmartLedger_Purchases_And_Cash_Fix.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=SmartLedger_Audit_PurFix.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=SmartLedger_Purchases_Final.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=SmartLedger_Release_Run.txt. غير معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=SmartLedger_Audit_Home.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=SmartLedger_Audit_HomeFull.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=SmartLedger_Home_Upgrade.txt. غير معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=SmartLedger_Audit_Currency.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=SmartLedger_Audit_CurResources.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=SmartLedger_Audit_ConvertersCode.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=SmartLedger_Audit_SmartConv.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=SmartLedger_Currency_Overhaul.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=SmartLedger_Home_FinalFix.txt. غير معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=windows_inspection_report.txt. غير معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=SmartLedger_V8_Audit.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=SmartLedger_Inspect_Home_Pur.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=SmartLedger_V8_Build_Result.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=SmartLedger_Inspect_DbContext.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=SmartLedger_Final_Build.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=SmartLedger_Inspect_LedgerItem.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=SmartLedger_Build_Success.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=SmartLedger_Fix_MissingUsings.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=SmartLedger_Audit_Sum.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=SmartLedger_Inspect_Reporting.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=SmartLedger_Fix_Reporting_Sum.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=SmartLedger_Audit_Startup_Sum.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=SmartLedger_Inspect_HealthService.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=SmartLedger_Fix_Health_Final.txt. غير معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=SmartLedger_Inspect_HomeQuickAction.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=SmartLedger_Inspect_Dialogs_Ctor.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=SmartLedger_Kill_And_Run.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=SmartLedger_Audit_LedgerCurrencyAndOpening.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=SmartLedger_Audit_Opening_Fix.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=SmartLedger_Fix_Currency_And_Opening.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=SmartLedger_Inspect_DbSyntax.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=SmartLedger_Fix_Sql_Syntax.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=SmartLedger_Complete_Inspection.txt. غير معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=الدفااتر.txt. غير معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=SmartLedger_Code.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=CleanCode.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=Build_Result.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=Settings_Recon_Report.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=Settings_Code_Dump.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=SmartLedger_Full_Source_Dump.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=SmartLedger_Settings_Audit.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=Services_Audit.txt. غير معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=DB_Diag.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=SmartLedger_Audit_BackupAndPurchases.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=SmartLedger_Audit_Restore_Details.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=SmartLedger_Restore_And_Purchases_Fix.txt. غير معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=SmartLedger_Audit_All_Actions.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=SmartLedger_Audit_Posting_Logic.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=SmartLedger_Audit_Reverse_End.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=SmartLedger_Audit_AccFacade.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=SmartLedger_Enable_Audit_Actions.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=SmartLedger_Clean_VMs.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=SmartLedger_Clean_Backup_Security.txt. غير معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=SmartLedger_Audit_ProductDialog_Reset.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=SmartLedger_Audit_ProductDialog_Full.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=SmartLedger_Apply_Product_And_Reset.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=SmartLedger_Build_And_Run.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=SmartLedger_Audit_Triggers.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=SmartLedger_Fix_FactoryReset.txt. غير معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=SmartLedger_Audit_Product_Error.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=SmartLedger_Audit_AddProduct_Detail.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=SmartLedger_Audit_Locate_Product.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=SmartLedger_Audit_InnerException.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=SmartLedger_Audit_Posting_Inv.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=SmartLedger_Audit_Trigger_Code.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=SmartLedger_Fix_JournalTrigger.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=SmartLedger_Audit_Check_Constraint.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=SmartLedger_Fix_CheckConstraint.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=Winaero EULA.txt. غير معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=build_errors.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=xaml_lines.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=polish_lines.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=db_diagnostic.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=db_init_details.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=runtime_error_details.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=debug_home_and_products.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=decimal_and_product_debug.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=product_btn_debug.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=commands_debug.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=quick_action_debug.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=fix_summary.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=journal_constraint_debug.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=posting_debug.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=balanced_entry_debug.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=constraint_root_cause.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=security_debug.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=settings_disappear_debug.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=session_and_reset_debug.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=reset_action_debug.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=latest_unhandled_error.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=sum_async_all.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=reporting_syntax_debug.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=cash_ui_debug.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=empty_state_debug.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=reports_error_detail.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=about_view_debug.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=full_output_log.txt. غير معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=inventory_xaml_audit.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=app_launch_debug.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=app_xaml_debug.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=warehouse_dialog_debug.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=dialog_build.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=cash_dialog_debug.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=time_and_voucher_debug.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=build_status.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=refresh_issue_debug.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=event_refresh_debug.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=home_syntax_debug.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=home_lines_exact.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=whatsapp_messages_debug.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=cash_alignment_debug.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=SmartLedger_Audit_Report.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=SmartLedger_Deep_Audit.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=SmartLedger_Fix_Report.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=SmartLedger_Build_Audit.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=SmartLedger_Build_Result.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=SmartLedger_CodeAnalysis_Fix.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=SmartLedger_CS9000_Fix.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=SmartLedger_CS8999_Fix.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=SmartLedger_CS0246_Fix.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=SmartLedger_Final_Build_Report.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=SmartLedger_Xaml_Fix.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=SmartLedger_Clean_Xaml.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=SmartLedger_Final_Result.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=SmartLedger_Success_Report.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=SmartLedger_VM_Fix.txt. غير معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=SmartLedger_Refactor_Report.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=SmartLedger_Login_Report.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=SmartLedger_Full_Source_Dump.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=SmartLedger_Master_Build_Report.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=SmartLedger_Startup_Diag.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=terminal_errors.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=SmartLedger_Ready.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=SmartLedger_Launch_Debug.txt. غير معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=برومبت_تحويل_صورة_الى_ملف_اوتوكاد_.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=امر.txt. غير معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=MainWindow.xaml. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=DisableUpdates.bat.txt. غير معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=DisableUpdates.ps1. غير معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=project_files.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=models_preview.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=ledger_inspect.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=transaction_inspect.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=accounting_service_inspect.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=services_inspect.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=full_accounting_audit.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=reporting_check.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=cash_blockers.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=invoice_balance_check.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=cash_method_exact.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=build_result.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=SmartLedger_Complete_Source.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=build_final_check.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=build_no_cash.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=build_fixed.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=build_result_clean.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=امر سحب ملفات كود برنامج ويندوز.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=build_notes_check.txt. غير معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=check_ledger_balance.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=امر جلب الاكواد كاملة.txt. غير معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=build_errors.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=تقرير مالي 20261001-20261003.LOG. غير معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=متطلبات التحسين.md. غير معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=مستند نصي جديد.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=SMARTLEDGER_DIAGNOSTIC_REPORT.txt. غير معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=FULL_UI_SYSTEM_INSPECTION.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=رسالة_لسمر.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=_AUDIT_REPORT.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=_IMPLEMENTATION_SUMMARY.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=_INPUT_DIALOG_AUDIT.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=_OLD_INVENTORY_FORENSICS.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=build.ps1. غير معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=discovery_evidence.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=_evidence_git_push.txt. غير معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=_PHASE1_BASELINE_AUDIT.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=_PHASE2_DEEP_INSPECTION.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=_PHASE4_FUNCTIONAL_AND_ENCODING_AUDIT.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=_PHASE5_RUNUI_AUDIT.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=_UI_POLISH_PASS1_REPORT.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=_UI_POLISH_PASS2_REPORT.txt. غير معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=CURRENT_STATUS_REPORT.txt. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=PHASE5_EXECUTION_REPORT.txt. غير معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=PRODUCT_FORM_REDESIGN_REPORT.txt. غير معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=PHASE1_IMPLEMENTATION_REPORT.md. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=PHASE2_IMPLEMENTATION_REPORT.md. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=PHASE3_IMPLEMENTATION_REPORT.md. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=PHASE4_IMPLEMENTATION_REPORT.md. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=PHASE5_IMPLEMENTATION_REPORT.md. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=PHASE6_IMPLEMENTATION_REPORT.md. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=RUNTIME_VISUAL_QA_REPORT.md. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=RUNTIME_VISUAL_QA_PHASE2_REPORT.md. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=RUNTIME_AUTHENTICATED_VERIFICATION_REPORT.md. غير معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=RUNTIME_VISUAL_POLISH_FINAL_REPORT.md. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=INPUT_WINDOWS_ERGONOMICS_REPORT.md. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=INPUT_DIALOGS_VERIFIED_REPORT.md. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=DEEP_DECLUTTER_AND_REMEDIATION_REPORT.md. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=ARCHITECTURAL_DECOMPOSITION_REPORT.md. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=DIALOG_COMPONENTS_EXTRACTION_REPORT.md. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=PRODUCT_DIALOG_NO_SCROLL_REPORT.md. معدّل. ENABLED=True
+ControlType.TabItem ID= NAME=SCREEN_BY_SCREEN_FIX_AND_VERIFY_REPORT.md. غير معدّل. ENABLED=True
+ControlType.Button ID=CloseButton NAME=إغلاق علامة التبويب ENABLED=True
+ControlType.Button ID=AddButton NAME=إضافة علامة تبويب جديدة ENABLED=True
+ControlType.MenuBar ID=MenuBar NAME= ENABLED=True
+ControlType.MenuItem ID=File NAME=ملف ENABLED=True
+ControlType.MenuItem ID=Edit NAME=تحرير ENABLED=True
+ControlType.MenuItem ID=View NAME=عرض ENABLED=True
+ControlType.Button ID=RewriteDropDownButton NAME=أدوات الكتابة ENABLED=True
+ControlType.Button ID=FREButton NAME=أحدث الميزات ENABLED=True
+ControlType.Button ID=AvatarButton NAME=صورة أفاتار الخاصة بالمستخدم ENABLED=True
+ControlType.Button ID=SettingsButton NAME=الإعدادات ENABLED=True
+ControlType.Window ID=PrivacyTeachingTip NAME= ENABLED=True
+ControlType.Pane ID=PsDownloadDetailTeachingTip NAME= ENABLED=True
+ControlType.Pane ID=PsDownloadLightTeachingTip NAME=يجب إكمال تنزيل نموذج الذكاء الاصطناعي المحلي لاستخدام هذه الميزة أثناء تسجيل الخروج. ENABLED=True
+ControlType.Text ID=ContentTextBlock NAME=السطر 1،
+العمود 1 ENABLED=True
+ControlType.Text ID=ContentTextBlock NAME=٦٬٤٦٤ حرفاً ENABLED=True
+ControlType.Button ID=ContentButton NAME=بناء جملة Markdown ENABLED=True
+ControlType.Text ID=ContentButtonText NAME=بناء جملة Markdown ENABLED=True
+ControlType.Text ID=ContentTextBlock NAME=تكبير/تصغير ENABLED=True
+ControlType.Text ID=ContentTextBlock NAME= Unix (LF) ENABLED=True
+ControlType.Text ID=ContentTextBlock NAME= UTF-8 مع BOM ENABLED=True
+ControlType.Pane ID=ScrollViewer NAME= ENABLED=True
+ControlType.ScrollBar ID=VerticalScrollBar NAME=‏‏عمودي ENABLED=True
+ControlType.Button ID=VerticalSmallDecrease NAME=‏‏Vertical Small Decrease ENABLED=True
+ControlType.Button ID=VerticalLargeDecrease NAME=‏‏Vertical Large Decrease ENABLED=True
+ControlType.Button ID=VerticalLargeIncrease NAME=‏‏Vertical Large Increase ENABLED=True
+ControlType.Button ID=VerticalSmallIncrease NAME=‏‏Vertical Small Increase ENABLED=True
+ControlType.Window ID= NAME=‫هندسة وتطوير واجهات تطبيق تجار | Google AI Studio - Google Chrome‬ ENABLED=True
+ControlType.Button ID=view_1 NAME=تصغير ENABLED=True
+ControlType.Button ID=view_2 NAME=تكبير ENABLED=True
+ControlType.Button ID=view_4 NAME=إغلاق ENABLED=True
+ControlType.ToolBar ID=view_1000 NAME= ENABLED=True
+ControlType.Button ID=view_1001 NAME=رجوع ENABLED=True
+ControlType.Button ID=view_1002 NAME=إلى الأمام ENABLED=False
+ControlType.Button ID=view_1003 NAME=إعادة التحميل ENABLED=True
+ControlType.Button ID=view_1011 NAME=عرض معلومات الموقع ENABLED=True
+ControlType.Edit ID=view_1012 NAME=شريط العناوين والبحث ENABLED=True
+ControlType.Button ID= NAME=ترجمة ENABLED=True
+ControlType.Button ID= NAME=تكبير/تصغير: 150‎%‎ ENABLED=True
+ControlType.Button ID= NAME=تثبيت "Google AI Studio" ENABLED=True
+ControlType.Button ID= NAME=وضع إشارة مرجعية لعلامة التبويب هذه ENABLED=True
+ControlType.Button ID=view_1018 NAME=Anwar ENABLED=True
+ControlType.Button ID=view_1007 NAME=Chrome ENABLED=True
+ControlType.Document ID=RootWebArea NAME=هندسة وتطوير واجهات تطبيق تجار | Google AI Studio ENABLED=True
+ControlType.Button ID= NAME=Skip to main content ENABLED=True
+ControlType.Button ID= NAME=Collapse navigation menu ENABLED=True
+ControlType.Button ID= NAME=Upgrade to unlock more Access higher limits, Pro models, and more. ENABLED=True
+ControlType.Button ID= NAME=What's new ENABLED=True
+ControlType.Button ID= NAME=Settings ENABLED=True
+ControlType.Button ID= NAME=Search (Ctrl /) ENABLED=True
+ControlType.Button ID= NAME=Get API key ENABLED=True
+ControlType.Button ID= NAME=Google Account: Anwar (anwar.laborer@gmail.com) ENABLED=True
+ControlType.Button ID= NAME=Edit prompt title and description ENABLED=True
+ControlType.Button ID= NAME=Make this an app ENABLED=True
+ControlType.Button ID= NAME=Share prompt ENABLED=True
+ControlType.Button ID= NAME= ENABLED=True
+ControlType.Button ID= NAME=New chat ENABLED=True
+ControlType.Button ID= NAME=View more actions ENABLED=True
+ControlType.Button ID= NAME=Edit ENABLED=True
+ControlType.Button ID= NAME=Rerun this turn ENABLED=True
+ControlType.Button ID= NAME=Open options ENABLED=True
+ControlType.Button ID= NAME=Rerun this turn ENABLED=True
+ControlType.Button ID= NAME=Open options ENABLED=True
+ControlType.Button ID= NAME=Edit ENABLED=True
+ControlType.Button ID= NAME=Rerun this turn ENABLED=True
+ControlType.Button ID= NAME=Open options ENABLED=True
+ControlType.Button ID= NAME=Open options ENABLED=True
+ControlType.Button ID= NAME=Open options ENABLED=True
+ControlType.Button ID= NAME=Open options ENABLED=True
+ControlType.Button ID= NAME=Open options ENABLED=True
+ControlType.Button ID= NAME=Open options ENABLED=True
+ControlType.Button ID= NAME=Open options ENABLED=True
+ControlType.Button ID= NAME=Open options ENABLED=True
+ControlType.Button ID= NAME=Rerun this turn ENABLED=True
+ControlType.Button ID= NAME=Open options ENABLED=True
+ControlType.Button ID=mat-expansion-panel-header-14 NAME=Thinking Thoughts ENABLED=True
+ControlType.Button ID=mat-expansion-panel-header-15 NAME=Expand to view model thoughts ENABLED=False
+ControlType.Button ID= NAME=Edit ENABLED=True
+ControlType.Button ID= NAME=Rerun this turn ENABLED=True
+ControlType.Button ID= NAME=Open options ENABLED=True
+ControlType.ListItem ID= NAME=تحديث وتوحيد نظام التصميم (Design System): ترقية الخطوط (Segoe UI Variable / Cairo)، وضبط مقاييس التباعد (4px/8px)، وهوية الألوان والظلال والحدود (Focus rings، Buttons، Cards). ENABLED=True
+ControlType.ListItem ID= NAME=معالجة شريط النافذة ودقات الشاشة (Shell & DPI Awareness): إصلاح إطار النافذة المخصص (Custom Chrome) ليدعم السحب والتكبير/الاستعادة السلسة دون أي تشوه أو اقتطاع، وإزالة النصوص المكتوبة يدوياً وربطها بنظام الترجمة ثنائي اللغة (AR/EN). ENABLED=True
+ControlType.ListItem ID= NAME=إعادة هندسة نافذة الحسابات وتفاصيل الحساب بالكامل (إضافة حساب و تفاصيل الحساب):◦ إدخال سلس وسريع عبر لوحة المفاتيح (Tab Navigation و Enter و Focus States).◦ عرض جدول كشف الحساب بأعمدة متناسقة ديناميكية (تاريخ + يوم الأسبوع + توقيت دقيق + الرصيد التراكمي)، مع محاذاة الأرقام المالية لليمين وضبط الخانات العشرية.◦ حالة الشاشة الفارغة (Empty State) بتصميم راقٍ وأيقونة وزر إجراء سريع.◦ زر تكامل ومشاركة كشف الحساب/المعاملة عبر واتساب برسالة منسقة ومهنية باللغة العربية مع فحص وتطبيع رقم الهاتف بصيغة E.164 دولياً.◦ دعم التحديد الفردي والجماعي للعمليات مع نوافذ تأكيد آمنة. ENABLED=True
+ControlType.ListItem ID= NAME=إدخال سلس وسريع عبر لوحة المفاتيح (Tab Navigation و Enter و Focus States). ENABLED=True
+ControlType.ListItem ID= NAME=عرض جدول كشف الحساب بأعمدة متناسقة ديناميكية (تاريخ + يوم الأسبوع + توقيت دقيق + الرصيد التراكمي)، مع محاذاة الأرقام المالية لليمين وضبط الخانات العشرية. ENABLED=True
+ControlType.ListItem ID= NAME=حالة الشاشة الفارغة (Empty State) بتصميم راقٍ وأيقونة وزر إجراء سريع. ENABLED=True
+ControlType.ListItem ID= NAME=زر تكامل ومشاركة كشف الحساب/المعاملة عبر واتساب برسالة منسقة ومهنية باللغة العربية مع فحص وتطبيع رقم الهاتف بصيغة E.164 دولياً. ENABLED=True
+ControlType.ListItem ID= NAME=دعم التحديد الفردي والجماعي للعمليات مع نوافذ تأكيد آمنة. ENABLED=True
+ControlType.ListItem ID= NAME=حماية التعديلات السابقة وضمان بقاء اختبارات الحل بالكامل 100% Pass. ENABLED=True
+ControlType.Button ID=mat-expansion-panel-header-16 NAME=Markdown Download code Copy code to clipboard Collapse code snippet ENABLED=True
+ControlType.Button ID= NAME=Download code ENABLED=True
+ControlType.Button ID= NAME=Copy code to clipboard ENABLED=True
+ControlType.Button ID= NAME=Collapse code snippet ENABLED=True
+ControlType.Group ID=cdk-accordion-child-16 NAME=Markdown Download code Copy code to clipboard Collapse code snippet ENABLED=True
+ControlType.Button ID= NAME=Edit ENABLED=True
+ControlType.Button ID= NAME=Rerun this turn ENABLED=True
+ControlType.Button ID= NAME=Open options ENABLED=True
+ControlType.Button ID= NAME=Rerun this turn ENABLED=True
+ControlType.Button ID= NAME=Open options ENABLED=True
+ControlType.Button ID=mat-expansion-panel-header-17 NAME=Thinking Thoughts ENABLED=True
+ControlType.Button ID=mat-expansion-panel-header-18 NAME=Expand to view model thoughts ENABLED=False
+ControlType.Button ID= NAME=Edit ENABLED=True
+ControlType.Button ID= NAME=Rerun this turn ENABLED=True
+ControlType.Button ID= NAME=Open options ENABLED=True
+ControlType.ListItem ID= NAME=هندسة واجهة المخزن والمنتجات وإلغاء زحمة الواجهات:◦ الربط الذكي بين الوحدة الكبرى (كرتون، درزن، صندوق...) والوحدة الصغرى (حبة، قطعة، علبة...) مع معامل التحويل وسعر الجملة والتجزئة دون فوضى أزرار.◦ معالجة الدفعات المتكررة للمنتج الواحد (Multi-batch / Stock Provenance)؛ حيث يعرض جدول المخزن الرئيسي الرصيد التراكمي الإجمالي، مع لوحة تفاصيل جانبية أو سفلية سلسة (Details Flyout/Drawer) تعرض سجل الدفعات، تواريخ الاستلام، وتكلفة كل دفعة بشكل مستقل ونقي. ENABLED=True
+ControlType.ListItem ID= NAME=الربط الذكي بين الوحدة الكبرى (كرتون، درزن، صندوق...) والوحدة الصغرى (حبة، قطعة، علبة...) مع معامل التحويل وسعر الجملة والتجزئة دون فوضى أزرار. ENABLED=True
+ControlType.ListItem ID= NAME=معالجة الدفعات المتكررة للمنتج الواحد (Multi-batch / Stock Provenance)؛ حيث يعرض جدول المخزن الرئيسي الرصيد التراكمي الإجمالي، مع لوحة تفاصيل جانبية أو سفلية سلسة (Details Flyout/Drawer) تعرض سجل الدفعات، تواريخ الاستلام، وتكلفة كل دفعة بشكل مستقل ونقي. ENABLED=True
+ControlType.ListItem ID= NAME=هندسة واجهة الدفاتر وفصل الحسابات (إضافة وإدارة الدفاتر):◦ إتاحة تصنيف وفلترة سريعة للدفاتر ببطاقات أنيقة وعلامات لونية، والتنقل الفوري بين الدفاتر دون إعادة تحميل أو تجميد الواجهة. ENABLED=True
+ControlType.ListItem ID= NAME=إتاحة تصنيف وفلترة سريعة للدفاتر ببطاقات أنيقة وعلامات لونية، والتنقل الفوري بين الدفاتر دون إعادة تحميل أو تجميد الواجهة. ENABLED=True
+ControlType.ListItem ID= NAME=التطبيق الصارم لمعايير الجداول التجارية (DataGrids):◦ ضبط تمدد الأعمدة (Star-sizing لاسم المنتج والبيان، و Auto-fit للأكواد، وتثبيت عرض ومحاذاة المبالغ والكميات لليمين بخانتين عشريتين). ENABLED=True
+ControlType.ListItem ID= NAME=ضبط تمدد الأعمدة (Star-sizing لاسم المنتج والبيان، و Auto-fit للأكواد، وتثبيت عرض ومحاذاة المبالغ والكميات لليمين بخانتين عشريتين). ENABLED=True
+ControlType.ListItem ID= NAME=الحفاظ على سلامة الشفرة واجتياز كافة الاختبارات. ENABLED=True
+ControlType.Button ID=mat-expansion-panel-header-19 NAME=Markdown Download code Copy code to clipboard Collapse code snippet ENABLED=True
+ControlType.Button ID= NAME=Download code ENABLED=True
+ControlType.Button ID= NAME=Copy code to clipboard ENABLED=True
+ControlType.Button ID= NAME=Collapse code snippet ENABLED=True
+ControlType.Group ID=cdk-accordion-child-19 NAME=Markdown Download code Copy code to clipboard Collapse code snippet ENABLED=True
+ControlType.Button ID= NAME=Edit ENABLED=True
+ControlType.Button ID= NAME=Rerun this turn ENABLED=True
+ControlType.Button ID= NAME=Open options ENABLED=True
+ControlType.Button ID= NAME=Rerun this turn ENABLED=True
+ControlType.Button ID= NAME=Open options ENABLED=True
+ControlType.Button ID=mat-expansion-panel-header-20 NAME=Thinking Thoughts ENABLED=True
+ControlType.Button ID=mat-expansion-panel-header-21 NAME=Expand to view model thoughts ENABLED=False
+ControlType.Button ID= NAME=Edit ENABLED=True
+ControlType.Button ID= NAME=Rerun this turn ENABLED=True
+ControlType.Button ID= NAME=Open options ENABLED=True
+ControlType.Button ID=mat-expansion-panel-header-22 NAME=Markdown Download code Copy code to clipboard Collapse code snippet ENABLED=True
+ControlType.Button ID= NAME=Download code ENABLED=True
+ControlType.Button ID= NAME=Copy code to clipboard ENABLED=True
+ControlType.Button ID= NAME=Collapse code snippet ENABLED=True
+ControlType.Group ID=cdk-accordion-child-22 NAME=Markdown Download code Copy code to clipboard Collapse code snippet ENABLED=True
+ControlType.Button ID= NAME=Edit ENABLED=True
+ControlType.Button ID= NAME=Rerun this turn ENABLED=True
+ControlType.Button ID= NAME=Open options ENABLED=True
+ControlType.Button ID= NAME=Rerun this turn ENABLED=True
+ControlType.Button ID= NAME=Open options ENABLED=True
+ControlType.Button ID=mat-expansion-panel-header-23 NAME=Thinking Thoughts ENABLED=True
+ControlType.Button ID=mat-expansion-panel-header-24 NAME=Expand to view model thoughts ENABLED=False
+ControlType.Button ID= NAME=Edit ENABLED=True
+ControlType.Button ID= NAME=Rerun this turn ENABLED=True
+ControlType.Button ID= NAME=Open options ENABLED=True
+ControlType.ListItem ID= NAME=إعادة هندسة شاشتي المبيعات والمشتريات (Sales & Purchasing / POS):◦ القضاء على الركاكة في شاشة الفاتورة: توفير شاشة بدء فارغة راقية (Empty State) توجه الكاشير/المستخدم فوراً للبدء.◦ الاختيار والبحث السريع عن العميل/المورد (مع عميل نقدي افتراضي وإمكانية الوصول أو الإضافة السريعة).◦ سطر إدخال البنود السريع: اختيار المنتج، التبديل السلس بين الوحدة الكبرى والصغرى في سطر الفاتورة نفسه، حساب السعر والخصم والصافي تلقائياً.◦ لوحة إجماليات الفاتورة (Summary Panel) بتصميم بطاقة عالي التباين (المجموع، الخصم، الضريبة، الإجمالي النهائي).◦ خيارات الدفع الفورية (نقداً / آجل / جزئي) مع بيان أثر الرصيد.◦ شريط أوامر الفاتورة: ترحيل وطباعة (A4 / حراري 80mm)، ترحيل ومشاركة واتساب، تعليق الفاتورة (Hold)، والإلغاء الآمن. ENABLED=True
+ControlType.ListItem ID= NAME=القضاء على الركاكة في شاشة الفاتورة: توفير شاشة بدء فارغة راقية (Empty State) توجه الكاشير/المستخدم فوراً للبدء. ENABLED=True
+ControlType.ListItem ID= NAME=الاختيار والبحث السريع عن العميل/المورد (مع عميل نقدي افتراضي وإمكانية الوصول أو الإضافة السريعة). ENABLED=True
+ControlType.ListItem ID= NAME=سطر إدخال البنود السريع: اختيار المنتج، التبديل السلس بين الوحدة الكبرى والصغرى في سطر الفاتورة نفسه، حساب السعر والخصم والصافي تلقائياً. ENABLED=True
+ControlType.ListItem ID= NAME=لوحة إجماليات الفاتورة (Summary Panel) بتصميم بطاقة عالي التباين (المجموع، الخصم، الضريبة، الإجمالي النهائي). ENABLED=True
+ControlType.ListItem ID= NAME=خيارات الدفع الفورية (نقداً / آجل / جزئي) مع بيان أثر الرصيد. ENABLED=True
+ControlType.ListItem ID= NAME=شريط أوامر الفاتورة: ترحيل وطباعة (A4 / حراري 80mm)، ترحيل ومشاركة واتساب، تعليق الفاتورة (Hold)، والإلغاء الآمن. ENABLED=True
+ControlType.ListItem ID= NAME=هيكلة إعدادات النظام وقوالب الرسائل (Settings & Templates):◦ تبويبات منظمة للإعدادات (بيانات المنشأة، خيارات الفواتير والطباعة، تخصيص قوالب رسائل الواتساب مع دعم المتغيرات مثل {اسم_العميل} و {المبلغ}). ENABLED=True
+ControlType.ListItem ID= NAME=تبويبات منظمة للإعدادات (بيانات المنشأة، خيارات الفواتير والطباعة، تخصيص قوالب رسائل الواتساب مع دعم المتغيرات مثل {اسم_العميل} و {المبلغ}). ENABLED=True
+ControlType.ListItem ID= NAME=أمر تشغيل المفكرة على سطح المكتب البعيد لعرض تقرير الإنجاز فور انتهائه أمامك مباشرة. ENABLED=True
+ControlType.Button ID=mat-expansion-panel-header-25 NAME=Markdown Download code Copy code to clipboard Expand code snippet ENABLED=True
+ControlType.Button ID= NAME=Download code ENABLED=True
+ControlType.Button ID= NAME=Copy code to clipboard ENABLED=True
+ControlType.Button ID= NAME=Expand code snippet ENABLED=True
+ControlType.Button ID= NAME=Edit ENABLED=True
+ControlType.Button ID= NAME=Rerun this turn ENABLED=True
+ControlType.Button ID= NAME=Open options ENABLED=True
+ControlType.ListItem ID= NAME=src\SmartLedger.App\ViewModels\SalesViewModel.cs ENABLED=True
+ControlType.ListItem ID= NAME=src\SmartLedger.App\ViewModels\PurchasesViewModel.cs ENABLED=True
+ControlType.ListItem ID= NAME=src\SmartLedger.App\ViewModels\SettingsViewModel.cs ENABLED=True
+ControlType.ListItem ID= NAME=src\SmartLedger.App\Views\ModuleTemplates.xaml ENABLED=True
+ControlType.ListItem ID= NAME=phase3-build.log ENABLED=True
+ControlType.ListItem ID= NAME=phase3-test.log ENABLED=True
+ControlType.ListItem ID= NAME=New sales invoices now preselect an existing customer account whose name matches عميل نقدي عام, عميل نقدي, or General Cash Customer. If none exists, the draft displays the general-cash label without silently creating a customer master record. ENABLED=True
+ControlType.ListItem ID= NAME=The saved invoice's fallback customer label is now عميل نقدي عام. ENABLED=True
+ControlType.ListItem ID= NAME=The saved invoice print path now selects A4 or thermal 80 mm output according to the persisted print-layout preference. Both preview and direct-print actions use the selected layout. ENABLED=True
+ControlType.ListItem ID= NAME=Added persistent preference loading for invoice print layout, auto-print-on-posting, and default sale unit. ENABLED=True
+ControlType.ListItem ID= NAME=Product lookup honors the configured default sale unit (minor or major) and chooses the corresponding available price. Barcode scans continue to select the minor unit by default, since a scanned barcode normally represents an individual item. ENABLED=True
+ControlType.ListItem ID= NAME=Added a current customer balance and projected balance preview. The projection adds the current invoice's remaining amount to the selected customer's existing net balance; it is a draft preview and does not post ledger changes. ENABLED=True
+ControlType.ListItem ID= NAME=Added an uncluttered empty-cart message for invoices with no lines. ENABLED=True
+ControlType.ListItem ID= NAME=Added Delete-key removal for the selected invoice line, two-decimal display formatting for quantity, unit price, and line total, and a clearer “Post & Save / Print” primary-action label. ENABLED=True
+ControlType.ListItem ID= NAME=Clearing a non-empty draft now asks for confirmation. This operation only clears the current draft; it does not post or reverse inventory or ledger records. ENABLED=True
+ControlType.ListItem ID= NAME=Existing type-ahead customer/product selectors, barcode entry, unit switching during line entry, cash/credit/partial payment choices, held drafts, printing, WhatsApp draft dispatch, and invoice posting/reversal paths were retained. ENABLED=True
+ControlType.ListItem ID= NAME=Added a purchasing empty-state message when there are no invoice lines. ENABLED=True
+ControlType.ListItem ID= NAME=Added Delete-key removal for the selected purchase line and two-decimal display formatting for quantity, unit price, and line total. ENABLED=True
+ControlType.ListItem ID= NAME=Added the IsCartEmpty state and change notifications so the purchasing empty state tracks add/remove/clear operations. ENABLED=True
+ControlType.ListItem ID= NAME=Existing supplier/product type-ahead selectors, unit conversion, batch number/expiry capture, payment modes, and atomic purchase transaction flow remain in place. ENABLED=True
+ControlType.ListItem ID= NAME=Added a dedicated “Invoice & Printing Settings” card with:◦ Default print layout: A4 or Thermal80.◦ Default sale unit: Minor or Major.◦ Auto-print-after-posting toggle. ENABLED=True
+ControlType.ListItem ID= NAME=Default print layout: A4 or Thermal80. ENABLED=True
+ControlType.ListItem ID= NAME=Default sale unit: Minor or Major. ENABLED=True
+ControlType.ListItem ID= NAME=Auto-print-after-posting toggle. ENABLED=True
+ControlType.ListItem ID= NAME=Settings load and save these values using repository preferences:◦ invoice.printLayout◦ invoice.defaultSaleUnit◦ invoice.autoPrint ENABLED=True
+ControlType.ListItem ID= NAME=invoice.printLayout ENABLED=True
+ControlType.ListItem ID= NAME=invoice.defaultSaleUnit ENABLED=True
+ControlType.ListItem ID= NAME=invoice.autoPrint ENABLED=True
+ControlType.ListItem ID= NAME=Added a template preview command and preview surface with sample invoice values. ENABLED=True
+ControlType.ListItem ID= NAME=Added help text and render aliases for the requested Arabic WhatsApp template variables:◦ {اسم_العميل}◦ {رقم_الفاتورة}◦ {تاريخ_الفاتورة}◦ {إجمالي_الفاتورة}◦ {المبلغ_المدفوع}◦ {الرصيد_المتبقي} ENABLED=True
+ControlType.ListItem ID= NAME={اسم_العميل} ENABLED=True
+ControlType.ListItem ID= NAME={رقم_الفاتورة} ENABLED=True
+ControlType.ListItem ID= NAME={تاريخ_الفاتورة} ENABLED=True
+ControlType.ListItem ID= NAME={إجمالي_الفاتورة} ENABLED=True
+ControlType.ListItem ID= NAME={المبلغ_المدفوع} ENABLED=True
+ControlType.ListItem ID= NAME={الرصيد_المتبقي} ENABLED=True
+ControlType.ListItem ID= NAME=Existing English template variables continue to work. WhatsApp opens a prepared draft for user review; the application does not silently send messages. ENABLED=True
+ControlType.ListItem ID= NAME=Existing company identity, tax/commercial registration, address, phone, logo, language, backup/restore, and diagnostics settings were preserved. ENABLED=True
+ControlType.Button ID=mat-expansion-panel-header-26 NAME=Powershell Download code Copy code to clipboard Collapse code snippet ENABLED=True
+ControlType.Button ID= NAME=Download code ENABLED=True
+ControlType.Button ID= NAME=Copy code to clipboard ENABLED=True
+ControlType.Button ID= NAME=Collapse code snippet ENABLED=True
+ControlType.Group ID=cdk-accordion-child-26 NAME=Powershell Download code Copy code to clipboard Collapse code snippet ENABLED=True
+ControlType.Button ID=mat-expansion-panel-header-27 NAME=Text Download code Copy code to clipboard Collapse code snippet ENABLED=True
+ControlType.Button ID= NAME=Download code ENABLED=True
+ControlType.Button ID= NAME=Copy code to clipboard ENABLED=True
+ControlType.Button ID= NAME=Collapse code snippet ENABLED=True
+ControlType.Group ID=cdk-accordion-child-27 NAME=Text Download code Copy code to clipboard Collapse code snippet ENABLED=True
+ControlType.Button ID=mat-expansion-panel-header-28 NAME=Powershell Download code Copy code to clipboard Collapse code snippet ENABLED=True
+ControlType.Button ID= NAME=Download code ENABLED=True
+ControlType.Button ID= NAME=Copy code to clipboard ENABLED=True
+ControlType.Button ID= NAME=Collapse code snippet ENABLED=True
+ControlType.Group ID=cdk-accordion-child-28 NAME=Powershell Download code Copy code to clipboard Collapse code snippet ENABLED=True
+ControlType.Button ID=mat-expansion-panel-header-29 NAME=Text Download code Copy code to clipboard Collapse code snippet ENABLED=True
+ControlType.Button ID= NAME=Download code ENABLED=True
+ControlType.Button ID= NAME=Copy code to clipboard ENABLED=True
+ControlType.Button ID= NAME=Collapse code snippet ENABLED=True
+ControlType.Group ID=cdk-accordion-child-29 NAME=Text Download code Copy code to clipboard Collapse code snippet ENABLED=True
+ControlType.ListItem ID= NAME=The pre-existing modification in src\SmartLedger.Infrastructure\Backup\BackupService.cs remains present and was not edited or reverted by this phase. ENABLED=True
+ControlType.ListItem ID= NAME=No database schema migration was added. ENABLED=True
+ControlType.ListItem ID= NAME=No commit, push, publish, or deployment was performed. ENABLED=True
+ControlType.ListItem ID= NAME=The work was verified by solution build and automated tests. A full interactive visual walkthrough, physical printer validation, and end-to-end live WhatsApp dispatch were not performed. ENABLED=True
+ControlType.ListItem ID= NAME=The general cash customer is selected only if a matching customer account already exists; creating a new master account remains an explicit user action. ENABLED=True
+ControlType.Button ID= NAME=Rerun this turn ENABLED=True
+ControlType.Button ID= NAME=Open options ENABLED=True
+ControlType.Button ID=mat-expansion-panel-header-30 NAME=Thinking Thoughts ENABLED=True
+ControlType.Button ID=mat-expansion-panel-header-31 NAME=Expand to view model thoughts ENABLED=False
+ControlType.Button ID= NAME=Edit ENABLED=True
+ControlType.Button ID= NAME=Rerun this turn ENABLED=True
+ControlType.Button ID= NAME=Open options ENABLED=True
+ControlType.ListItem ID= NAME=هندسة شاشة التقارير والمطبوعات المحاسبية والـ PDF (محرك التقارير الاحترافية):◦ توفير فلاتر زمنية سريعة (اليوم، هذا الأسبوع، هذا الشهر، مخصص).◦ تقارير أساسية واضحة: كشف حساب تفصيلي، ملخص حركة المبيعات والمشتريات، تقرير جرد وتقييم المخزون، وتقرير المصروفات.◦ ضبط تصدير الـ PDF عبر QuestPDF والـ Excel لضمان تناسق الخطوط العربية (Arabic Shaping) وتذييل الصفحات دون أي تشويه أو اقتطاع للمجاميع. ENABLED=True
+ControlType.ListItem ID= NAME=توفير فلاتر زمنية سريعة (اليوم، هذا الأسبوع، هذا الشهر، مخصص). ENABLED=True
+ControlType.ListItem ID= NAME=تقارير أساسية واضحة: كشف حساب تفصيلي، ملخص حركة المبيعات والمشتريات، تقرير جرد وتقييم المخزون، وتقرير المصروفات. ENABLED=True
+ControlType.ListItem ID= NAME=ضبط تصدير الـ PDF عبر QuestPDF والـ Excel لضمان تناسق الخطوط العربية (Arabic Shaping) وتذييل الصفحات دون أي تشويه أو اقتطاع للمجاميع. ENABLED=True
+ControlType.ListItem ID= NAME=إعادة هندسة واجهة المصروفات والنفقات (المصروفات وسندات الصرف):◦ إدخال سريع للتصنيف (إيجار، كهرباء، رواتب، نثريات...)، وتحديد وسيلة الدفع (صندوق نقدي / بنك)، مع جدول حركة المصروفات المنظم. ENABLED=True
+ControlType.ListItem ID= NAME=إدخال سريع للتصنيف (إيجار، كهرباء، رواتب، نثريات...)، وتحديد وسيلة الدفع (صندوق نقدي / بنك)، مع جدول حركة المصروفات المنظم. ENABLED=True
+ControlType.ListItem ID= NAME=واجهة "عن التطبيق" وهوية الشركة المطوّرة (About Window & Corporate Brand Identity):◦ تحويل شاشة AboutWindow.xaml إلى تحفة بصرية تجارية تعكس تطبيقاً بآلاف الدولارات: اسم المنتج، رقم الإصدار وبصمة البناء (Build)، معلومات الشركة البرمجية العملاقة، التراخيص، وقنوات الدعم الفني، بتنسيق ثنائي اللغة نقي وأنيق. ENABLED=True
+ControlType.ListItem ID= NAME=تحويل شاشة AboutWindow.xaml إلى تحفة بصرية تجارية تعكس تطبيقاً بآلاف الدولارات: اسم المنتج، رقم الإصدار وبصمة البناء (Build)، معلومات الشركة البرمجية العملاقة، التراخيص، وقنوات الدعم الفني، بتنسيق ثنائي اللغة نقي وأنيق. ENABLED=True
+ControlType.ListItem ID= NAME=توحيد اختصارات لوحة المفاتيح عبر كامل التطبيق (Unified Global Shortcuts):◦ اعتماد معيار موحد: F2 لمعاملة/فاتورة جديدة، F3 للبحث السريع، F5 للتحديث، Ctrl+S أو F10 للحفظ والترحيل، و Esc للإلغاء والإغلاق. ENABLED=True
+ControlType.ListItem ID= NAME=اعتماد معيار موحد: F2 لمعاملة/فاتورة جديدة، F3 للبحث السريع، F5 للتحديث، Ctrl+S أو F10 للحفظ والترحيل، و Esc للإلغاء والإغلاق. ENABLED=True
+ControlType.ListItem ID= NAME=أمر تشغيل المفكرة (Notepad) على سطح المكتب البعيد فور الانتهاء لعرض تقرير الإنجاز مباشرة. ENABLED=True
+ControlType.Button ID=mat-expansion-panel-header-32 NAME=Markdown Download code Copy code to clipboard Collapse code snippet ENABLED=True
+ControlType.Button ID= NAME=Download code ENABLED=True
+ControlType.Button ID= NAME=Copy code to clipboard ENABLED=True
+ControlType.Button ID= NAME=Collapse code snippet ENABLED=True
+ControlType.Group ID=cdk-accordion-child-32 NAME=Markdown Download code Copy code to clipboard Collapse code snippet ENABLED=True
+ControlType.Button ID= NAME=Edit ENABLED=True
+ControlType.Button ID= NAME=Rerun this turn ENABLED=True
+ControlType.Button ID= NAME=Open options ENABLED=True
+ControlType.ListItem ID= NAME=src\SmartLedger.App\ViewModels\ReportsViewModel.cs ENABLED=True
+ControlType.ListItem ID= NAME=src\SmartLedger.App\ViewModels\ExpensesViewModel.cs ENABLED=True
+ControlType.ListItem ID= NAME=src\SmartLedger.App\Views\ModuleTemplates.xaml ENABLED=True
+ControlType.ListItem ID= NAME=src\SmartLedger.App\Views\AboutWindow.xaml ENABLED=True
+ControlType.ListItem ID= NAME=src\SmartLedger.App\Views\AboutWindow.xaml.cs ENABLED=True
+ControlType.ListItem ID= NAME=src\SmartLedger.App\Views\MainWindow.xaml.cs ENABLED=True
+ControlType.ListItem ID= NAME=Added quick date-range actions:◦ اليوم / Today◦ هذا الأسبوع / This Week (week begins Monday)◦ هذا الشهر / This Month◦ مخصص / Custom Range (keeps the user on the date fields and explains that the range is selected there) ENABLED=True
+ControlType.ListItem ID= NAME=اليوم / Today ENABLED=True
+ControlType.ListItem ID= NAME=هذا الأسبوع / This Week (week begins Monday) ENABLED=True
+ControlType.ListItem ID= NAME=هذا الشهر / This Month ENABLED=True
+ControlType.ListItem ID= NAME=مخصص / Custom Range (keeps the user on the date fields and explains that the range is selected there) ENABLED=True
+ControlType.ListItem ID= NAME=Added categorized report guide cards for account statements, sales/purchases summary, inventory valuation, and expenses/outflow. ENABLED=True
+ControlType.ListItem ID= NAME=Preserved existing date-range filtering, summary KPIs, movement listing, refresh action, PDF export, Excel export, and page-layout selector. ENABLED=True
+ControlType.ListItem ID= NAME=Confirmed the existing PDF service uses QuestPDF, right-to-left page content, Tahoma typography, a formal identity header, report-generation timestamp, and a footer. The existing service supports A4, A5, Thermal80, and Thermal58 page kinds. ENABLED=True
+ControlType.ListItem ID= NAME=The existing Excel export receives the business name, report rows, and currency. ENABLED=True
+ControlType.ListItem ID= NAME=Added an editable expense date to the entry form; new entries use the selected date instead of always forcing the current timestamp. ENABLED=True
+ControlType.ListItem ID= NAME=Reset the date to today when opening a new expense form. ENABLED=True
+ControlType.ListItem ID= NAME=Added a dedicated 38px amount input with right alignment and left-to-right numeric entry. ENABLED=True
+ControlType.ListItem ID= NAME=Localized payment-source labels while retaining stable persisted values:◦ الصندوق الرئيسي → Cash◦ الحساب البنكي → Bank◦ آجل → Credit ENABLED=True
+ControlType.ListItem ID= NAME=الصندوق الرئيسي → Cash ENABLED=True
+ControlType.ListItem ID= NAME=الحساب البنكي → Bank ENABLED=True
+ControlType.ListItem ID= NAME=آجل → Credit ENABLED=True
+ControlType.ListItem ID= NAME=Refined the expenses grid with alternating row backgrounds, horizontal separators, explicit columns, and a category badge. ENABLED=True
+ControlType.ListItem ID= NAME=Preserved existing category suggestions, amount validation, save state, and cash summary cards. ENABLED=True
+ControlType.ListItem ID= NAME=Refined the product title to SmartLedger Pro — Enterprise ERP Suite. ENABLED=True
+ControlType.ListItem ID= NAME=Updated edition metadata to Commercial Enterprise Edition (Release 2026). ENABLED=True
+ControlType.ListItem ID= NAME=Displayed the declared stack: .NET 10.0 Windows Desktop, SQLite high-performance engine, and QuestPDF vector reporting. ENABLED=True
+ControlType.ListItem ID= NAME=Retained the dark enterprise card design, runtime/database/memory diagnostics, license-state display, copyright, and support channel already present in the About window. ENABLED=True
+ControlType.ListItem ID= NAME=Added a Copy System Info action to copy version, runtime, database size, record count, memory use, and the configured support number to the clipboard. ENABLED=True
+ControlType.ListItem ID= NAME=Made the close action keyboard-cancel compatible. ENABLED=True
+ControlType.ListItem ID= NAME=F2: Navigate to Sales, open a new invoice draft, and schedule focus for the first input. ENABLED=True
+ControlType.ListItem ID= NAME=F3: Focus and select the global search text. ENABLED=True
+ControlType.ListItem ID= NAME=F5: Refresh the current supported view, using the existing refresh dispatch. ENABLED=True
+ControlType.ListItem ID= NAME=Ctrl+S: Invoke the existing contextual save/post action. ENABLED=True
+ControlType.ListItem ID= NAME=F10: Invoke contextual save/post while Sales or Purchases is active; otherwise retain the existing quick-purchase action. ENABLED=True
+ControlType.ListItem ID= NAME=Esc: Retains existing dismissal behavior for search, notifications, active dialogs, and search text. ENABLED=True
+ControlType.ListItem ID= NAME=Existing Ctrl+K global search, Ctrl+N contextual create, Ctrl+P print, F7/F8/F9 shortcuts, and F11 full-screen toggle remain in place. ENABLED=True
+ControlType.Button ID=mat-expansion-panel-header-33 NAME=Powershell Download code Copy code to clipboard Collapse code snippet ENABLED=True
+ControlType.Button ID= NAME=Download code ENABLED=True
+ControlType.Button ID= NAME=Copy code to clipboard ENABLED=True
+ControlType.Button ID= NAME=Collapse code snippet ENABLED=True
+ControlType.Group ID=cdk-accordion-child-33 NAME=Powershell Download code Copy code to clipboard Collapse code snippet ENABLED=True
+ControlType.Button ID=mat-expansion-panel-header-34 NAME=Text Download code Copy code to clipboard Collapse code snippet ENABLED=True
+ControlType.Button ID= NAME=Download code ENABLED=True
+ControlType.Button ID= NAME=Copy code to clipboard ENABLED=True
+ControlType.Button ID= NAME=Collapse code snippet ENABLED=True
+ControlType.Group ID=cdk-accordion-child-34 NAME=Text Download code Copy code to clipboard Collapse code snippet ENABLED=True
+ControlType.Button ID=mat-expansion-panel-header-35 NAME=Powershell Download code Copy code to clipboard Collapse code snippet ENABLED=True
+ControlType.Button ID= NAME=Download code ENABLED=True
+ControlType.Button ID= NAME=Copy code to clipboard ENABLED=True
+ControlType.Button ID= NAME=Collapse code snippet ENABLED=True
+ControlType.Group ID=cdk-accordion-child-35 NAME=Powershell Download code Copy code to clipboard Collapse code snippet ENABLED=True
+ControlType.Button ID=mat-expansion-panel-header-36 NAME=Text Download code Copy code to clipboard Collapse code snippet ENABLED=True
+ControlType.Button ID= NAME=Download code ENABLED=True
+ControlType.Button ID= NAME=Copy code to clipboard ENABLED=True
+ControlType.Button ID= NAME=Collapse code snippet ENABLED=True
+ControlType.Group ID=cdk-accordion-child-36 NAME=Text Download code Copy code to clipboard Collapse code snippet ENABLED=True
+ControlType.ListItem ID= NAME=The pre-existing BackupService.cs modification remains present and was not reverted or edited. ENABLED=True
+ControlType.ListItem ID= NAME=Build and test suite passed after the Phase 4 edits. ENABLED=True
+ControlType.ListItem ID= NAME=No commit, push, publish, or deployment was performed. ENABLED=True
+ControlType.ListItem ID= NAME=No new database schema migration was added. ENABLED=True
+ControlType.ListItem ID= NAME=A manual visual walkthrough, real printer validation, and sample PDF/Excel rendering comparison were not performed in this run. ENABLED=True
+ControlType.ListItem ID= NAME=The report cards for account statement and inventory valuation are currently informational organization tiles; dedicated running-balance and inventory valuation data models remain follow-up work. The expense grid itself is improved, but category-wise expense aggregation is not yet a separate report. ENABLED=True
+ControlType.ListItem ID= NAME=Solution build: PASS ENABLED=True
+ControlType.ListItem ID= NAME=Automated tests: PASS — 97/97 ENABLED=True
+ControlType.ListItem ID= NAME=BackupService preservation: confirmed unchanged by Phase 4 actions ENABLED=True
+ControlType.ListItem ID= NAME=Report file: PHASE4_IMPLEMENTATION_REPORT.md ENABLED=True
+ControlType.ListItem ID= NAME=Notepad: launch requested for this report ENABLED=True
+ControlType.Button ID= NAME=Rerun this turn ENABLED=True
+ControlType.Button ID= NAME=Open options ENABLED=True
+ControlType.Button ID=mat-expansion-panel-header-37 NAME=Thinking Thoughts ENABLED=True
+ControlType.Button ID=mat-expansion-panel-header-38 NAME=Expand to view model thoughts ENABLED=False
+ControlType.Button ID= NAME=Edit ENABLED=True
+ControlType.Button ID= NAME=Rerun this turn ENABLED=True
+ControlType.Button ID= NAME=Open options ENABLED=True
+ControlType.ListItem ID= NAME=تحويل بطاقات التقارير إلى محركات حسابية فعلية (Active Specialized Report Engines):◦ تقرير كشف حساب تفصيلي فردي (Account Statement): اختيار حساب محدد، حساب الرصيد الافتتاحي، الحركات المدينة والدائنة، والرصيد التراكمي النهائي بدقة قطعية مع زر تصدير PDF فوري مخصص لكشف الحساب.◦ تقرير جرد وتقييم المخزون (Inventory Valuation Engine): حساب إجمالي الكميات المتاحة في المستودع، إجمالي قيمة المخزون بسعر الشراء/التكلفة، وإجمالي قيمته المتوقعة بسعر البيع (مع هامش الربح المحتمل).◦ التقرير التحليلي للمصروفات (Categorized Expenses Analysis): تجميع المصروفات حسب التصنيف (رواتب، إيجار، فواتير...) مع نسب مئوية وتوزيع مصادر الدفع (صندوق / بنك). ENABLED=True
+ControlType.ListItem ID= NAME=تقرير كشف حساب تفصيلي فردي (Account Statement): اختيار حساب محدد، حساب الرصيد الافتتاحي، الحركات المدينة والدائنة، والرصيد التراكمي النهائي بدقة قطعية مع زر تصدير PDF فوري مخصص لكشف الحساب. ENABLED=True
+ControlType.ListItem ID= NAME=تقرير جرد وتقييم المخزون (Inventory Valuation Engine): حساب إجمالي الكميات المتاحة في المستودع، إجمالي قيمة المخزون بسعر الشراء/التكلفة، وإجمالي قيمته المتوقعة بسعر البيع (مع هامش الربح المحتمل). ENABLED=True
+ControlType.ListItem ID= NAME=التقرير التحليلي للمصروفات (Categorized Expenses Analysis): تجميع المصروفات حسب التصنيف (رواتب، إيجار، فواتير...) مع نسب مئوية وتوزيع مصادر الدفع (صندوق / بنك). ENABLED=True
+ControlType.ListItem ID= NAME=تصدير كشف حساب فردي رسمي (PDF Statement Export):◦ إمكانية تصدير وطباعة كشف حساب لأي عميل أو مورد مباشرة من شاشة الحسابات أو شاشة التقارير، بتنسيق عربي احترافي وترويسة المنشأة وتذييل الرصيد الختامي. ENABLED=True
+ControlType.ListItem ID= NAME=إمكانية تصدير وطباعة كشف حساب لأي عميل أو مورد مباشرة من شاشة الحسابات أو شاشة التقارير، بتنسيق عربي احترافي وترويسة المنشأة وتذييل الرصيد الختامي. ENABLED=True
+ControlType.ListItem ID= NAME=ضوابط الأمان لحذف وتعديل الحسابات:◦ منع الحذف العشوائي للحسابات التي تمتلك حركات مالية أو رصيد غير صفري، مع إظهار تنبيه آمن أو التوجيه للأرشفة (Soft-delete/Recycle Bin). ENABLED=True
+ControlType.ListItem ID= NAME=منع الحذف العشوائي للحسابات التي تمتلك حركات مالية أو رصيد غير صفري، مع إظهار تنبيه آمن أو التوجيه للأرشفة (Soft-delete/Recycle Bin). ENABLED=True
+ControlType.ListItem ID= NAME=أمر تشغيل المفكرة على سطح المكتب البعيد لعرض تقرير الإنجاز فور انتهائه أمامك. ENABLED=True
+ControlType.Button ID=mat-expansion-panel-header-39 NAME=Markdown Download code Copy code to clipboard Collapse code snippet ENABLED=True
+ControlType.Button ID= NAME=Download code ENABLED=True
+ControlType.Button ID= NAME=Copy code to clipboard ENABLED=True
+ControlType.Button ID= NAME=Collapse code snippet ENABLED=True
+ControlType.Group ID=cdk-accordion-child-39 NAME=Markdown Download code Copy code to clipboard Collapse code snippet ENABLED=True
+ControlType.Button ID= NAME=Edit ENABLED=True
+ControlType.Button ID= NAME=Rerun this turn ENABLED=True
+ControlType.Button ID= NAME=Open options ENABLED=True
+ControlType.Button ID= NAME=Rerun this turn ENABLED=True
+ControlType.Button ID= NAME=Open options ENABLED=True
+ControlType.Button ID=mat-expansion-panel-header-40 NAME=Thinking Thoughts ENABLED=True
+ControlType.Button ID=mat-expansion-panel-header-41 NAME=Expand to view model thoughts ENABLED=False
+ControlType.Button ID= NAME=Edit ENABLED=True
+ControlType.Button ID= NAME=Rerun this turn ENABLED=True
+ControlType.Button ID= NAME=Open options ENABLED=True
+ControlType.ListItem ID= NAME=المحرك الديناميكي للغات والاتجاهات (Dynamic AR/EN & RTL/LTR Engine):◦ تفعيل التبديل الفوري للغة من شاشة الإعدادات: تبديل قواميس النصوص (Strings.ar.xaml و Strings.en.xaml) مع قلب اتجاه الواجهة ديناميكياً (FlowDirection: RightToLeft للعربية و LeftToRight للإنجليزية) مع حفظ التفضيل دون الحاجة لإعادة تشغيل التطبيق. ENABLED=True
+ControlType.ListItem ID= NAME=تفعيل التبديل الفوري للغة من شاشة الإعدادات: تبديل قواميس النصوص (Strings.ar.xaml و Strings.en.xaml) مع قلب اتجاه الواجهة ديناميكياً (FlowDirection: RightToLeft للعربية و LeftToRight للإنجليزية) مع حفظ التفضيل دون الحاجة لإعادة تشغيل التطبيق. ENABLED=True
+ControlType.ListItem ID= NAME=توحيد كافة النوافذ الفرعية وحوارات التأكيد (Dialogs Unification):◦ توحيد شاشات الدخول والإعداد الأولي والاستعادة (LoginWindow, BootstrapWindow, RecoveryWindow, ResetDataWindow) لتتطابق بنسبة 100% مع الهوية البصرية للنافذة الرئيسية (مربعات إدخال 38px، أزرار Enterprise، وتوسيط النوافذ CenterOwner، ودعم Enter للتأكيد و Esc للإلغاء). ENABLED=True
+ControlType.ListItem ID= NAME=توحيد شاشات الدخول والإعداد الأولي والاستعادة (LoginWindow, BootstrapWindow, RecoveryWindow, ResetDataWindow) لتتطابق بنسبة 100% مع الهوية البصرية للنافذة الرئيسية (مربعات إدخال 38px، أزرار Enterprise، وتوسيط النوافذ CenterOwner، ودعم Enter للتأكيد و Esc للإلغاء). ENABLED=True
+ControlType.ListItem ID= NAME=تأكيد معايير دقة الشاشات (Per-Monitor V2 High-DPI Awareness):◦ فحص وضبط app.manifest لضمان وضوح فائق للخطوط والأيقونات في دقات العرض العالية (125%, 150%, 200%). ENABLED=True
+ControlType.ListItem ID= NAME=فحص وضبط app.manifest لضمان وضوح فائق للخطوط والأيقونات في دقات العرض العالية (125%, 150%, 200%). ENABLED=True
+ControlType.ListItem ID= NAME=توسيع حزمة الاختبارات الآلية (Test Suite Expansion):◦ كتابة اختبارات آلية جديدة تغطي المحركات المحاسبية المضافة في المرحلة الخامسة (حسابات كشف الحساب والرصيد الافتتاحي، تقييم المخزون، وحاجز أمان حذف الحسابات) لرفع عدد الاختبارات الناجحة وتأكيد ثبات النظام. ENABLED=True
+ControlType.ListItem ID= NAME=كتابة اختبارات آلية جديدة تغطي المحركات المحاسبية المضافة في المرحلة الخامسة (حسابات كشف الحساب والرصيد الافتتاحي، تقييم المخزون، وحاجز أمان حذف الحسابات) لرفع عدد الاختبارات الناجحة وتأكيد ثبات النظام. ENABLED=True
+ControlType.ListItem ID= NAME=أمر تشغيل المفكرة على سطح المكتب البعيد لعرض تقرير الإنجاز فور انتهائه أمامك. ENABLED=True
+ControlType.Button ID=mat-expansion-panel-header-42 NAME=Markdown Download code Copy code to clipboard Collapse code snippet ENABLED=True
+ControlType.Button ID= NAME=Download code ENABLED=True
+ControlType.Button ID= NAME=Copy code to clipboard ENABLED=True
+ControlType.Button ID= NAME=Collapse code snippet ENABLED=True
+ControlType.Group ID=cdk-accordion-child-42 NAME=Markdown Download code Copy code to clipboard Collapse code snippet ENABLED=True
+ControlType.Button ID= NAME=Edit ENABLED=True
+ControlType.Button ID= NAME=Rerun this turn ENABLED=True
+ControlType.Button ID= NAME=Open options ENABLED=True
+ControlType.Button ID= NAME=Edit ENABLED=True
+ControlType.Button ID= NAME=Rerun this turn ENABLED=True
+ControlType.Button ID= NAME=Open options ENABLED=True
+ControlType.Button ID= NAME=Edit ENABLED=True
+ControlType.Button ID= NAME=Rerun this turn ENABLED=True
+ControlType.Button ID= NAME=Open options ENABLED=True
+ControlType.Button ID= NAME=Rerun this turn ENABLED=True
+ControlType.Button ID= NAME=Open options ENABLED=True
+ControlType.Button ID=mat-expansion-panel-header-43 NAME=Thinking Thoughts ENABLED=True
+ControlType.Button ID=mat-expansion-panel-header-44 NAME=Expand to view model thoughts ENABLED=False
+ControlType.Button ID= NAME=Edit ENABLED=True
+ControlType.Button ID= NAME=Rerun this turn ENABLED=True
+ControlType.Button ID= NAME=Open options ENABLED=True
+ControlType.ListItem ID= NAME=بناء التطبيق بنسخة التشغيل، وتشغيله فعلياً ورصد النوافذ شاشة بشاشة. ENABLED=True
+ControlType.ListItem ID= NAME=استخدام برمجيات أتمتة الويندوز (PowerShell & Windows UI Automation) لالتقاط لقطات شاشة (Screenshots) لكافة الشاشات والنوافذ في المجلّد runtime_qa_screenshots. ENABLED=True
+ControlType.ListItem ID= NAME=فحص كل شاشة تحت المجهر: اقتطاع النصوص (Text Clipping)، تناسق الخطوط العربية، محاذاة الأرقام والهواتف، محاذاة الجداول والأعمدة، وتفاعل الواجهة عند التبديل بين العربية والإنجليزية. ENABLED=True
+ControlType.ListItem ID= NAME=إيداع التقرير الشامل والمفصل بكل ملاحظة بصرية في RUNTIME_VISUAL_QA_REPORT.md وفتح المفكرة تلقائياً على سطح المكتب البعيد فور الانتهاء. ENABLED=True
+ControlType.Button ID=mat-expansion-panel-header-45 NAME=Markdown Download code Copy code to clipboard Collapse code snippet ENABLED=True
+ControlType.Button ID= NAME=Download code ENABLED=True
+ControlType.Button ID= NAME=Copy code to clipboard ENABLED=True
+ControlType.Button ID= NAME=Collapse code snippet ENABLED=True
+ControlType.Group ID=cdk-accordion-child-45 NAME=Markdown Download code Copy code to clipboard Collapse code snippet ENABLED=True
+ControlType.Button ID= NAME=Edit ENABLED=True
+ControlType.Button ID= NAME=Rerun this turn ENABLED=True
+ControlType.Button ID= NAME=Open options ENABLED=True
+ControlType.Button ID= NAME=Rerun this turn ENABLED=True
+ControlType.Button ID= NAME=Open options ENABLED=True
+ControlType.Button ID=mat-expansion-panel-header-46 NAME=Thinking Thoughts ENABLED=True
+ControlType.Button ID=mat-expansion-panel-header-47 NAME=Expand to view model thoughts ENABLED=False
+ControlType.Button ID= NAME=Edit ENABLED=True
+ControlType.Button ID= NAME=Rerun this turn ENABLED=True
+ControlType.Button ID= NAME=Open options ENABLED=True
+ControlType.ListItem ID= NAME=ازدواجية لغة القائمة الجانبية (Sidebar Navigation): ظهور تسميات إنجليزية (Home, Accounts & Ledgers, ...) في واجهة عربية. ENABLED=True
+ControlType.ListItem ID= NAME=رؤوس أعمدة المخزن (Inventory Grid Headers): وجود مصطلحات إنجليزية (Cost Price, Available Stock) وتزاحم في أطراف الأعمدة. ENABLED=True
+ControlType.ListItem ID= NAME=تنافر ألوان لوحة تفاصيل المخزن (Theme Inconsistency): وجود شريط أبيض ساطع يكسر هوية الثيم الداكن (Dark Navy). ENABLED=True
+ControlType.ListItem ID= NAME=استكمال الجولة الحية على الشاشات التي تعثر تصويرها سابقاً (المصروفات بعد الإصلاح، التقارير، الإعدادات، ونافذة "عن النظام"). ENABLED=True
+ControlType.Button ID=mat-expansion-panel-header-48 NAME=Markdown Download code Copy code to clipboard Collapse code snippet ENABLED=True
+ControlType.Button ID= NAME=Download code ENABLED=True
+ControlType.Button ID= NAME=Copy code to clipboard ENABLED=True
+ControlType.Button ID= NAME=Collapse code snippet ENABLED=True
+ControlType.Group ID=cdk-accordion-child-48 NAME=Markdown Download code Copy code to clipboard Collapse code snippet ENABLED=True
+ControlType.Button ID= NAME=Edit ENABLED=True
+ControlType.Button ID= NAME=Rerun this turn ENABLED=True
+ControlType.Button ID= NAME=Open options ENABLED=True
+ControlType.Button ID= NAME=Rerun this turn ENABLED=True
+ControlType.Button ID= NAME=Open options ENABLED=True
+ControlType.Button ID=mat-expansion-panel-header-49 NAME=Thinking Thoughts ENABLED=True
+ControlType.Button ID=mat-expansion-panel-header-50 NAME=Expand to view model thoughts ENABLED=False
+ControlType.Button ID= NAME=Edit ENABLED=True
+ControlType.Button ID= NAME=Rerun this turn ENABLED=True
+ControlType.Button ID= NAME=Open options ENABLED=True
+ControlType.ListItem ID= NAME=تثبيت معرفات الأتمتة (Automation IDs): إضافة AutomationId صريح وموحد لأزرار القائمة الجانبية وزر الدخول في الـ XAML (LoginSubmitButton، و NavBtn_Dashboard، NavBtn_Inventory، NavBtn_Expenses، إلخ) حتى يتحرك السكربت برمجياً بثقة مطلقة ودون الاعتماد على إحداثيات الشاشة. ENABLED=True
+ControlType.ListItem ID= NAME=تأكيد تسجيل الدخول الفعلي: استخدام زر الدخول أو إرسال مفتاح Enter، مع حلقة انتظار برمجية (Wait Loop) حتى تظهر النافذة الرئيسية فعلياً، مع التحقق من عنوان النافذة وعناصر لوحة التحكم قبل التقاط أي صورة. ENABLED=True
+ControlType.ListItem ID= NAME=زيارة كل شاشة والتحقق المباشر من:◦ شاشة المصروفات: التأكد الحاسم من فتحها دون أي خطأ (P0 Blocker Resolved).◦ شاشة المخزن: التأكد من ظهور رؤوس الأعمدة العربية (سعر التكلفة، المخزون المتاح) وغياب الشريط الأبيض.◦ شاشة التقارير والإعدادات وعن النظام: التحقق من ظهورها بتنسيقها الكامل. ENABLED=True
+ControlType.ListItem ID= NAME=شاشة المصروفات: التأكد الحاسم من فتحها دون أي خطأ (P0 Blocker Resolved). ENABLED=True
+ControlType.ListItem ID= NAME=شاشة المخزن: التأكد من ظهور رؤوس الأعمدة العربية (سعر التكلفة، المخزون المتاح) وغياب الشريط الأبيض. ENABLED=True
+ControlType.ListItem ID= NAME=شاشة التقارير والإعدادات وعن النظام: التحقق من ظهورها بتنسيقها الكامل. ENABLED=True
+ControlType.ListItem ID= NAME=فتح المفكرة تلقائياً بالتقرير النهائي على سطح المكتب البعيد. ENABLED=True
+ControlType.Button ID=mat-expansion-panel-header-51 NAME=Markdown Download code Copy code to clipboard Collapse code snippet ENABLED=True
+ControlType.Button ID= NAME=Download code ENABLED=True
+ControlType.Button ID= NAME=Copy code to clipboard ENABLED=True
+ControlType.Button ID= NAME=Collapse code snippet ENABLED=True
+ControlType.Group ID=cdk-accordion-child-51 NAME=Markdown Download code Copy code to clipboard Collapse code snippet ENABLED=True
+ControlType.Button ID= NAME=Edit ENABLED=True
+ControlType.Button ID= NAME=Rerun this turn ENABLED=True
+ControlType.Button ID= NAME=Open options ENABLED=True
+ControlType.Button ID= NAME=Rerun this turn ENABLED=True
+ControlType.Button ID= NAME=Open options ENABLED=True
+ControlType.Button ID=mat-expansion-panel-header-52 NAME=Thinking Thoughts ENABLED=True
+ControlType.Button ID=mat-expansion-panel-header-53 NAME=Expand to view model thoughts ENABLED=False
+ControlType.Button ID= NAME=Edit ENABLED=True
+ControlType.Button ID= NAME=Rerun this turn ENABLED=True
+ControlType.Button ID= NAME=Open options ENABLED=True
+ControlType.ListItem ID= NAME=أعمدة المخزن والتقارير ما زالت بالإنجليزية: ظهور (Cost Price, Wholesale Price, Running balance, Debit / inflow...) نتيجة لكون تفضيل اللغة في جلسة الاختبار كان مضبوطاً على en-US مع وجود نصوص غير مربوطة بمفاتيح الموارد العربية. ENABLED=True
+ControlType.ListItem ID= NAME=الشريط الأبيض الساطع في تبويبات تفاصيل المخزن (Inventory Tab Strip): ناتج عن الستايل الافتراضي لـ TabControl و TabItem في WPF والذي لم يرث ثيم الـ Dark Navy. ENABLED=True
+ControlType.ListItem ID= NAME=شريط عنوان نافذة "عن النظام" (About Window Title Bar): يظهر بشريط ويندوز أبيض تقليدي يكسر الثيم الداكن، مع حاجة لضبط ارتفاع النافذة لإظهار زر "نسخ بيانات النظام". ENABLED=True
+ControlType.Button ID=mat-expansion-panel-header-54 NAME=Markdown Download code Copy code to clipboard Collapse code snippet ENABLED=True
+ControlType.Button ID= NAME=Download code ENABLED=True
+ControlType.Button ID= NAME=Copy code to clipboard ENABLED=True
+ControlType.Button ID= NAME=Collapse code snippet ENABLED=True
+ControlType.Group ID=cdk-accordion-child-54 NAME=Markdown Download code Copy code to clipboard Collapse code snippet ENABLED=True
+ControlType.Button ID= NAME=Edit ENABLED=True
+ControlType.Button ID= NAME=Rerun this turn ENABLED=True
+ControlType.Button ID= NAME=Open options ENABLED=True
+ControlType.Button ID= NAME=Edit ENABLED=True
+ControlType.Button ID= NAME=Rerun this turn ENABLED=True
+ControlType.Button ID= NAME=Open options ENABLED=True
+ControlType.Button ID= NAME=Edit ENABLED=True
+ControlType.Button ID= NAME=Rerun this turn ENABLED=True
+ControlType.Button ID= NAME=Open options ENABLED=True
+ControlType.Button ID= NAME=Rerun this turn ENABLED=True
+ControlType.Button ID= NAME=Open options ENABLED=True
+ControlType.Button ID=mat-expansion-panel-header-55 NAME=Thinking Thoughts ENABLED=True
+ControlType.Button ID=mat-expansion-panel-header-56 NAME=Expand to view model thoughts ENABLED=False
+ControlType.Button ID= NAME=Edit ENABLED=True
+ControlType.Button ID= NAME=Rerun this turn ENABLED=True
+ControlType.Button ID= NAME=Open options ENABLED=True
+ControlType.ListItem ID= NAME=نافذة إضافة وتعديل الحساب (Account Entry Dialog): تفريغ وترتيب الحقول (الاسم، الهاتف، التصنيف، الرصيد الافتتاحي، الحد الائتماني، العنوان)، ترتيب الـ Tab، وعزل الأرقام والهواتف. ENABLED=True
+ControlType.ListItem ID= NAME=نافذة إضافة وتعديل صنف في المخزن (Product Entry Form): تقسيم الحقول إلى بطاقات منطقية (البيانات الأساسية، الوحدات والتحويل، الأسعار وهوامش الربح) دون أي فوضى أزرار. ENABLED=True
+ControlType.ListItem ID= NAME=نافذة سند صرف المصروفات (Expense Voucher Form): إدخال المبلغ والتصنيف وطريقة الدفع والبيان بسلاسة تامة. ENABLED=True
+ControlType.ListItem ID= NAME=نافذة إضافة الدفاتر (Ledger Book Form). ENABLED=True
+ControlType.ListItem ID= NAME=سطر إدخال بنود الفاتورة (POS Line Entry): مسح الباركود، التبديل السريع بين الوحدة الكبرى والصغرى، والانتقال الفوري للكمية والسعر. ENABLED=True
+ControlType.ListItem ID= NAME=معايير الإدخال الاحترافية:◦ توحيد ارتفاع حقول الإدخال (38px أو 40px) مع زوايا ناعمة (CornerRadius="6").◦ توهج التركيز الفوري (Accent Focus Ring #00B4D8) ليعرف المستخدم حقله النشط فوراً.◦ التحقق اللحظي والأخطاء المضمنة (Inline Validation) بلون أحمر ناعم بدلاً من النوافذ المنبثقة المزعجة.◦ فتح كل نافذة إدخال حية في جلسة سطح المكتب البعيد والتقاط صور موثقة لها في input_qa_screenshots\. ENABLED=True
+ControlType.ListItem ID= NAME=توحيد ارتفاع حقول الإدخال (38px أو 40px) مع زوايا ناعمة (CornerRadius="6"). ENABLED=True
+ControlType.ListItem ID= NAME=توهج التركيز الفوري (Accent Focus Ring #00B4D8) ليعرف المستخدم حقله النشط فوراً. ENABLED=True
+ControlType.ListItem ID= NAME=التحقق اللحظي والأخطاء المضمنة (Inline Validation) بلون أحمر ناعم بدلاً من النوافذ المنبثقة المزعجة. ENABLED=True
+ControlType.ListItem ID= NAME=فتح كل نافذة إدخال حية في جلسة سطح المكتب البعيد والتقاط صور موثقة لها في input_qa_screenshots\. ENABLED=True
+ControlType.Button ID=mat-expansion-panel-header-57 NAME=Markdown Download code Copy code to clipboard Collapse code snippet ENABLED=True
+ControlType.Button ID= NAME=Download code ENABLED=True
+ControlType.Button ID= NAME=Copy code to clipboard ENABLED=True
+ControlType.Button ID= NAME=Collapse code snippet ENABLED=True
+ControlType.Group ID=cdk-accordion-child-57 NAME=Markdown Download code Copy code to clipboard Collapse code snippet ENABLED=True
+ControlType.Button ID= NAME=Edit ENABLED=True
+ControlType.Button ID= NAME=Rerun this turn ENABLED=True
+ControlType.Button ID= NAME=Open options ENABLED=True
+ControlType.Button ID= NAME=Rerun this turn ENABLED=True
+ControlType.Button ID= NAME=Open options ENABLED=True
+ControlType.Button ID=mat-expansion-panel-header-58 NAME=Thinking Thoughts ENABLED=True
+ControlType.Button ID=mat-expansion-panel-header-59 NAME=Expand to view model thoughts ENABLED=False
+ControlType.Button ID= NAME=Edit ENABLED=True
+ControlType.Button ID= NAME=Rerun this turn ENABLED=True
+ControlType.Button ID= NAME=Open options ENABLED=True
+ControlType.ListItem ID= NAME=إزالة الارتفاعات المحلية الشاذة: تنظيف ملف ModuleTemplates.xaml من أي Height="44" أو Height="42" يدوية لتأخذ الحقول الارتفاع الموحد (40px) وتأكيد اتجاه LTR لحقل الرصيد الافتتاحي والأرقام. ENABLED=True
+ControlType.ListItem ID= NAME=تثبيت معرفات تشغيل النوافذ (Trigger Automation IDs):◦ زر إضافة حساب: Btn_OpenNewAccountDialog.◦ زر إضافة صنف: Btn_OpenNewProductDialog.◦ زر إضافة مصروف: Btn_OpenNewExpenseDialog.◦ زر إضافة دفتر: Btn_OpenNewBookDialog.◦ زر إضافة فاتورة/سطر بيع: Btn_OpenNewSaleInvoice. ENABLED=True
+ControlType.ListItem ID= NAME=زر إضافة حساب: Btn_OpenNewAccountDialog. ENABLED=True
+ControlType.ListItem ID= NAME=زر إضافة صنف: Btn_OpenNewProductDialog. ENABLED=True
+ControlType.ListItem ID= NAME=زر إضافة مصروف: Btn_OpenNewExpenseDialog. ENABLED=True
+ControlType.ListItem ID= NAME=زر إضافة دفتر: Btn_OpenNewBookDialog. ENABLED=True
+ControlType.ListItem ID= NAME=زر إضافة فاتورة/سطر بيع: Btn_OpenNewSaleInvoice. ENABLED=True
+ControlType.ListItem ID= NAME=أمر السكربت بفتح كل نافذة فعلياً على سطح المكتب: النقر البرمجي على الزر، والتحقق من ظهور النافذة/النموذج على الشاشة، ثم التقاط الصورة فوراً وهي مفتوحة (*_OPEN.png)، ثم إغلاقها بأمان والانتقال للنافذة التالية. ENABLED=True
+ControlType.ListItem ID= NAME=كتابة التقرير الشامل وإطلاقه عبر المفكرة على سطح المكتب البعيد. ENABLED=True
+ControlType.Button ID=mat-expansion-panel-header-60 NAME=Markdown Download code Copy code to clipboard Collapse code snippet ENABLED=True
+ControlType.Button ID= NAME=Download code ENABLED=True
+ControlType.Button ID= NAME=Copy code to clipboard ENABLED=True
+ControlType.Button ID= NAME=Collapse code snippet ENABLED=True
+ControlType.Group ID=cdk-accordion-child-60 NAME=Markdown Download code Copy code to clipboard Collapse code snippet ENABLED=True
+ControlType.Button ID= NAME=Edit ENABLED=True
+ControlType.Button ID= NAME=Rerun this turn ENABLED=True
+ControlType.Button ID= NAME=Open options ENABLED=True
+ControlType.Button ID= NAME=Rerun this turn ENABLED=True
+ControlType.Button ID= NAME=Open options ENABLED=True
+ControlType.Button ID=mat-expansion-panel-header-61 NAME=Thinking Thoughts ENABLED=True
+ControlType.Button ID=mat-expansion-panel-header-62 NAME=Expand to view model thoughts ENABLED=False
+ControlType.Button ID= NAME=Edit ENABLED=True
+ControlType.Button ID= NAME=Rerun this turn ENABLED=True
+ControlType.Button ID= NAME=Open options ENABLED=True
+ControlType.ListItem ID= NAME=اتجاه مؤشر الكتابة (Text Caret & BiDi): حقول الأسماء والملاحظات يجب أن يبدأ مؤشرها من اليمين (RTL)، بينما الباركود والأرقام والهواتف يبدأ مؤشرها من اليسار (LTR). ENABLED=True
+ControlType.ListItem ID= NAME=القضاء على التمرير العمودي والتراكم (De-cluttering): في شاشة إضافة الصنف، كان المستخدم يضطر للنزول بشريط التمرير للوصول للأسعار وزر الحفظ؛ هذا يقتل سرعة الإدخال، وسيتم إعادة تقسيم النافذة إلى بطاقات متجاورة مدمجة (Compact Grid) ليكون زر الحفظ ظاهراً دوماً. ENABLED=True
+ControlType.ListItem ID= NAME=إعادة توزيع الأزرار وحذف الزوائد: إزالة أي حقول أو أزرار تربك المستخدم، وتثبيت أزرار الحفظ والإلغاء في أماكنها الطبيعية وفق خط الرؤية المحاسبي. ENABLED=True
+ControlType.ListItem ID= NAME=كشف وإصلاح جداول تفاصيل الحساب (Account Details DataGrid): ضبط أعمدة كشف الحساب وتوزيعها (التاريخ، البيان، مدين، دائن، الرصيد التراكمي) بأوزان متناسقة ومنع اختفائها أو تزاحمها. ENABLED=True
+ControlType.Button ID=mat-expansion-panel-header-63 NAME=Markdown Download code Copy code to clipboard Collapse code snippet ENABLED=True
+ControlType.Button ID= NAME=Download code ENABLED=True
+ControlType.Button ID= NAME=Copy code to clipboard ENABLED=True
+ControlType.Button ID= NAME=Collapse code snippet ENABLED=True
+ControlType.Group ID=cdk-accordion-child-63 NAME=Markdown Download code Copy code to clipboard Collapse code snippet ENABLED=True
+ControlType.Button ID= NAME=Edit ENABLED=True
+ControlType.Button ID= NAME=Rerun this turn ENABLED=True
+ControlType.Button ID= NAME=Open options ENABLED=True
+ControlType.Button ID= NAME=Rerun this turn ENABLED=True
+ControlType.Button ID= NAME=Open options ENABLED=True
+ControlType.Button ID=mat-expansion-panel-header-64 NAME=Thinking Thoughts ENABLED=True
+ControlType.Button ID=mat-expansion-panel-header-65 NAME=Expand to view model thoughts ENABLED=False
+ControlType.Button ID= NAME=Edit ENABLED=True
+ControlType.Button ID= NAME=Rerun this turn ENABLED=True
+ControlType.Button ID= NAME=Open options ENABLED=True
+ControlType.ListItem ID= NAME=تفتيت الملفات المتضخمة إلى مكونات مستقلة (Modular Views & UserControls):◦ فصل كل شاشة ونافذة حوار في مكون مستقل ومنعزل (مثل AccountDialogView.xaml، ProductDialogView.xaml، ExpenseVoucherDialogView.xaml، SalesLineEntryView.xaml). ENABLED=True
+ControlType.ListItem ID= NAME=فصل كل شاشة ونافذة حوار في مكون مستقل ومنعزل (مثل AccountDialogView.xaml، ProductDialogView.xaml، ExpenseVoucherDialogView.xaml، SalesLineEntryView.xaml). ENABLED=True
+ControlType.ListItem ID= NAME=تنظيم صارم ومحكم للغات والاتجاهات (Strict Bilingual Parity & RTL/LTR Engine):◦ تحقيق تطابق كامل (1:1 Key Parity) بين ملفات النصوص العربية والإنجليزية (Strings.ar.xaml و Strings.en.xaml).◦ ضبط اتجاه الكتابة ومؤشر الفأرة (Caret Alignment) على مستوى كل حقل في المكونات المفتتة (يمين للنصوص العربية، ويسار للأكواد والأرقام). ENABLED=True
+ControlType.ListItem ID= NAME=تحقيق تطابق كامل (1:1 Key Parity) بين ملفات النصوص العربية والإنجليزية (Strings.ar.xaml و Strings.en.xaml). ENABLED=True
+ControlType.ListItem ID= NAME=ضبط اتجاه الكتابة ومؤشر الفأرة (Caret Alignment) على مستوى كل حقل في المكونات المفتتة (يمين للنصوص العربية، ويسار للأكواد والأرقام). ENABLED=True
+ControlType.ListItem ID= NAME=تصفير وإعادة تهيئة قاعدة البيانات للنسخة الأولية النظيفة (Clean Slate DB Initialization). ENABLED=True
+ControlType.ListItem ID= NAME=الحفاظ على سلامة النظام واجتياز كافة الاختبارات الـ 105 بنسبة 100% دون أي خطأ أو تحذير. ENABLED=True
+ControlType.ListItem ID= NAME=فتح المفكرة بالتقرير المعماري المفصل على سطح المكتب البعيد فور الانتهاء. ENABLED=True
+ControlType.Button ID=mat-expansion-panel-header-66 NAME=Markdown Download code Copy code to clipboard Collapse code snippet ENABLED=True
+ControlType.Button ID= NAME=Download code ENABLED=True
+ControlType.Button ID= NAME=Copy code to clipboard ENABLED=True
+ControlType.Button ID= NAME=Collapse code snippet ENABLED=True
+ControlType.Group ID=cdk-accordion-child-66 NAME=Markdown Download code Copy code to clipboard Collapse code snippet ENABLED=True
+ControlType.Button ID= NAME=Edit ENABLED=True
+ControlType.Button ID= NAME=Rerun this turn ENABLED=True
+ControlType.Button ID= NAME=Open options ENABLED=True
+ControlType.Button ID= NAME=Edit ENABLED=True
+ControlType.Button ID= NAME=Rerun this turn ENABLED=True
+ControlType.Button ID= NAME=Open options ENABLED=True
+ControlType.ListItem ID= NAME=القضاء على الملف المتضخم (Monolithic Decomposition):◦ تم تفتيت ملف ModuleTemplates.xaml بالكامل بنسبة 100%، وتفريغه من كافة الـ DataTemplates ليبقى محصوراً فقط في المحولات والموارد العامة المشتركة.◦ تأسيس 12 قالباً ومكوناً بصرياً مستقلاً تماماً داخل مسار نظيف (Views/Modules/):■ AccountsView.xaml■ InventoryView.xaml■ SalesView.xaml■ PurchasesView.xaml■ ExpensesView.xaml■ ReportsView.xaml■ SettingsView.xaml■ DashboardView.xaml■ UsersView.xaml■ AuditLogView.xaml■ RecycleBinView.xaml■ OperationsView.xaml◦ تسجيل جميع القوالب المستقلة داخل App.xaml لترتبط بالـ ViewModels بسلاسة تامة دون كسر الـ DataContext. ENABLED=True
+ControlType.ListItem ID= NAME=تم تفتيت ملف ModuleTemplates.xaml بالكامل بنسبة 100%، وتفريغه من كافة الـ DataTemplates ليبقى محصوراً فقط في المحولات والموارد العامة المشتركة. ENABLED=True
+ControlType.ListItem ID= NAME=تأسيس 12 قالباً ومكوناً بصرياً مستقلاً تماماً داخل مسار نظيف (Views/Modules/):■ AccountsView.xaml■ InventoryView.xaml■ SalesView.xaml■ PurchasesView.xaml■ ExpensesView.xaml■ ReportsView.xaml■ SettingsView.xaml■ DashboardView.xaml■ UsersView.xaml■ AuditLogView.xaml■ RecycleBinView.xaml■ OperationsView.xaml ENABLED=True
+ControlType.ListItem ID= NAME=AccountsView.xaml ENABLED=True
+ControlType.ListItem ID= NAME=InventoryView.xaml ENABLED=True
+ControlType.ListItem ID= NAME=SalesView.xaml ENABLED=True
+ControlType.ListItem ID= NAME=PurchasesView.xaml ENABLED=True
+ControlType.ListItem ID= NAME=ExpensesView.xaml ENABLED=True
+ControlType.ListItem ID= NAME=ReportsView.xaml ENABLED=True
+ControlType.ListItem ID= NAME=SettingsView.xaml ENABLED=True
+ControlType.ListItem ID= NAME=DashboardView.xaml ENABLED=True
+ControlType.ListItem ID= NAME=UsersView.xaml ENABLED=True
+ControlType.ListItem ID= NAME=AuditLogView.xaml ENABLED=True
+ControlType.ListItem ID= NAME=RecycleBinView.xaml ENABLED=True
+ControlType.ListItem ID= NAME=OperationsView.xaml ENABLED=True
+ControlType.ListItem ID= NAME=تسجيل جميع القوالب المستقلة داخل App.xaml لترتبط بالـ ViewModels بسلاسة تامة دون كسر الـ DataContext. ENABLED=True
+ControlType.ListItem ID= NAME=التناغم اللغوي التام (Strict 1:1 Parity):◦ تطابق كامل بنسبة 100% بين ملفات النصوص العربية والإنجليزية (91 مفتاحاً عربياً مقابل 91 مفتاحاً إنجليزياً، مع 0 مفاتيح مفقودة). ENABLED=True
+ControlType.ListItem ID= NAME=تطابق كامل بنسبة 100% بين ملفات النصوص العربية والإنجليزية (91 مفتاحاً عربياً مقابل 91 مفتاحاً إنجليزياً، مع 0 مفاتيح مفقودة). ENABLED=True
+ControlType.ListItem ID= NAME=الصلابة البرمجية وحماية الكود الحساس:◦ لم يطرأ أي مساس بملف BackupService.cs (بصمة التجزئة SHA-256 متطابقة تماماً قبل وبعد العملية: 1AE260910724...).◦ استقرار البناء البرمجي: 0 تحذيرات، 0 أخطاء.◦ اجتياز كافة الاختبارات الآلية الـ 105 بنسبة 100%. ENABLED=True
+ControlType.ListItem ID= NAME=لم يطرأ أي مساس بملف BackupService.cs (بصمة التجزئة SHA-256 متطابقة تماماً قبل وبعد العملية: 1AE260910724...). ENABLED=True
+ControlType.ListItem ID= NAME=استقرار البناء البرمجي: 0 تحذيرات، 0 أخطاء. ENABLED=True
+ControlType.ListItem ID= NAME=اجتياز كافة الاختبارات الآلية الـ 105 بنسبة 100%. ENABLED=True
+ControlType.ListItem ID= NAME=فصل نافذة إضافة الحساب المنبثقة إلى AccountDialogControl.xaml بداخل Views/Modules/ ليتم تنظيف حقولها وضبط أزرارها بشكل مريح ودون أي تداخل. ENABLED=True
+ControlType.ListItem ID= NAME=فصل نافذة إضافة الصنف والمخزن المنبثقة إلى ProductDialogControl.xaml وتطبيق تخطيط البطاقات الثلاثية المدمج لإلغاء شريط التمرير العمودي تماماً. ENABLED=True
+ControlType.ListItem ID= NAME=فصل نافذة سند صرف المصروفات إلى ExpenseVoucherDialogControl.xaml وتزويدها بحقل المستلم المباشر. ENABLED=True
+ControlType.Button ID=mat-expansion-panel-header-67 NAME=Markdown Download code Copy code to clipboard Collapse code snippet ENABLED=True
+ControlType.Button ID= NAME=Download code ENABLED=True
+ControlType.Button ID= NAME=Copy code to clipboard ENABLED=True
+ControlType.Button ID= NAME=Collapse code snippet ENABLED=True
+ControlType.Group ID=cdk-accordion-child-67 NAME=Markdown Download code Copy code to clipboard Collapse code snippet ENABLED=True
+ControlType.Button ID= NAME=Edit ENABLED=True
+ControlType.Button ID= NAME=Rerun this turn ENABLED=True
+ControlType.Button ID= NAME=Open options ENABLED=True
+ControlType.Button ID= NAME=Edit ENABLED=True
+ControlType.Button ID= NAME=Rerun this turn ENABLED=True
+ControlType.Button ID= NAME=Open options ENABLED=True
+ControlType.ListItem ID= NAME=فصل نوافذ الحوار بنجاح (Dialog Components Extraction):◦ تم استخراج AccountDialogControl.xaml وتضمينه بنجاح في AccountsView.xaml عبر ContentControl مع ربط الـ DataContext والـ ViewModels دون أي كسر وظيفي.◦ تم استخراج ExpenseVoucherDialogControl.xaml وربطه في ExpensesView.xaml.◦ تم استخراج ProductDialogControl.xaml وربطه في InventoryView.xaml.◦ تسجيل المكونات المستقلة في App.xaml وترتيب أسبقية الموارد. ENABLED=True
+ControlType.ListItem ID= NAME=تم استخراج AccountDialogControl.xaml وتضمينه بنجاح في AccountsView.xaml عبر ContentControl مع ربط الـ DataContext والـ ViewModels دون أي كسر وظيفي. ENABLED=True
+ControlType.ListItem ID= NAME=تم استخراج ExpenseVoucherDialogControl.xaml وربطه في ExpensesView.xaml. ENABLED=True
+ControlType.ListItem ID= NAME=تم استخراج ProductDialogControl.xaml وربطه في InventoryView.xaml. ENABLED=True
+ControlType.ListItem ID= NAME=تسجيل المكونات المستقلة في App.xaml وترتيب أسبقية الموارد. ENABLED=True
+ControlType.ListItem ID= NAME=استقرار النظام والأمان:◦ مؤشرات البناء: 0 تحذيرات، 0 أخطاء.◦ الاختبارات: 105 من 105 ناجحة بنسبة 100%.◦ سلامة ملف BackupService.cs وحمايته التامة بالـ Hash المطابق (1AE26091...). ENABLED=True
+ControlType.ListItem ID= NAME=مؤشرات البناء: 0 تحذيرات، 0 أخطاء. ENABLED=True
+ControlType.ListItem ID= NAME=الاختبارات: 105 من 105 ناجحة بنسبة 100%. ENABLED=True
+ControlType.ListItem ID= NAME=سلامة ملف BackupService.cs وحمايته التامة بالـ Hash المطابق (1AE26091...). ENABLED=True
+ControlType.ListItem ID= NAME=الملاحظة الجوهرية المتبقية (The Core Finding):◦ الوكيل أوضح بنزاهة هندسية عالية أن نافذة الصنف ProductDialogControl.xaml ما زالت تحتوي على ScrollViewer مع MaxHeight=940 و16 حقل إدخال، مما يجعلها تتطلب التمرير العمودي على الشاشات العادية، وتفكيك هذا التكدس يتطلب ضغط الحقول وإعادة ترتيبها في شبكة (Grid) مدمجة ثنائية أو ثلاثية الأعمدة لتصبح بطول مريح وثابت لا يتجاوز 600-650px. ENABLED=True
+ControlType.ListItem ID= NAME=الوكيل أوضح بنزاهة هندسية عالية أن نافذة الصنف ProductDialogControl.xaml ما زالت تحتوي على ScrollViewer مع MaxHeight=940 و16 حقل إدخال، مما يجعلها تتطلب التمرير العمودي على الشاشات العادية، وتفكيك هذا التكدس يتطلب ضغط الحقول وإعادة ترتيبها في شبكة (Grid) مدمجة ثنائية أو ثلاثية الأعمدة لتصبح بطول مريح وثابت لا يتجاوز 600-650px. ENABLED=True
+ControlType.Button ID=mat-expansion-panel-header-68 NAME=Markdown Download code Copy code to clipboard Collapse code snippet ENABLED=True
+ControlType.Button ID= NAME=Download code ENABLED=True
+ControlType.Button ID= NAME=Copy code to clipboard ENABLED=True
+ControlType.Button ID= NAME=Collapse code snippet ENABLED=True
+ControlType.Group ID=cdk-accordion-child-68 NAME=Markdown Download code Copy code to clipboard Collapse code snippet ENABLED=True
+ControlType.Button ID= NAME=Edit ENABLED=True
+ControlType.Button ID= NAME=Rerun this turn ENABLED=True
+ControlType.Button ID= NAME=Open options ENABLED=True
+ControlType.Button ID= NAME=Rerun this turn ENABLED=True
+ControlType.Button ID= NAME=Open options ENABLED=True
+ControlType.Button ID=mat-expansion-panel-header-69 NAME=Thinking Thoughts ENABLED=True
+ControlType.Button ID=mat-expansion-panel-header-70 NAME=Expand to view model thoughts ENABLED=False
+ControlType.Button ID= NAME=Edit ENABLED=True
+ControlType.Button ID= NAME=Rerun this turn ENABLED=True
+ControlType.Button ID= NAME=Open options ENABLED=True
+ControlType.ListItem ID= NAME=تأمين مسار تسجيل الدخول البرمجي بشكل قطعي (الانتظار حتى تحميل النافذة الرئيسية والتأكد من فتحها بالكامل). ENABLED=True
+ControlType.ListItem ID= NAME=المرور المنهجي على كافة الشاشات والتفاصيل وتصحيحها فوراً:◦ الحسابات: فتح نافذة إضافة الحساب، فحص اتجاه المؤشرات، إغلاقها، ثم النقر على حساب لعرض تفاصيل كشف الحساب والتحقق من الجدول.◦ المخزن: فتح نافذة إضافة الصنف، التحقق من ظهور الأعمدة الثلاثة كاملة دون أي شريط تمرير عمودي، والتأكد من اتجاه الباركود والأسماء، ثم اختيار صنف وفحص جدول الدفعات.◦ المبيعات والمشتريات: فحص سطر الإدخال السريع، واختيار العميل، وأزرار الفاتورة.◦ المصروفات: فتح سند الصرف، والتأكد من حقول المبلغ والمستلم وطريقة الدفع.◦ التقارير والإعدادات وعن النظام: فحص الفلاتر والتبويبات. ENABLED=True
+ControlType.ListItem ID= NAME=الحسابات: فتح نافذة إضافة الحساب، فحص اتجاه المؤشرات، إغلاقها، ثم النقر على حساب لعرض تفاصيل كشف الحساب والتحقق من الجدول. ENABLED=True
+ControlType.ListItem ID= NAME=المخزن: فتح نافذة إضافة الصنف، التحقق من ظهور الأعمدة الثلاثة كاملة دون أي شريط تمرير عمودي، والتأكد من اتجاه الباركود والأسماء، ثم اختيار صنف وفحص جدول الدفعات. ENABLED=True
+ControlType.ListItem ID= NAME=المبيعات والمشتريات: فحص سطر الإدخال السريع، واختيار العميل، وأزرار الفاتورة. ENABLED=True
+ControlType.ListItem ID= NAME=المصروفات: فتح سند الصرف، والتأكد من حقول المبلغ والمستلم وطريقة الدفع. ENABLED=True
+ControlType.ListItem ID= NAME=التقارير والإعدادات وعن النظام: فحص الفلاتر والتبويبات. ENABLED=True
+ControlType.ListItem ID= NAME=الإصلاح الفوري لأي نص مقلوب أو زر شاذ أو تمدد خاطئ أثناء المرور. ENABLED=True
+ControlType.ListItem ID= NAME=التقاط صور حقيقية ومؤكدة لكل شاشة وفتح التقرير بالمفكرة على سطح المكتب البعيد. ENABLED=True
+ControlType.Button ID=mat-expansion-panel-header-71 NAME=Markdown Download code Copy code to clipboard Collapse code snippet ENABLED=True
+ControlType.Button ID= NAME=Download code ENABLED=True
+ControlType.Button ID= NAME=Copy code to clipboard ENABLED=True
+ControlType.Button ID= NAME=Collapse code snippet ENABLED=True
+ControlType.Group ID=cdk-accordion-child-71 NAME=Markdown Download code Copy code to clipboard Collapse code snippet ENABLED=True
+ControlType.Button ID= NAME=Good response ENABLED=True
+ControlType.Button ID= NAME=Bad response ENABLED=True
+ControlType.Button ID=scrollbar-item-1F3AB84D-2E08-4740-BBF0-2CF3D6ACC112 NAME=بصفتك أحد مهندسي تطبيقات الويندوز الاحت... ENABLED=True
+ControlType.Button ID=scrollbar-item-8D336A1A-70A7-45B9-85CC-7312E2E8F69E NAME=COMMERCIAL_PRODUCT_ROADMAP.md and 3 mor... ENABLED=True
+ControlType.Button ID=scrollbar-item-09D2AC6F-CE3A-46CC-B2DB-FA42D5C1D0A5 NAME=SmartLedger — Phase 1 UI/UX Implementat... ENABLED=True
+ControlType.Button ID=scrollbar-item-58FAC974-1291-4739-A547-95F08A9F9F50 NAME=مع كل توجيه يحب امره بفتح المفكرة على س... ENABLED=True
+ControlType.Button ID=scrollbar-item-9F28A440-1629-4918-823D-B145A068E072 NAME=SmartLedger — Phase 2 Inventory, Dual-U... ENABLED=True
+ControlType.Button ID=scrollbar-item-471A6DD0-F215-4348-85D8-E6B27C9E80A6 NAME=# PHASE 3 IMPLEMENTATION REPORT **Proje... ENABLED=True
+ControlType.Button ID=scrollbar-item-3988CADF-0BF6-49C7-B3AC-471827350A58 NAME=# PHASE 4 IMPLEMENTATION REPORT **Proje... ENABLED=True
+ControlType.Button ID=scrollbar-item-3A715A51-7758-4DB6-916C-225131F709A8 NAME=# Phase 5 Implementation Report — Speci... ENABLED=True
+ControlType.Button ID=scrollbar-item-2C161696-EAF6-48CA-8289-134426D82431 NAME=# Phase 6 Implementation Report ## Dyna... ENABLED=True
+ControlType.Button ID=scrollbar-item-BEF0D291-BF37-40D6-8B37-5723E643D4CD NAME=نعم هذه المرة تدقيق حقيقي عبر سطح المكت... ENABLED=True
+ControlType.Button ID=scrollbar-item-142CA5F5-C91C-40B7-AA0B-A5BE6E8A1F34 NAME=# SmartLedger Pro — Runtime Visual QA R... ENABLED=True
+ControlType.Button ID=scrollbar-item-D1050D4C-DEC8-47AC-B4DA-4E24CF997A3D NAME=Runtime Visual QA — Phase 2 Polish & Ve... ENABLED=True
+ControlType.Button ID=scrollbar-item-DDA24969-EB8B-4E90-AC2D-CFBFD8EA4419 NAME=# SmartLedger — Authenticated Runtime V... ENABLED=True
+ControlType.Button ID=scrollbar-item-90036C5E-9C96-4288-806F-DFF5B11F7781 NAME=SmartLedger — Final Runtime Visual Poli... ENABLED=True
+ControlType.Button ID=scrollbar-item-B0633424-D8D7-4C76-B256-CE263B14F86E NAME=لا مراجعة حقيقة وبصرية لنوافذ الادخال م... ENABLED=True
+ControlType.Button ID=scrollbar-item-24C1C8BA-EA79-4252-9BE9-41D35ECA7BCE NAME=# SmartLedger Pro — Input Windows Ergon... ENABLED=True
+ControlType.Button ID=scrollbar-item-890CA600-DD83-45A0-8D43-8A0C279817A5 NAME=# SmartLedger Pro - Live Input Dialog V... ENABLED=True
+ControlType.Button ID=scrollbar-item-FDC6F7B4-E42A-4C0E-94CE-FD286ABDA864 NAME=مطلوب الان التفتيت المعمارري للملفات ال... ENABLED=True
+ControlType.Button ID=scrollbar-item-CA958089-8D4F-4A73-87D9-0A49C7C43DA4 NAME=SmartLedger Architectural Decomposition... ENABLED=True
+ControlType.Button ID=scrollbar-item-8D89E941-083B-42DC-8D78-E89D614DFE8B NAME=Dialog Components Extraction & Form Erg... ENABLED=True
+ControlType.Button ID=scrollbar-item-1ACB56E3-BEAC-40AE-8A20-6276B0D54490 NAME=Product Dialog — Zero-Scroll Compact La... ENABLED=True
+ControlType.Edit ID= NAME=Enter a prompt ENABLED=True
+ControlType.Button ID= NAME=Insert images, videos, audio, or files ENABLED=True
+ControlType.Button ID= NAME=No API key selected ENABLED=True
+ControlType.Button ID= NAME=Open tools menu ENABLED=True
+ControlType.Button ID= NAME=Grounding with Google Search ENABLED=True
+ControlType.Button ID= NAME=Remove Grounding with Google Search ENABLED=True
+ControlType.Button ID= NAME=URL context ENABLED=True
+ControlType.Button ID= NAME=Remove URL context ENABLED=True
+ControlType.Button ID= NAME=Scroll right ENABLED=True
+ControlType.Button ID= NAME=Speech to text ENABLED=True
+ControlType.Button ID= NAME=Run Ctrl ENABLED=False
+ControlType.Button ID=getCodeBtn NAME=Get code ENABLED=True
+ControlType.Button ID=resetSettingsBtn NAME=Reset default settings ENABLED=True
+ControlType.Button ID= NAME=Close run settings panel ENABLED=True
+ControlType.Button ID= NAME=Gemini 3.8 Flash gemini-3.8-flash Our most intelligent Flash model, engineered for long-horizon software engineering, autonomous agents, and complex enterprise workflows. ENABLED=True
+ControlType.Button ID= NAME=System instructions ENABLED=True
+ControlType.ComboBox ID=mat-select-2 NAME=Thinking Level ENABLED=True
+ControlType.Button ID= NAME=Expand or collapse tools ENABLED=True
+ControlType.Button ID=mat-mdc-slide-toggle-12-button NAME=Structured outputs ENABLED=True
+ControlType.Button ID= NAME=Edit JSON schema ENABLED=False
+ControlType.Button ID=mat-mdc-slide-toggle-13-button NAME=Code execution ENABLED=False
+ControlType.Button ID=mat-mdc-slide-toggle-14-button NAME=Function calling ENABLED=False
+ControlType.Button ID= NAME=Edit function declarations ENABLED=False
+ControlType.Button ID=mat-mdc-slide-toggle-15-button NAME=Grounding with Google Search ENABLED=True
+ControlType.Button ID=mat-mdc-slide-toggle-16-button NAME=Grounding with Google Maps ENABLED=False
+ControlType.Button ID=mat-mdc-slide-toggle-17-button NAME=Browse the url context ENABLED=True
+ControlType.Button ID= NAME=Expand or collapse advanced settings ENABLED=True
+ControlType.Group ID=cdk-live-announcer-0 NAME= ENABLED=True
+ControlType.Button ID= NAME=علامة تبويب البحث ENABLED=True
+ControlType.Pane ID=view_21 NAME= ENABLED=True
+ControlType.TabItem ID=view_20 NAME="Desktop Commander Remote MCP - beta" - استخدام الذاكرة - 70.4 ميغابايت ENABLED=True
+ControlType.Button ID= NAME=إغلاق ENABLED=True
+ControlType.TabItem ID=view_20 NAME="هندسة وتطوير واجهات تطبيق تجار | Google AI Studio" - استخدام مرتفع للذاكرة - 810 ميغابايت ENABLED=True
+ControlType.Button ID= NAME=إغلاق ENABLED=True
+ControlType.Button ID= NAME=علامة تبويب جديدة ENABLED=True
+ControlType.Window ID= NAME=WhatsApp ENABLED=True
+ControlType.Pane ID=WebView NAME= ENABLED=True
+ControlType.Window ID= NAME=‏‏وحدة تخزين جديدة ‭(F:)‬ - مستكشف الملفات ENABLED=True
+ControlType.Tab ID=TabView NAME= ENABLED=True
+ControlType.List ID=TabListView NAME= ENABLED=True
+ControlType.TabItem ID= NAME=‏‏وحدة تخزين جديدة ‭(F:)‬ ENABLED=True
+ControlType.Button ID=CloseButton NAME=إغلاق علامة التبويب ENABLED=True
+ControlType.Button ID=AddButton NAME=إضافة علامة تبويب جديدة ENABLED=True
+ ID=NavigationCommands NAME= ENABLED=True
+ControlType.Button ID=backButton NAME=الخلف ENABLED=True
+ControlType.Button ID=forwardButton NAME=الأمام ENABLED=False
+ControlType.Button ID=upButton NAME=إلى "‏‏هذا الكمبيوتر الشخصي" ‏(Alt + مفتاح السهم لأعلى) ENABLED=True
+ControlType.Button ID=refreshButton NAME=تحديث "‏‏وحدة تخزين جديدة ‭(F:)‬" ‏(F5) ENABLED=True
+ControlType.Group ID=PART_AutoSuggestBox NAME= ENABLED=True
+ControlType.Edit ID=TextBox NAME=شريط العناوين ENABLED=True
+ControlType.SplitButton ID=FirstCrumbStackPanel NAME=‏‏هذا الكمبيوتر الشخصي ENABLED=True
+ControlType.Group ID=PART_BreadcrumbBar NAME= ENABLED=True
+ControlType.SplitButton ID= NAME=‏‏هذا الكمبيوتر الشخصي ENABLED=True
+ControlType.SplitButton ID= NAME=‏‏وحدة تخزين جديدة ‭(F:)‬ ENABLED=True
+ControlType.Group ID=FileExplorerSearchBox NAME= ENABLED=True
+ControlType.Edit ID=TextBox NAME= بحث في ‏‏وحدة تخزين جديدة ‭(F:)‬ ENABLED=True
+ ID=FileExplorerCommandBar NAME= ENABLED=True
+ControlType.Button ID=MoreButton NAME=مزيد من الخيارات ENABLED=True
+ ID=FileExplorerSecondaryCommandBar NAME= ENABLED=True
+ControlType.Button ID=DetailsPaneToggleButton NAME=التفاصيل ENABLED=True
+ControlType.Window ID= NAME=C:\Windows\system32\cmd.exe  ENABLED=True
+ControlType.Tab ID=TabView NAME= ENABLED=True
+ControlType.List ID=TabListView NAME= ENABLED=True
+ControlType.TabItem ID= NAME=C:\Windows\system32\cmd.exe  ENABLED=True
+ControlType.Text ID=HeaderTextBlock NAME=C:\Windows\system32\cmd.exe  ENABLED=True
+ControlType.Button ID=CloseButton NAME=إغلاق علامة التبويب ENABLED=True
+ControlType.SplitButton ID=NewTabButton NAME=New Tab ENABLED=True
+ControlType.ScrollBar ID=ScrollBar NAME=‏‏عمودي ENABLED=True
+ControlType.Button ID=VerticalSmallDecrease NAME=‏‏Vertical Small Decrease ENABLED=True
+ControlType.Button ID=VerticalLargeDecrease NAME=‏‏Vertical Large Decrease ENABLED=True
+ControlType.Button ID=VerticalLargeIncrease NAME=‏‏Vertical Large Increase ENABLED=True
+ControlType.Button ID=VerticalSmallIncrease NAME=‏‏Vertical Small Increase ENABLED=True
+ControlType.Window ID= NAME= ENABLED=True
+ControlType.Window ID= NAME=databases - مستكشف الملفات ENABLED=True
+ControlType.Tab ID=TabView NAME= ENABLED=True
+ControlType.List ID=TabListView NAME= ENABLED=True
+ControlType.TabItem ID= NAME=databases ENABLED=True
+ControlType.Button ID=CloseButton NAME=إغلاق علامة التبويب ENABLED=True
+ControlType.Button ID=AddButton NAME=إضافة علامة تبويب جديدة ENABLED=True
+ ID=NavigationCommands NAME= ENABLED=True
+ControlType.Button ID=backButton NAME=الخلف ENABLED=True
+ControlType.Button ID=forwardButton NAME=الأمام ENABLED=False
+ControlType.Button ID=upButton NAME=إلى "sqflite_common_ffi" ‏(Alt + مفتاح السهم لأعلى) ENABLED=True
+ControlType.Button ID=refreshButton NAME=تحديث "databases" ‏(F5) ENABLED=True
+ControlType.Group ID=PART_AutoSuggestBox NAME= ENABLED=True
+ControlType.Edit ID=TextBox NAME=شريط العناوين ENABLED=True
+ControlType.SplitButton ID=FirstCrumbStackPanel NAME=بدء النسخ الاحتياطي ENABLED=True
+ControlType.Text ID=CloudProviderText NAME=بدء النسخ الاحتياطي ENABLED=True
+ControlType.Group ID=PART_BreadcrumbBar NAME= ENABLED=True
+ControlType.SplitButton ID= NAME=.dart_tool ENABLED=True
+ControlType.SplitButton ID= NAME=sqflite_common_ffi ENABLED=True
+ControlType.SplitButton ID= NAME=databases ENABLED=True
+ControlType.Group ID=FileExplorerSearchBox NAME= ENABLED=True
+ControlType.Edit ID=TextBox NAME= بحث في databases ENABLED=True
+ ID=FileExplorerCommandBar NAME= ENABLED=True
+ControlType.Button ID=MoreButton NAME=مزيد من الخيارات ENABLED=True
+ ID=FileExplorerSecondaryCommandBar NAME= ENABLED=True
+ControlType.Button ID=DetailsPaneToggleButton NAME=التفاصيل ENABLED=True
+ControlType.Pane ID=1 NAME=FolderView ENABLED=True

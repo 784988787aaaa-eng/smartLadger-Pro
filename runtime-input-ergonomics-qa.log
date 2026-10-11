@@ -1,0 +1,20 @@
+[2026-10-11 02:55:21] BUILD start
+[2026-10-11 02:55:27] BUILD PASS
+[2026-10-11 02:55:27] TESTS start
+[2026-10-11 02:55:40] TESTS PASS: 105
+[2026-10-11 02:55:47] SCREENSHOT 00-login-screen.png resolution=1920x1080 bytes=314033
+[2026-10-11 02:55:49] AUTHENTICATED: NavBtn_Dashboard detected
+[2026-10-11 02:55:50] TRIGGER_NOT_FOUND Account creation/edit; capturing live module view only
+[2026-10-11 02:55:51] SCREENSHOT 01-account-entry-dialog.png resolution=1920x1080 bytes=61020
+[2026-10-11 02:55:52] VISIBLE_TEXT_SAMPLE Account creation/edit: SmartLedger | œ› — √⁄„«· –ﬂÌ | «·—∆Ì”Ì… | «·Õ”«»«  Ê«·œ›« — | «·„Œ“‰ Ê«·„‰ Ã«  | «·„»Ì⁄«  Ê‰ﬁ«ÿ «·»Ì⁄ | «·„‘ —Ì«  Ê«· Ê—Ìœ | «·„’—Ê›«  Ê«·‰›ﬁ«  | «· ﬁ«—Ì— Ê«·„ÿ»Ê⁄«  | «·„” Œœ„Ì‰ Ê«·’·«ÕÌ«  | ”Ã· «·⁄„·Ì«  | ”·… «·„Õ–Ê›« 
+[2026-10-11 02:55:54] TRIGGER_NOT_FOUND Product/stock entry; capturing live module view only
+[2026-10-11 02:55:55] SCREENSHOT 02-product-entry-dialog.png resolution=1920x1080 bytes=84761
+[2026-10-11 02:55:55] VISIBLE_TEXT_SAMPLE Product/stock entry: SmartLedger | œ› — √⁄„«· –ﬂÌ | «·—∆Ì”Ì… | «·Õ”«»«  Ê«·œ›« — | «·„Œ“‰ Ê«·„‰ Ã«  | «·„»Ì⁄«  Ê‰ﬁ«ÿ «·»Ì⁄ | «·„‘ —Ì«  Ê«· Ê—Ìœ | «·„’—Ê›«  Ê«·‰›ﬁ«  | «· ﬁ«—Ì— Ê«·„ÿ»Ê⁄«  | «·„” Œœ„Ì‰ Ê«·’·«ÕÌ«  | ”Ã· «·⁄„·Ì«  | ”·… «·„Õ–Ê›« 
+[2026-10-11 02:55:57] TRIGGER_NOT_FOUND Expense voucher; capturing live module view only
+[2026-10-11 02:55:58] SCREENSHOT 03-expense-entry-dialog.png resolution=1920x1080 bytes=46778
+[2026-10-11 02:55:58] VISIBLE_TEXT_SAMPLE Expense voucher: SmartLedger | œ› — √⁄„«· –ﬂÌ | «·—∆Ì”Ì… | «·Õ”«»«  Ê«·œ›« — | «·„Œ“‰ Ê«·„‰ Ã«  | «·„»Ì⁄«  Ê‰ﬁ«ÿ «·»Ì⁄ | «·„‘ —Ì«  Ê«· Ê—Ìœ | «·„’—Ê›«  Ê«·‰›ﬁ«  | «· ﬁ«—Ì— Ê«·„ÿ»Ê⁄«  | «·„” Œœ„Ì‰ Ê«·’·«ÕÌ«  | ”Ã· «·⁄„·Ì«  | ”·… «·„Õ–Ê›« 
+[2026-10-11 02:55:58] NAV_NOT_FOUND NavBtn_Books for Ledger book entry; checking alternate visible buttons
+[2026-10-11 02:55:59] TRIGGER_NOT_FOUND Invoice line entry; capturing live module view only
+[2026-10-11 02:56:00] SCREENSHOT 05-invoice-line-entry.png resolution=1920x1080 bytes=47324
+[2026-10-11 02:56:01] VISIBLE_TEXT_SAMPLE Invoice line entry: SmartLedger | œ› — √⁄„«· –ﬂÌ | «·—∆Ì”Ì… | «·Õ”«»«  Ê«·œ›« — | «·„Œ“‰ Ê«·„‰ Ã«  | «·„»Ì⁄«  Ê‰ﬁ«ÿ «·»Ì⁄ | «·„‘ —Ì«  Ê«· Ê—Ìœ | «·„’—Ê›«  Ê«·‰›ﬁ«  | «· ﬁ«—Ì— Ê«·„ÿ»Ê⁄«  | «·„” Œœ„Ì‰ Ê«·’·«ÕÌ«  | ”Ã· «·⁄„·Ì«  | ”·… «·„Õ–Ê›« 
+[2026-10-11 02:56:01] AUTOMATION_FINISHED; inspect report for per-form evidence status

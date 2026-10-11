@@ -1,0 +1,31 @@
+﻿# Runtime visual polish walkthrough 2026-10-11T02:29:36
+Fresh app launch PID=3140
+Initial UIA controls=570
+Initial control ControlType.Window: SmartLedger — Sign In
+Initial control ControlType.Text: SmartLedger
+Initial control ControlType.Button: ‏‏SmartLedger.App - 1نافذة قيد التشغيل
+Initial control ControlType.ListItem: SmartLedger_Run_2026-10-05
+Initial control ControlType.CheckBox: SmartLedger_Run_2026-10-05
+Initial control ControlType.ListItem: SMARTLEDGER_DIAGNOSTIC_REPORT
+Initial control ControlType.CheckBox: SMARTLEDGER_DIAGNOSTIC_REPORT
+Initial control ControlType.ListItem: SmartLedger_Old_Versions_Archive_2026-10-06
+Initial control ControlType.CheckBox: SmartLedger_Old_Versions_Archive_2026-10-06
+Initial control ControlType.ListItem: SmartLedger_Run_2026-10-05
+Initial control ControlType.CheckBox: SmartLedger_Run_2026-10-05
+Captured 01-phase2-fresh-launch.png at 1920x1080
+Invoked non-credential continue button: Gemini 3.8 Flash New gemini-3.8-flash Our most intelligent Flash model, engineered for long-horizon software engineering, autonomous agents, and complex enterprise workflows. All context lengths * input: $0.75 / output: $3.75 through December 31, 2026 Learn more Knowledge cut off: See model card Release date: Sep 2, 2026
+Inventory navigation invoked=False
+Visible matching UIA controls: 
+Captured 04-inventory-fixed.png at 1920x1080
+Expenses navigation invoked=False
+Visible matching UIA controls: 
+Captured 07-expenses-verified.png at 1920x1080
+Reports navigation invoked=False
+Visible matching UIA controls: 
+Captured 08-reports-live.png at 1920x1080
+Settings navigation invoked=False
+Visible matching UIA controls: 
+Captured 09-settings-live.png at 1920x1080
+About navigation invoked=False
+Visible matching UIA controls: 
+Captured 10-about-live.png at 1920x1080

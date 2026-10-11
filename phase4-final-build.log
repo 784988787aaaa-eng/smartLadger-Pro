@@ -1,0 +1,15 @@
+  Determining projects to restore...
+  Restored C:\Users\pc\SmartLedger-Build-Clean-20261010\src\SmartLedger.Core\SmartLedger.Core.csproj (in 163 ms).
+  Restored C:\Users\pc\SmartLedger-Build-Clean-20261010\src\SmartLedger.Infrastructure\SmartLedger.Infrastructure.csproj (in 318 ms).
+  Restored C:\Users\pc\SmartLedger-Build-Clean-20261010\src\SmartLedger.App\SmartLedger.App.csproj (in 318 ms).
+  1 of 4 projects are up-to-date for restore.
+  SmartLedger.Core -> C:\Users\pc\SmartLedger-Build-Clean-20261010\src\SmartLedger.Core\bin\Release\net10.0\SmartLedger.Core.dll
+  SmartLedger.Infrastructure -> C:\Users\pc\SmartLedger-Build-Clean-20261010\src\SmartLedger.Infrastructure\bin\Release\net10.0\SmartLedger.Infrastructure.dll
+  SmartLedger.App -> C:\Users\pc\SmartLedger-Build-Clean-20261010\src\SmartLedger.App\bin\Release\net10.0-windows\SmartLedger.App.dll
+  SmartLedger.Tests -> C:\Users\pc\SmartLedger-Build-Clean-20261010\tests\SmartLedger.Tests\bin\Release\net10.0-windows\SmartLedger.Tests.dll
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:05.86

@@ -190,6 +190,43 @@ public sealed class BackupService
         }
     }
 
+    public Task<BackupInfo> CreateBackupAsync(string destinationFolder, CancellationToken ct = default)
+        => CreateAsync(destinationFolder, ct);
+
+    public Task RestoreBackupAsync(string backupFilePath, CancellationToken ct = default)
+        => RestoreAsync(backupFilePath, ct);
+
+    public async Task OptimizeDatabaseAsync(CancellationToken ct = default)
+    {
+        var databasePath = Path.Combine(rootPath, "smartledger.db");
+        if (!File.Exists(databasePath))
+            throw new FileNotFoundException("SmartLedger database was not found.", databasePath);
+
+        SqliteConnection.ClearAllPools();
+        await using var connection = new SqliteConnection(new SqliteConnectionStringBuilder
+        {
+            DataSource = databasePath,
+            Mode = SqliteOpenMode.ReadWrite,
+            Pooling = false
+        }.ToString());
+        await connection.OpenAsync(ct);
+        await using (var checkpoint = connection.CreateCommand())
+        {
+            checkpoint.CommandText = "PRAGMA wal_checkpoint(TRUNCATE);";
+            await checkpoint.ExecuteNonQueryAsync(ct);
+        }
+        await using (var vacuum = connection.CreateCommand())
+        {
+            vacuum.CommandText = "VACUUM;";
+            await vacuum.ExecuteNonQueryAsync(ct);
+        }
+        await using (var analyze = connection.CreateCommand())
+        {
+            analyze.CommandText = "ANALYZE;";
+            await analyze.ExecuteNonQueryAsync(ct);
+        }
+    }
+
     private static async Task<int> ReadSchemaAsync(string path, CancellationToken ct)
     {
         await using var connection = new SqliteConnection(new SqliteConnectionStringBuilder { DataSource = path, Mode = SqliteOpenMode.ReadOnly, Pooling = false }.ToString());

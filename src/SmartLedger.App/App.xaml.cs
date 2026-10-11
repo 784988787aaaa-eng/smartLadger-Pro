@@ -1,4 +1,6 @@
 using System.IO;
+using System.Globalization;
+using System.Threading;
 using System.Windows;
 using SmartLedger.App.ViewModels;
 using SmartLedger.Core.Services;
@@ -17,10 +19,28 @@ public partial class App : Application
         try
         {
             var db = await SmartLedger.Infrastructure.Infrastructure.CreateDatabaseAsync(LocalAppPaths.Root);
+            var savedLanguage = await new AppRepository(db).GetPreferenceAsync("language", CancellationToken.None) ?? "ar-YE";
+            ApplyLanguage(savedLanguage);
             var users = new UserRepository(db);
             if (await users.HasAdministratorAsync()) OpenLogin(db, users); else OpenSetup(db, users);
         }
         catch (Exception ex) { MessageBox.Show($"تعذر تشغيل دفتر الأعمال الذكي.\n\n{ex.Message}", "SmartLedger", MessageBoxButton.OK, MessageBoxImage.Error); Shutdown(1); }
+    }
+    public static void ApplyLanguage(string language)
+    {
+        var isEnglish = language.StartsWith("en", StringComparison.OrdinalIgnoreCase);
+        var culture = CultureInfo.GetCultureInfo(isEnglish ? "en-US" : language is "ar-SA" ? "ar-SA" : "ar-YE");
+        Thread.CurrentThread.CurrentCulture = culture;
+        Thread.CurrentThread.CurrentUICulture = culture;
+        CultureInfo.DefaultThreadCurrentCulture = culture;
+        CultureInfo.DefaultThreadCurrentUICulture = culture;
+        var dictionaries = Current.Resources.MergedDictionaries;
+        var existing = dictionaries.FirstOrDefault(d => d.Source is not null && d.Source.OriginalString.Contains("Resources/Strings.", StringComparison.OrdinalIgnoreCase));
+        if (existing is not null) dictionaries.Remove(existing);
+        var file = isEnglish ? "Strings.en.xaml" : "Strings.ar.xaml";
+        dictionaries.Add(new ResourceDictionary { Source = new Uri($"/SmartLedger.App;component/Resources/{file}", UriKind.Relative) });
+        var direction = isEnglish ? FlowDirection.LeftToRight : FlowDirection.RightToLeft;
+        foreach (Window window in Current.Windows) window.FlowDirection = direction;
     }
     private static void OpenLogin(Database db, UserRepository users) { var session = new AppSession(); var audit = new AuditRepository(db); var w = new Views.LoginWindow(users, new PasswordHasher(), session, () => OpenMain(db, session), audit); Current.MainWindow = w; w.Show(); }
     private static void OpenSetup(Database db, UserRepository users) { var w = new Views.BootstrapWindow(users, new PasswordHasher(), () => OpenLogin(db, users)); Current.MainWindow = w; w.Show(); }

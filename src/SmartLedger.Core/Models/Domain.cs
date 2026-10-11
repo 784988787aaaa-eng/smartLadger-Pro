@@ -26,6 +26,8 @@ public sealed record LedgerOperation(Guid Id, Guid PersonId, OperationType Type,
 {
     public string? ReferenceNumber { get; init; }
     public decimal RunningBalance { get; init; }
+    public decimal Debit => Type is OperationType.DebtOnUs or OperationType.Sale or OperationType.Payment or OperationType.Settlement ? Amount : 0m;
+    public decimal Credit => Type is OperationType.Receive or OperationType.Return or OperationType.DebtToUs or OperationType.Purchase ? Amount : 0m;
     public string TypeLabel=>Type switch { OperationType.Receive=>"استلام", OperationType.Payment=>"سداد", OperationType.DebtToUs=>"له", OperationType.DebtOnUs=>"عليه", OperationType.Sale=>"بيع آجل", OperationType.Purchase=>"شراء آجل", OperationType.Return=>"مرتجع", OperationType.Settlement=>"تسوية", _=>"أخرى" };
 };
 public sealed record OperationTypeOption(OperationType Value, string Label)

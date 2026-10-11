@@ -17,7 +17,7 @@ public sealed class LedgerDateTimeConverter : IValueConverter
         };
         return date == DateTime.MinValue
             ? string.Empty
-            : date.ToString("dddd yyyy/MM/dd hh:mm tt", ArabicCulture);
+            : date.ToString("yyyy-MM-dd | dddd | hh:mm tt", ArabicCulture);
     }
 
     public object ConvertBack(object value, Type targetType, object? parameter, CultureInfo culture)

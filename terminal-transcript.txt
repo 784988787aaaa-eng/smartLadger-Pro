@@ -1,0 +1,32 @@
+﻿**********************
+Windows PowerShell transcript start
+Start time: 20261010234840
+Username: DESKTOP-EDGLJ6K\pc
+RunAs User: DESKTOP-EDGLJ6K\pc
+Configuration Name: 
+Machine: DESKTOP-EDGLJ6K (Microsoft Windows NT 10.0.22631.0)
+Host Application: powershell -Command $ErrorActionPreference='Continue'; $workDir='C:\Users\pc\SmartLedger-Build-Clean-20261010'; if(Test-Path $workDir){Write-Error 'Target workspace already exists; refusing destructive cleanup.'; exit 2}; git clone https://github.com/784988787aaaa-eng/smartLadger-Pro.git $workDir; if($LASTEXITCODE -ne 0){Write-Error "git clone failed: $LASTEXITCODE"; exit $LASTEXITCODE}; Set-Location $workDir; git checkout main; if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}; $log=Join-Path $workDir 'REMOTE_DESKTOP_BUILD_REPORT.md'; '# SmartLedger Remote Desktop Build Report' | Set-Content $log; "`nStarted: $(Get-Date -Format o)`nHost: $env:COMPUTERNAME`nOS: $((Get-CimInstance Win32_OperatingSystem).Caption)`nPowerShell: $($PSVersionTable.PSVersion)`n.NET SDK: $(dotnet --version)`nGit: $(git --version)`nBranch: $(git branch --show-current)`nCommit: $(git rev-parse HEAD)`n" | Add-Content $log; Start-Transcript -Path (Join-Path $workDir 'terminal-transcript.txt') -Force | Out-Null; function Run-Step([string]$title,[string]$cmd){ "`n## $title`n``````powershell`n$cmd`n``````" | Add-Content $log; Write-Host "=== $title ==="; Invoke-Expression $cmd 2>&1 | Tee-Object -FilePath (Join-Path $workDir 'command-output.log') -Append; $code=$LASTEXITCODE; "ExitCode: $code" | Add-Content $log; return $code }; $sln=Get-ChildItem -Path $workDir -Filter *.sln -Recurse | Select-Object -First 1; Run-Step 'Repository inventory' 'Get-ChildItem -Recurse -File -Include *.sln,*.csproj | Select-Object -ExpandProperty FullName'; if($sln){$restore=Run-Step 'Restore' ("dotnet restore `"$($sln.FullName)`""); $build=Run-Step 'Initial Release build' ("dotnet build `"$($sln.FullName)`" -c Release --no-restore")} else {'No solution file found.' | Add-Content $log; $restore=1; $build=1}; $testProj=Get-ChildItem -Path $workDir -Filter 'SmartLedger.Tests.csproj' -Recurse | Select-Object -First 1; if($testProj){$test=Run-Step 'Tests' ("dotnet test `"$($testProj.FullName)`" -c Release --logger `"console;verbosity=normal`"")} else {'SmartLedger.Tests.csproj not found; test step could not run.' | Add-Content $log; $test=1}; $appProj=Get-ChildItem -Path $workDir -Filter 'SmartLedger.App.csproj' -Recurse | Select-Object -First 1; if($appProj -and $build -eq 0){$pub=Run-Step 'Publish win-x64' ("dotnet publish `"$($appProj.FullName)`" -c Release -r win-x64 --self-contained false -o `"$workDir\publish`"")} else {'Publish skipped because app project was not found or initial build failed.' | Add-Content $log; $pub=1}; "`n## Initial outcome`n- Restore exit code: $restore`n- Build exit code: $build`n- Test exit code: $test`n- Publish exit code: $pub`n`n" | Add-Content $log; Stop-Transcript | Out-Null; Write-Host "REPORT=$log"; Write-Host "BUILD=$build TEST=$test PUBLISH=$pub"
+Process ID: 12260
+PSVersion: 5.1.22621.6133
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.22621.6133
+BuildVersion: 10.0.22621.6133
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+=== Repository inventory ===
+C:\Users\pc\SmartLedger-Build-Clean-20261010\src\SmartLedger.App\SmartLedger.App.csproj
+C:\Users\pc\SmartLedger-Build-Clean-20261010\src\SmartLedger.Core\SmartLedger.Core.csproj
+C:\Users\pc\SmartLedger-Build-Clean-20261010\src\SmartLedger.Infrastructure\SmartLedger.Infrastructure.csproj
+C:\Users\pc\SmartLedger-Build-Clean-20261010\tests\SmartLedger.Tests\SmartLedger.Tests.csproj
+C:\Users\pc\SmartLedger-Build-Clean-20261010\SmartLedger.sln
+0
+=== Restore ===
+=== Initial Release build ===
+=== Tests ===
+**********************
+Windows PowerShell transcript end
+End time: 20261010234849
+**********************

@@ -80,4 +80,14 @@
   <sys:String x:Key="ColActor">User</sys:String>
   <sys:String x:Key="ColTimestamp">Timestamp</sys:String>
   <sys:String x:Key="ColDetails">Details</sys:String>
+  <sys:String x:Key="Nav.Reports">Reports</sys:String>
+  <sys:String x:Key="Nav.Users">Users &amp; Permissions</sys:String>
+  <sys:String x:Key="Nav.RecycleBin">Recycle Bin</sys:String>
+  <sys:String x:Key="Nav.About">About &amp; Identity</sys:String>
+  <sys:String x:Key="ColStatementAccount">Account</sys:String>
+  <sys:String x:Key="ColStatementDebit">Debit / inflow</sys:String>
+  <sys:String x:Key="ColStatementCredit">Credit / outflow</sys:String>
+  <sys:String x:Key="ColStatementBalance">Running balance</sys:String>
+  <sys:String x:Key="ColStatementDetails">Overview / Notes</sys:String>
+  <sys:String x:Key="ColStatementDateTime">Date &amp; Time</sys:String>
 </ResourceDictionary>

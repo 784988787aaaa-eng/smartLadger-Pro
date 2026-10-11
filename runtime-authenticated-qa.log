@@ -1,0 +1,21 @@
+﻿[03:36:25] Starting clean Debug build
+[03:36:28] Starting full test suite
+[03:36:37] Build successful; all 105 tests green
+[03:36:39] Launched app PID=13052
+[03:36:42] Screenshot captured: 01-authenticated-qa-login-before.png (1920x1080)
+[03:36:42] LoginSubmitButton found; submitting the remembered on-device login form without reading or logging credential fields.
+[03:36:43] AUTHENTICATION SUCCESS: NavBtn_Dashboard is present in the live UI Automation tree.
+[03:36:43] Screenshot captured: 02-dashboard-authenticated.png (1920x1080)
+[03:36:43] Invoked AutomationId: NavBtn_Expenses
+[03:36:46] Operating Expenses visible text sample: 
+[03:36:46] Screenshot captured: 07-expenses-authenticated-verified.png (1920x1080)
+[03:36:46] Expenses crash check: no error/exception window detected by UI Automation after 1.5s.
+[03:36:46] AutomationId not found: NavBtn_Inventory
+[03:36:46] Navigation failed: Inventory
+[03:36:46] AutomationId not found: NavBtn_Reports
+[03:36:46] Navigation failed: Reports
+[03:36:46] AutomationId not found: NavBtn_Settings
+[03:36:46] Navigation failed: Settings
+[03:36:46] AutomationId not found: NavBtn_About
+[03:36:46] Navigation failed: About
+[03:36:46] Authenticated walkthrough route loop completed.

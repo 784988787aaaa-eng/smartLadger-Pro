@@ -1,0 +1,78 @@
+﻿================================================================================
+SMARTLEDGER PRO — PHASE 5 EXECUTION & AUDIT MANIFEST
+Generated: 2026-10-11 01:10:38
+Workspace: C:\Users\pc\SmartLedger-Build-Clean-20261010
+Branch: main
+HEAD before Phase 5: 09cf7964b26b636b5ad7d3a2fce6e5e237f926f4
+================================================================================
+
+EXECUTION RESULT: PARTIAL — PHASE 5 IS NOT COMPLETE. Do not represent this build as containing the full Phase 5 scope.
+
+1. VERIFIED IN THIS EXECUTION
+- Release solution build: PASS; 0 warnings; 0 errors.
+- Automated test suite: PASS; 97 passed, 0 failed, 0 skipped.
+- Release publish: PASS; output at C:\Users\pc\SmartLedger-Build-Clean-20261010\publish.
+- BackupService: existing verified ZIP backup, SHA-256 metadata verification, schema/integrity validation, pre-restore safety snapshot and restore path were present.
+- Added BackupService API aliases CreateBackupAsync and RestoreBackupAsync, and OptimizeDatabaseAsync (WAL checkpoint, VACUUM, ANALYZE).
+
+2. NOT IMPLEMENTED / NOT VERIFIED — PHASE 5 REMAINING WORK
+- FinancialReportService with full P&L based on historical sale-cost snapshots, stock valuation, debtor/creditor aging and VAT summary.
+- QuestPDF A4 financial statement templates and CSV/Excel export for all Phase 5 report types.
+- CashierShifts schema migration, shift lifecycle repository methods, POS shift indicator, cash-count close dialog, and Z-report thermal/A4 output.
+- Reports dashboard integration for all four requested report tabs and settings UI for backup/restore/optimization.
+- Dedicated FinancialReportsTests and CashierShiftTests for the new Phase 5 functionality.
+- New tests specifically validating the newly added backup aliases/optimization were not added in this execution.
+
+3. GATES
+- Build: PASS (0 warnings, 0 errors).
+- Existing automated tests: PASS (97/97).
+- Publish: PASS.
+- Phase 5 feature completeness: NOT PASS — outstanding items listed above.
+- Git commit/push: NOT PERFORMED. Workspace already contained unrelated modified and untracked files before this execution; a blanket git add/commit would risk including unrelated user work, and the Phase 5 scope is incomplete.
+- App launch: requested below; runtime behavior not yet validated by this manifest.
+
+4. PRE-EXISTING WORKTREE STATE (before any Phase 5 edits)
+M src/SmartLedger.App/Themes/Typography.xaml
+ M src/SmartLedger.App/Views/ModuleTemplates.xaml
+ M src/SmartLedger.Infrastructure/Backup/BackupService.cs
+ M tests/docs/report-design-review-multipage.pdf
+ M tests/docs/report-design-review.pdf
+?? CURRENT_STATUS_REPORT.txt
+?? _atomic_changes.ps1
+?? apply_gap_closure.ps1
+?? apply_gap_closure.py
+?? apply_localization.ps1
+?? bind_dynamic_resources.ps1
+?? build-verified.log
+?? command-output-final.log
+?? command-output-final2.log
+?? command-output-final3.log
+?? command-output-final4.log
+?? command-output-fix-validation.log
+?? command-output-publish.log
+?? command-output.log
+?? finalization-run.log
+?? gap-audit.txt
+?? gaps2.txt
+?? phase4-final-build.log
+?? phase4-final-publish.log
+?? phase4-final-tests.log
+?? phase4-last3-verification.log
+?? phase4-recheck.log
+?? publish-verified.log
+?? run-phase4-verification.ps1
+?? terminal-transcript-final.txt
+?? terminal-transcript-final2.txt
+?? terminal-transcript-final3.txt
+?? terminal-transcript-final4.txt
+?? terminal-transcript-fix-validation.txt
+?? terminal-transcript-publish.txt
+?? terminal-transcript.txt
+?? test-verified.log
+?? tests/SmartLedger.Tests/InvoiceReversalIntegrationTests.cs
+
+5. ARTIFACT
+Published executable expected at: C:\Users\pc\SmartLedger-Build-Clean-20261010\publish\SmartLedger.App.exe
+
+This manifest intentionally records verified outcomes and explicit gaps; it does not claim Phase 5 completion, 100% feature coverage, or a GitHub push.
+================================================================================

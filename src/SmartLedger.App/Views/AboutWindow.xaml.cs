@@ -65,5 +65,18 @@ public partial class AboutWindow : Window
         }
     }
 
+    private void CopySystemInfo_Click(object sender, RoutedEventArgs e)
+    {
+        try
+        {
+            var text = $"SmartLedger Pro — Enterprise ERP Suite{Environment.NewLine}Commercial Enterprise Edition (Release 2026){Environment.NewLine}.NET {Environment.Version} Windows Desktop{Environment.NewLine}SQLite High-Performance Engine{Environment.NewLine}QuestPDF Vector Reporting{Environment.NewLine}Database: {DatabaseSizeText.Text}{Environment.NewLine}Records: {RecordsCountText.Text}{Environment.NewLine}Memory: {MemoryText.Text}{Environment.NewLine}Support: 774004399";
+            Clipboard.SetText(text);
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"تعذر نسخ معلومات النظام: {ex.Message}", "SmartLedger", MessageBoxButton.OK, MessageBoxImage.Warning);
+        }
+    }
+
     private void Close_Click(object sender, RoutedEventArgs e) => Close();
 }

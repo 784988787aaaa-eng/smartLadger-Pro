@@ -1,6 +1,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System.Diagnostics;
+using System.Windows;
 using System.IO;
 using System.Globalization;
 using System.Collections.ObjectModel;
@@ -60,6 +61,9 @@ public partial class SalesViewModel(IAppRepository repo,IAppSession session):Obs
     [ObservableProperty] private string quickProductPurchasePrice="";
     [ObservableProperty] private string quickProductSalePrice="";
     [ObservableProperty] private string statusText="";
+    [ObservableProperty] private bool autoPrintOnPosting;
+    [ObservableProperty] private string defaultPrintLayout="Thermal80";
+    [ObservableProperty] private string defaultSaleUnit="Minor";
     public ObservableCollection<InvoiceDraftLine> Lines { get; } = new();
     public decimal LinesTotal => Lines.Sum(x=>x.LineTotal);
     public decimal DiscountAmountDisplay => CurrentDiscount(LinesTotal);
@@ -70,16 +74,18 @@ public partial class SalesViewModel(IAppRepository repo,IAppSession session):Obs
     public IReadOnlyList<string> QuantityUnits { get { var p=_allProducts.FirstOrDefault(x=>x.Id==ProductId); return p is null?Array.Empty<string>():new[]{p.SmallUnit,p.LargeUnit}.Where(x=>!string.IsNullOrWhiteSpace(x)).Distinct(StringComparer.OrdinalIgnoreCase).ToArray(); } }
     private decimal QuantityFactor(Product p)=>!string.IsNullOrWhiteSpace(p.LargeUnit)&&!string.Equals(p.LargeUnit,p.SmallUnit,StringComparison.OrdinalIgnoreCase)&&string.Equals(SelectedQuantityUnit,p.LargeUnit,StringComparison.OrdinalIgnoreCase)?p.ConversionFactor:1m;
     public decimal Remaining=>Math.Max(0,Total-(NumericNormalizer.TryParseDecimal(PaidText,out var paid)?paid:0));
+    public decimal CurrentCustomerBalance=>_allPeople.FirstOrDefault(x=>x.PersonId==PersonId)?.NetBalance??0m;
+    public decimal ProjectedCustomerBalance=>CurrentCustomerBalance+Remaining;
     public string BalanceLabel=>Remaining>0?"متبقي لنا":"مسدد بالكامل";
     public IReadOnlyList<PaymentModeOption> PaymentModes {get;}=new[]{new PaymentModeOption(PaymentMode.Cash,"نقدي"),new PaymentModeOption(PaymentMode.Credit,"آجل — له"),new PaymentModeOption(PaymentMode.Partial,"جزئي — المتبقي له")};
 
-    public async Task LoadAsync(){_books=await repo.GetBooksAsync();var customerBook=_books.FirstOrDefault(x=>x.Kind==BookKind.Customers);_allPeople=customerBook is null?Array.Empty<PersonSummary>():await repo.GetPeopleAsync(customerBook.Id);_allProducts=await repo.GetProductsAsync();People=_allPeople;Products=_allProducts;}
+    public async Task LoadAsync(){_books=await repo.GetBooksAsync();var customerBook=_books.FirstOrDefault(x=>x.Kind==BookKind.Customers);_allPeople=customerBook is null?Array.Empty<PersonSummary>():await repo.GetPeopleAsync(customerBook.Id);_allProducts=await repo.GetProductsAsync();People=_allPeople;Products=_allProducts;AutoPrintOnPosting=string.Equals(await repo.GetPreferenceAsync("invoice.autoPrint",CancellationToken.None),"true",StringComparison.OrdinalIgnoreCase);DefaultPrintLayout=await repo.GetPreferenceAsync("invoice.printLayout",CancellationToken.None)??"Thermal80";DefaultSaleUnit=await repo.GetPreferenceAsync("invoice.defaultSaleUnit",CancellationToken.None)??"Minor";}
     partial void OnCustomerSearchChanged(string value){if(PersonId is Guid id&&_allPeople.FirstOrDefault(x=>x.PersonId==id) is { } selected&&!Normalize(value).Equals(Normalize(selected.PersonName),StringComparison.OrdinalIgnoreCase))PersonId=null;People=FilterPeople(value);IsCustomerSuggestionsOpen=!string.IsNullOrWhiteSpace(value)&&People.Count>0;}
     partial void OnProductSearchChanged(string value){if(_settingProductSelection)return;if(ProductId is Guid id&&_allProducts.FirstOrDefault(x=>x.Id==id) is { } selected&&!Normalize(value).Equals(Normalize(selected.Name),StringComparison.OrdinalIgnoreCase))ProductId=null;Products=FilterProducts(value);IsProductSuggestionsOpen=!string.IsNullOrWhiteSpace(value)&&Products.Count>0;}
-    partial void OnPersonIdChanged(Guid? value){var p=_allPeople.FirstOrDefault(x=>x.PersonId==value);if(p is not null){CustomerSearch=p.PersonName;IsCustomerSuggestionsOpen=false;}}
-    partial void OnProductIdChanged(Guid? value){var p=_allProducts.FirstOrDefault(x=>x.Id==value);_settingProductSelection=true;_lastUnitFactor=1m;if(p is not null){ProductSearch=p.Name;SelectedQuantityUnit=p.SmallUnit;PriceText=p.SalePrice>0?p.SalePrice.ToString("0.##",System.Globalization.CultureInfo.InvariantCulture):"";IsProductSuggestionsOpen=false;}else{SelectedQuantityUnit="";PriceText="";}_settingProductSelection=false;OnPropertyChanged(nameof(QuantityUnits));Recalc();}
+    partial void OnPersonIdChanged(Guid? value){var p=_allPeople.FirstOrDefault(x=>x.PersonId==value);if(p is not null){CustomerSearch=p.PersonName;IsCustomerSuggestionsOpen=false;}OnPropertyChanged(nameof(CurrentCustomerBalance));OnPropertyChanged(nameof(ProjectedCustomerBalance));}
+    partial void OnProductIdChanged(Guid? value){var p=_allProducts.FirstOrDefault(x=>x.Id==value);_settingProductSelection=true;_lastUnitFactor=1m;if(p is not null){ProductSearch=p.Name;var useMajor=string.Equals(DefaultSaleUnit,"Major",StringComparison.OrdinalIgnoreCase)&&!string.IsNullOrWhiteSpace(p.LargeUnit)&&!string.Equals(p.LargeUnit,p.SmallUnit,StringComparison.OrdinalIgnoreCase);SelectedQuantityUnit=useMajor?p.LargeUnit:p.SmallUnit;var initialPrice=useMajor?p.SalePrice:(p.SellingPriceMinor>0?p.SellingPriceMinor:p.SalePrice);PriceText=initialPrice>0?initialPrice.ToString("0.##",System.Globalization.CultureInfo.InvariantCulture):"";_lastUnitFactor=QuantityFactor(p);IsProductSuggestionsOpen=false;}else{SelectedQuantityUnit="";PriceText="";}_settingProductSelection=false;OnPropertyChanged(nameof(QuantityUnits));Recalc();}
     partial void OnSelectedQuantityUnitChanged(string value){OnPropertyChanged(nameof(QuantityUnits));if(_settingProductSelection)return;var product=_allProducts.FirstOrDefault(x=>x.Id==ProductId);if(product is null)return;var nextFactor=QuantityFactor(product);if(NumericNormalizer.TryParseDecimal(PriceText,out var currentPrice)&&_lastUnitFactor>0)PriceText=(currentPrice*nextFactor/_lastUnitFactor).ToString("0.##",System.Globalization.CultureInfo.InvariantCulture);_lastUnitFactor=nextFactor;}
-    [RelayCommand] private void OpenNew(){Lines.Clear();OnPropertyChanged(nameof(LinesTotal));OnPropertyChanged(nameof(IsCartEmpty));BarcodeInput="";InvoiceDiscountText="0";TaxPercentText="0";LastSavedInvoice=null;PersonId=null;ProductId=null;CustomerSearch="";ProductSearch="";People=_allPeople;Products=_allProducts;IsCustomerSuggestionsOpen=false;IsProductSuggestionsOpen=false;QuantityText="1";PriceText="";PaidText="0";Note="";PaymentMode=PaymentMode.Cash;SyncPaymentChoices();StatusText="";Recalc();IsDialogOpen=true;}
+    [RelayCommand] private void OpenNew(){Lines.Clear();OnPropertyChanged(nameof(LinesTotal));OnPropertyChanged(nameof(IsCartEmpty));BarcodeInput="";InvoiceDiscountText="0";TaxPercentText="0";LastSavedInvoice=null;var cashCustomer=_allPeople.FirstOrDefault(x=>Normalize(x.PersonName).Equals(Normalize("عميل نقدي عام"),StringComparison.OrdinalIgnoreCase)||Normalize(x.PersonName).Equals(Normalize("عميل نقدي"),StringComparison.OrdinalIgnoreCase)||Normalize(x.PersonName).Equals(Normalize("General Cash Customer"),StringComparison.OrdinalIgnoreCase));PersonId=cashCustomer?.PersonId;ProductId=null;CustomerSearch=cashCustomer?.PersonName??"عميل نقدي عام";ProductSearch="";People=_allPeople;Products=_allProducts;IsCustomerSuggestionsOpen=false;IsProductSuggestionsOpen=false;QuantityText="1";PriceText="";PaidText="0";Note="";PaymentMode=PaymentMode.Cash;SyncPaymentChoices();StatusText="";Recalc();IsDialogOpen=true;}
     [RelayCommand] private void OpenQuickPerson(){QuickPersonName=CustomerSearch.Trim();QuickPersonPhone="";QuickPersonNote="";IsQuickPersonDialogOpen=true;}
     [RelayCommand] private void CloseQuickPerson(){IsQuickPersonDialogOpen=false;}
     [RelayCommand] private async Task SaveQuickPersonAsync(){
@@ -124,12 +130,12 @@ public partial class SalesViewModel(IAppRepository repo,IAppSession session):Obs
     [RelayCommand] private void SelectCash(){PaymentMode=PaymentMode.Cash;}
     [RelayCommand] private void SelectCredit(){PaymentMode=PaymentMode.Credit;}
     [RelayCommand] private void SelectPartial(){PaymentMode=PaymentMode.Partial;}
-    partial void OnPaymentModeChanged(PaymentMode value){SyncPaymentChoices();if(value==PaymentMode.Cash)PaidText=Total.ToString("0.##");else if(value==PaymentMode.Credit)PaidText="0";Recalc();OnPropertyChanged(nameof(Remaining));OnPropertyChanged(nameof(BalanceLabel));}
+    partial void OnPaymentModeChanged(PaymentMode value){SyncPaymentChoices();if(value==PaymentMode.Cash)PaidText=Total.ToString("0.##");else if(value==PaymentMode.Credit)PaidText="0";Recalc();OnPropertyChanged(nameof(Remaining));OnPropertyChanged(nameof(BalanceLabel));OnPropertyChanged(nameof(ProjectedCustomerBalance));}
     private void SyncPaymentChoices(){IsCashSelected=PaymentMode==PaymentMode.Cash;IsCreditSelected=PaymentMode==PaymentMode.Credit;IsPartialSelected=PaymentMode==PaymentMode.Partial;}
     partial void OnQuantityTextChanged(string value)=>Recalc();
     partial void OnPriceTextChanged(string value)=>Recalc();
-    partial void OnPaidTextChanged(string value){OnPropertyChanged(nameof(Remaining));OnPropertyChanged(nameof(BalanceLabel));}
-    partial void OnTotalChanged(decimal value){if(PaymentMode==PaymentMode.Cash)PaidText=value.ToString("0.##");OnPropertyChanged(nameof(Remaining));OnPropertyChanged(nameof(BalanceLabel));}
+    partial void OnPaidTextChanged(string value){OnPropertyChanged(nameof(Remaining));OnPropertyChanged(nameof(BalanceLabel));OnPropertyChanged(nameof(ProjectedCustomerBalance));}
+    partial void OnTotalChanged(decimal value){if(PaymentMode==PaymentMode.Cash)PaidText=value.ToString("0.##");OnPropertyChanged(nameof(Remaining));OnPropertyChanged(nameof(BalanceLabel));OnPropertyChanged(nameof(ProjectedCustomerBalance));}
     partial void OnInvoiceDiscountTextChanged(string value)=>Recalc();
     private decimal CurrentDiscount(decimal gross)
     {
@@ -153,7 +159,7 @@ public partial class SalesViewModel(IAppRepository repo,IAppSession session):Obs
         if(AddCurrentLine()){BarcodeInput="";StatusText=$"أُضيف {product.Name} من الباركود.";}
     }
     [RelayCommand] private void ApplyDiscount(){StatusText="أدخل قيمة الخصم الإجمالية في حقل الخصم ثم أكمل الفاتورة.";}
-    [RelayCommand] private void ClearInvoice(){if(IsSaving)return;Lines.Clear();OnPropertyChanged(nameof(LinesTotal));OnPropertyChanged(nameof(IsCartEmpty));PersonId=null;CustomerSearch="";ProductId=null;ProductSearch="";BarcodeInput="";QuantityText="1";PriceText="";InvoiceDiscountText="0";TaxPercentText="0";Note="";Recalc();StatusText="تم تفريغ الفاتورة الحالية.";}
+    [RelayCommand] private void ClearInvoice(){if(IsSaving)return;if(Lines.Count>0){var answer=MessageBox.Show("تحتوي الفاتورة الحالية على أصناف. هل تريد تفريغ المسودة الحالية؟ لن يتم ترحيل أي بيانات.","تأكيد تفريغ الفاتورة",MessageBoxButton.YesNo,MessageBoxImage.Warning,MessageBoxResult.No);if(answer!=MessageBoxResult.Yes)return;}Lines.Clear();OnPropertyChanged(nameof(LinesTotal));OnPropertyChanged(nameof(IsCartEmpty));PersonId=null;CustomerSearch="";ProductId=null;ProductSearch="";BarcodeInput="";QuantityText="1";PriceText="";InvoiceDiscountText="0";TaxPercentText="0";Note="";Recalc();StatusText="تم تفريغ الفاتورة الحالية.";}
     partial void OnTaxPercentTextChanged(string value)=>Recalc();
     [RelayCommand] private void HoldInvoice()
     {
@@ -193,7 +199,7 @@ public partial class SalesViewModel(IAppRepository repo,IAppSession session):Obs
         try
         {
             var identity=await repo.GetIdentityAsync();
-            var pdf=new InvoicePrintService().RenderThermalReceipt(invoice,LastSavedLines,identity);
+            var pdf=(string.Equals(DefaultPrintLayout,"A4",StringComparison.OrdinalIgnoreCase)?new InvoicePrintService().RenderA4Invoice(invoice,LastSavedLines,identity):new InvoicePrintService().RenderThermalReceipt(invoice,LastSavedLines,identity));
             var path=Path.Combine(Path.GetTempPath(),$"SmartLedger-{invoice.InvoiceNumber}.pdf");
             await File.WriteAllBytesAsync(path,pdf);
             Process.Start(new ProcessStartInfo(path){UseShellExecute=true});
@@ -207,7 +213,7 @@ public partial class SalesViewModel(IAppRepository repo,IAppSession session):Obs
         try
         {
             var identity=await repo.GetIdentityAsync();
-            var pdf=new InvoicePrintService().RenderThermalReceipt(invoice,LastSavedLines,identity);
+            var pdf=(string.Equals(DefaultPrintLayout,"A4",StringComparison.OrdinalIgnoreCase)?new InvoicePrintService().RenderA4Invoice(invoice,LastSavedLines,identity):new InvoicePrintService().RenderThermalReceipt(invoice,LastSavedLines,identity));
             var path=Path.Combine(Path.GetTempPath(),$"SmartLedger-{invoice.InvoiceNumber}.pdf");
             await File.WriteAllBytesAsync(path,pdf);
             Process.Start(new ProcessStartInfo(path){UseShellExecute=true,Verb="print"});
@@ -230,7 +236,9 @@ public partial class SalesViewModel(IAppRepository repo,IAppSession session):Obs
                 ["StoreName"]=identity.BusinessName,["CustomerName"]=LastSavedCustomerName,
                 ["InvoiceNumber"]=invoice.InvoiceNumber,["TotalAmount"]=invoice.Total.ToString("N2",System.Globalization.CultureInfo.InvariantCulture),
                 ["PaidAmount"]=invoice.Paid.ToString("N2",System.Globalization.CultureInfo.InvariantCulture),["RemainingAmount"]=invoice.RemainingAmount.ToString("N2",System.Globalization.CultureInfo.InvariantCulture),
-                ["Currency"]=identity.Currency,["Date"]=invoice.IssuedAt.ToString("yyyy/MM/dd HH:mm",System.Globalization.CultureInfo.InvariantCulture)
+                ["Currency"]=identity.Currency,["Date"]=invoice.IssuedAt.ToString("yyyy/MM/dd HH:mm",System.Globalization.CultureInfo.InvariantCulture),
+                ["اسم_العميل"]=LastSavedCustomerName,["رقم_الفاتورة"]=invoice.InvoiceNumber,["تاريخ_الفاتورة"]=invoice.IssuedAt.ToString("yyyy/MM/dd HH:mm",System.Globalization.CultureInfo.InvariantCulture),
+                ["إجمالي_الفاتورة"]=invoice.Total.ToString("N2",System.Globalization.CultureInfo.InvariantCulture),["المبلغ_المدفوع"]=invoice.Paid.ToString("N2",System.Globalization.CultureInfo.InvariantCulture),["الرصيد_المتبقي"]=invoice.RemainingAmount.ToString("N2",System.Globalization.CultureInfo.InvariantCulture)
             };
             var message=MessageTemplateEngine.Render(template?.Body,values,fallback);
             new WhatsAppService().OpenWhatsApp(LastSavedCustomerPhone,message);StatusText="تم فتح واتساب برسالة الفاتورة المخصصة؛ راجعها قبل الإرسال.";
@@ -294,12 +302,12 @@ public partial class SalesViewModel(IAppRepository repo,IAppSession session):Obs
             LedgerOperation? operation=PersonId is Guid person&&invoice.Total-invoice.Paid>0?new LedgerOperation(Guid.NewGuid(),person,OperationType.DebtOnUs,invoice.Total-invoice.Paid,Note.Trim(),DateTimeOffset.Now,session.CurrentUser!.Id):null;
             var saved=await repo.SaveSalesInvoiceAsync(invoice,invoiceLines,movements,operation);
             LastSavedInvoice=saved;LastSavedLines=invoiceLines;
-            LastSavedCustomerName=_allPeople.FirstOrDefault(x=>x.PersonId==PersonId)?.PersonName??"عميل نقدي";
+            LastSavedCustomerName=_allPeople.FirstOrDefault(x=>x.PersonId==PersonId)?.PersonName??"عميل نقدي عام";
             LastSavedCustomerPhone=_allPeople.FirstOrDefault(x=>x.PersonId==PersonId)?.Person.Phone??"";
             StatusText=$"تم حفظ الفاتورة رقم {saved.InvoiceNumber} بنجاح.";
             IsDialogOpen=false;Lines.Clear();OnPropertyChanged(nameof(LinesTotal));OnPropertyChanged(nameof(IsCartEmpty));
             ProductId=null;ProductSearch="";BarcodeInput="";QuantityText="1";PriceText="";PaidText="0";InvoiceDiscountText="0";TaxPercentText="0";Note="";
-            _allProducts=await repo.GetProductsAsync();Products=_allProducts;Recalc();
+            _allProducts=await repo.GetProductsAsync();Products=_allProducts;Recalc();if(AutoPrintOnPosting)await PrintDirectlyAsync();
         }
         catch(Exception ex){StatusText=ex.Message;}
         finally{IsSaving=false;}

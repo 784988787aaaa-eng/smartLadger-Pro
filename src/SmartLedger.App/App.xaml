@@ -1,4 +1,4 @@
-﻿<Application x:Class="SmartLedger.App.App" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:vm="clr-namespace:SmartLedger.App.ViewModels" xmlns:local="clr-namespace:SmartLedger.App.Converters" ShutdownMode="OnMainWindowClose">
+<Application x:Class="SmartLedger.App.App" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:vm="clr-namespace:SmartLedger.App.ViewModels" xmlns:local="clr-namespace:SmartLedger.App.Converters" ShutdownMode="OnMainWindowClose">
   <Application.Resources>
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
@@ -7,6 +7,21 @@
         <ResourceDictionary Source="Themes/Styles.xaml"/>
         <ResourceDictionary Source="Themes/Iconography.xaml"/>
         <ResourceDictionary Source="Views/ModuleTemplates.xaml"/>
+        <ResourceDictionary Source="Views/Modules/InventoryView.xaml"/>
+        <ResourceDictionary Source="Views/Modules/UsersView.xaml"/>
+        <ResourceDictionary Source="Views/Modules/ExpensesView.xaml"/>
+        <ResourceDictionary Source="Views/Modules/AccountsView.xaml"/>
+        <ResourceDictionary Source="Views/Modules/PurchasesView.xaml"/>
+        <ResourceDictionary Source="Views/Modules/DashboardView.xaml"/>
+        <ResourceDictionary Source="Views/Modules/SettingsView.xaml"/>
+        <ResourceDictionary Source="Views/Modules/SalesView.xaml"/>
+        <ResourceDictionary Source="Views/Modules/AuditLogView.xaml"/>
+        <ResourceDictionary Source="Views/Modules/RecycleBinView.xaml"/>
+        <ResourceDictionary Source="Views/Modules/ReportsView.xaml"/>
+        <ResourceDictionary Source="Views/Modules/OperationsView.xaml"/>
+        <ResourceDictionary Source="Views/Modules/AccountDialogControl.xaml"/>
+        <ResourceDictionary Source="Views/Modules/ProductDialogControl.xaml"/>
+        <ResourceDictionary Source="Views/Modules/ExpenseVoucherDialogControl.xaml"/>
         <ResourceDictionary Source="Resources/Strings.ar.xaml"/>
       </ResourceDictionary.MergedDictionaries>
       <local:InverseBooleanToVisibilityConverter x:Key="InverseBoolToVisibility"/><local:ActivePageBackgroundConverter x:Key="ActivePageBackgroundConverter"/>

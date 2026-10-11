@@ -1,0 +1,28 @@
+﻿**********************
+Windows PowerShell transcript start
+Start time: 20261010234911
+Username: DESKTOP-EDGLJ6K\pc
+RunAs User: DESKTOP-EDGLJ6K\pc
+Configuration Name: 
+Machine: DESKTOP-EDGLJ6K (Microsoft Windows NT 10.0.22631.0)
+Host Application: powershell -Command $workDir='C:\Users\pc\SmartLedger-Build-Clean-20261010'; Set-Location $workDir; $log=Join-Path $workDir 'REMOTE_DESKTOP_BUILD_REPORT.md'; Start-Transcript -Path (Join-Path $workDir 'terminal-transcript-fix-validation.txt') -Force | Out-Null; function Run-Step([string]$title,[string]$cmd){ "`n## $title`n``````powershell`n$cmd`n``````" | Add-Content $log; Write-Host "=== $title ==="; Invoke-Expression $cmd 2>&1 | Tee-Object -FilePath (Join-Path $workDir 'command-output-fix-validation.log') -Append; $code=$LASTEXITCODE; "ExitCode: $code" | Add-Content $log; Write-Host "EXIT=$code"; return $code }; $sln=Join-Path $workDir 'SmartLedger.sln'; $restore=Run-Step 'Re-restore after source fix' ("dotnet restore `"$sln`""); $build=Run-Step 'Release build with warnings treated as errors' ("dotnet build `"$sln`" -c Release --no-restore -warnaserror"); $testProj=Join-Path $workDir 'tests\SmartLedger.Tests\SmartLedger.Tests.csproj'; $test=Run-Step 'Full test suite' ("dotnet test `"$testProj`" -c Release --no-restore --logger `"console;verbosity=normal`""); $appProj=Join-Path $workDir 'src\SmartLedger.App\SmartLedger.App.csproj'; if($build -eq 0){$pub=Run-Step 'Windows x64 framework-dependent publish' ("dotnet publish `"$appProj`" -c Release -r win-x64 --self-contained false -o `"$workDir\publish`"")} else {$pub=1; 'Publish skipped because Release build failed.' | Add-Content $log}; $exe=Test-Path (Join-Path $workDir 'publish\SmartLedger.App.exe'); $testSummary=Get-ChildItem -Path $workDir -Recurse -Filter '*.trx' -ErrorAction SilentlyContinue | Select-Object -ExpandProperty FullName; "`n## Fix applied`n- File: src/SmartLedger.Infrastructure/Data/Database.cs`n- Change: supplied the required CancellationToken argument to TableExistsAsync for the Expenses table check.`n`n## Validation outcome`n- Restore exit code: $restore`n- Release build exit code: $build`n- Test exit code: $test`n- Publish exit code: $pub`n- SmartLedger.App.exe exists: $exe`n- TRX files: $($testSummary -join ', ')`n- Source changes remain local to the clean workspace; no commit or push performed in this validation pass.`n" | Add-Content $log; Stop-Transcript | Out-Null; Write-Host "REPORT=$log BUILD=$build TEST=$test PUBLISH=$pub EXE=$exe"
+Process ID: 8776
+PSVersion: 5.1.22621.6133
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.22621.6133
+BuildVersion: 10.0.22621.6133
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+=== Re-restore after source fix ===
+EXIT=0
+=== Release build with warnings treated as errors ===
+EXIT=1
+=== Full test suite ===
+EXIT=1
+**********************
+Windows PowerShell transcript end
+End time: 20261010234928
+**********************

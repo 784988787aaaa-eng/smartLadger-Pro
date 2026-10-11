@@ -1,0 +1,1086 @@
+﻿# SmartLedger Runtime Visual QA
+Date: 2026-10-11 02:16:49 +03:00
+Workspace: C:\Users\pc\SmartLedger-Build-Clean-20261010
+Build log: runtime-qa-build.log (clean Debug build verified before launch).
+Reused running application PID: 4944
+## Visible windows
+- SmartLedger — Sign In | bounds=(0,0)-(1920,1080) | size=1920x1080
+- WhatsApp | bounds=(-32000,-32000)-(-31840,-31972) | size=160x28
+- ?هندسة وتطوير واجهات تطبيق تجار | Google AI Studio - Google Chrome? | bounds=(-32000,-32000)-(-31840,-31972) | size=160x28
+- *PHASE6_IMPLEMENTATION_REPORT.md - المفكرة | bounds=(70,171)-(1222,917) | size=1152x746
+- C:\Windows\system32\cmd.exe  | bounds=(-32000,-32000)-(-31840,-31972) | size=160x28
+- SmartLedger-Build-Clean-20261010 - مستكشف الملفات | bounds=(-8,-8)-(1928,1040) | size=1936x1048
+- MiniForm | bounds=(-166,244)-(64,374) | size=230x130
+- databases - مستكشف الملفات | bounds=(-32000,-32000)-(-31840,-31972) | size=160x28
+- تجربة إدخال Windows | bounds=(0,0)-(1920,1080) | size=1920x1080
+- إعدادات | bounds=(0,1)-(1282,1002) | size=1282x1001
+- إعدادات | bounds=(250,0)-(1548,1010) | size=1298x1010
+- Program Manager | bounds=(0,0)-(1920,1080) | size=1920x1080
+Foreground target: SmartLedger — Sign In
+Screenshot: 01-runtime-initial.png (1920x1080)
+## UI Automation snapshot
+- [ControlType.Window] SmartLedger — Sign In | enabled=True | rect=0,0,1920,1080
+- [ControlType.Text] SmartLedger | enabled=True | rect=538,320,277,62
+- [ControlType.Text] دفتر أعمالك، في مكان واحد | enabled=True | rect=586,401,268,32
+- [ControlType.Text] إدارة الحسابات والدفاتر | enabled=True | rect=726,484,146,21
+- [ControlType.Text] المبيعات والمشتريات والفواتير | enabled=True | rect=678,540,194,21
+- [ControlType.Text] المخزون والوحدات | enabled=True | rect=755,596,117,21
+- [ControlType.Text] التقارير والنسخ الاحتياطي | enabled=True | rect=712,652,160,21
+- [ControlType.Text] إدارة واضحة، وقرارات أسرع | enabled=True | rect=655,739,129,16
+- [ControlType.Button] إغلاق البرنامج | enabled=True | rect=1814,64,42,36
+- [ControlType.Text] تسجيل الدخول | enabled=True | rect=1583,399,177,40
+- [ControlType.Text] أدخل بياناتك للمتابعة | enabled=True | rect=1609,444,123,19
+- [ControlType.Text] اسم المستخدم | enabled=True | rect=1486,491,370,16
+- [ControlType.Edit] اسم المستخدم | enabled=True | rect=1486,514,370,44
+- [ControlType.Text] كلمة المرور | enabled=True | rect=1486,573,370,16
+- [ControlType.Edit]  | enabled=True | rect=1486,596,370,46
+- [ControlType.Button] إظهار أو إخفاء كلمة المرور | enabled=True | rect=1816,599,40,40
+- [ControlType.CheckBox] تذكرني على هذا الجهاز | enabled=True | rect=1486,647,161,32
+- [ControlType.Text] تذكرني على هذا الجهاز | enabled=True | rect=1486,653,132,19
+- [ControlType.Button] نسيت كلمة المرور | enabled=True | rect=1737,647,119,32
+- [ControlType.Text] نسيت كلمة المرور؟ | enabled=True | rect=1741,653,111,19
+- [ControlType.Button] تسجيل الدخول | enabled=True | rect=1486,720,370,50
+- [ControlType.Text] دخول | enabled=True | rect=1655,736,31,19
+- [ControlType.Text] محمي بتشفير آمن • بياناتك محلية | enabled=True | rect=1585,792,151,15
+- [ControlType.Window] WhatsApp | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.Pane] Non Client Input Sink Window | enabled=True | rect=-32000,-32000,152,32
+- [ControlType.Window] ‫هندسة وتطوير واجهات تطبيق تجار | Google AI Studio - Google Chrome‬ | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.Pane] هندسة وتطوير واجهات تطبيق تجار | Google AI Studio - Google Chrome - Anwar | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.Button] تصغير | enabled=True | rect=-31901,-31999,46,39
+- [ControlType.Button] تكبير | enabled=True | rect=-31947,-31999,46,39
+- [ControlType.Button] إغلاق | enabled=True | rect=-31992,-31999,45,39
+- [ControlType.Button] رجوع | enabled=True | rect=-32032,-31954,40,34
+- [ControlType.Button] إلى الأمام | enabled=False | rect=-32068,-31954,34,34
+- [ControlType.Button] إعادة التحميل | enabled=True | rect=-32104,-31954,34,34
+- [ControlType.Button] عرض معلومات الموقع | enabled=True | rect=-32142,-31949,24,24
+- [ControlType.Edit] شريط العناوين والبحث | enabled=True | rect=-33687,-31949,1537,24
+- [ControlType.Button] ترجمة | enabled=True | rect=-33719,-31949,24,24
+- [ControlType.Button] تكبير/تصغير: 150‎%‎ | enabled=True | rect=-33751,-31949,24,24
+- [ControlType.Button] تثبيت "Google AI Studio" | enabled=True | rect=-33783,-31949,24,24
+- [ControlType.Button] وضع إشارة مرجعية لعلامة التبويب هذه | enabled=True | rect=-33815,-31949,24,24
+- [ControlType.Button] Anwar | enabled=True | rect=-33870,-31954,34,34
+- [ControlType.Button] Chrome | enabled=True | rect=-33912,-31954,40,34
+- [ControlType.Button] علامة تبويب البحث | enabled=True | rect=-32026,-31994,28,28
+- [ControlType.TabItem] "Desktop Commander Remote MCP - beta" - استخدام الذاكرة - 70.4 ميغابايت | enabled=True | rect=-32276,-32000,256,41
+- [ControlType.Button] إغلاق | enabled=True | rect=-32262,-31994,28,28
+- [ControlType.TabItem] "هندسة وتطوير واجهات تطبيق تجار | Google AI Studio" - استخدام الذاكرة - 486 ميغابايت | enabled=True | rect=-32514,-32000,256,41
+- [ControlType.Button] إغلاق | enabled=True | rect=-32500,-31994,28,28
+- [ControlType.Button] علامة تبويب جديدة | enabled=True | rect=-32536,-32000,28,41
+- [ControlType.Window] *PHASE6_IMPLEMENTATION_REPORT.md - المفكرة | enabled=True | rect=70,171,1152,746
+- [ControlType.Document] محرر نص | enabled=True | rect=76,246,1140,633
+- [ControlType.TabItem] SmartLedger_Units_Settings_Audit.txt. معدّل. | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.Text] SmartLedger_Units_Settings_Audit.txt | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.TabItem] SmartLedger_Dynamic_Units_Engine.txt. غير معدّل. | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.Text] SmartLedger_Dynamic_Units_Engine.txt | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.TabItem] SmartLedger_Fix_Warehouse_Notes.txt. معدّل. | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.Text] SmartLedger_Fix_Warehouse_Notes.txt | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.TabItem] SmartLedger_Fix_Triple_Errors.txt. غير معدّل. | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.Text] SmartLedger_Fix_Triple_Errors.txt | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.TabItem] SmartLedger_Product_Save_Diagnostic.txt. معدّل. | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.Text] SmartLedger_Product_Save_Diagnostic.txt | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.TabItem] SmartLedger_Deep_Fix_Audit.txt. معدّل. | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.Text] SmartLedger_Deep_Fix_Audit.txt | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.TabItem] SmartLedger_Accounting_Init_Check.txt. معدّل. | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.Text] SmartLedger_Accounting_Init_Check.txt | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.TabItem] SmartLedger_Master_Product_Fix.txt. معدّل. | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.Text] SmartLedger_Master_Product_Fix.txt | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.TabItem] SmartLedger_Fix_Inventory_History.txt. غير معدّل. | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.Text] SmartLedger_Fix_Inventory_History.txt | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.TabItem] SmartLedger_Fix_Inventory_Grid.txt. معدّل. | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.Text] SmartLedger_Fix_Inventory_Grid.txt | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.TabItem] SmartLedger_Clean_Grid_Column.txt. غير معدّل. | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.Text] SmartLedger_Clean_Grid_Column.txt | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.TabItem] SmartLedger_Audit_01.txt. معدّل. | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.Text] SmartLedger_Audit_01.txt | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.TabItem] SmartLedger_Audit_02.txt. معدّل. | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.Text] SmartLedger_Audit_02.txt | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.TabItem] SmartLedger_Audit_03.txt. معدّل. | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.Text] SmartLedger_Audit_03.txt | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.TabItem] SmartLedger_Audit_04.txt. معدّل. | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.Text] SmartLedger_Audit_04.txt | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.TabItem] SmartLedger_Audit_05.txt. معدّل. | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.Text] SmartLedger_Audit_05.txt | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.TabItem] SmartLedger_Fix_Result.txt. غير معدّل. | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.Text] SmartLedger_Fix_Result.txt | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.TabItem] SmartLedger_Audit_Reqs.txt. معدّل. | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.Text] SmartLedger_Audit_Reqs.txt | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.TabItem] SmartLedger_Audit_AccService.txt. معدّل. | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.Text] SmartLedger_Audit_AccService.txt | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.TabItem] SmartLedger_Audit_CashAndSettings.txt. معدّل. | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.Text] SmartLedger_Audit_CashAndSettings.txt | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.TabItem] SmartLedger_Apply_Reqs.txt. معدّل. | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.Text] SmartLedger_Apply_Reqs.txt | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.TabItem] SmartLedger_Audit_Syntax.txt. معدّل. | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.Text] SmartLedger_Audit_Syntax.txt | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.TabItem] SmartLedger_Clean_Fix.txt. معدّل. | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.Text] SmartLedger_Clean_Fix.txt | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.TabItem] SmartLedger_Audit_Interface.txt. معدّل. | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.Text] SmartLedger_Audit_Interface.txt | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.TabItem] SmartLedger_Build_Final.txt. غير معدّل. | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.Text] SmartLedger_Build_Final.txt | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.TabItem] SmartLedger_Audit_Purchases.txt. معدّل. | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.Text] SmartLedger_Audit_Purchases.txt | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.TabItem] SmartLedger_Audit_CashDialog.txt. معدّل. | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.Text] SmartLedger_Audit_CashDialog.txt | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.TabItem] SmartLedger_Purchases_And_Cash_Fix.txt. معدّل. | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.Text] SmartLedger_Purchases_And_Cash_Fix.txt | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.TabItem] SmartLedger_Audit_PurFix.txt. معدّل. | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.Text] SmartLedger_Audit_PurFix.txt | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.TabItem] SmartLedger_Purchases_Final.txt. معدّل. | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.Text] SmartLedger_Purchases_Final.txt | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.TabItem] SmartLedger_Release_Run.txt. غير معدّل. | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.Text] SmartLedger_Release_Run.txt | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.TabItem] SmartLedger_Audit_Home.txt. معدّل. | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.Text] SmartLedger_Audit_Home.txt | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.TabItem] SmartLedger_Audit_HomeFull.txt. معدّل. | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.Text] SmartLedger_Audit_HomeFull.txt | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.TabItem] SmartLedger_Home_Upgrade.txt. غير معدّل. | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.Text] SmartLedger_Home_Upgrade.txt | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.TabItem] SmartLedger_Audit_Currency.txt. معدّل. | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.Text] SmartLedger_Audit_Currency.txt | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.TabItem] SmartLedger_Audit_CurResources.txt. معدّل. | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.Text] SmartLedger_Audit_CurResources.txt | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.TabItem] SmartLedger_Audit_ConvertersCode.txt. معدّل. | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.Text] SmartLedger_Audit_ConvertersCode.txt | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.TabItem] SmartLedger_Audit_SmartConv.txt. معدّل. | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.Text] SmartLedger_Audit_SmartConv.txt | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.TabItem] SmartLedger_Currency_Overhaul.txt. معدّل. | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.Text] SmartLedger_Currency_Overhaul.txt | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.TabItem] SmartLedger_Home_FinalFix.txt. غير معدّل. | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.Text] SmartLedger_Home_FinalFix.txt | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.TabItem] windows_inspection_report.txt. غير معدّل. | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.Text] windows_inspection_report.txt | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.TabItem] SmartLedger_V8_Audit.txt. معدّل. | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.Text] SmartLedger_V8_Audit.txt | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.TabItem] SmartLedger_Inspect_Home_Pur.txt. معدّل. | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.Text] SmartLedger_Inspect_Home_Pur.txt | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.TabItem] SmartLedger_V8_Build_Result.txt. معدّل. | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.Text] SmartLedger_V8_Build_Result.txt | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.TabItem] SmartLedger_Inspect_DbContext.txt. معدّل. | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.Text] SmartLedger_Inspect_DbContext.txt | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.TabItem] SmartLedger_Final_Build.txt. معدّل. | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.Text] SmartLedger_Final_Build.txt | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.TabItem] SmartLedger_Inspect_LedgerItem.txt. معدّل. | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.Text] SmartLedger_Inspect_LedgerItem.txt | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.TabItem] SmartLedger_Build_Success.txt. معدّل. | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.Text] SmartLedger_Build_Success.txt | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.TabItem] SmartLedger_Fix_MissingUsings.txt. معدّل. | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.Text] SmartLedger_Fix_MissingUsings.txt | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.TabItem] SmartLedger_Audit_Sum.txt. معدّل. | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.Text] SmartLedger_Audit_Sum.txt | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.TabItem] SmartLedger_Inspect_Reporting.txt. معدّل. | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.Text] SmartLedger_Inspect_Reporting.txt | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.TabItem] SmartLedger_Fix_Reporting_Sum.txt. معدّل. | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.Text] SmartLedger_Fix_Reporting_Sum.txt | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.TabItem] SmartLedger_Audit_Startup_Sum.txt. معدّل. | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.Text] SmartLedger_Audit_Startup_Sum.txt | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.TabItem] SmartLedger_Inspect_HealthService.txt. معدّل. | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.Text] SmartLedger_Inspect_HealthService.txt | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.TabItem] SmartLedger_Fix_Health_Final.txt. غير معدّل. | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.Text] SmartLedger_Fix_Health_Final.txt | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.TabItem] SmartLedger_Inspect_HomeQuickAction.txt. معدّل. | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.Text] SmartLedger_Inspect_HomeQuickAction.txt | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.TabItem] SmartLedger_Inspect_Dialogs_Ctor.txt. معدّل. | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.Text] SmartLedger_Inspect_Dialogs_Ctor.txt | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.TabItem] SmartLedger_Kill_And_Run.txt. معدّل. | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.Text] SmartLedger_Kill_And_Run.txt | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.TabItem] SmartLedger_Audit_LedgerCurrencyAndOpening.txt. معدّل. | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.Text] SmartLedger_Audit_LedgerCurrencyAndOpening.txt | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.TabItem] SmartLedger_Audit_Opening_Fix.txt. معدّل. | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.Text] SmartLedger_Audit_Opening_Fix.txt | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.TabItem] SmartLedger_Fix_Currency_And_Opening.txt. معدّل. | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.Text] SmartLedger_Fix_Currency_And_Opening.txt | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.TabItem] SmartLedger_Inspect_DbSyntax.txt. معدّل. | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.Text] SmartLedger_Inspect_DbSyntax.txt | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.TabItem] SmartLedger_Fix_Sql_Syntax.txt. معدّل. | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.Text] SmartLedger_Fix_Sql_Syntax.txt | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.TabItem] SmartLedger_Complete_Inspection.txt. غير معدّل. | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.Text] SmartLedger_Complete_Inspection.txt | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.TabItem] الدفااتر.txt. غير معدّل. | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.Text] الدفااتر.txt | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.TabItem] SmartLedger_Code.txt. معدّل. | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.Text] SmartLedger_Code.txt | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.TabItem] CleanCode.txt. معدّل. | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.Text] CleanCode.txt | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.TabItem] Build_Result.txt. معدّل. | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.Text] Build_Result.txt | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.TabItem] Settings_Recon_Report.txt. معدّل. | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.Text] Settings_Recon_Report.txt | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.TabItem] Settings_Code_Dump.txt. معدّل. | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.Text] Settings_Code_Dump.txt | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.TabItem] SmartLedger_Full_Source_Dump.txt. معدّل. | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.Text] SmartLedger_Full_Source_Dump.txt | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.TabItem] SmartLedger_Settings_Audit.txt. معدّل. | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.Text] SmartLedger_Settings_Audit.txt | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.TabItem] Services_Audit.txt. غير معدّل. | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.Text] Services_Audit.txt | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.TabItem] DB_Diag.txt. معدّل. | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.Text] DB_Diag.txt | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.TabItem] SmartLedger_Audit_BackupAndPurchases.txt. معدّل. | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.Text] SmartLedger_Audit_BackupAndPurchases.txt | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.TabItem] SmartLedger_Audit_Restore_Details.txt. معدّل. | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.Text] SmartLedger_Audit_Restore_Details.txt | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.TabItem] SmartLedger_Restore_And_Purchases_Fix.txt. غير معدّل. | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.Text] SmartLedger_Restore_And_Purchases_Fix.txt | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.TabItem] SmartLedger_Audit_All_Actions.txt. معدّل. | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.Text] SmartLedger_Audit_All_Actions.txt | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.TabItem] SmartLedger_Audit_Posting_Logic.txt. معدّل. | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.Text] SmartLedger_Audit_Posting_Logic.txt | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.TabItem] SmartLedger_Audit_Reverse_End.txt. معدّل. | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.Text] SmartLedger_Audit_Reverse_End.txt | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.TabItem] SmartLedger_Audit_AccFacade.txt. معدّل. | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.Text] SmartLedger_Audit_AccFacade.txt | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.TabItem] SmartLedger_Enable_Audit_Actions.txt. معدّل. | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.Text] SmartLedger_Enable_Audit_Actions.txt | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.TabItem] SmartLedger_Clean_VMs.txt. معدّل. | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.Text] SmartLedger_Clean_VMs.txt | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.TabItem] SmartLedger_Clean_Backup_Security.txt. غير معدّل. | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.Text] SmartLedger_Clean_Backup_Security.txt | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.TabItem] SmartLedger_Audit_ProductDialog_Reset.txt. معدّل. | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.Text] SmartLedger_Audit_ProductDialog_Reset.txt | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.TabItem] SmartLedger_Audit_ProductDialog_Full.txt. معدّل. | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.Text] SmartLedger_Audit_ProductDialog_Full.txt | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.TabItem] SmartLedger_Apply_Product_And_Reset.txt. معدّل. | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.Text] SmartLedger_Apply_Product_And_Reset.txt | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.TabItem] SmartLedger_Build_And_Run.txt. معدّل. | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.Text] SmartLedger_Build_And_Run.txt | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.TabItem] SmartLedger_Audit_Triggers.txt. معدّل. | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.Text] SmartLedger_Audit_Triggers.txt | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.TabItem] SmartLedger_Fix_FactoryReset.txt. غير معدّل. | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.Text] SmartLedger_Fix_FactoryReset.txt | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.TabItem] SmartLedger_Audit_Product_Error.txt. معدّل. | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.Text] SmartLedger_Audit_Product_Error.txt | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.TabItem] SmartLedger_Audit_AddProduct_Detail.txt. معدّل. | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.Text] SmartLedger_Audit_AddProduct_Detail.txt | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.TabItem] SmartLedger_Audit_Locate_Product.txt. معدّل. | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.Text] SmartLedger_Audit_Locate_Product.txt | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.TabItem] SmartLedger_Audit_InnerException.txt. معدّل. | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.Text] SmartLedger_Audit_InnerException.txt | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.TabItem] SmartLedger_Audit_Posting_Inv.txt. معدّل. | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.Text] SmartLedger_Audit_Posting_Inv.txt | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.TabItem] SmartLedger_Audit_Trigger_Code.txt. معدّل. | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.Text] SmartLedger_Audit_Trigger_Code.txt | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.TabItem] SmartLedger_Fix_JournalTrigger.txt. معدّل. | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.Text] SmartLedger_Fix_JournalTrigger.txt | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.TabItem] SmartLedger_Audit_Check_Constraint.txt. معدّل. | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.Text] SmartLedger_Audit_Check_Constraint.txt | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.TabItem] SmartLedger_Fix_CheckConstraint.txt. معدّل. | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.Text] SmartLedger_Fix_CheckConstraint.txt | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.TabItem] Winaero EULA.txt. غير معدّل. | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.Text] Winaero EULA.txt | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.TabItem] build_errors.txt. معدّل. | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.Text] build_errors.txt | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.TabItem] xaml_lines.txt. معدّل. | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.Text] xaml_lines.txt | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.TabItem] polish_lines.txt. معدّل. | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.Text] polish_lines.txt | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.TabItem] db_diagnostic.txt. معدّل. | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.Text] db_diagnostic.txt | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.TabItem] db_init_details.txt. معدّل. | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.Text] db_init_details.txt | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.TabItem] runtime_error_details.txt. معدّل. | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.Text] runtime_error_details.txt | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.TabItem] debug_home_and_products.txt. معدّل. | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.Text] debug_home_and_products.txt | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.TabItem] decimal_and_product_debug.txt. معدّل. | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.Text] decimal_and_product_debug.txt | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.TabItem] product_btn_debug.txt. معدّل. | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.Text] product_btn_debug.txt | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.TabItem] commands_debug.txt. معدّل. | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.Text] commands_debug.txt | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.TabItem] quick_action_debug.txt. معدّل. | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.Text] quick_action_debug.txt | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.TabItem] fix_summary.txt. معدّل. | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.Text] fix_summary.txt | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.TabItem] journal_constraint_debug.txt. معدّل. | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.Text] journal_constraint_debug.txt | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.TabItem] posting_debug.txt. معدّل. | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.Text] posting_debug.txt | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.TabItem] balanced_entry_debug.txt. معدّل. | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.Text] balanced_entry_debug.txt | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.TabItem] constraint_root_cause.txt. معدّل. | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.Text] constraint_root_cause.txt | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.TabItem] security_debug.txt. معدّل. | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.Text] security_debug.txt | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.TabItem] settings_disappear_debug.txt. معدّل. | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.Text] settings_disappear_debug.txt | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.TabItem] session_and_reset_debug.txt. معدّل. | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.Text] session_and_reset_debug.txt | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.TabItem] reset_action_debug.txt. معدّل. | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.Text] reset_action_debug.txt | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.TabItem] latest_unhandled_error.txt. معدّل. | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.Text] latest_unhandled_error.txt | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.TabItem] sum_async_all.txt. معدّل. | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.Text] sum_async_all.txt | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.TabItem] reporting_syntax_debug.txt. معدّل. | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.Text] reporting_syntax_debug.txt | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.TabItem] cash_ui_debug.txt. معدّل. | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.Text] cash_ui_debug.txt | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.TabItem] empty_state_debug.txt. معدّل. | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.Text] empty_state_debug.txt | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.TabItem] reports_error_detail.txt. معدّل. | enabled=True | rect=∞,∞,-∞,-∞
+UIA controls recorded: 300
+## Initial inspection limits
+- This automated pass captures the live initial state and UI Automation tree. Further module coverage depends on successful navigation and available seeded data/credentials.
+## Interactive runtime follow-up 2026-10-11T02:18:01
+Initial app window: SmartLedger — Sign In
+Invoking wide login-area button: name=تسجيل الدخول; rect=1486,720,370,50
+Detected app root after attempt: SmartLedger — دفتر أعمال ذكي
+- [ControlType.Text] SmartLedger | enabled=True | rect=1694,18,108,24
+- [ControlType.Text] دفتر أعمال ذكي | enabled=True | rect=1694,42,108,15
+- [ControlType.Button]  | enabled=True | rect=1689,91,225,50
+- [ControlType.Text] Home | enabled=True | rect=1830,106,37,19
+- [ControlType.Button]  | enabled=True | rect=1689,162,225,50
+- [ControlType.Text] Accounts & Ledgers | enabled=True | rect=1743,177,124,19
+- [ControlType.Button]  | enabled=True | rect=1689,216,225,50
+- [ControlType.Text] Inventory | enabled=True | rect=1808,231,59,19
+- [ControlType.Button]  | enabled=True | rect=1689,270,225,50
+- [ControlType.Text] POS & Sales | enabled=True | rect=1790,285,77,19
+- [ControlType.Button]  | enabled=True | rect=1689,324,225,50
+- [ControlType.Text] Purchases | enabled=True | rect=1805,339,62,19
+- [ControlType.Button]  | enabled=True | rect=1689,378,225,50
+- [ControlType.Text] Operating Expenses | enabled=True | rect=1744,393,123,19
+- [ControlType.Button]  | enabled=True | rect=1689,449,225,50
+- [ControlType.Text] Reports | enabled=True | rect=1819,464,48,19
+- [ControlType.Button]  | enabled=True | rect=1689,503,225,50
+- [ControlType.Text] Users & Permissions | enabled=True | rect=1742,518,125,19
+- [ControlType.Button]  | enabled=True | rect=1689,557,225,50
+- [ControlType.Text] Audit Trail & Activity Log | enabled=True | rect=1709,572,158,19
+- [ControlType.Button]  | enabled=True | rect=1689,611,225,50
+- [ControlType.Text] Recycle Bin | enabled=True | rect=1795,626,72,19
+- [ControlType.Button]  | enabled=True | rect=1689,682,225,50
+- [ControlType.Text] About & Identity | enabled=True | rect=1763,697,104,19
+- [ControlType.Button]  | enabled=True | rect=1689,736,225,50
+- [ControlType.Text] System Settings | enabled=True | rect=1767,751,100,19
+- [ControlType.Button]  | enabled=True | rect=1689,788,225,40
+- [ControlType.Button]  | enabled=True | rect=16,14,42,42
+- [ControlType.Button]  | enabled=True | rect=62,14,42,42
+- [ControlType.Button]  | enabled=True | rect=108,14,42,42
+- [ControlType.Text] الرئيسية | enabled=True | rect=1599,24,57,22
+- [ControlType.Button]  | enabled=True | rect=177,14,42,42
+- [ControlType.Button]  | enabled=True | rect=227,14,42,42
+- [ControlType.Text] 2 | enabled=True | rect=259,14,6,14
+- [ControlType.Edit]  | enabled=True | rect=661,11,559,48
+- [ControlType.Text] بحث في الرئيسية... | enabled=True | rect=661,27,557,17
+- [ControlType.Text] Ctrl + K | enabled=True | rect=622,28,33,14
+- [ControlType.Pane] SmartLedger.App.ViewModels.DashboardViewModel | enabled=True | rect=20,102,1630,958
+- [ControlType.Text] صافي المركز المالي | enabled=True | rect=1081,129,106,17
+- [ControlType.Text] ◆ | enabled=True | rect=1608,129,11,17
+- [ControlType.Text] •••••• | enabled=True | rect=1037,165,594,33
+- [ControlType.Text] لنا | enabled=True | rect=1606,217,14,19
+- [ControlType.Text]    | enabled=True | rect=1598,217,8,19
+- [ControlType.Text] •••••• | enabled=True | rect=1562,217,36,19
+- [ControlType.Text] علينا | enabled=True | rect=1292,217,27,19
+- [ControlType.Text]    | enabled=True | rect=1284,217,8,19
+- [ControlType.Text] •••••• | enabled=True | rect=1248,217,36,19
+- [ControlType.Text] نشاط اليوم | enabled=True | rect=561,129,59,17
+- [ControlType.Text] ↗ | enabled=True | rect=964,127,12,22
+- [ControlType.Text] •••••• | enabled=True | rect=517,165,470,33
+- [ControlType.Text] مصروفات | enabled=True | rect=931,217,45,19
+- [ControlType.Text]    | enabled=True | rect=923,217,8,19
+- [ControlType.Text] •••••• | enabled=True | rect=899,217,24,19
+- [ControlType.Text] حركات | enabled=True | rect=708,217,29,19
+- [ControlType.Text]    | enabled=True | rect=700,217,8,19
+- [ControlType.Text] 1 | enabled=True | rect=695,217,5,19
+- [ControlType.Text] قيمة بضاعة المخزون | enabled=True | rect=83,129,112,17
+- [ControlType.Text] ▦ | enabled=True | rect=443,127,14,21
+- [ControlType.Text] •••••• | enabled=True | rect=39,165,428,33
+- [ControlType.Text] الأصول التشغيلية الحالية | enabled=True | rect=88,194,379,15
+- [ControlType.Text] المخزون | enabled=True | rect=47,214,33,14
+- [ControlType.Text] الإجراءات السريعة | enabled=True | rect=35,247,108,20
+- [ControlType.DataItem] QuickActionItem { Label = حساب جديد, Shortcut = F7, Command = CommunityToolkit.Mvvm.Input.AsyncRelayCommand } | enabled=True | rect=1235,277,400,66
+- [ControlType.Button]  | enabled=True | rect=1239,281,392,58
+- [ControlType.Text] حساب جديد | enabled=True | rect=1417,300,68,19
+- [ControlType.Text] F7 | enabled=True | rect=1396,303,11,14
+- [ControlType.DataItem] QuickActionItem { Label = عملية جديدة, Shortcut = F8, Command = CommunityToolkit.Mvvm.Input.AsyncRelayCommand } | enabled=True | rect=835,277,400,66
+- [ControlType.Button]  | enabled=True | rect=839,281,392,58
+- [ControlType.Text] عملية جديدة | enabled=True | rect=1016,300,71,19
+- [ControlType.Text] F8 | enabled=True | rect=995,303,11,14
+- [ControlType.DataItem] QuickActionItem { Label = فاتورة بيع, Shortcut = F9, Command = CommunityToolkit.Mvvm.Input.AsyncRelayCommand } | enabled=True | rect=435,277,400,66
+- [ControlType.Button]  | enabled=True | rect=439,281,392,58
+- [ControlType.Text] فاتورة بيع | enabled=True | rect=622,300,57,19
+- [ControlType.Text] F9 | enabled=True | rect=601,303,11,14
+- [ControlType.DataItem] QuickActionItem { Label = فاتورة شراء, Shortcut = F10, Command = CommunityToolkit.Mvvm.Input.AsyncRelayCommand } | enabled=True | rect=35,277,400,66
+- [ControlType.Button]  | enabled=True | rect=39,281,392,58
+- [ControlType.Text] فاتورة شراء | enabled=True | rect=218,300,65,19
+- [ControlType.Text] F10 | enabled=True | rect=195,303,15,14
+- [ControlType.Text] أحدث العمليات | enabled=True | rect=35,389,94,20
+- [ControlType.Text] آخر الحركات المسجلة في الدفتر | enabled=True | rect=35,412,143,15
+- [ControlType.DataGrid]  | enabled=True | rect=36,438,1598,546
+- [ControlType.HeaderItem] م | enabled=True | rect=1586,438,48,48
+- [ControlType.Text] م | enabled=True | rect=1606,452,8,19
+- [ControlType.HeaderItem] الحساب | enabled=True | rect=1088,438,498,48
+- [ControlType.Text] الحساب | enabled=True | rect=1314,452,46,19
+- [ControlType.HeaderItem] المبلغ | enabled=True | rect=948,438,140,48
+- [ControlType.Text] المبلغ | enabled=True | rect=1001,452,35,19
+- [ControlType.HeaderItem] نوع الحركة | enabled=True | rect=843,438,105,48
+- [ControlType.Text] نوع الحركة | enabled=True | rect=866,452,60,19
+- [ControlType.HeaderItem] البيان / التفاصيل | enabled=True | rect=214,438,629,48
+- [ControlType.Text] البيان / التفاصيل | enabled=True | rect=479,452,99,19
+- [ControlType.HeaderItem] Date & Time | enabled=True | rect=36,438,178,48
+- [ControlType.Text] Date & Time | enabled=True | rect=86,452,78,19
+- [ControlType.DataItem] RecentOperationRow { Date = 11/10/2026 12:13:47 ص +03:00, PersonName = منصور قطينه, Type = سداد, Amount = 1000, Note = من حال اللي عندي } | enabled=True | rect=36,486,1598,52
+- [ControlType.Custom] Item: RecentOperationRow { Date = 11/10/2026 12:13:47 ص +03:00, PersonName = منصور قطينه, Type = سداد, Amount = 1000, Note = من حال اللي عندي }, Column Display Index: 0 | enabled=True | rect=1586,488,48,48
+- [ControlType.Text] 1 | enabled=True | rect=1607,504,5,15
+- [ControlType.Custom] منصور قطينه | enabled=True | rect=1088,488,498,48
+- [ControlType.Text] منصور قطينه | enabled=True | rect=1293,502,87,19
+- [ControlType.Custom] Item: RecentOperationRow { Date = 11/10/2026 12:13:47 ص +03:00, PersonName = منصور قطينه, Type = سداد, Amount = 1000, Note = من حال اللي عندي }, Column Display Index: 2 | enabled=True | rect=948,488,140,48
+- [ControlType.Text] •••••• | enabled=True | rect=1000,502,36,19
+- [ControlType.Custom] Item: RecentOperationRow { Date = 11/10/2026 12:13:47 ص +03:00, PersonName = منصور قطينه, Type = سداد, Amount = 1000, Note = من حال اللي عندي }, Column Display Index: 3 | enabled=True | rect=843,488,105,48
+- [ControlType.Text] سداد | enabled=True | rect=880,502,30,19
+- [ControlType.Custom] من حال اللي عندي | enabled=True | rect=214,488,629,48
+- [ControlType.Text] من حال اللي عندي | enabled=True | rect=472,502,113,19
+- [ControlType.Custom] Item: RecentOperationRow { Date = 11/10/2026 12:13:47 ص +03:00, PersonName = منصور قطينه, Type = سداد, Amount = 1000, Note = من حال اللي عندي }, Column Display Index: 5 | enabled=True | rect=36,488,178,48
+- [ControlType.Text] 11/10/2026 - 12:13 ص | enabled=True | rect=65,504,120,16
+- [ControlType.DataItem] RecentOperationRow { Date = 10/10/2026 09:12:12 م +00:00, PersonName = منصور قطينه, Type = له, Amount = 1500, Note = رصيد افتتاحي } | enabled=True | rect=36,538,1598,52
+- [ControlType.Custom] Item: RecentOperationRow { Date = 10/10/2026 09:12:12 م +00:00, PersonName = منصور قطينه, Type = له, Amount = 1500, Note = رصيد افتتاحي }, Column Display Index: 0 | enabled=True | rect=1586,540,48,48
+- [ControlType.Text] 2 | enabled=True | rect=1607,556,6,15
+- [ControlType.Custom] منصور قطينه | enabled=True | rect=1088,540,498,48
+- [ControlType.Text] منصور قطينه | enabled=True | rect=1293,554,87,19
+- [ControlType.Custom] Item: RecentOperationRow { Date = 10/10/2026 09:12:12 م +00:00, PersonName = منصور قطينه, Type = له, Amount = 1500, Note = رصيد افتتاحي }, Column Display Index: 2 | enabled=True | rect=948,540,140,48
+- [ControlType.Text] •••••• | enabled=True | rect=1000,554,36,19
+- [ControlType.Custom] Item: RecentOperationRow { Date = 10/10/2026 09:12:12 م +00:00, PersonName = منصور قطينه, Type = له, Amount = 1500, Note = رصيد افتتاحي }, Column Display Index: 3 | enabled=True | rect=843,540,105,48
+- [ControlType.Text] له | enabled=True | rect=890,554,12,19
+- [ControlType.Custom] رصيد افتتاحي | enabled=True | rect=214,540,629,48
+- [ControlType.Text] رصيد افتتاحي | enabled=True | rect=486,554,85,19
+- [ControlType.Custom] Item: RecentOperationRow { Date = 10/10/2026 09:12:12 م +00:00, PersonName = منصور قطينه, Type = له, Amount = 1500, Note = رصيد افتتاحي }, Column Display Index: 5 | enabled=True | rect=36,540,178,48
+- [ControlType.Text] 11/10/2026 - 12:12 ص | enabled=True | rect=65,556,120,16
+- [ControlType.DataItem] RecentOperationRow { Date = 09/10/2026 07:22:08 م +03:00, PersonName = نصر الله, Type = عليه, Amount = 475000, Note = دفعة مع صاحب المتر } | enabled=True | rect=36,590,1598,52
+- [ControlType.Custom] Item: RecentOperationRow { Date = 09/10/2026 07:22:08 م +03:00, PersonName = نصر الله, Type = عليه, Amount = 475000, Note = دفعة مع صاحب المتر }, Column Display Index: 0 | enabled=True | rect=1586,592,48,48
+- [ControlType.Text] 3 | enabled=True | rect=1607,608,6,15
+- [ControlType.Custom] نصر الله | enabled=True | rect=1088,592,498,48
+- [ControlType.Text] نصر الله | enabled=True | rect=1311,606,53,19
+- [ControlType.Custom] Item: RecentOperationRow { Date = 09/10/2026 07:22:08 م +03:00, PersonName = نصر الله, Type = عليه, Amount = 475000, Note = دفعة مع صاحب المتر }, Column Display Index: 2 | enabled=True | rect=948,592,140,48
+- [ControlType.Text] •••••• | enabled=True | rect=1000,606,36,19
+- [ControlType.Custom] Item: RecentOperationRow { Date = 09/10/2026 07:22:08 م +03:00, PersonName = نصر الله, Type = عليه, Amount = 475000, Note = دفعة مع صاحب المتر }, Column Display Index: 3 | enabled=True | rect=843,592,105,48
+- [ControlType.Text] عليه | enabled=True | rect=883,606,25,19
+- [ControlType.Custom] دفعة مع صاحب المتر | enabled=True | rect=214,592,629,48
+- [ControlType.Text] دفعة مع صاحب المتر | enabled=True | rect=463,606,131,19
+- [ControlType.Custom] Item: RecentOperationRow { Date = 09/10/2026 07:22:08 م +03:00, PersonName = نصر الله, Type = عليه, Amount = 475000, Note = دفعة مع صاحب المتر }, Column Display Index: 5 | enabled=True | rect=36,592,178,48
+- [ControlType.Text] 09/10/2026 - 07:22 م | enabled=True | rect=65,608,120,16
+- [ControlType.DataItem] RecentOperationRow { Date = 09/10/2026 04:15:39 م +00:00, PersonName = المنتصر بالله منصور, Type = له, Amount = 100000, Note = رصيد افتتاحي } | enabled=True | rect=36,642,1598,52
+- [ControlType.Custom] Item: RecentOperationRow { Date = 09/10/2026 04:15:39 م +00:00, PersonName = المنتصر بالله منصور, Type = له, Amount = 100000, Note = رصيد افتتاحي }, Column Display Index: 0 | enabled=True | rect=1586,644,48,48
+- [ControlType.Text] 4 | enabled=True | rect=1607,660,6,15
+- [ControlType.Custom] المنتصر بالله منصور | enabled=True | rect=1088,644,498,48
+- [ControlType.Text] المنتصر بالله منصور | enabled=True | rect=1276,658,122,19
+- [ControlType.Custom] Item: RecentOperationRow { Date = 09/10/2026 04:15:39 م +00:00, PersonName = المنتصر بالله منصور, Type = له, Amount = 100000, Note = رصيد افتتاحي }, Column Display Index: 2 | enabled=True | rect=948,644,140,48
+- [ControlType.Text] •••••• | enabled=True | rect=1000,658,36,19
+- [ControlType.Custom] Item: RecentOperationRow { Date = 09/10/2026 04:15:39 م +00:00, PersonName = المنتصر بالله منصور, Type = له, Amount = 100000, Note = رصيد افتتاحي }, Column Display Index: 3 | enabled=True | rect=843,644,105,48
+- [ControlType.Text] له | enabled=True | rect=890,658,12,19
+- [ControlType.Custom] رصيد افتتاحي | enabled=True | rect=214,644,629,48
+- [ControlType.Text] رصيد افتتاحي | enabled=True | rect=486,658,85,19
+- [ControlType.Custom] Item: RecentOperationRow { Date = 09/10/2026 04:15:39 م +00:00, PersonName = المنتصر بالله منصور, Type = له, Amount = 100000, Note = رصيد افتتاحي }, Column Display Index: 5 | enabled=True | rect=36,644,178,48
+- [ControlType.Text] 09/10/2026 - 07:15 م | enabled=True | rect=66,660,118,16
+- [ControlType.Text] يتم عرض أحدث 10 قيود مسجلة | enabled=True | rect=46,1001,1578,15
+- [ControlType.Button] الدفاتر والحسابات | enabled=True | rect=1498,993,126,31
+- [ControlType.Text] الدفاتر والحسابات | enabled=True | rect=1509,999,104,19
+## Navigation captures 2026-10-11T02:18:37
+- 03-accounts.png captured at 1920x1080
+### Accounts & Ledgers
+Window: SmartLedger — دفتر أعمال ذكي
+- [ControlType.Text] SmartLedger | enabled=True | rect=1694,18,108,24
+- [ControlType.Text] دفتر أعمال ذكي | enabled=True | rect=1694,42,108,15
+- [ControlType.Button]  | enabled=True | rect=1689,91,225,50
+- [ControlType.Text] Home | enabled=True | rect=1830,106,37,19
+- [ControlType.Button]  | enabled=True | rect=1689,162,225,50
+- [ControlType.Text] Accounts & Ledgers | enabled=True | rect=1743,177,124,19
+- [ControlType.Button]  | enabled=True | rect=1689,216,225,50
+- [ControlType.Text] Inventory | enabled=True | rect=1808,231,59,19
+- [ControlType.Button]  | enabled=True | rect=1689,270,225,50
+- [ControlType.Text] POS & Sales | enabled=True | rect=1790,285,77,19
+- [ControlType.Button]  | enabled=True | rect=1689,324,225,50
+- [ControlType.Text] Purchases | enabled=True | rect=1805,339,62,19
+- [ControlType.Button]  | enabled=True | rect=1689,378,225,50
+- [ControlType.Text] Operating Expenses | enabled=True | rect=1744,393,123,19
+- [ControlType.Button]  | enabled=True | rect=1689,449,225,50
+- [ControlType.Text] Reports | enabled=True | rect=1819,464,48,19
+- [ControlType.Button]  | enabled=True | rect=1689,503,225,50
+- [ControlType.Text] Users & Permissions | enabled=True | rect=1742,518,125,19
+- [ControlType.Button]  | enabled=True | rect=1689,557,225,50
+- [ControlType.Text] Audit Trail & Activity Log | enabled=True | rect=1709,572,158,19
+- [ControlType.Button]  | enabled=True | rect=1689,611,225,50
+- [ControlType.Text] Recycle Bin | enabled=True | rect=1795,626,72,19
+- [ControlType.Button]  | enabled=True | rect=1689,682,225,50
+- [ControlType.Text] About & Identity | enabled=True | rect=1763,697,104,19
+- [ControlType.Button]  | enabled=True | rect=1689,736,225,50
+- [ControlType.Text] System Settings | enabled=True | rect=1767,751,100,19
+- [ControlType.Button]  | enabled=True | rect=1689,788,225,40
+- [ControlType.Button]  | enabled=True | rect=16,14,42,42
+- [ControlType.Button]  | enabled=True | rect=62,14,42,42
+- [ControlType.Button]  | enabled=True | rect=108,14,42,42
+- [ControlType.Text] الدفاتر والحسابات | enabled=True | rect=1533,24,123,22
+- [ControlType.Button]  | enabled=True | rect=177,14,42,42
+- [ControlType.Button]  | enabled=True | rect=227,14,42,42
+- [ControlType.Text] 2 | enabled=True | rect=259,14,6,14
+- [ControlType.Edit]  | enabled=True | rect=628,11,559,48
+- [ControlType.Text] بحث في الدفاتر والحسابات... | enabled=True | rect=628,27,557,17
+- [ControlType.Text] Ctrl + K | enabled=True | rect=589,28,33,14
+- [ControlType.Pane] SmartLedger.App.ViewModels.AccountsViewModel | enabled=True | rect=20,102,1630,958
+- [ControlType.Button] حذف المحدد | enabled=True | rect=166,102,120,48
+- [ControlType.Text] حذف المحدد | enabled=True | rect=190,116,72,19
+- [ControlType.Button] + حساب جديد | enabled=True | rect=20,103,138,46
+- [ControlType.Text] + حساب جديد | enabled=True | rect=48,117,82,19
+- [ControlType.RadioButton] الكل | enabled=True | rect=1572,105,78,42
+- [ControlType.Text] الكل | enabled=True | rect=1599,117,25,19
+- [ControlType.RadioButton] العملاء | enabled=True | rect=1479,105,88,42
+- [ControlType.Text] العملاء | enabled=True | rect=1503,117,40,19
+- [ControlType.RadioButton] الموردون | enabled=True | rect=1386,105,88,42
+- [ControlType.Text] الموردون | enabled=True | rect=1404,117,52,19
+- [ControlType.RadioButton] العاملون | enabled=True | rect=1293,105,88,42
+- [ControlType.Text] العاملون | enabled=True | rect=1312,117,50,19
+- [ControlType.RadioButton] أخرى | enabled=True | rect=1218,105,70,42
+- [ControlType.Text] أخرى | enabled=True | rect=1239,117,28,19
+- [ControlType.Button] إضافة تصنيف جديد | enabled=True | rect=1173,106,40,40
+- [ControlType.Text] + | enabled=True | rect=1187,116,10,19
+- [ControlType.Text] إجمالي لنا | enabled=True | rect=1580,184,48,19
+- [ControlType.Text]    | enabled=True | rect=1572,184,8,19
+- [ControlType.Text] 475,000 | enabled=True | rect=1526,184,46,19
+- [ControlType.Text] إجمالي علينا | enabled=True | rect=1435,184,59,19
+- [ControlType.Text]    | enabled=True | rect=1427,184,8,19
+- [ControlType.Text] 100,500 | enabled=True | rect=1382,184,45,19
+- [ControlType.Text] ملخص الحسابات المعروضة | enabled=True | rect=1236,186,125,15
+- [ControlType.DataGrid]  | enabled=True | rect=29,236,1612,773
+- [ControlType.HeaderItem] م | enabled=True | rect=1580,237,60,50
+- [ControlType.Text] م | enabled=True | rect=1606,252,8,19
+- [ControlType.HeaderItem] اسم الحساب | enabled=True | rect=1052,237,528,50
+- [ControlType.Text] اسم الحساب | enabled=True | rect=1279,252,74,19
+- [ControlType.HeaderItem] الهاتف | enabled=True | rect=932,237,120,50
+- [ControlType.Text] الهاتف | enabled=True | rect=973,252,39,19
+- [ControlType.HeaderItem] المبلغ المتبقي | enabled=True | rect=787,237,145,50
+- [ControlType.Text] المبلغ المتبقي | enabled=True | rect=817,252,85,19
+- [ControlType.HeaderItem] الاتجاه | enabled=True | rect=697,237,90,50
+- [ControlType.Text] الاتجاه | enabled=True | rect=724,252,37,19
+- [ControlType.HeaderItem] البيان والتفصيل | enabled=True | rect=205,237,492,50
+- [ControlType.Text] البيان والتفصيل | enabled=True | rect=405,252,92,19
+- [ControlType.HeaderItem] آخر حركة | enabled=True | rect=30,237,175,50
+
+- 04-inventory.png captured at 1920x1080
+### Inventory
+Window: SmartLedger — دفتر أعمال ذكي
+- [ControlType.Text] SmartLedger | enabled=True | rect=1694,18,108,24
+- [ControlType.Text] دفتر أعمال ذكي | enabled=True | rect=1694,42,108,15
+- [ControlType.Button]  | enabled=True | rect=1689,91,225,50
+- [ControlType.Text] Home | enabled=True | rect=1830,106,37,19
+- [ControlType.Button]  | enabled=True | rect=1689,162,225,50
+- [ControlType.Text] Accounts & Ledgers | enabled=True | rect=1743,177,124,19
+- [ControlType.Button]  | enabled=True | rect=1689,216,225,50
+- [ControlType.Text] Inventory | enabled=True | rect=1808,231,59,19
+- [ControlType.Button]  | enabled=True | rect=1689,270,225,50
+- [ControlType.Text] POS & Sales | enabled=True | rect=1790,285,77,19
+- [ControlType.Button]  | enabled=True | rect=1689,324,225,50
+- [ControlType.Text] Purchases | enabled=True | rect=1805,339,62,19
+- [ControlType.Button]  | enabled=True | rect=1689,378,225,50
+- [ControlType.Text] Operating Expenses | enabled=True | rect=1744,393,123,19
+- [ControlType.Button]  | enabled=True | rect=1689,449,225,50
+- [ControlType.Text] Reports | enabled=True | rect=1819,464,48,19
+- [ControlType.Button]  | enabled=True | rect=1689,503,225,50
+- [ControlType.Text] Users & Permissions | enabled=True | rect=1742,518,125,19
+- [ControlType.Button]  | enabled=True | rect=1689,557,225,50
+- [ControlType.Text] Audit Trail & Activity Log | enabled=True | rect=1709,572,158,19
+- [ControlType.Button]  | enabled=True | rect=1689,611,225,50
+- [ControlType.Text] Recycle Bin | enabled=True | rect=1795,626,72,19
+- [ControlType.Button]  | enabled=True | rect=1689,682,225,50
+- [ControlType.Text] About & Identity | enabled=True | rect=1763,697,104,19
+- [ControlType.Button]  | enabled=True | rect=1689,736,225,50
+- [ControlType.Text] System Settings | enabled=True | rect=1767,751,100,19
+- [ControlType.Button]  | enabled=True | rect=1689,788,225,40
+- [ControlType.Button]  | enabled=True | rect=16,14,42,42
+- [ControlType.Button]  | enabled=True | rect=62,14,42,42
+- [ControlType.Button]  | enabled=True | rect=108,14,42,42
+- [ControlType.Text] المخزون | enabled=True | rect=1600,24,56,22
+- [ControlType.Button]  | enabled=True | rect=177,14,42,42
+- [ControlType.Button]  | enabled=True | rect=227,14,42,42
+- [ControlType.Text] 2 | enabled=True | rect=259,14,6,14
+- [ControlType.Edit]  | enabled=True | rect=662,11,559,48
+- [ControlType.Text] بحث في المخزون... | enabled=True | rect=662,27,557,17
+- [ControlType.Text] Ctrl + K | enabled=True | rect=623,28,33,14
+- [ControlType.Pane] SmartLedger.App.ViewModels.InventoryViewModel | enabled=True | rect=20,102,1630,958
+- [ControlType.Text] المخزون | enabled=True | rect=20,102,205,30
+- [ControlType.Text] الأصناف، الوحدات والأسعار وحركة البضاعة | enabled=True | rect=20,132,205,16
+- [ControlType.Button] + إضافة صنف | enabled=True | rect=1487,104,155,42
+- [ControlType.Text] + إضافة صنف | enabled=True | rect=1521,116,87,19
+- [ControlType.Edit]  | enabled=True | rect=1237,104,250,42
+- [ControlType.Text] إجمالي الأصناف النشطة | enabled=True | rect=1263,175,372,17
+- [ControlType.Text] 1 | enabled=True | rect=1263,197,372,37
+- [ControlType.Text] القيمة الإجمالية للمخزون (سعر التكلفة) | enabled=True | rect=855,175,366,17
+- [ControlType.Text] 0 | enabled=True | rect=855,197,366,37
+- [ControlType.Text] القيمة البيعية المتوقعة | enabled=True | rect=448,175,366,17
+- [ControlType.Text] 0 | enabled=True | rect=448,197,366,37
+- [ControlType.Text] أصناف قاربت على النفاد | enabled=True | rect=35,175,372,17
+- [ControlType.Text] 1 | enabled=True | rect=35,197,372,37
+- [ControlType.Button] الكل | enabled=True | rect=1586,272,51,31
+- [ControlType.Text] الكل | enabled=True | rect=1599,278,25,19
+- [ControlType.Button] متوفر | enabled=True | rect=1523,272,59,31
+- [ControlType.Text] متوفر | enabled=True | rect=1536,278,33,19
+- [ControlType.Button] منخفض | enabled=True | rect=1446,272,73,31
+- [ControlType.Text] منخفض | enabled=True | rect=1459,278,47,19
+- [ControlType.Button] منتهي المخزون | enabled=True | rect=1329,272,113,31
+- [ControlType.Text] منتهي المخزون | enabled=True | rect=1342,278,87,19
+- [ControlType.DataGrid]  | enabled=True | rect=607,313,1034,694
+- [ControlType.HeaderItem] م | enabled=True | rect=1592,314,48,48
+- [ControlType.Text] م | enabled=True | rect=1612,328,8,19
+- [ControlType.HeaderItem] Product Name | enabled=True | rect=1572,314,20,48
+- [ControlType.Text] Product Name | enabled=True | rect=1488,328,90,19
+- [ControlType.HeaderItem] الباركود / الكود | enabled=True | rect=1456,314,116,48
+- [ControlType.Text] الباركود / الكود | enabled=True | rect=1470,328,88,19
+- [ControlType.HeaderItem] Category | enabled=True | rect=1348,314,108,48
+- [ControlType.Text] Category | enabled=True | rect=1374,328,56,19
+- [ControlType.HeaderItem] Available Stock | enabled=True | rect=1220,314,128,48
+- [ControlType.Text] Available Stock | enabled=True | rect=1236,328,96,19
+- [ControlType.HeaderItem] Cost Price | enabled=True | rect=1132,314,88,48
+- [ControlType.Text] Cost Price | enabled=True | rect=1143,328,63,19
+- [ControlType.HeaderItem] سعر البيع (تجزئة) | enabled=True | rect=1004,314,129,48
+- [ControlType.Text] سعر البيع (تجزئة) | enabled=True | rect=1018,328,101,19
+- [ControlType.HeaderItem] سعر البيع (جملة) | enabled=True | rect=877,314,127,48
+
+- 05-sales-pos.png captured at 1920x1080
+### POS & Sales
+Window: SmartLedger — دفتر أعمال ذكي
+- [ControlType.Text] SmartLedger | enabled=True | rect=1694,18,108,24
+- [ControlType.Text] دفتر أعمال ذكي | enabled=True | rect=1694,42,108,15
+- [ControlType.Button]  | enabled=True | rect=1689,91,225,50
+- [ControlType.Text] Home | enabled=True | rect=1830,106,37,19
+- [ControlType.Button]  | enabled=True | rect=1689,162,225,50
+- [ControlType.Text] Accounts & Ledgers | enabled=True | rect=1743,177,124,19
+- [ControlType.Button]  | enabled=True | rect=1689,216,225,50
+- [ControlType.Text] Inventory | enabled=True | rect=1808,231,59,19
+- [ControlType.Button]  | enabled=True | rect=1689,270,225,50
+- [ControlType.Text] POS & Sales | enabled=True | rect=1790,285,77,19
+- [ControlType.Button]  | enabled=True | rect=1689,324,225,50
+- [ControlType.Text] Purchases | enabled=True | rect=1805,339,62,19
+- [ControlType.Button]  | enabled=True | rect=1689,378,225,50
+- [ControlType.Text] Operating Expenses | enabled=True | rect=1744,393,123,19
+- [ControlType.Button]  | enabled=True | rect=1689,449,225,50
+- [ControlType.Text] Reports | enabled=True | rect=1819,464,48,19
+- [ControlType.Button]  | enabled=True | rect=1689,503,225,50
+- [ControlType.Text] Users & Permissions | enabled=True | rect=1742,518,125,19
+- [ControlType.Button]  | enabled=True | rect=1689,557,225,50
+- [ControlType.Text] Audit Trail & Activity Log | enabled=True | rect=1709,572,158,19
+- [ControlType.Button]  | enabled=True | rect=1689,611,225,50
+- [ControlType.Text] Recycle Bin | enabled=True | rect=1795,626,72,19
+- [ControlType.Button]  | enabled=True | rect=1689,682,225,50
+- [ControlType.Text] About & Identity | enabled=True | rect=1763,697,104,19
+- [ControlType.Button]  | enabled=True | rect=1689,736,225,50
+- [ControlType.Text] System Settings | enabled=True | rect=1767,751,100,19
+- [ControlType.Button]  | enabled=True | rect=1689,788,225,40
+- [ControlType.Button]  | enabled=True | rect=16,14,42,42
+- [ControlType.Button]  | enabled=True | rect=62,14,42,42
+- [ControlType.Button]  | enabled=True | rect=108,14,42,42
+- [ControlType.Text] المبيعات | enabled=True | rect=1594,24,62,22
+- [ControlType.Button]  | enabled=True | rect=177,14,42,42
+- [ControlType.Button]  | enabled=True | rect=227,14,42,42
+- [ControlType.Text] 2 | enabled=True | rect=259,14,6,14
+- [ControlType.Edit]  | enabled=True | rect=658,11,559,48
+- [ControlType.Text] بحث في المبيعات... | enabled=True | rect=658,27,557,17
+- [ControlType.Text] Ctrl + K | enabled=True | rect=619,28,33,14
+- [ControlType.Pane] SmartLedger.App.ViewModels.SalesViewModel | enabled=True | rect=20,102,1630,958
+- [ControlType.Text] لا توجد فواتير بيع بعد | enabled=True | rect=753,507,163,26
+- [ControlType.Text] نقطة بيع سريعة — امسح الباركود، اختر العميل، راجع الخصم ثم احفظ واطبع. | enabled=True | rect=651,540,366,16
+- [ControlType.Text] F1 الباركود  •  F2 العميل  •  F3 تبديل الوحدة  •  F4 الخصم  •  F5 حفظ وطباعة  •  F6 تعليق  •  Esc تفريغ | enabled=True | rect=589,566,491,16
+- [ControlType.Button] إنشاء فاتورة بيع | enabled=True | rect=969,602,160,44
+- [ControlType.Text] إنشاء فاتورة بيع | enabled=True | rect=1003,614,92,19
+- [ControlType.Button] معاينة آخر إيصال | enabled=True | rect=816,602,145,44
+- [ControlType.Text] معاينة آخر إيصال | enabled=True | rect=839,614,99,19
+- [ControlType.Button] طباعة مباشرة | enabled=True | rect=683,602,125,44
+- [ControlType.Text] طباعة مباشرة | enabled=True | rect=706,614,80,19
+- [ControlType.Button] إرسال لواتساب | enabled=True | rect=540,602,135,44
+- [ControlType.Text] إرسال لواتساب | enabled=True | rect=563,614,88,19
+
+- 06-purchases.png captured at 1920x1080
+### Purchases
+Window: SmartLedger — دفتر أعمال ذكي
+- [ControlType.Text] SmartLedger | enabled=True | rect=1694,18,108,24
+- [ControlType.Text] دفتر أعمال ذكي | enabled=True | rect=1694,42,108,15
+- [ControlType.Button]  | enabled=True | rect=1689,91,225,50
+- [ControlType.Text] Home | enabled=True | rect=1830,106,37,19
+- [ControlType.Button]  | enabled=True | rect=1689,162,225,50
+- [ControlType.Text] Accounts & Ledgers | enabled=True | rect=1743,177,124,19
+- [ControlType.Button]  | enabled=True | rect=1689,216,225,50
+- [ControlType.Text] Inventory | enabled=True | rect=1808,231,59,19
+- [ControlType.Button]  | enabled=True | rect=1689,270,225,50
+- [ControlType.Text] POS & Sales | enabled=True | rect=1790,285,77,19
+- [ControlType.Button]  | enabled=True | rect=1689,324,225,50
+- [ControlType.Text] Purchases | enabled=True | rect=1805,339,62,19
+- [ControlType.Button]  | enabled=True | rect=1689,378,225,50
+- [ControlType.Text] Operating Expenses | enabled=True | rect=1744,393,123,19
+- [ControlType.Button]  | enabled=True | rect=1689,449,225,50
+- [ControlType.Text] Reports | enabled=True | rect=1819,464,48,19
+- [ControlType.Button]  | enabled=True | rect=1689,503,225,50
+- [ControlType.Text] Users & Permissions | enabled=True | rect=1742,518,125,19
+- [ControlType.Button]  | enabled=True | rect=1689,557,225,50
+- [ControlType.Text] Audit Trail & Activity Log | enabled=True | rect=1709,572,158,19
+- [ControlType.Button]  | enabled=True | rect=1689,611,225,50
+- [ControlType.Text] Recycle Bin | enabled=True | rect=1795,626,72,19
+- [ControlType.Button]  | enabled=True | rect=1689,682,225,50
+- [ControlType.Text] About & Identity | enabled=True | rect=1763,697,104,19
+- [ControlType.Button]  | enabled=True | rect=1689,736,225,50
+- [ControlType.Text] System Settings | enabled=True | rect=1767,751,100,19
+- [ControlType.Button]  | enabled=True | rect=1689,788,225,40
+- [ControlType.Button]  | enabled=True | rect=16,14,42,42
+- [ControlType.Button]  | enabled=True | rect=62,14,42,42
+- [ControlType.Button]  | enabled=True | rect=108,14,42,42
+- [ControlType.Text] المشتريات | enabled=True | rect=1582,24,74,22
+- [ControlType.Button]  | enabled=True | rect=177,14,42,42
+- [ControlType.Button]  | enabled=True | rect=227,14,42,42
+- [ControlType.Text] 2 | enabled=True | rect=259,14,6,14
+- [ControlType.Edit]  | enabled=True | rect=652,11,559,48
+- [ControlType.Text] بحث في المشتريات... | enabled=True | rect=652,27,557,17
+- [ControlType.Text] Ctrl + K | enabled=True | rect=613,28,33,14
+- [ControlType.Pane] SmartLedger.App.ViewModels.PurchasesViewModel | enabled=True | rect=20,102,1630,958
+- [ControlType.Text] لا توجد فواتير شراء بعد | enabled=True | rect=749,524,173,26
+- [ControlType.Text] ابدأ فاتورة جديدة، وسيتم تحديث المخزون ورصيد المورد تلقائيًا عند الحفظ. | enabled=True | rect=661,557,349,16
+- [ControlType.Button] إنشاء فاتورة شراء | enabled=True | rect=756,589,160,44
+- [ControlType.Text] إنشاء فاتورة شراء | enabled=True | rect=786,601,100,19
+
+- 07-expenses.png captured at 1920x1080
+WARN: no titled SmartLedger root found after click.
+
+- 08-reports.png captured at 1920x1080
+WARN: no titled SmartLedger root found after click.
+
+- 09-settings.png captured at 1920x1080
+WARN: no titled SmartLedger root found after click.
+
+- 10-about.png captured at 1920x1080
+WARN: no titled SmartLedger root found after click.
+
+## Navigation captures 2026-10-11T02:28:23
+- 03-accounts.png captured at 1920x1080
+WARN: no titled SmartLedger root found after click.
+
+- 04-inventory.png captured at 1920x1080
+WARN: no titled SmartLedger root found after click.
+
+- 05-sales-pos.png captured at 1920x1080
+WARN: no titled SmartLedger root found after click.
+
+- 06-purchases.png captured at 1920x1080
+WARN: no titled SmartLedger root found after click.
+
+- 07-expenses.png captured at 1920x1080
+WARN: no titled SmartLedger root found after click.
+
+- 08-reports.png captured at 1920x1080
+WARN: no titled SmartLedger root found after click.
+
+- 09-settings.png captured at 1920x1080
+WARN: no titled SmartLedger root found after click.
+
+- 10-about.png captured at 1920x1080
+WARN: no titled SmartLedger root found after click.
+
+## Navigation captures 2026-10-11T03:41:10
+- 03-accounts.png captured at 1920x1080
+### Accounts & Ledgers
+Window: SmartLedger — Sign In
+- [ControlType.Text] SmartLedger | enabled=True | rect=538,320,277,62
+- [ControlType.Text] دفتر أعمالك، في مكان واحد | enabled=True | rect=586,401,268,32
+- [ControlType.Text] إدارة الحسابات والدفاتر | enabled=True | rect=726,484,146,21
+- [ControlType.Text] المبيعات والمشتريات والفواتير | enabled=True | rect=678,540,194,21
+- [ControlType.Text] المخزون والوحدات | enabled=True | rect=755,596,117,21
+- [ControlType.Text] التقارير والنسخ الاحتياطي | enabled=True | rect=712,652,160,21
+- [ControlType.Text] إدارة واضحة، وقرارات أسرع | enabled=True | rect=655,739,129,16
+- [ControlType.Button] إغلاق البرنامج | enabled=True | rect=1814,64,42,36
+- [ControlType.Text] تسجيل الدخول | enabled=True | rect=1583,401,177,40
+- [ControlType.Text] أدخل بياناتك للمتابعة | enabled=True | rect=1609,446,123,19
+- [ControlType.Text] اسم المستخدم | enabled=True | rect=1486,493,370,16
+- [ControlType.Edit] اسم المستخدم | enabled=True | rect=1486,516,370,40
+- [ControlType.Text] كلمة المرور | enabled=True | rect=1486,571,370,16
+- [ControlType.Edit]  | enabled=True | rect=1486,594,370,46
+- [ControlType.Button] إظهار أو إخفاء كلمة المرور | enabled=True | rect=1816,597,40,40
+- [ControlType.CheckBox] تذكرني على هذا الجهاز | enabled=True | rect=1486,645,161,32
+- [ControlType.Text] تذكرني على هذا الجهاز | enabled=True | rect=1486,651,132,19
+- [ControlType.Button] نسيت كلمة المرور | enabled=True | rect=1737,645,119,32
+- [ControlType.Text] نسيت كلمة المرور؟ | enabled=True | rect=1741,651,111,19
+- [ControlType.Button] تسجيل الدخول | enabled=True | rect=1486,718,370,50
+- [ControlType.Text] دخول | enabled=True | rect=1655,734,31,19
+- [ControlType.Text] محمي بتشفير آمن • بياناتك محلية | enabled=True | rect=1585,790,151,15
+
+- 04-inventory.png captured at 1920x1080
+### Inventory
+Window: SmartLedger — Sign In
+- [ControlType.Text] SmartLedger | enabled=True | rect=538,320,277,62
+- [ControlType.Text] دفتر أعمالك، في مكان واحد | enabled=True | rect=586,401,268,32
+- [ControlType.Text] إدارة الحسابات والدفاتر | enabled=True | rect=726,484,146,21
+- [ControlType.Text] المبيعات والمشتريات والفواتير | enabled=True | rect=678,540,194,21
+- [ControlType.Text] المخزون والوحدات | enabled=True | rect=755,596,117,21
+- [ControlType.Text] التقارير والنسخ الاحتياطي | enabled=True | rect=712,652,160,21
+- [ControlType.Text] إدارة واضحة، وقرارات أسرع | enabled=True | rect=655,739,129,16
+- [ControlType.Button] إغلاق البرنامج | enabled=True | rect=1814,64,42,36
+- [ControlType.Text] تسجيل الدخول | enabled=True | rect=1583,401,177,40
+- [ControlType.Text] أدخل بياناتك للمتابعة | enabled=True | rect=1609,446,123,19
+- [ControlType.Text] اسم المستخدم | enabled=True | rect=1486,493,370,16
+- [ControlType.Edit] اسم المستخدم | enabled=True | rect=1486,516,370,40
+- [ControlType.Text] كلمة المرور | enabled=True | rect=1486,571,370,16
+- [ControlType.Edit]  | enabled=True | rect=1486,594,370,46
+- [ControlType.Button] إظهار أو إخفاء كلمة المرور | enabled=True | rect=1816,597,40,40
+- [ControlType.CheckBox] تذكرني على هذا الجهاز | enabled=True | rect=1486,645,161,32
+- [ControlType.Text] تذكرني على هذا الجهاز | enabled=True | rect=1486,651,132,19
+- [ControlType.Button] نسيت كلمة المرور | enabled=True | rect=1737,645,119,32
+- [ControlType.Text] نسيت كلمة المرور؟ | enabled=True | rect=1741,651,111,19
+- [ControlType.Button] تسجيل الدخول | enabled=True | rect=1486,718,370,50
+- [ControlType.Text] دخول | enabled=True | rect=1655,734,31,19
+- [ControlType.Text] محمي بتشفير آمن • بياناتك محلية | enabled=True | rect=1585,790,151,15
+
+- 05-sales-pos.png captured at 1920x1080
+### POS & Sales
+Window: SmartLedger — Sign In
+- [ControlType.Text] SmartLedger | enabled=True | rect=538,320,277,62
+- [ControlType.Text] دفتر أعمالك، في مكان واحد | enabled=True | rect=586,401,268,32
+- [ControlType.Text] إدارة الحسابات والدفاتر | enabled=True | rect=726,484,146,21
+- [ControlType.Text] المبيعات والمشتريات والفواتير | enabled=True | rect=678,540,194,21
+- [ControlType.Text] المخزون والوحدات | enabled=True | rect=755,596,117,21
+- [ControlType.Text] التقارير والنسخ الاحتياطي | enabled=True | rect=712,652,160,21
+- [ControlType.Text] إدارة واضحة، وقرارات أسرع | enabled=True | rect=655,739,129,16
+- [ControlType.Button] إغلاق البرنامج | enabled=True | rect=1814,64,42,36
+- [ControlType.Text] تسجيل الدخول | enabled=True | rect=1583,401,177,40
+- [ControlType.Text] أدخل بياناتك للمتابعة | enabled=True | rect=1609,446,123,19
+- [ControlType.Text] اسم المستخدم | enabled=True | rect=1486,493,370,16
+- [ControlType.Edit] اسم المستخدم | enabled=True | rect=1486,516,370,40
+- [ControlType.Text] كلمة المرور | enabled=True | rect=1486,571,370,16
+- [ControlType.Edit]  | enabled=True | rect=1486,594,370,46
+- [ControlType.Button] إظهار أو إخفاء كلمة المرور | enabled=True | rect=1816,597,40,40
+- [ControlType.CheckBox] تذكرني على هذا الجهاز | enabled=True | rect=1486,645,161,32
+- [ControlType.Text] تذكرني على هذا الجهاز | enabled=True | rect=1486,651,132,19
+- [ControlType.Button] نسيت كلمة المرور | enabled=True | rect=1737,645,119,32
+- [ControlType.Text] نسيت كلمة المرور؟ | enabled=True | rect=1741,651,111,19
+- [ControlType.Button] تسجيل الدخول | enabled=True | rect=1486,718,370,50
+- [ControlType.Text] دخول | enabled=True | rect=1655,734,31,19
+- [ControlType.Text] محمي بتشفير آمن • بياناتك محلية | enabled=True | rect=1585,790,151,15
+
+- 06-purchases.png captured at 1920x1080
+### Purchases
+Window: SmartLedger — Sign In
+- [ControlType.Text] SmartLedger | enabled=True | rect=538,320,277,62
+- [ControlType.Text] دفتر أعمالك، في مكان واحد | enabled=True | rect=586,401,268,32
+- [ControlType.Text] إدارة الحسابات والدفاتر | enabled=True | rect=726,484,146,21
+- [ControlType.Text] المبيعات والمشتريات والفواتير | enabled=True | rect=678,540,194,21
+- [ControlType.Text] المخزون والوحدات | enabled=True | rect=755,596,117,21
+- [ControlType.Text] التقارير والنسخ الاحتياطي | enabled=True | rect=712,652,160,21
+- [ControlType.Text] إدارة واضحة، وقرارات أسرع | enabled=True | rect=655,739,129,16
+- [ControlType.Button] إغلاق البرنامج | enabled=True | rect=1814,64,42,36
+- [ControlType.Text] تسجيل الدخول | enabled=True | rect=1583,401,177,40
+- [ControlType.Text] أدخل بياناتك للمتابعة | enabled=True | rect=1609,446,123,19
+- [ControlType.Text] اسم المستخدم | enabled=True | rect=1486,493,370,16
+- [ControlType.Edit] اسم المستخدم | enabled=True | rect=1486,516,370,40
+- [ControlType.Text] كلمة المرور | enabled=True | rect=1486,571,370,16
+- [ControlType.Edit]  | enabled=True | rect=1486,594,370,46
+- [ControlType.Button] إظهار أو إخفاء كلمة المرور | enabled=True | rect=1816,597,40,40
+- [ControlType.CheckBox] تذكرني على هذا الجهاز | enabled=True | rect=1486,645,161,32
+- [ControlType.Text] تذكرني على هذا الجهاز | enabled=True | rect=1486,651,132,19
+- [ControlType.Button] نسيت كلمة المرور | enabled=True | rect=1737,645,119,32
+- [ControlType.Text] نسيت كلمة المرور؟ | enabled=True | rect=1741,651,111,19
+- [ControlType.Button] تسجيل الدخول | enabled=True | rect=1486,718,370,50
+- [ControlType.Text] دخول | enabled=True | rect=1655,734,31,19
+- [ControlType.Text] محمي بتشفير آمن • بياناتك محلية | enabled=True | rect=1585,790,151,15
+
+- 07-expenses.png captured at 1920x1080
+### Operating Expenses
+Window: SmartLedger — Sign In
+- [ControlType.Text] SmartLedger | enabled=True | rect=538,320,277,62
+- [ControlType.Text] دفتر أعمالك، في مكان واحد | enabled=True | rect=586,401,268,32
+- [ControlType.Text] إدارة الحسابات والدفاتر | enabled=True | rect=726,484,146,21
+- [ControlType.Text] المبيعات والمشتريات والفواتير | enabled=True | rect=678,540,194,21
+- [ControlType.Text] المخزون والوحدات | enabled=True | rect=755,596,117,21
+- [ControlType.Text] التقارير والنسخ الاحتياطي | enabled=True | rect=712,652,160,21
+- [ControlType.Text] إدارة واضحة، وقرارات أسرع | enabled=True | rect=655,739,129,16
+- [ControlType.Button] إغلاق البرنامج | enabled=True | rect=1814,64,42,36
+- [ControlType.Text] تسجيل الدخول | enabled=True | rect=1583,401,177,40
+- [ControlType.Text] أدخل بياناتك للمتابعة | enabled=True | rect=1609,446,123,19
+- [ControlType.Text] اسم المستخدم | enabled=True | rect=1486,493,370,16
+- [ControlType.Edit] اسم المستخدم | enabled=True | rect=1486,516,370,40
+- [ControlType.Text] كلمة المرور | enabled=True | rect=1486,571,370,16
+- [ControlType.Edit]  | enabled=True | rect=1486,594,370,46
+- [ControlType.Button] إظهار أو إخفاء كلمة المرور | enabled=True | rect=1816,597,40,40
+- [ControlType.CheckBox] تذكرني على هذا الجهاز | enabled=True | rect=1486,645,161,32
+- [ControlType.Text] تذكرني على هذا الجهاز | enabled=True | rect=1486,651,132,19
+- [ControlType.Button] نسيت كلمة المرور | enabled=True | rect=1737,645,119,32
+- [ControlType.Text] نسيت كلمة المرور؟ | enabled=True | rect=1741,651,111,19
+- [ControlType.Button] تسجيل الدخول | enabled=True | rect=1486,718,370,50
+- [ControlType.Text] دخول | enabled=True | rect=1655,734,31,19
+- [ControlType.Text] محمي بتشفير آمن • بياناتك محلية | enabled=True | rect=1585,790,151,15
+
+- 08-reports.png captured at 1920x1080
+### Reports
+Window: SmartLedger — Sign In
+- [ControlType.Text] SmartLedger | enabled=True | rect=538,320,277,62
+- [ControlType.Text] دفتر أعمالك، في مكان واحد | enabled=True | rect=586,401,268,32
+- [ControlType.Text] إدارة الحسابات والدفاتر | enabled=True | rect=726,484,146,21
+- [ControlType.Text] المبيعات والمشتريات والفواتير | enabled=True | rect=678,540,194,21
+- [ControlType.Text] المخزون والوحدات | enabled=True | rect=755,596,117,21
+- [ControlType.Text] التقارير والنسخ الاحتياطي | enabled=True | rect=712,652,160,21
+- [ControlType.Text] إدارة واضحة، وقرارات أسرع | enabled=True | rect=655,739,129,16
+- [ControlType.Button] إغلاق البرنامج | enabled=True | rect=1814,64,42,36
+- [ControlType.Text] تسجيل الدخول | enabled=True | rect=1583,401,177,40
+- [ControlType.Text] أدخل بياناتك للمتابعة | enabled=True | rect=1609,446,123,19
+- [ControlType.Text] اسم المستخدم | enabled=True | rect=1486,493,370,16
+- [ControlType.Edit] اسم المستخدم | enabled=True | rect=1486,516,370,40
+- [ControlType.Text] كلمة المرور | enabled=True | rect=1486,571,370,16
+- [ControlType.Edit]  | enabled=True | rect=1486,594,370,46
+- [ControlType.Button] إظهار أو إخفاء كلمة المرور | enabled=True | rect=1816,597,40,40
+- [ControlType.CheckBox] تذكرني على هذا الجهاز | enabled=True | rect=1486,645,161,32
+- [ControlType.Text] تذكرني على هذا الجهاز | enabled=True | rect=1486,651,132,19
+- [ControlType.Button] نسيت كلمة المرور | enabled=True | rect=1737,645,119,32
+- [ControlType.Text] نسيت كلمة المرور؟ | enabled=True | rect=1741,651,111,19
+- [ControlType.Button] تسجيل الدخول | enabled=True | rect=1486,718,370,50
+- [ControlType.Text] دخول | enabled=True | rect=1655,734,31,19
+- [ControlType.Text] محمي بتشفير آمن • بياناتك محلية | enabled=True | rect=1585,790,151,15
+
+- 09-settings.png captured at 1920x1080
+### System Settings
+Window: SmartLedger — دفتر أعمال ذكي
+- [ControlType.Text] SmartLedger | enabled=True | rect=1694,18,108,24
+- [ControlType.Text] دفتر أعمال ذكي | enabled=True | rect=1694,42,108,15
+- [ControlType.Button]  | enabled=True | rect=1689,91,225,50
+- [ControlType.Text] الرئيسية | enabled=True | rect=1819,106,48,19
+- [ControlType.Button]  | enabled=True | rect=1689,162,225,50
+- [ControlType.Text] الحسابات والدفاتر | enabled=True | rect=1763,177,104,19
+- [ControlType.Button]  | enabled=True | rect=1689,216,225,50
+- [ControlType.Text] المخزن والمنتجات | enabled=True | rect=1764,231,103,19
+- [ControlType.Button]  | enabled=True | rect=1689,270,225,50
+- [ControlType.Text] المبيعات ونقاط البيع | enabled=True | rect=1745,285,122,19
+- [ControlType.Button]  | enabled=True | rect=1689,324,225,50
+- [ControlType.Text] المشتريات والتوريد | enabled=True | rect=1753,339,114,19
+- [ControlType.Button]  | enabled=True | rect=1689,378,225,50
+- [ControlType.Text] المصروفات والنفقات | enabled=True | rect=1745,393,122,19
+- [ControlType.Button]  | enabled=True | rect=1689,449,225,50
+- [ControlType.Text] التقارير والمطبوعات | enabled=True | rect=1747,464,120,19
+- [ControlType.Button]  | enabled=True | rect=1689,503,225,50
+- [ControlType.Text] المستخدمين والصلاحيات | enabled=True | rect=1723,518,144,19
+- [ControlType.Button]  | enabled=True | rect=1689,557,225,50
+- [ControlType.Text] سجل العمليات | enabled=True | rect=1782,572,85,19
+- [ControlType.Button]  | enabled=True | rect=1689,611,225,50
+- [ControlType.Text] سلة المحذوفات | enabled=True | rect=1776,626,91,19
+- [ControlType.Button]  | enabled=True | rect=1689,682,225,50
+- [ControlType.Text] عن النظام | enabled=True | rect=1808,697,59,19
+- [ControlType.Button]  | enabled=True | rect=1689,736,225,50
+- [ControlType.Text] الإعدادات | enabled=True | rect=1811,751,56,19
+- [ControlType.Button]  | enabled=True | rect=1689,788,225,40
+- [ControlType.Button]  | enabled=True | rect=16,14,42,42
+- [ControlType.Button]  | enabled=True | rect=62,14,42,42
+- [ControlType.Button]  | enabled=True | rect=108,14,42,42
+- [ControlType.Text] الرئيسية | enabled=True | rect=1599,24,57,22
+- [ControlType.Button]  | enabled=True | rect=177,14,42,42
+- [ControlType.Button]  | enabled=True | rect=227,14,42,42
+- [ControlType.Text] 2 | enabled=True | rect=259,14,6,14
+- [ControlType.Edit]  | enabled=True | rect=661,11,559,48
+- [ControlType.Text] بحث في الرئيسية... | enabled=True | rect=661,27,557,17
+- [ControlType.Text] Ctrl + K | enabled=True | rect=622,28,33,14
+- [ControlType.Pane] SmartLedger.App.ViewModels.DashboardViewModel | enabled=True | rect=20,102,1630,958
+- [ControlType.Text] صافي المركز المالي | enabled=True | rect=1081,129,106,17
+- [ControlType.Text] ◆ | enabled=True | rect=1608,129,11,17
+- [ControlType.Text] •••••• | enabled=True | rect=1037,165,594,33
+- [ControlType.Text] لنا | enabled=True | rect=1606,217,14,19
+- [ControlType.Text]    | enabled=True | rect=1598,217,8,19
+- [ControlType.Text] •••••• | enabled=True | rect=1562,217,36,19
+- [ControlType.Text] علينا | enabled=True | rect=1292,217,27,19
+- [ControlType.Text]    | enabled=True | rect=1284,217,8,19
+- [ControlType.Text] •••••• | enabled=True | rect=1248,217,36,19
+- [ControlType.Text] نشاط اليوم | enabled=True | rect=561,129,59,17
+- [ControlType.Text] ↗ | enabled=True | rect=964,127,12,22
+- [ControlType.Text] •••••• | enabled=True | rect=517,165,470,33
+- [ControlType.Text] مصروفات | enabled=True | rect=931,217,45,19
+- [ControlType.Text]    | enabled=True | rect=923,217,8,19
+- [ControlType.Text] •••••• | enabled=True | rect=899,217,24,19
+- [ControlType.Text] حركات | enabled=True | rect=708,217,29,19
+- [ControlType.Text]    | enabled=True | rect=700,217,8,19
+- [ControlType.Text] 1 | enabled=True | rect=695,217,5,19
+- [ControlType.Text] قيمة بضاعة المخزون | enabled=True | rect=83,129,112,17
+- [ControlType.Text] ▦ | enabled=True | rect=443,127,14,21
+- [ControlType.Text] •••••• | enabled=True | rect=39,165,428,33
+- [ControlType.Text] الأصول التشغيلية الحالية | enabled=True | rect=88,194,379,15
+- [ControlType.Text] المخزون | enabled=True | rect=47,214,33,14
+- [ControlType.Text] الإجراءات السريعة | enabled=True | rect=35,247,108,20
+- [ControlType.DataItem] QuickActionItem { Label = حساب جديد, Shortcut = F7, Command = CommunityToolkit.Mvvm.Input.AsyncRelayCommand } | enabled=True | rect=1235,277,400,66
+- [ControlType.Button]  | enabled=True | rect=1239,281,392,58
+- [ControlType.Text] حساب جديد | enabled=True | rect=1417,300,68,19
+- [ControlType.Text] F7 | enabled=True | rect=1396,303,11,14
+- [ControlType.DataItem] QuickActionItem { Label = عملية جديدة, Shortcut = F8, Command = CommunityToolkit.Mvvm.Input.AsyncRelayCommand } | enabled=True | rect=835,277,400,66
+- [ControlType.Button]  | enabled=True | rect=839,281,392,58
+- [ControlType.Text] عملية جديدة | enabled=True | rect=1016,300,71,19
+- [ControlType.Text] F8 | enabled=True | rect=995,303,11,14
+- [ControlType.DataItem] QuickActionItem { Label = فاتورة بيع, Shortcut = F9, Command = CommunityToolkit.Mvvm.Input.AsyncRelayCommand } | enabled=True | rect=435,277,400,66
+- [ControlType.Button]  | enabled=True | rect=439,281,392,58
+- [ControlType.Text] فاتورة بيع | enabled=True | rect=622,300,57,19
+- [ControlType.Text] F9 | enabled=True | rect=601,303,11,14
+- [ControlType.DataItem] QuickActionItem { Label = فاتورة شراء, Shortcut = F10, Command = CommunityToolkit.Mvvm.Input.AsyncRelayCommand } | enabled=True | rect=35,277,400,66
+
+- 10-about.png captured at 1920x1080
+### About & Identity
+Window: SmartLedger — دفتر أعمال ذكي
+- [ControlType.Window] عن التطبيق والهوية | About SmartLedger | enabled=True | rect=580,116,760,800
+- [ControlType.Button] إغلاق نافذة عن النظام | enabled=True | rect=1265,157,38,34
+- [ControlType.Text] ✕ | enabled=True | rect=1279,165,11,19
+- [ControlType.Text] عن النظام | enabled=True | rect=627,153,638,27
+- [ControlType.Text] SmartLedger Pro · Enterprise ERP Suite | enabled=True | rect=627,180,638,15
+- [ControlType.Text] SmartLedger Pro | enabled=True | rect=1079,228,205,35
+- [ControlType.Text] Enterprise ERP Suite | enabled=True | rect=1079,263,205,20
+- [ControlType.Text] Giant Enterprise Software Studio | enabled=True | rect=646,301,638,22
+- [ControlType.Text] Commercial Enterprise Edition (Release 2026) | .NET 10.0 Windows Desktop | SQLite High-Performance Engine | QuestPDF Vector Reporting | enabled=True | rect=646,327,638,38
+- [ControlType.Text] مرخص تجارياً — نسخة المؤسسات (Enterprise Active License) | enabled=True | rect=658,389,380,19
+- [ControlType.Text] تشخيصات النظام ومعلومات النسخة | System Information | enabled=True | rect=627,459,676,24
+- [ControlType.Text] حجم قاعدة البيانات | enabled=True | rect=987,509,302,19
+- [ControlType.Text] 0.27 MB | enabled=True | rect=987,534,302,27
+- [ControlType.Text] إجمالي السجلات | enabled=True | rect=641,509,302,19
+- [ControlType.Text] 97 | enabled=True | rect=641,534,302,27
+- [ControlType.Text] .NET Runtime | enabled=True | rect=987,605,302,19
+- [ControlType.Text] 10.0.12 (Windows x64) | enabled=True | rect=987,630,302,27
+- [ControlType.Text] الذاكرة المخصصة | enabled=True | rect=641,605,302,19
+- [ControlType.Text] 205.5 MB | enabled=True | rect=641,630,302,27
+- [ControlType.Text] الدعم والاستفسارات | enabled=True | rect=643,705,644,22
+- [ControlType.Text] رقم التواصل والدعم الفني: 774004399 | enabled=True | rect=643,735,644,21
+- [ControlType.Text] للاستفسارات الفنية وخدمات المنتج، يرجى التواصل عبر الرقم أعلاه. | enabled=True | rect=643,760,644,19
+- [ControlType.Button] نسخ معلومات النظام | Copy System Info | enabled=True | rect=810,809,310,42
+- [ControlType.Text] نسخ معلومات النظام | Copy System Info | enabled=True | rect=844,821,243,19
+- [ControlType.Text] © 2026 Giant Enterprise Software Studio. All rights reserved. | enabled=True | rect=627,873,676,19
+- [ControlType.Button] إغلاق | Close | enabled=True | rect=895,900,140,40
+- [ControlType.Text] إغلاق | Close | enabled=True | rect=926,911,78,19
+- [ControlType.Button]  | enabled=True | rect=∞,∞,-∞,-∞
+- [ControlType.Button]  | enabled=True | rect=593,846,10,57
+- [ControlType.Text] SmartLedger | enabled=True | rect=1694,18,108,24
+- [ControlType.Text] دفتر أعمال ذكي | enabled=True | rect=1694,42,108,15
+- [ControlType.Button]  | enabled=True | rect=1689,91,225,50
+- [ControlType.Text] الرئيسية | enabled=True | rect=1819,106,48,19
+- [ControlType.Button]  | enabled=True | rect=1689,162,225,50
+- [ControlType.Text] الحسابات والدفاتر | enabled=True | rect=1763,177,104,19
+- [ControlType.Button]  | enabled=True | rect=1689,216,225,50
+- [ControlType.Text] المخزن والمنتجات | enabled=True | rect=1764,231,103,19
+- [ControlType.Button]  | enabled=True | rect=1689,270,225,50
+- [ControlType.Text] المبيعات ونقاط البيع | enabled=True | rect=1745,285,122,19
+- [ControlType.Button]  | enabled=True | rect=1689,324,225,50
+- [ControlType.Text] المشتريات والتوريد | enabled=True | rect=1753,339,114,19
+- [ControlType.Button]  | enabled=True | rect=1689,378,225,50
+- [ControlType.Text] المصروفات والنفقات | enabled=True | rect=1745,393,122,19
+- [ControlType.Button]  | enabled=True | rect=1689,449,225,50
+- [ControlType.Text] التقارير والمطبوعات | enabled=True | rect=1747,464,120,19
+- [ControlType.Button]  | enabled=True | rect=1689,503,225,50
+- [ControlType.Text] المستخدمين والصلاحيات | enabled=True | rect=1723,518,144,19
+- [ControlType.Button]  | enabled=True | rect=1689,557,225,50
+- [ControlType.Text] سجل العمليات | enabled=True | rect=1782,572,85,19
+- [ControlType.Button]  | enabled=True | rect=1689,611,225,50
+- [ControlType.Text] سلة المحذوفات | enabled=True | rect=1776,626,91,19
+- [ControlType.Button]  | enabled=True | rect=1689,682,225,50
+- [ControlType.Text] عن النظام | enabled=True | rect=1808,697,59,19
+- [ControlType.Button]  | enabled=True | rect=1689,736,225,50
+- [ControlType.Text] الإعدادات | enabled=True | rect=1811,751,56,19
+- [ControlType.Button]  | enabled=True | rect=1689,788,225,40
+- [ControlType.Button]  | enabled=True | rect=16,14,42,42
+- [ControlType.Button]  | enabled=True | rect=62,14,42,42
+- [ControlType.Button]  | enabled=True | rect=108,14,42,42
+- [ControlType.Text] الرئيسية | enabled=True | rect=1599,24,57,22
+- [ControlType.Button]  | enabled=True | rect=177,14,42,42
+- [ControlType.Button]  | enabled=True | rect=227,14,42,42
+- [ControlType.Text] 2 | enabled=True | rect=259,14,6,14
+- [ControlType.Edit]  | enabled=True | rect=661,11,559,48
+- [ControlType.Text] بحث في الرئيسية... | enabled=True | rect=661,27,557,17
+- [ControlType.Text] Ctrl + K | enabled=True | rect=622,28,33,14
+- [ControlType.Pane] SmartLedger.App.ViewModels.DashboardViewModel | enabled=True | rect=20,102,1630,958
+- [ControlType.Text] صافي المركز المالي | enabled=True | rect=1081,129,106,17
+- [ControlType.Text] ◆ | enabled=True | rect=1608,129,11,17
+- [ControlType.Text] •••••• | enabled=True | rect=1037,165,594,33
+- [ControlType.Text] لنا | enabled=True | rect=1606,217,14,19
+- [ControlType.Text]    | enabled=True | rect=1598,217,8,19
+- [ControlType.Text] •••••• | enabled=True | rect=1562,217,36,19
+- [ControlType.Text] علينا | enabled=True | rect=1292,217,27,19
+- [ControlType.Text]    | enabled=True | rect=1284,217,8,19
+

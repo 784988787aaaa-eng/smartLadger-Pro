@@ -1,0 +1,15 @@
+[03:32:19] BUILD start
+[03:32:22] BUILD PASS: 0 warnings, 0 errors
+[03:32:32] TEST PASS: 105/105
+[03:32:36] INVOKED LoginSubmitButton
+[03:32:37] AUTHENTICATED: dashboard navigation visible
+[03:32:37] INVOKED NavBtn_Accounts
+[03:32:38] MISSING_ID Btn_OpenNewAccountDialog
+[03:32:44] MISSING_ID Btn_OpenNewBookDialog
+[03:32:49] MISSING_ID NavBtn_Inventory
+[03:32:50] MISSING_ID Btn_OpenNewProductDialog
+[03:32:55] MISSING_ID NavBtn_Expenses
+[03:32:56] MISSING_ID Btn_OpenNewExpenseDialog
+[03:33:02] MISSING_ID NavBtn_Sales
+[03:33:03] MISSING_ID Btn_OpenNewSaleInvoice
+[03:33:09] REPORT_WRITTEN_AND_OPENED C:\Users\pc\SmartLedger-Build-Clean-20261010\DEEP_DECLUTTER_AND_REMEDIATION_REPORT.md

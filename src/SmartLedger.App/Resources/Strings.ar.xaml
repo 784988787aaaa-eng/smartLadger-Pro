@@ -1,12 +1,12 @@
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:sys="clr-namespace:System;assembly=mscorlib">
   <sys:String x:Key="Nav.Home">الرئيسية</sys:String>
-  <sys:String x:Key="Nav.Accounts">الدفاتر والحسابات</sys:String>
-  <sys:String x:Key="Nav.Inventory">المخزون</sys:String>
+  <sys:String x:Key="Nav.Accounts">الحسابات والدفاتر</sys:String>
+  <sys:String x:Key="Nav.Inventory">المخزن والمنتجات</sys:String>
   <sys:String x:Key="Nav.Sales">المبيعات ونقاط البيع</sys:String>
-  <sys:String x:Key="Nav.Purchases">المشتريات</sys:String>
-  <sys:String x:Key="Nav.Expenses">المصروفات التشغيلية</sys:String>
-  <sys:String x:Key="Nav.Audit">سجل النشاطات والتدقيق</sys:String>
-  <sys:String x:Key="Nav.Settings">إعدادات النظام</sys:String>
+  <sys:String x:Key="Nav.Purchases">المشتريات والتوريد</sys:String>
+  <sys:String x:Key="Nav.Expenses">المصروفات والنفقات</sys:String>
+  <sys:String x:Key="Nav.Audit">سجل العمليات</sys:String>
+  <sys:String x:Key="Nav.Settings">الإعدادات</sys:String>
   <sys:String x:Key="Accounts.Name">اسم الحساب</sys:String>
   <sys:String x:Key="Accounts.Phone">الهاتف</sys:String>
   <sys:String x:Key="Accounts.Debit">مدين (عليه)</sys:String>
@@ -53,10 +53,10 @@
   <sys:String x:Key="BtnSaveAndNew">حفظ ومتابعة (Ctrl+Enter)</sys:String>
   <sys:String x:Key="BtnSaveAndClose">حفظ وإغلاق (Ctrl+S)</sys:String>
   <sys:String x:Key="BtnCancel">إلغاء (Esc)</sys:String>
-  <sys:String x:Key="ColBarcode">الباركود</sys:String>
-  <sys:String x:Key="ColProductName">اسم الصنف</sys:String>
+  <sys:String x:Key="ColBarcode">الباركود / الرمز</sys:String>
+  <sys:String x:Key="ColProductName">اسم الصنف / المنتج</sys:String>
   <sys:String x:Key="ColCategory">التصنيف</sys:String>
-  <sys:String x:Key="ColStock">الرصيد المتوفر</sys:String>
+  <sys:String x:Key="ColStock">المخزون المتاح</sys:String>
   <sys:String x:Key="ColCost">سعر التكلفة</sys:String>
   <sys:String x:Key="ColRetail">سعر التجزئة</sys:String>
   <sys:String x:Key="ColWholesale">سعر الجملة</sys:String>
@@ -80,4 +80,14 @@
   <sys:String x:Key="ColActor">المستخدم</sys:String>
   <sys:String x:Key="ColTimestamp">التوقيت</sys:String>
   <sys:String x:Key="ColDetails">التفاصيل</sys:String>
+  <sys:String x:Key="Nav.Reports">التقارير والمطبوعات</sys:String>
+  <sys:String x:Key="Nav.Users">المستخدمين والصلاحيات</sys:String>
+  <sys:String x:Key="Nav.RecycleBin">سلة المحذوفات</sys:String>
+  <sys:String x:Key="Nav.About">عن النظام</sys:String>
+  <sys:String x:Key="ColStatementAccount">الحساب</sys:String>
+  <sys:String x:Key="ColStatementDebit">مدين (له)</sys:String>
+  <sys:String x:Key="ColStatementCredit">دائن (عليه)</sys:String>
+  <sys:String x:Key="ColStatementBalance">الرصيد التراكمي</sys:String>
+  <sys:String x:Key="ColStatementDetails">البيان / تفاصيل الحركة</sys:String>
+  <sys:String x:Key="ColStatementDateTime">التاريخ والوقت</sys:String>
 </ResourceDictionary>

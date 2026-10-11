@@ -118,6 +118,25 @@ public partial class MainWindow : Window
             return;
         }
 
+        if (Keyboard.Modifiers == ModifierKeys.None && e.Key == Key.F3)
+        {
+            GlobalSearchBox.Focus();
+            GlobalSearchBox.SelectAll();
+            e.Handled = true;
+            return;
+        }
+
+        if (Keyboard.Modifiers == ModifierKeys.None && e.Key == Key.F2)
+        {
+            var mainVm = (MainViewModel)DataContext;
+            await mainVm.NavigateCommand.ExecuteAsync(AppPage.Sales);
+            if (mainVm.CurrentViewModel is SalesViewModel salesVm)
+                salesVm.OpenNewCommand.Execute(null);
+            _ = Dispatcher.BeginInvoke(FocusFirstInput, DispatcherPriority.Input);
+            e.Handled = true;
+            return;
+        }
+
         if (Keyboard.Modifiers == ModifierKeys.None)
         {
             var vm = (MainViewModel)DataContext;
@@ -141,7 +160,10 @@ public partial class MainWindow : Window
             }
             if (e.Key == Key.F10)
             {
-                await vm.QuickPurchaseCommand.ExecuteAsync(null);
+                if (vm.CurrentViewModel is SalesViewModel || vm.CurrentViewModel is PurchasesViewModel)
+                    await SaveContextualAsync();
+                else
+                    await vm.QuickPurchaseCommand.ExecuteAsync(null);
                 e.Handled = true;
                 return;
             }
@@ -332,8 +354,24 @@ public partial class MainWindow : Window
 
     private void TopBar_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
     {
-        if (e.ChangedButton == MouseButton.Left && e.ButtonState == MouseButtonState.Pressed && !_fullScreen)
-            DragMove();
+        if (e.ChangedButton != MouseButton.Left || e.ButtonState != MouseButtonState.Pressed)
+            return;
+
+        if (e.ClickCount == 2)
+        {
+            if (_fullScreen)
+                ExitFullScreen();
+            else
+                WindowState = WindowState == WindowState.Maximized ? WindowState.Normal : WindowState.Maximized;
+            e.Handled = true;
+            return;
+        }
+
+        if (!_fullScreen && WindowState == WindowState.Normal)
+        {
+            try { DragMove(); }
+            catch (InvalidOperationException) { /* Mouse capture can be released before drag starts. */ }
+        }
     }
 
     private void About_Click(object sender, RoutedEventArgs e)

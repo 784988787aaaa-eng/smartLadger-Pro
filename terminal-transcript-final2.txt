@@ -1,0 +1,26 @@
+﻿**********************
+Windows PowerShell transcript start
+Start time: 20261010235137
+Username: DESKTOP-EDGLJ6K\pc
+RunAs User: DESKTOP-EDGLJ6K\pc
+Configuration Name: 
+Machine: DESKTOP-EDGLJ6K (Microsoft Windows NT 10.0.22631.0)
+Host Application: powershell -Command $workDir='C:\Users\pc\SmartLedger-Build-Clean-20261010'; Set-Location $workDir; $log=Join-Path $workDir 'REMOTE_DESKTOP_BUILD_REPORT.md'; Start-Transcript -Path (Join-Path $workDir 'terminal-transcript-final2.txt') -Force | Out-Null; function Run-Step([string]$title,[string]$cmd){ "`n## $title`n``````powershell`n$cmd`n``````" | Add-Content $log; Write-Host "=== $title ==="; Invoke-Expression $cmd 2>&1 | Tee-Object -FilePath (Join-Path $workDir 'command-output-final2.log') -Append; $code=$LASTEXITCODE; "ExitCode: $code" | Add-Content $log; Write-Host "EXIT=$code"; return $code }; $sln=Join-Path $workDir 'SmartLedger.sln'; $build=Run-Step 'Release build after test fixes' ("dotnet build `"$sln`" -c Release -warnaserror"); $testProj=Join-Path $workDir 'tests\SmartLedger.Tests\SmartLedger.Tests.csproj'; $test=Run-Step 'Full test suite after fixes' ("dotnet test `"$testProj`" -c Release --logger `"console;verbosity=normal`""); $appProj=Join-Path $workDir 'src\SmartLedger.App\SmartLedger.App.csproj'; if($build -eq 0 -and $test -eq 0){$pub=Run-Step 'Publish validated win-x64 application' ("dotnet publish `"$appProj`" -c Release -r win-x64 --self-contained false -o `"$workDir\publish`"")} else {$pub=1; 'Publish skipped because build or tests failed.' | Add-Content $log}; $exePath=Join-Path $workDir 'publish\SmartLedger.App.exe'; $exe=Test-Path $exePath; $exeInfo=if($exe){(Get-Item $exePath).Length}else{0}; "`n## Latest outcome`n- Release build exit code: $build`n- Full test suite exit code: $test`n- Publish exit code: $pub`n- SmartLedger.App.exe exists: $exe`n- EXE size bytes: $exeInfo`n- Publish path: $exePath`n" | Add-Content $log; Stop-Transcript | Out-Null; Write-Host "REPORT=$log BUILD=$build TEST=$test PUBLISH=$pub EXE=$exe SIZE=$exeInfo"
+Process ID: 2540
+PSVersion: 5.1.22621.6133
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.22621.6133
+BuildVersion: 10.0.22621.6133
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+=== Release build after test fixes ===
+EXIT=1
+=== Full test suite after fixes ===
+EXIT=1
+**********************
+Windows PowerShell transcript end
+End time: 20261010235148
+**********************

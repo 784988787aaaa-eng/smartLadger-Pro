@@ -1,0 +1,128 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:vm="clr-namespace:SmartLedger.App.ViewModels" xmlns:behaviors="clr-namespace:SmartLedger.App.Behaviors" xmlns:local="clr-namespace:SmartLedger.App.Converters" xmlns:core="clr-namespace:SmartLedger.Core.Models;assembly=SmartLedger.Core"><DataTemplate DataType="{x:Type vm:SettingsViewModel}">
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" FlowDirection="RightToLeft">
+      <StackPanel Margin="2,0,2,18">
+        <Grid Margin="0,0,0,14">
+          <Grid.ColumnDefinitions><ColumnDefinition /><ColumnDefinition Width="Auto" /></Grid.ColumnDefinitions>
+          <StackPanel HorizontalAlignment="Left" FlowDirection="RightToLeft">
+            <TextBlock Text="مركز الإعدادات" FontSize="24" FontWeight="Bold" Foreground="{StaticResource BrushText}" TextAlignment="Left" HorizontalAlignment="Stretch" />
+            <TextBlock Text="إدارة هوية المنشأة والنسخ الاحتياطي من مكان واحد" Style="{StaticResource CaptionText}" Margin="0,5,0,0" TextAlignment="Left" HorizontalAlignment="Stretch" />
+          </StackPanel>
+          <Button Grid.Column="1" Content="حفظ الإعدادات" Command="{Binding SaveCommand}" Style="{StaticResource PrimaryButton}" Padding="22,0" MinWidth="150" Height="42" VerticalAlignment="Center" />
+        </Grid>
+        <Border Style="{StaticResource ElevatedCard}" Padding="20" Margin="0,0,0,14">
+          <Grid>
+            <Grid.RowDefinitions><RowDefinition Height="Auto" /><RowDefinition Height="Auto" /><RowDefinition Height="Auto" /></Grid.RowDefinitions>
+            <StackPanel Grid.ColumnSpan="3" Margin="2,0,0,16" HorizontalAlignment="Stretch" FlowDirection="RightToLeft">
+              <TextBlock Text="هوية المنشأة" FontSize="18" FontWeight="SemiBold" Foreground="{StaticResource BrushText}" TextAlignment="Left" HorizontalAlignment="Stretch" />
+              <TextBlock Text="تُحفظ هذه البيانات في قاعدة التطبيق وتُستخدم في مخرجات التقارير عند إنشائها." Style="{StaticResource CaptionText}" Margin="0,5,0,0" TextWrapping="Wrap" TextAlignment="Left" HorizontalAlignment="Stretch" />
+            </StackPanel>
+            <Grid Grid.Row="1">
+              <Grid.RowDefinitions><RowDefinition Height="Auto" /><RowDefinition Height="Auto" /><RowDefinition Height="Auto" /></Grid.RowDefinitions>
+              <Grid.ColumnDefinitions><ColumnDefinition Width="1.2*" /><ColumnDefinition Width="1*" /><ColumnDefinition Width="170" /></Grid.ColumnDefinitions>
+              <StackPanel Margin="3,0,8,12">
+                <TextBlock Text="اسم المنشأة *" Style="{StaticResource SectionLabel}" Margin="0,0,0,5" TextAlignment="Left" HorizontalAlignment="Left" />
+                <TextBox Style="{StaticResource Field}" Text="{Binding BusinessName,UpdateSourceTrigger=PropertyChanged}" TextAlignment="Left" FlowDirection="RightToLeft" MaxLength="120" AutomationProperties.Name="اسم المنشأة" />
+              </StackPanel>
+              <StackPanel Grid.Column="1" Margin="8,0,8,12">
+                <TextBlock Text="رقم الهاتف" Style="{StaticResource SectionLabel}" Margin="0,0,0,5" TextAlignment="Left" HorizontalAlignment="Left" />
+                <TextBox Style="{StaticResource Field}" Text="{Binding Phone,UpdateSourceTrigger=PropertyChanged}" FlowDirection="LeftToRight" MaxLength="40" AutomationProperties.Name="رقم الهاتف" TextAlignment="Left" />
+              </StackPanel>
+              <StackPanel Grid.Column="2" Margin="8,0,3,12">
+                <TextBlock Text="العملة الافتراضية *" Style="{StaticResource SectionLabel}" Margin="0,0,0,5" TextAlignment="Left" HorizontalAlignment="Left" />
+                <TextBox Style="{StaticResource Field}" Text="{Binding Currency,UpdateSourceTrigger=PropertyChanged}" FlowDirection="LeftToRight" MaxLength="12" AutomationProperties.Name="العملة الافتراضية" />
+              </StackPanel>
+              <StackPanel Grid.Row="1" Grid.ColumnSpan="2" Margin="3,2,8,0">
+                <TextBlock Text="العنوان" Style="{StaticResource SectionLabel}" Margin="0,0,0,5" TextAlignment="Left" HorizontalAlignment="Left" />
+                <TextBox Style="{StaticResource Field}" Text="{Binding Address,UpdateSourceTrigger=PropertyChanged}" TextAlignment="Right" FlowDirection="RightToLeft" MaxLength="250" AutomationProperties.Name="عنوان المنشأة" />
+              </StackPanel>
+                          <Grid Grid.Row="2" Margin="3,12,3,0">
+                <Grid.ColumnDefinitions><ColumnDefinition /><ColumnDefinition /><ColumnDefinition /></Grid.ColumnDefinitions>
+                <StackPanel Margin="3,0,8,0"><TextBlock Text="الرقم الضريبي" Style="{StaticResource SectionLabel}" Margin="0,0,0,5" /><TextBox Style="{StaticResource Field}" Text="{Binding TaxRegistrationNumber,UpdateSourceTrigger=PropertyChanged}" FlowDirection="LeftToRight" MaxLength="80" TextAlignment="Right" /></StackPanel>
+                <StackPanel Grid.Column="1" Margin="8,0,8,0"><TextBlock Text="السجل التجاري" Style="{StaticResource SectionLabel}" Margin="0,0,0,5" /><TextBox Style="{StaticResource Field}" Text="{Binding CommercialRegistrationNumber,UpdateSourceTrigger=PropertyChanged}" FlowDirection="LeftToRight" MaxLength="80" TextAlignment="Left" /></StackPanel>
+                <StackPanel Grid.Column="2" Margin="8,0,3,0"><TextBlock Text="شروط الفاتورة" Style="{StaticResource SectionLabel}" Margin="0,0,0,5" /><TextBox Style="{StaticResource Field}" Text="{Binding InvoiceTerms,UpdateSourceTrigger=PropertyChanged}" MaxLength="500" /></StackPanel>
+              </Grid>
+</Grid>
+            <Border Grid.Row="2" Margin="3,14,3,0" Padding="12" Background="#0A1428" BorderBrush="{StaticResource BrushLine}" BorderThickness="1" CornerRadius="9">
+              <Grid>
+                <Grid.ColumnDefinitions><ColumnDefinition Width="Auto" /><ColumnDefinition /><ColumnDefinition Width="Auto" /><ColumnDefinition Width="Auto" /></Grid.ColumnDefinitions>
+                <Border Width="64" Height="64" Background="#13243B" CornerRadius="8" Margin="0,0,12,0">
+                  <Image Source="{Binding LogoPreview}" Stretch="Uniform" Margin="4" Visibility="{Binding ShowLogo,Converter={StaticResource BoolToVisibility}}" />
+                </Border>
+                <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                  <TextBlock Text="شعار المنشأة (اختياري)" FontWeight="SemiBold" Foreground="{StaticResource BrushText}" TextAlignment="Left" HorizontalAlignment="Stretch" />
+                  <TextBlock Text="PNG أو JPG أو BMP — حتى 5 ميغابايت. يلزم حفظ الإعدادات لاعتماد التغيير." Style="{StaticResource CaptionText}" TextWrapping="Wrap" Margin="0,4,8,0" TextAlignment="Left" HorizontalAlignment="Stretch" />
+                </StackPanel>
+                <Button Grid.Column="2" Content="اختيار شعار" Command="{Binding ChooseLogoCommand}" Style="{StaticResource GhostButton}" MinWidth="105" Margin="5,0" />
+                <Button Grid.Column="3" Content="إزالة" Command="{Binding RemoveLogoCommand}" Style="{StaticResource GhostButton}" MinWidth="70" Margin="5,0" />
+              </Grid>
+            </Border>
+          </Grid>
+        </Border>
+        <Border Style="{StaticResource ElevatedCard}" Padding="20" Margin="0,0,0,14">
+          <Grid>
+            <Grid.ColumnDefinitions><ColumnDefinition /><ColumnDefinition Width="Auto" /><ColumnDefinition Width="Auto" /></Grid.ColumnDefinitions>
+            <StackPanel Margin="2,0,12,0" HorizontalAlignment="Left" FlowDirection="RightToLeft">
+              <TextBlock Text="النسخ الاحتياطي والاستعادة" FontSize="18" FontWeight="SemiBold" Foreground="{StaticResource BrushText}" TextAlignment="Left" HorizontalAlignment="Stretch" />
+              <TextBlock Text="تخضع العمليات لصلاحية النسخ الاحتياطي. الاستعادة تتطلب تأكيدًا قبل استبدال بيانات العمل." Style="{StaticResource CaptionText}" TextWrapping="Wrap" Margin="0,5,0,0" TextAlignment="Left" HorizontalAlignment="Stretch" />
+              <TextBlock Text="{Binding LastBackupText}" Style="{StaticResource CaptionText}" TextWrapping="Wrap" Margin="0,8,0,0" TextAlignment="Left" HorizontalAlignment="Stretch" />
+            </StackPanel>
+            <Button Grid.Column="1" Content="إنشاء نسخة احتياطية" Command="{Binding CreateBackupCommand}" Style="{StaticResource PrimaryButton}" MinWidth="155" Margin="5,0" VerticalAlignment="Center" />
+            <Button Grid.Column="2" Content="استعادة نسخة" Command="{Binding RestoreBackupCommand}" Style="{StaticResource GhostButton}" MinWidth="125" Margin="5,0" VerticalAlignment="Center" />
+          </Grid>
+        </Border>
+        <Border Style="{StaticResource ElevatedCard}" Padding="20" Margin="0,0,0,14">
+          <StackPanel>
+            <TextBlock Text="اللغة واتجاه الواجهة" FontSize="18" FontWeight="SemiBold" Foreground="{StaticResource BrushText}" />
+            <TextBlock Text="اختيار العربية اليمنية أو السعودية أو الإنجليزية. يتغير اتجاه الواجهة مباشرة؛ ترجمة جميع التسميات الإنجليزية تحتاج حزمة موارد مستقلة." Style="{StaticResource CaptionText}" TextWrapping="Wrap" Margin="0,5,0,12" />
+            <DockPanel>
+              <ComboBox Width="180" Height="40" SelectedItem="{Binding SelectedLanguage}" ItemsSource="{Binding Languages}" FlowDirection="LeftToRight" />
+              <Button Content="تطبيق اللغة" Command="{Binding ApplyLanguageCommand}" Style="{StaticResource PrimaryButton}" Margin="10,0,0,0" MinWidth="120" />
+            </DockPanel>
+          </StackPanel>
+        </Border>
+        <Border Style="{StaticResource ElevatedCard}" Padding="20" Margin="0,0,0,14">
+          <StackPanel>
+            <TextBlock Text="إعدادات الفواتير والطباعة" FontSize="18" FontWeight="SemiBold" Foreground="{StaticResource BrushText}" />
+            <TextBlock Text="تُحفظ هذه التفضيلات وتُستخدم عند إنشاء فواتير البيع التالية." Style="{StaticResource CaptionText}" TextWrapping="Wrap" Margin="0,5,0,12" />
+            <Grid>
+              <Grid.ColumnDefinitions><ColumnDefinition /><ColumnDefinition /><ColumnDefinition /></Grid.ColumnDefinitions>
+              <StackPanel Margin="0,0,12,0"><TextBlock Text="قالب الطباعة الافتراضي" Style="{StaticResource SectionLabel}" /><ComboBox ItemsSource="{Binding PrintLayoutOptions}" SelectedItem="{Binding DefaultPrintLayout,Mode=TwoWay}" Height="40" FlowDirection="LeftToRight" /><TextBlock Text="A4 أو Thermal80 (إيصال حراري 80 مم)" Style="{StaticResource CaptionText}" Margin="0,5,0,0" /></StackPanel>
+              <StackPanel Grid.Column="1" Margin="6,0"><TextBlock Text="وحدة البيع الافتراضية" Style="{StaticResource SectionLabel}" /><ComboBox ItemsSource="{Binding SaleUnitOptions}" SelectedItem="{Binding DefaultSaleUnit,Mode=TwoWay}" Height="40" FlowDirection="LeftToRight" /><TextBlock Text="Minor = حبة، Major = وحدة كبرى" Style="{StaticResource CaptionText}" Margin="0,5,0,0" /></StackPanel>
+              <StackPanel Grid.Column="2" Margin="12,0,0,0" VerticalAlignment="Center"><CheckBox Content="الطباعة التلقائية بعد ترحيل الفاتورة" IsChecked="{Binding AutoPrintOnPosting,Mode=TwoWay}" Foreground="{StaticResource BrushText}" Margin="0,8,0,0" /></StackPanel>
+            </Grid>
+          </StackPanel>
+        </Border>        <Border Style="{StaticResource ElevatedCard}" Padding="20" Margin="0,0,0,14">
+          <StackPanel>
+            <TextBlock Text="قوالب رسائل واتساب" FontSize="18" FontWeight="SemiBold" Foreground="{StaticResource BrushText}" />
+            <TextBlock Text="المتغيرات المتاحة: {اسم_العميل}، {رقم_الفاتورة}، {تاريخ_الفاتورة}، {إجمالي_الفاتورة}، {المبلغ_المدفوع}، {الرصيد_المتبقي}، إضافة إلى المتغيرات الإنجليزية القديمة." Style="{StaticResource CaptionText}" TextWrapping="Wrap" Margin="0,5,0,12" />
+            <ComboBox ItemsSource="{Binding MessageTemplates}" SelectedItem="{Binding SelectedTemplate}" DisplayMemberPath="Name" Height="40" Margin="0,0,0,10" FlowDirection="LeftToRight" />
+            <TextBlock Text="اسم القالب" Style="{StaticResource SectionLabel}" />
+            <TextBox Style="{StaticResource Field}" Text="{Binding TemplateName,UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,10" FlowDirection="LeftToRight" TextAlignment="Right" />
+            <TextBlock Text="نص الرسالة" Style="{StaticResource SectionLabel}" />
+            <TextBox Style="{StaticResource Field}" Text="{Binding TemplateBody,UpdateSourceTrigger=PropertyChanged}" AcceptsReturn="True" TextWrapping="Wrap" MinHeight="90" Margin="0,0,0,10" FlowDirection="LeftToRight" TextAlignment="Right" />
+            <StackPanel Orientation="Horizontal"><Button Content="معاينة القالب" Command="{Binding PreviewTemplateCommand}" Style="{StaticResource GhostButton}" Width="130" Margin="0,0,8,0" /><Button Content="حفظ القالب" Command="{Binding SaveTemplateCommand}" Style="{StaticResource PrimaryButton}" Width="120" /></StackPanel><Border Background="#0B162C" BorderBrush="{StaticResource BrushLine}" BorderThickness="1" CornerRadius="8" Padding="12" Margin="0,12,0,0"><StackPanel><TextBlock Text="معاينة الرسالة" Style="{StaticResource SectionLabel}" /><TextBlock Text="{Binding TemplatePreviewText}" Style="{StaticResource CaptionText}" TextWrapping="Wrap" Margin="0,6,0,0" /></StackPanel></Border>
+          </StackPanel>
+        </Border>
+        <Border Style="{StaticResource ElevatedCard}" Padding="20" Margin="0,0,0,14">
+          <StackPanel>
+            <DockPanel><TextBlock Text="SmartLedger Pro — Enterprise Commercial Suite" FontSize="18" FontWeight="SemiBold" Foreground="{StaticResource BrushText}" /><Button Content="تحديث التشخيصات" Command="{Binding RefreshDiagnosticsCommand}" Style="{StaticResource GhostButton}" Margin="8,0,0,0" /></DockPanel>
+            <TextBlock Text="Giant Enterprise Software Studio | Version 1.4.0 (Commercial Edition) | Engine Build 2026.10 | © 2026 SmartLedger" Style="{StaticResource CaptionText}" Margin="0,6,0,8" />
+            <TextBlock Text="مرخص تجارياً — نسخة المؤسسات (Enterprise Active License)" FontWeight="SemiBold" Margin="0,4,0,6" /><TextBlock Text="الدعم والاستفسارات" Style="{StaticResource CaptionText}" /><TextBlock Text="{Binding Phone}" Style="{StaticResource CaptionText}" Margin="0,0,0,8" /><TextBlock Text="{Binding DiagnosticsText}" Style="{StaticResource CaptionText}" TextWrapping="Wrap" />
+          </StackPanel>
+        </Border>
+        <Border Style="{StaticResource ElevatedCard}" Padding="20" Margin="0,0,0,14" BorderBrush="#7F1D1D" BorderThickness="1">
+          <Grid>
+            <Grid.ColumnDefinitions><ColumnDefinition /><ColumnDefinition Width="Auto" /></Grid.ColumnDefinitions>
+            <StackPanel Margin="2,0,18,0" HorizontalAlignment="Left" FlowDirection="RightToLeft">
+              <TextBlock Text="تهيئة بيانات التطبيق" FontSize="18" FontWeight="Bold" Foreground="#FCA5A5" TextAlignment="Left" HorizontalAlignment="Stretch" />
+              <TextBlock Text="تحذف هذه العملية جميع بيانات العمل والمستخدمين والجلسات وسجلات التدقيق والعناصر المحذوفة، وتعيد التطبيق إلى حالة الإعداد الأولي. لا يمكن التراجع عن العملية بعد تنفيذها." Style="{StaticResource CaptionText}" TextWrapping="Wrap" Margin="0,7,0,0" TextAlignment="Left" HorizontalAlignment="Stretch" />
+              <TextBlock Text="تتطلب كلمة مرور المسؤول، وكتابة عبارة التأكيد، وإنشاء نسخة احتياطية كاملة والتحقق منها قبل أي حذف." Style="{StaticResource CaptionText}" TextWrapping="Wrap" Foreground="#FCA5A5" Margin="0,7,0,0" TextAlignment="Left" HorizontalAlignment="Stretch" />
+            </StackPanel>
+            <Button Grid.Column="1" Content="تهيئة جميع البيانات" Command="{Binding ResetDataCommand}" Visibility="{Binding CanResetData,Converter={StaticResource BoolToVisibility}}" Height="46" MinWidth="180" Padding="18,0" Background="#991B1B" BorderBrush="#EF4444" BorderThickness="1" Foreground="White" FontWeight="Bold" VerticalAlignment="Center" />
+          </Grid>
+        </Border>        <Border Background="#0A1428" BorderBrush="{StaticResource BrushLine}" BorderThickness="1" CornerRadius="9" Padding="13">
+          <TextBlock Text="{Binding StatusText}" Foreground="{StaticResource BrushText}" TextWrapping="Wrap" TextAlignment="Left" HorizontalAlignment="Stretch" AutomationProperties.LiveSetting="Polite" />
+        </Border>
+      </StackPanel>
+    </ScrollViewer>
+  </DataTemplate></ResourceDictionary>

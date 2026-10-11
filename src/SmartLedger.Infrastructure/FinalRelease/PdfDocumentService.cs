@@ -74,7 +74,7 @@ public sealed class PdfDocumentService(IAppRepository repo)
         })).GeneratePdf(path);
     }
 
-    public async Task GenerateAccountStatementAsync(string path, string personName, string bookName, IReadOnlyList<LedgerOperation> operations, DocumentPageKind kind, CancellationToken ct = default)
+    public async Task GenerateAccountStatementAsync(string path, string personName, string bookName, IReadOnlyList<LedgerOperation> operations, DocumentPageKind kind, DateTimeOffset? periodFrom = null, DateTimeOffset? periodTo = null, CancellationToken ct = default)
     {
         var identity = await repo.GetIdentityAsync(ct);
         ConfigurePdf();
@@ -84,7 +84,8 @@ public sealed class PdfDocumentService(IAppRepository repo)
         var rows = ordered.Select(x =>
         {
             balance += SignedAmount(x);
-            return new StatementLine(x.OccurredAt, x.TypeLabel, x.Note, x.Amount, balance);
+            var signed = SignedAmount(x);
+            return new StatementLine(x.OccurredAt, x.TypeLabel, x.Note, Math.Max(0m, signed), Math.Max(0m, -signed), balance);
         }).ToArray();
         var closing = balance;
 
@@ -96,7 +97,9 @@ public sealed class PdfDocumentService(IAppRepository repo)
             page.ContentFromRightToLeft();
             page.DefaultTextStyle(s => s.FontFamily("Tahoma").FontSize(thermal ? 7 : 9).FontColor(Navy));
             page.Header().Element(c => ComposeIdentityHeader(c, identity, thermal,
-                $"كشف حساب {Safe(personName)}", $"الدفتر: {Safe(bookName)}  •  حتى {DateTime.Now:yyyy/MM/dd}"));
+                $"كشف حساب {Safe(personName)}", periodFrom.HasValue && periodTo.HasValue
+                    ? $"الدفتر: {Safe(bookName)}  •  الفترة: {periodFrom.Value:yyyy/MM/dd} - {periodTo.Value:yyyy/MM/dd}"
+                    : $"الدفتر: {Safe(bookName)}  •  حتى {DateTime.Now:yyyy/MM/dd}"));
             page.Content().PaddingTop(thermal ? 6 : 14).Column(column =>
             {
                 column.Spacing(thermal ? 5 : 12);
@@ -105,26 +108,29 @@ public sealed class PdfDocumentService(IAppRepository repo)
                 {
                     table.ColumnsDefinition(cols =>
                     {
+                                        cols.RelativeColumn(1.35f);
                         cols.RelativeColumn(1.35f);
-                        cols.RelativeColumn(1.5f);
-                        cols.RelativeColumn(2.8f);
-                        cols.RelativeColumn(1.65f);
-                        cols.RelativeColumn(1.8f);
+                        cols.RelativeColumn(2.2f);
+                        cols.RelativeColumn(1.35f);
+                        cols.RelativeColumn(1.35f);
+                        cols.RelativeColumn(1.7f);
                     });
                     table.Header(header =>
                     {
                         HeaderCell(header.Cell(), "التاريخ");
                         HeaderCell(header.Cell(), "نوع الحركة");
                         HeaderCell(header.Cell(), "البيان");
-                        HeaderCell(header.Cell(), "المبلغ");
-                        HeaderCell(header.Cell(), "الرصيد");
+                        HeaderCell(header.Cell(), "مدين / داخل");
+                        HeaderCell(header.Cell(), "دائن / خارج");
+                        HeaderCell(header.Cell(), "الرصيد التراكمي");
                     });
                     foreach (var row in rows)
                     {
                         BodyCell(table.Cell(), row.Date.ToLocalTime().ToString("yyyy/MM/dd HH:mm", CultureInfo.InvariantCulture), true);
                         BodyCell(table.Cell(), Safe(row.Type), true);
                         BodyCell(table.Cell(), Safe(row.Note), false);
-                        AmountCell(table.Cell(), row.Amount, identity.Currency, thermal);
+                        AmountCell(table.Cell(), row.Debit, identity.Currency, thermal);
+                        AmountCell(table.Cell(), row.Credit, identity.Currency, thermal);
                         AmountCell(table.Cell(), row.Balance, identity.Currency, thermal);
                     }
                 });
@@ -249,6 +255,6 @@ public sealed class PdfDocumentService(IAppRepository repo)
         _ => new PageSize(164.41f, 2000)
     };
 
-    private sealed record StatementLine(DateTimeOffset Date, string Type, string Note, decimal Amount, decimal Balance);
+    private sealed record StatementLine(DateTimeOffset Date, string Type, string Note, decimal Debit, decimal Credit, decimal Balance);
     public static string AmountInWords(decimal amount, string currency) => ArabicNumberToWords.ToWords(amount, currency);
 }

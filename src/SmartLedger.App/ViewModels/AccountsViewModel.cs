@@ -1,4 +1,4 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Win32;
 using SmartLedger.Infrastructure.FinalRelease;
@@ -509,7 +509,7 @@ public partial class AccountsViewModel(IAppRepository repo,IAppSession session):
             var templates = await repo.GetMessageTemplatesAsync();
             var template = templates.FirstOrDefault(x => x.Name.Contains("سند قبض", StringComparison.OrdinalIgnoreCase) || x.Name.Contains("سند صرف", StringComparison.OrdinalIgnoreCase) || x.Name.Contains("VoucherReceipt", StringComparison.OrdinalIgnoreCase) || x.Name.Contains("Voucher Receipt", StringComparison.OrdinalIgnoreCase));
             var balance = SelectedAccountStatementRows.FirstOrDefault(x => x.Id == operation.Id)?.CumulativeBalance ?? NetBalance;
-            const string fallback = "مرحباً {CustomerName}،\\nسند رقم: #{InvoiceNumber} من {StoreName}.\\nالمبلغ: {TotalAmount} {Currency}.\\nالبيان: {Description}.\\nالرصيد المتبقي: {RemainingAmount} {Currency}.\\nالتاريخ: {Date}.";
+            const string fallback = "السلام عليكم ورحمة الله وبركاته، عزيزنا {CustomerName}، نود إحاطتكم بتفاصيل المعاملة رقم {InvoiceNumber} بتاريخ {Date}: المبلغ: {TotalAmount} {Currency} - البيان: {Description} - الرصيد الحالي: {RemainingAmount} {Currency}. شكراً لتعاملكم معنا.";
             var values = new Dictionary<string, string?>
             {
                 ["CustomerName"] = SelectedPerson.Person.Name, ["StoreName"] = identity.BusinessName,
@@ -615,6 +615,14 @@ public partial class AccountsViewModel(IAppRepository repo,IAppSession session):
     private async Task DeleteSelectedAsync()
     {
         if(SelectedPerson is null||session.CurrentUser is null)return;
+        var historicalOperations = await repo.GetOperationsAsync(SelectedPerson.Person.Id, 10000);
+        var currentBalance = LedgerBalanceCalculator.CalculateNetBalance(historicalOperations);
+        if (!FinancialReportCalculations.CanDeleteAccount(historicalOperations.Count, currentBalance, out var reason))
+        {
+            System.Windows.MessageBox.Show(reason, "Account deletion blocked", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Warning);
+            StatusText = reason;
+            return;
+        }
         var answer=System.Windows.MessageBox.Show($"سيُنقل الحساب «{SelectedPerson.Person.Name}» إلى سلة المحذوفات. هل تريد المتابعة؟","تأكيد حذف الحساب",System.Windows.MessageBoxButton.YesNo,System.Windows.MessageBoxImage.Warning);
         if(answer!=System.Windows.MessageBoxResult.Yes) return;
         try

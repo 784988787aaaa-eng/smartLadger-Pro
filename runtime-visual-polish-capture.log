@@ -1,0 +1,6 @@
+﻿PID=3140 TITLE=SmartLedger — Sign In
+Inventory: screenshot=04-inventory-fixed.png; foreground-window capture; route clicked y=240
+Expenses: screenshot=07-expenses-verified.png; foreground-window capture; route clicked y=402
+Reports: screenshot=08-reports-live.png; foreground-window capture; route clicked y=474
+Settings: screenshot=09-settings-live.png; foreground-window capture; route clicked y=761
+About: screenshot=10-about-live.png; foreground-window capture; route clicked y=707

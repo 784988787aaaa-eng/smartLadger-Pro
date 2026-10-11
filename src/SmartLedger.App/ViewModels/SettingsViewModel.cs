@@ -43,6 +43,12 @@ public partial class SettingsViewModel : ObservableObject
     [ObservableProperty] private MessageTemplate? selectedTemplate;
     [ObservableProperty] private string templateName = "";
     [ObservableProperty] private string templateBody = "";
+    [ObservableProperty] private string templatePreviewText = "ستظهر معاينة الرسالة هنا.";
+    [ObservableProperty] private string defaultPrintLayout = "Thermal80";
+    [ObservableProperty] private IReadOnlyList<string> printLayoutOptions = new[] { "A4", "Thermal80" };
+    [ObservableProperty] private bool autoPrintOnPosting;
+    [ObservableProperty] private string defaultSaleUnit = "Minor";
+    [ObservableProperty] private IReadOnlyList<string> saleUnitOptions = new[] { "Minor", "Major" };
     [ObservableProperty] private string diagnosticsText = "اضغط تحديث لعرض تشخيصات النظام.";
     [ObservableProperty] private bool canResetData;
     private readonly ResetDataService? resetService;
@@ -73,6 +79,9 @@ public partial class SettingsViewModel : ObservableObject
             logoPath = x.LogoPath;
             LoadLogoPreview();
             SelectedLanguage = await repo.GetPreferenceAsync("language", CancellationToken.None) ?? "ar-YE";
+            DefaultPrintLayout = await repo.GetPreferenceAsync("invoice.printLayout", CancellationToken.None) ?? "Thermal80";
+            AutoPrintOnPosting = string.Equals(await repo.GetPreferenceAsync("invoice.autoPrint", CancellationToken.None), "true", StringComparison.OrdinalIgnoreCase);
+            DefaultSaleUnit = await repo.GetPreferenceAsync("invoice.defaultSaleUnit", CancellationToken.None) ?? "Minor";
             MessageTemplates = await repo.GetMessageTemplatesAsync();
             if (MessageTemplates.Count == 0)
             {
@@ -123,16 +132,7 @@ public partial class SettingsViewModel : ObservableObject
         try
         {
             await repo.SavePreferenceAsync("language", SelectedLanguage);
-            var culture = CultureInfo.GetCultureInfo(SelectedLanguage);
-            CultureInfo.DefaultThreadCurrentCulture = culture;
-            CultureInfo.DefaultThreadCurrentUICulture = culture;
-            var direction = SelectedLanguage.StartsWith("en", StringComparison.OrdinalIgnoreCase) ? FlowDirection.LeftToRight : FlowDirection.RightToLeft;
-            var dictionaries = Application.Current.Resources.MergedDictionaries;
-            var existingStrings = dictionaries.FirstOrDefault(d => d.Source is not null && d.Source.OriginalString.Contains("Resources/Strings.", StringComparison.OrdinalIgnoreCase));
-            if (existingStrings is not null) dictionaries.Remove(existingStrings);
-            var languageFile = SelectedLanguage.StartsWith("en", StringComparison.OrdinalIgnoreCase) ? "Strings.en.xaml" : "Strings.ar.xaml";
-            dictionaries.Add(new ResourceDictionary { Source = new Uri($"/SmartLedger.App;component/Resources/{languageFile}", UriKind.Relative) });
-            foreach (Window window in Application.Current.Windows) window.FlowDirection = direction;
+            SmartLedger.App.App.ApplyLanguage(SelectedLanguage);
             StatusText = SelectedLanguage == "en-US" ? "English resources and left-to-right layout applied; screens with hard-coded labels may still show Arabic." : "تم تطبيق موارد العربية واتجاه الواجهة من اليمين إلى اليسار.";
         }
         catch (Exception ex) { StatusText = $"تعذر تطبيق اللغة: {ex.Message}"; }
@@ -155,6 +155,27 @@ public partial class SettingsViewModel : ObservableObject
             StatusText = "تم حفظ قالب الرسائل.";
         }
         catch (Exception ex) { StatusText = ex.Message; }
+    }
+
+    [RelayCommand]
+    private void PreviewTemplate()
+    {
+        var previewValues = new Dictionary<string, string>(StringComparer.Ordinal)
+        {
+            ["{CustomerName}"] = "أحمد محمد", ["{اسم_العميل}"] = "أحمد محمد",
+            ["{InvoiceNumber}"] = "INV-2026-00125", ["{رقم_الفاتورة}"] = "INV-2026-00125",
+            ["{Date}"] = DateTimeOffset.Now.ToString("yyyy/MM/dd HH:mm", CultureInfo.InvariantCulture),
+            ["{تاريخ_الفاتورة}"] = DateTimeOffset.Now.ToString("yyyy/MM/dd HH:mm", CultureInfo.InvariantCulture),
+            ["{TotalAmount}"] = "125,000.00", ["{إجمالي_الفاتورة}"] = "125,000.00",
+            ["{PaidAmount}"] = "100,000.00", ["{المبلغ_المدفوع}"] = "100,000.00",
+            ["{RemainingAmount}"] = "25,000.00", ["{الرصيد_المتبقي}"] = "25,000.00",
+            ["{StoreName}"] = string.IsNullOrWhiteSpace(BusinessName) ? "اسم المنشأة" : BusinessName,
+            ["{Currency}"] = string.IsNullOrWhiteSpace(Currency) ? "العملة" : Currency
+        };
+        var rendered = TemplateBody ?? string.Empty;
+        foreach (var pair in previewValues) rendered = rendered.Replace(pair.Key, pair.Value, StringComparison.Ordinal);
+        TemplatePreviewText = rendered;
+        StatusText = "هذه معاينة تجريبية للمتغيرات قبل حفظ القالب أو إرسال الرسالة.";
     }
 
     [RelayCommand]
@@ -222,6 +243,9 @@ public partial class SettingsViewModel : ObservableObject
         try
         {
             await repo.SaveIdentityAsync(new BusinessIdentity(name, logoPath, phoneValue, addressValue, currencyValue) { TaxRegistrationNumber = TaxRegistrationNumber.Trim(), CommercialRegistrationNumber = CommercialRegistrationNumber.Trim(), InvoiceTerms = InvoiceTerms.Trim() });
+            await repo.SavePreferenceAsync("invoice.printLayout", DefaultPrintLayout == "A4" ? "A4" : "Thermal80");
+            await repo.SavePreferenceAsync("invoice.autoPrint", AutoPrintOnPosting ? "true" : "false");
+            await repo.SavePreferenceAsync("invoice.defaultSaleUnit", DefaultSaleUnit == "Major" ? "Major" : "Minor");
             BusinessName = name;
             Phone = phoneValue;
             Address = addressValue;

@@ -1,4 +1,4 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
 using SmartLedger.Core.Abstractions;
@@ -50,6 +50,7 @@ public partial class PurchasesViewModel(IAppRepository repo,IAppSession session)
     [ObservableProperty] private string statusText="";
     public ObservableCollection<InvoiceDraftLine> Lines { get; } = new();
     public decimal LinesTotal => Lines.Sum(x=>x.LineTotal);
+    public bool IsCartEmpty => Lines.Count == 0;
 
     public IReadOnlyList<string> QuantityUnits { get { var p=_allProducts.FirstOrDefault(x=>x.Id==ProductId); return p is null?Array.Empty<string>():new[]{p.SmallUnit,p.LargeUnit}.Where(x=>!string.IsNullOrWhiteSpace(x)).Distinct(StringComparer.OrdinalIgnoreCase).ToArray(); } }
     private decimal QuantityFactor(Product p)=>!string.IsNullOrWhiteSpace(p.LargeUnit)&&!string.Equals(p.LargeUnit,p.SmallUnit,StringComparison.OrdinalIgnoreCase)&&string.Equals(SelectedQuantityUnit,p.LargeUnit,StringComparison.OrdinalIgnoreCase)?p.ConversionFactor:1m;
@@ -63,7 +64,7 @@ public partial class PurchasesViewModel(IAppRepository repo,IAppSession session)
     partial void OnPersonIdChanged(Guid? value){var p=_allPeople.FirstOrDefault(x=>x.PersonId==value);if(p is not null){SupplierSearch=p.PersonName;IsSupplierSuggestionsOpen=false;}}
     partial void OnProductIdChanged(Guid? value){var p=_allProducts.FirstOrDefault(x=>x.Id==value);_settingProductSelection=true;_lastUnitFactor=1m;if(p is not null){ProductSearch=p.Name;SelectedQuantityUnit=p.SmallUnit;PriceText=p.PurchasePrice>0?p.PurchasePrice.ToString("0.##",System.Globalization.CultureInfo.InvariantCulture):"";IsProductSuggestionsOpen=false;}else{SelectedQuantityUnit="";PriceText="";}_settingProductSelection=false;OnPropertyChanged(nameof(QuantityUnits));Recalc();}
     partial void OnSelectedQuantityUnitChanged(string value){OnPropertyChanged(nameof(QuantityUnits));if(_settingProductSelection)return;var product=_allProducts.FirstOrDefault(x=>x.Id==ProductId);if(product is null)return;var nextFactor=QuantityFactor(product);if(NumericNormalizer.TryParseDecimal(PriceText,out var currentPrice)&&_lastUnitFactor>0)PriceText=(currentPrice*nextFactor/_lastUnitFactor).ToString("0.##",System.Globalization.CultureInfo.InvariantCulture);_lastUnitFactor=nextFactor;}
-    [RelayCommand] private void OpenNew(){Lines.Clear();OnPropertyChanged(nameof(LinesTotal));PersonId=null;ProductId=null;SupplierSearch="";ProductSearch="";People=_allPeople;Products=_allProducts;IsSupplierSuggestionsOpen=false;IsProductSuggestionsOpen=false;QuantityText="1";PriceText="";PaidText="0";Note="";PaymentMode=PaymentMode.Cash;SyncPaymentChoices();StatusText="";Recalc();IsDialogOpen=true;}
+    [RelayCommand] private void OpenNew(){Lines.Clear();OnPropertyChanged(nameof(LinesTotal));OnPropertyChanged(nameof(IsCartEmpty));PersonId=null;ProductId=null;SupplierSearch="";ProductSearch="";People=_allPeople;Products=_allProducts;IsSupplierSuggestionsOpen=false;IsProductSuggestionsOpen=false;QuantityText="1";PriceText="";PaidText="0";Note="";PaymentMode=PaymentMode.Cash;SyncPaymentChoices();StatusText="";Recalc();IsDialogOpen=true;}
     [RelayCommand] private void OpenQuickPerson(){QuickPersonName=SupplierSearch.Trim();QuickPersonPhone="";QuickPersonNote="";IsQuickPersonDialogOpen=true;}
     [RelayCommand] private void CloseQuickPerson(){IsQuickPersonDialogOpen=false;}
     [RelayCommand] private async Task SaveQuickPersonAsync(){
@@ -116,14 +117,14 @@ public partial class PurchasesViewModel(IAppRepository repo,IAppSession session)
     partial void OnTotalChanged(decimal value){if(PaymentMode==PaymentMode.Cash)PaidText=value.ToString("0.##");OnPropertyChanged(nameof(Remaining));OnPropertyChanged(nameof(BalanceLabel));}
     private void Recalc(){var current=ProductId is not null&&NumericNormalizer.TryParseDecimal(QuantityText,out var q)&&q>0&&NumericNormalizer.TryParseDecimal(PriceText,out var p)&&p>0?decimal.Round(q*p,2):0m;Total=decimal.Round(LinesTotal+current,2);}
     [RelayCommand] private void AddLine(){if(AddCurrentLine())StatusText="تمت إضافة الصنف إلى بنود الفاتورة.";}
-    [RelayCommand] private void RemoveLine(InvoiceDraftLine? line){if(line is not null&&Lines.Remove(line)){OnPropertyChanged(nameof(LinesTotal));Recalc();}}
+    [RelayCommand] private void RemoveLine(InvoiceDraftLine? line){if(line is not null&&Lines.Remove(line)){OnPropertyChanged(nameof(LinesTotal));OnPropertyChanged(nameof(IsCartEmpty));Recalc();}}
     private bool AddCurrentLine(){
         if(ProductId is null){StatusText="اختر صنفًا مسجلًا أو أنشئ صنفًا جديدًا أولًا.";return false;}
         var product=_allProducts.FirstOrDefault(x=>x.Id==ProductId);if(product is null){StatusText="الصنف المحدد غير متاح؛ أعد اختياره.";return false;}
         if(!NumericNormalizer.TryParseDecimal(QuantityText,out var q)||q<=0){StatusText="أدخل كمية صحيحة.";return false;}
         if(!NumericNormalizer.TryParseDecimal(PriceText,out var price)||price<=0){StatusText="أدخل سعرًا صحيحًا أكبر من صفر.";return false;}
         var smallQuantity=q*QuantityFactor(product);if(smallQuantity<=0){StatusText="تحقق من الوحدة ومعامل التحويل.";return false;}
-        Lines.Add(new InvoiceDraftLine(product.Id,product.Name,q,SelectedQuantityUnit,price,decimal.Round(q*price,2),smallQuantity){BatchNumber=BatchNumber.Trim(),ExpiryDate=ExpiryDate is DateTime expiry?new DateTimeOffset(expiry.Date):null,CostPriceSnapshot=price,ConversionFactorApplied=QuantityFactor(product)});OnPropertyChanged(nameof(LinesTotal));ProductId=null;ProductSearch="";QuantityText="1";PriceText="";BatchNumber="";ExpiryDate=null;IsProductSuggestionsOpen=false;Recalc();return true;
+        Lines.Add(new InvoiceDraftLine(product.Id,product.Name,q,SelectedQuantityUnit,price,decimal.Round(q*price,2),smallQuantity){BatchNumber=BatchNumber.Trim(),ExpiryDate=ExpiryDate is DateTime expiry?new DateTimeOffset(expiry.Date):null,CostPriceSnapshot=price,ConversionFactorApplied=QuantityFactor(product)});OnPropertyChanged(nameof(LinesTotal));OnPropertyChanged(nameof(IsCartEmpty));ProductId=null;ProductSearch="";QuantityText="1";PriceText="";BatchNumber="";ExpiryDate=null;IsProductSuggestionsOpen=false;Recalc();return true;
     }
     private IReadOnlyList<PersonSummary> FilterPeople(string value)=>string.IsNullOrWhiteSpace(value)?_allPeople:_allPeople.Where(x=>ContainsArabic(x.PersonName,value)||ContainsArabic(x.Person.Phone,value)).Take(25).ToArray();
     private IReadOnlyList<Product> FilterProducts(string value)=>string.IsNullOrWhiteSpace(value)?_allProducts:_allProducts.Where(x=>ContainsArabic(x.Name,value)||ContainsArabic(x.Barcode,value)).Take(25).ToArray();
@@ -146,7 +147,7 @@ public partial class PurchasesViewModel(IAppRepository repo,IAppSession session)
             var movements=Lines.Select(x=>new StockMovement(Guid.NewGuid(),x.ProductId,StockMovementType.Purchase,x.QuantitySmallUnits,decimal.Round(x.UnitPrice*x.Quantity/x.QuantitySmallUnits,4),Note.Trim(),DateTimeOffset.Now,session.CurrentUser!.Id)).ToArray();
             LedgerOperation? operation=PersonId is Guid person&&invoice.Total-invoice.Paid>0?new LedgerOperation(Guid.NewGuid(),person,OperationType.DebtToUs,invoice.Total-invoice.Paid,Note.Trim(),DateTimeOffset.Now,session.CurrentUser!.Id):null;
             await repo.CreateInvoiceTransactionWithMovementsAsync(invoice,invoiceLines,movements,operation);
-            StatusText="تم حفظ الفاتورة بنجاح.";IsDialogOpen=false;Lines.Clear();OnPropertyChanged(nameof(LinesTotal));ProductId=null;ProductSearch="";QuantityText="1";PriceText="";PaidText="0";Note="";_allProducts=await repo.GetProductsAsync();Products=_allProducts;Recalc();
+            StatusText="تم حفظ الفاتورة بنجاح.";IsDialogOpen=false;Lines.Clear();OnPropertyChanged(nameof(LinesTotal));OnPropertyChanged(nameof(IsCartEmpty));ProductId=null;ProductSearch="";QuantityText="1";PriceText="";PaidText="0";Note="";_allProducts=await repo.GetProductsAsync();Products=_allProducts;Recalc();
         }catch(Exception ex){StatusText=ex.Message;}
         finally{IsSaving=false;}
     }

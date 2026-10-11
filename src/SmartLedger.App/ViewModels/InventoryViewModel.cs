@@ -197,6 +197,13 @@ public partial class InventoryViewModel(IAppRepository repo) : ObservableObject
     }
 
     [RelayCommand]
+    private void SelectProductBatchView(Product? product)
+    {
+        if (product is null) return;
+        SelectedProduct = product;
+    }
+
+    [RelayCommand]
     private void OpenEdit(Product? product)
     {
         if (product is null) return;
