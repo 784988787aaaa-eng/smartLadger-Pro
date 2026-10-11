@@ -314,11 +314,13 @@ public partial class SalesViewModel(IAppRepository repo,IAppSession session):Obs
     [RelayCommand]
     private async Task ReverseInvoiceAsync(string invoiceNumber)
     {
-        if (IsSaving) return;
+        if (IsSaving || string.IsNullOrWhiteSpace(invoiceNumber)) return;
+        var confirmation=System.Windows.MessageBox.Show($"سيتم عكس فاتورة البيع رقم {invoiceNumber} مع إنشاء قيود عكسية للمخزون والحسابات والنقد. لا يمكن التراجع عن العكس إلا بعملية جديدة. هل تريد المتابعة؟","تأكيد عكس الفاتورة",System.Windows.MessageBoxButton.YesNo,System.Windows.MessageBoxImage.Warning);
+        if(confirmation!=System.Windows.MessageBoxResult.Yes)return;
         try
         {
             IsSaving = true;
-            var reversed = await repo.ReverseInvoiceAsync(invoiceNumber, "User requested refund/reversal", session.CurrentUser!.Id.ToString());
+            var reversed = await repo.ReverseInvoiceAsync(invoiceNumber, "طلب المستخدم عكس الفاتورة", session.CurrentUser!.Id.ToString());
             StatusText = reversed ? $"Invoice {invoiceNumber} reversed successfully." : $"Invoice {invoiceNumber} was not found or was already reversed.";
             await LoadAsync();
         }
