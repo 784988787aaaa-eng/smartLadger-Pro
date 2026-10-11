@@ -71,6 +71,12 @@ public sealed class Database
             await ExecuteAsync(db,"CREATE INDEX IF NOT EXISTS IX_Operations_Person_OccurredAt ON Operations(PersonId,OccurredAt);",ct);
         await SetVersionAsync(db,10,ct);
     }
+    private static async Task MigrationV16Async(SqliteConnection db,CancellationToken ct)
+    {
+        await ExecuteAsync(db,"CREATE TABLE IF NOT EXISTS OperationCashEntries(Id TEXT PRIMARY KEY,OperationId TEXT NOT NULL UNIQUE REFERENCES Operations(Id) ON DELETE CASCADE,Amount TEXT NOT NULL,EntryType TEXT NOT NULL,OccurredAt TEXT NOT NULL,CreatedBy TEXT NOT NULL REFERENCES Users(Id)); CREATE INDEX IF NOT EXISTS IX_OperationCashEntries_Date ON OperationCashEntries(OccurredAt);",ct);
+        await SetVersionAsync(db,16,ct);
+    }
+
     private static async Task MigrationV15Async(SqliteConnection db,CancellationToken ct)
     {
         // Keep exact batch consumption per invoice so a reversal can restore the same lots.
