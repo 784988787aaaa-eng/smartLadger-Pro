@@ -66,7 +66,7 @@ public partial class InventoryViewModel(IAppRepository repo) : ObservableObject
     public decimal RetailStockValue => Products.Sum(x => x.StockSmallUnits * (x.SellingPriceMinor > 0m ? x.SellingPriceMinor : x.SalePrice));
     public string SelectedProductStockBreakdown => SelectedProduct is { } p ? InventoryUnitConverter.BreakDown(p.StockSmallUnits, Math.Max(1m,p.ConversionFactor), p.LargeUnit, p.SmallUnit).Formatted : "—";
     public decimal SelectedProductCostValue => SelectedProduct is { } p ? (_productCostValues.TryGetValue(p.Id,out var value) ? value : p.StockSmallUnits * p.PurchasePrice) : 0m;
-    public decimal SelectedProductRetailValue => SelectedProduct is { } p ? p.StockSmallUnits * p.SellingPriceMinor : 0m;
+    public decimal SelectedProductRetailValue => SelectedProduct is { } p ? p.StockSmallUnits * (p.SellingPriceMinor > 0m ? p.SellingPriceMinor : p.SalePrice) : 0m;
     public decimal SelectedProductIncomingQuantity => SelectedProductMovements.Where(m => m.TypeLabel.Contains("وارد", StringComparison.Ordinal) || m.TypeLabel.Contains("افتتاحي", StringComparison.Ordinal)).Sum(m => m.QuantitySmallUnits);
     public decimal SelectedProductOutgoingQuantity => SelectedProductMovements.Where(m => m.TypeLabel.Contains("منصرف", StringComparison.Ordinal)).Sum(m => m.QuantitySmallUnits);
     public int LowStockCount => Products.Count(x => x.StockSmallUnits <= x.AlertThreshold);
