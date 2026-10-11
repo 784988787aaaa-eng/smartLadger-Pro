@@ -683,11 +683,14 @@ FROM Operations;
         P(c,"$from",from?.ToString("O")??(object)DBNull.Value);P(c,"$to",toDate?.ToString("O")??(object)DBNull.Value);
         c.CommandText="""
             SELECT
-              COALESCE((SELECT SUM(CAST(Amount AS REAL)) FROM CashRegisterEntries WHERE EntryType IN ('SALE_RECEIPT','PURCHASE_REFUND') AND ($from IS NULL OR OccurredAt >= $from) AND ($to IS NULL OR OccurredAt <= $to)),0),
+              COALESCE((SELECT SUM(CAST(Amount AS REAL)) FROM CashRegisterEntries WHERE EntryType IN ('SALE_RECEIPT','PURCHASE_REFUND') AND ($from IS NULL OR OccurredAt >= $from) AND ($to IS NULL OR OccurredAt <= $to)),0)
+              + COALESCE((SELECT SUM(CAST(Amount AS REAL)) FROM OperationCashEntries WHERE EntryType='OPERATION_RECEIPT' AND ($from IS NULL OR OccurredAt >= $from) AND ($to IS NULL OR OccurredAt <= $to)),0),
               COALESCE((SELECT SUM(CAST(Amount AS REAL)) FROM CashRegisterEntries WHERE EntryType IN ('PURCHASE_PAYMENT','SALE_REFUND','Refund') AND ($from IS NULL OR OccurredAt >= $from) AND ($to IS NULL OR OccurredAt <= $to)),0)
-              + COALESCE((SELECT SUM(CAST(Amount AS REAL)) FROM ExpenseCashEntries WHERE EntryType='EXPENSE_PAYMENT:Cash' AND ($from IS NULL OR OccurredAt >= $from) AND ($to IS NULL OR OccurredAt <= $to)),0),
+              + COALESCE((SELECT SUM(CAST(Amount AS REAL)) FROM ExpenseCashEntries WHERE EntryType='EXPENSE_PAYMENT:Cash' AND ($from IS NULL OR OccurredAt >= $from) AND ($to IS NULL OR OccurredAt <= $to)),0)
+              + COALESCE((SELECT SUM(CAST(Amount AS REAL)) FROM OperationCashEntries WHERE EntryType='OPERATION_PAYMENT' AND ($from IS NULL OR OccurredAt >= $from) AND ($to IS NULL OR OccurredAt <= $to)),0),
               (SELECT COUNT(*) FROM CashRegisterEntries WHERE ($from IS NULL OR OccurredAt >= $from) AND ($to IS NULL OR OccurredAt <= $to))
-              + (SELECT COUNT(*) FROM ExpenseCashEntries WHERE EntryType='EXPENSE_PAYMENT:Cash' AND ($from IS NULL OR OccurredAt >= $from) AND ($to IS NULL OR OccurredAt <= $to));
+              + (SELECT COUNT(*) FROM ExpenseCashEntries WHERE EntryType='EXPENSE_PAYMENT:Cash' AND ($from IS NULL OR OccurredAt >= $from) AND ($to IS NULL OR OccurredAt <= $to))
+              + (SELECT COUNT(*) FROM OperationCashEntries WHERE ($from IS NULL OR OccurredAt >= $from) AND ($to IS NULL OR OccurredAt <= $to));
             """;
         await using var reader=await c.ExecuteReaderAsync(ct);
         if(!await reader.ReadAsync(ct))return new CashRegisterSummary(0m,0m,0m,0);
