@@ -12,5 +12,5 @@ public sealed class CoreInvariantsTests
  [Fact]public void Inventory_RejectsInvalidFactor(){Assert.Throws<ArgumentOutOfRangeException>(()=>new InventoryEngine().ToSmallUnits(1m,0m));}
  [Fact]public void Money_DoesNotUseBinaryFloatingPoint(){Assert.Equal(0.3m,decimal.Round(0.1m+0.2m,2));}
  [Fact]public void PasswordHasher_UsesSaltedHash(){var h=new PasswordHasher();var a=h.Hash("StrongPassword!123");var b=h.Hash("StrongPassword!123");Assert.NotEqual(a,b);Assert.True(PasswordHasher.Verify("StrongPassword!123",a));Assert.False(PasswordHasher.Verify("wrong",a));}
- [Fact]public void Privacy_MasksMoneyByDefaultAndRevealsOnToggle(){var p=new PrivacyStateService();Assert.True(p.IsPrivate);Assert.Equal("••••••",p.FormatMoney(100,"ريال"));p.Toggle();Assert.False(p.IsPrivate);Assert.Contains("100.00",p.FormatMoney(100,"ريال"));}
+ [Fact]public void Privacy_ShowsMoneyByDefaultAndMasksOnToggle(){var p=new PrivacyStateService();Assert.False(p.IsPrivate);Assert.Contains("100.00",p.FormatMoney(100,"YER"));p.Toggle();Assert.True(p.IsPrivate);Assert.Equal("••••••",p.FormatMoney(100,"YER"));}
 }

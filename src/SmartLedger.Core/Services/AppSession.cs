@@ -1,4 +1,4 @@
-﻿using System.Globalization;
+using System.Globalization;
 using SmartLedger.Core.Abstractions;
 using SmartLedger.Core.Models;
 
@@ -14,7 +14,7 @@ public sealed class AppSession : IAppSession
 
 public sealed class PrivacyStateService : IPrivacyStateService
 {
-    public bool IsPrivate { get; private set; } = true;
+    public bool IsPrivate { get; private set; }
     public event EventHandler? Changed;
 
     public void Toggle()
