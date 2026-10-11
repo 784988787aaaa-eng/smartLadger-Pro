@@ -40,7 +40,7 @@ public sealed class InvoiceReversalTests
 
             var invoice = new Invoice(
                 Guid.NewGuid(), InvoiceType.Sale, customer.Id, DateTimeOffset.UtcNow,
-                36m, 0m, 36m, 10m, PaymentMode.Credit, "اختبار عكس متكامل", admin!.Id);
+                36m, 0m, 36m, 10m, PaymentMode.Partial, "اختبار عكس متكامل", admin!.Id);
             var line = new InvoiceLine(
                 Guid.NewGuid(), invoice.Id, product.Id, product.Name, 12m, product.SmallUnit,
                 3m, 0m, 36m)
