@@ -305,14 +305,14 @@ public partial class SalesViewModel(IAppRepository repo,IAppSession session):Obs
         finally{IsSaving=false;}
     }
     [RelayCommand]
-    private async Task ReverseInvoiceAsync(int invoiceId)
+    private async Task ReverseInvoiceAsync(string invoiceNumber)
     {
         if (IsSaving) return;
         try
         {
             IsSaving = true;
-            var reversed = await repo.ReverseInvoiceAsync(invoiceId, "User requested refund/reversal", session.CurrentUser!.Id.ToString());
-            StatusText = reversed ? $"Invoice {invoiceId} reversed successfully." : $"Invoice {invoiceId} was not found or was already reversed.";
+            var reversed = await repo.ReverseInvoiceAsync(invoiceNumber, "User requested refund/reversal", session.CurrentUser!.Id.ToString());
+            StatusText = reversed ? $"Invoice {invoiceNumber} reversed successfully." : $"Invoice {invoiceNumber} was not found or was already reversed.";
             await LoadAsync();
         }
         catch (Exception ex) { StatusText = ex.Message; }
