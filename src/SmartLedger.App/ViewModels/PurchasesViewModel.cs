@@ -60,8 +60,15 @@ public partial class PurchasesViewModel(IAppRepository repo,IAppSession session)
     public IReadOnlyList<PaymentModeOption> PaymentModes {get;}=new[]{new PaymentModeOption(PaymentMode.Cash,"نقدي"),new PaymentModeOption(PaymentMode.Credit,"آجل — عليه"),new PaymentModeOption(PaymentMode.Partial,"جزئي — المتبقي عليه")};
 
     public async Task LoadAsync(){_books=await repo.GetBooksAsync();_allPeople=await repo.GetSupplierPeopleAsync();_allProducts=await repo.GetProductsAsync();People=_allPeople;Products=_allProducts;await LoadInvoiceHistoryAsync();}
+    private int _invoiceSearchRequest;
     partial void OnInvoiceSearchChanged(string value)=>_ = LoadInvoiceHistoryAsync();
-    private async Task LoadInvoiceHistoryAsync()=>InvoiceHistory=await repo.GetInvoiceSummariesAsync(InvoiceType.Purchase,InvoiceSearch,100);
+    private async Task LoadInvoiceHistoryAsync()
+    {
+        var request = System.Threading.Interlocked.Increment(ref _invoiceSearchRequest);
+        var search = InvoiceSearch;
+        var result = await repo.GetInvoiceSummariesAsync(InvoiceType.Purchase, search, 100);
+        if (request == System.Threading.Volatile.Read(ref _invoiceSearchRequest)) InvoiceHistory = result;
+    }
     [RelayCommand] private async Task ReverseInvoiceAsync(string invoiceNumber)
     {
         if(IsSaving||string.IsNullOrWhiteSpace(invoiceNumber))return;
