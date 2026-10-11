@@ -164,4 +164,50 @@ public sealed class SalesInvoiceTests
         }
     }
 
+    [Fact]
+    public async Task ManualReceiptsAndPayments_AffectCashSummaryAndRestoreWithoutDuplication()
+    {
+        var root=Path.Combine(Path.GetTempPath(),"SL_MANUAL_CASH_"+Guid.NewGuid().ToString("N"));
+        try
+        {
+            var database=new Database(root);
+            await database.InitializeAsync();
+            var users=new UserRepository(database);
+            var hasher=new PasswordHasher();
+            await users.CreateAdministratorAsync(new AdminSetup("cashledgeradmin",hasher.Hash("Password!123"),hasher.Hash("recovery"),"hint"));
+            var admin=await users.FindAsync("cashledgeradmin");
+            Assert.NotNull(admin);
+            var repository=new AppRepository(database);
+            var books=await repository.GetBooksAsync();
+            var customer=await repository.CreatePersonAsync(books.Single(x=>x.Kind==BookKind.Customers).Id,"عميل تسوية نقدية","7771111","");
+            var supplier=await repository.CreatePersonAsync(books.Single(x=>x.Kind==BookKind.Suppliers).Id,"مورد تسوية نقدية","7772222","");
+            var receipt=new LedgerOperation(Guid.NewGuid(),customer.Id,OperationType.Receive,20m,"قبض نقدي",DateTimeOffset.UtcNow,admin!.Id);
+            var payment=new LedgerOperation(Guid.NewGuid(),supplier.Id,OperationType.Payment,7m,"سداد نقدي",DateTimeOffset.UtcNow,admin.Id);
+            await repository.CreateOperationAsync(receipt);
+            await repository.CreateOperationAsync(payment);
+
+            var summary=await repository.GetCashRegisterSummaryAsync();
+            Assert.Equal(20m,summary.CashIn);
+            Assert.Equal(7m,summary.CashOut);
+            Assert.Equal(13m,summary.Net);
+            Assert.Equal(2,summary.TransactionCount);
+
+            await repository.DeleteOperationAsync(receipt.Id,admin.Id);
+            summary=await repository.GetCashRegisterSummaryAsync();
+            Assert.Equal(0m,summary.CashIn);
+            Assert.Equal(7m,summary.CashOut);
+            var deleted=(await repository.GetDeletedItemsAsync()).Single(x=>x.EntityType=="Operation"&&x.EntityId==receipt.Id);
+            await repository.RestoreDeletedItemAsync(deleted.Id);
+            summary=await repository.GetCashRegisterSummaryAsync();
+            Assert.Equal(20m,summary.CashIn);
+            Assert.Equal(7m,summary.CashOut);
+            Assert.Equal(2,summary.TransactionCount);
+        }
+        finally
+        {
+            SqliteConnection.ClearAllPools();
+            if(Directory.Exists(root))Directory.Delete(root,true);
+        }
+    }
+
 }
