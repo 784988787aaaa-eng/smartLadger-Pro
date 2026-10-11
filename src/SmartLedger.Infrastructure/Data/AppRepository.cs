@@ -646,6 +646,14 @@ FROM Operations;
         var restored=await c.ExecuteNonQueryAsync(ct);
         if(restored==0) throw new InvalidOperationException("تعذر الاستعادة لأن العنصر موجود بالفعل أو توجد مشكلة في البيانات.");
 
+        if(type=="Operation")
+        {
+            c.Parameters.Clear();
+            c.CommandText="INSERT INTO OperationCashEntries(Id,OperationId,Amount,EntryType,OccurredAt,CreatedBy) SELECT lower(hex(randomblob(16))),o.Id,o.Amount,CASE o.Type WHEN 0 THEN 'OPERATION_RECEIPT' ELSE 'OPERATION_PAYMENT' END,o.OccurredAt,o.CreatedBy FROM Operations o WHERE o.Id=$id AND o.Type IN (0,1) AND NOT EXISTS(SELECT 1 FROM OperationCashEntries x WHERE x.OperationId=o.Id);";
+            P(c,"$id",entityId);
+            await c.ExecuteNonQueryAsync(ct);
+        }
+
         if(type=="StockMovement")
         {
             c.Parameters.Clear();
