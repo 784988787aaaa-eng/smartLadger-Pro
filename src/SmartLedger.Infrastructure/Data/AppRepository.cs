@@ -446,16 +446,19 @@ FROM Operations;
             }
             if(movement.Type==StockMovementType.Sale)
             {
-                c.Parameters.Clear();c.CommandText="SELECT Id,QuantityMinor,CostPrice FROM ProductBatches WHERE ProductId=$product AND CAST(QuantityMinor AS REAL)>0 ORDER BY CASE WHEN ExpiryDate IS NULL OR trim(ExpiryDate)='' THEN 1 ELSE 0 END,ExpiryDate,CreatedAt;";P(c,"$product",movement.ProductId.ToString("N"));
-                var batches=new List<(string Id,decimal Quantity,decimal CostPrice)>();
-                await using(var batchReader=await c.ExecuteReaderAsync(ct)){while(await batchReader.ReadAsync(ct))batches.Add((batchReader.GetString(0),D(Convert.ToString(batchReader.GetValue(1),CultureInfo.InvariantCulture)!),D(Convert.ToString(batchReader.GetValue(2),CultureInfo.InvariantCulture)!)));}
+                c.Parameters.Clear();c.CommandText="SELECT Id,QuantityMinor,CostPrice,ExpiryDate FROM ProductBatches WHERE ProductId=$product AND CAST(QuantityMinor AS REAL)>0 ORDER BY CASE WHEN ExpiryDate IS NULL OR trim(ExpiryDate)='' THEN 1 ELSE 0 END,ExpiryDate,CreatedAt;";P(c,"$product",movement.ProductId.ToString("N"));
+                var batches=new List<(string Id,decimal Quantity,decimal CostPrice,DateTimeOffset? ExpiryDate)>();
+                await using(var batchReader=await c.ExecuteReaderAsync(ct)){while(await batchReader.ReadAsync(ct)){var expiryText=batchReader.IsDBNull(3)?null:Convert.ToString(batchReader.GetValue(3),CultureInfo.InvariantCulture);var expiry=string.IsNullOrWhiteSpace(expiryText)?null:DateTimeOffset.Parse(expiryText,CultureInfo.InvariantCulture);batches.Add((batchReader.GetString(0),D(Convert.ToString(batchReader.GetValue(1),CultureInfo.InvariantCulture)!),D(Convert.ToString(batchReader.GetValue(2),CultureInfo.InvariantCulture)!),expiry));}}
                 var trackedBatchQuantity=batches.Sum(b=>b.Quantity);
                 if(trackedBatchQuantity>current)
                     throw new InvalidOperationException("إجمالي كميات الدفعات يتجاوز الرصيد المخزني المسجل؛ أجرِ تسوية للمخزون قبل البيع.");
+                var saleDate=i.IssuedAt.Date;
+                var expiredTrackedQuantity=batches.Where(b=>b.ExpiryDate is DateTimeOffset expiry&&expiry.Date<saleDate).Sum(b=>b.Quantity);
+                var sellableBatches=batches.Where(b=>b.ExpiryDate is null||b.ExpiryDate.Value.Date>=saleDate).ToList();
                 var remainingToAllocate=movement.QuantitySmallUnits;
                 var allocatedCost=0m;
                 var untrackedStockAvailable=Math.Max(0m,current-trackedBatchQuantity);
-                foreach(var batch in batches)
+                foreach(var batch in sellableBatches)
                 {
                     if(remainingToAllocate<=0)break;
                     var taken=Math.Min(batch.Quantity,remainingToAllocate);
@@ -468,7 +471,11 @@ FROM Operations;
                 if(remainingToAllocate>0)
                 {
                     if(remainingToAllocate>untrackedStockAvailable)
+                    {
+                        if(expiredTrackedQuantity>0)
+                            throw new InvalidOperationException("لا يمكن بيع الكمية المطلوبة لأن جزءًا من المخزون المتتبع منتهي الصلاحية أو غير متاح؛ تحقق من صلاحية الدفعات وسوِّ المخزون قبل الحفظ.");
                         throw new InvalidOperationException("كميات الدفعات المسجلة لا تطابق الرصيد الإجمالي، والرصيد غير المتتبع لا يكفي لتغطية البيع. راجع تسوية المخزون قبل الحفظ.");
+                    }
                     allocatedCost+=remainingToAllocate*fallbackCost;
                 }
                 if(batches.Count>0&&movement.QuantitySmallUnits>0)
