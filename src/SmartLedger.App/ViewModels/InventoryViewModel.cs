@@ -62,7 +62,7 @@ public partial class InventoryViewModel(IAppRepository repo) : ObservableObject
     public int ProductsCount => Products.Count;
     private IReadOnlyDictionary<Guid,decimal> _productCostValues = new Dictionary<Guid,decimal>();
     public decimal StockValue => Products.Sum(x => _productCostValues.TryGetValue(x.Id,out var value) ? value : x.StockSmallUnits * x.PurchasePrice);
-    public decimal RetailStockValue => Products.Sum(x => x.StockSmallUnits * x.SalePrice);
+    public decimal RetailStockValue => Products.Sum(x => x.StockSmallUnits * (x.SellingPriceMinor > 0m ? x.SellingPriceMinor : x.SalePrice));
     public string SelectedProductStockBreakdown => SelectedProduct is { } p ? InventoryUnitConverter.BreakDown(p.StockSmallUnits, Math.Max(1m,p.ConversionFactor), p.LargeUnit, p.SmallUnit).Formatted : "—";
     public decimal SelectedProductCostValue => SelectedProduct is { } p ? (_productCostValues.TryGetValue(p.Id,out var value) ? value : p.StockSmallUnits * p.PurchasePrice) : 0m;
     public decimal SelectedProductRetailValue => SelectedProduct is { } p ? p.StockSmallUnits * p.SellingPriceMinor : 0m;
@@ -270,7 +270,7 @@ public partial class InventoryViewModel(IAppRepository repo) : ObservableObject
                     WarehouseName = NewWarehouse.Trim(),
                     SellingPriceMajor = ParseDecimal(NewMajorSalePrice),
                     SellingPriceMinor = sale,
-                    MinimumSellingPrice = purchase,
+                    MinimumSellingPrice = SelectedProduct.MinimumSellingPrice,
                     ReorderPoint = alert,
                     LowStockThreshold = alert,
                     UpdatedAt = DateTimeOffset.UtcNow
