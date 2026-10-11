@@ -645,7 +645,7 @@ FROM Operations;
         c.CommandText="""
             SELECT
               COALESCE((SELECT SUM(CAST(Amount AS REAL)) FROM CashRegisterEntries WHERE EntryType IN ('SALE_RECEIPT','PURCHASE_REFUND') AND ($from IS NULL OR OccurredAt >= $from) AND ($to IS NULL OR OccurredAt <= $to)),0),
-              COALESCE((SELECT SUM(CAST(Amount AS REAL)) FROM CashRegisterEntries WHERE EntryType IN ('PURCHASE_PAYMENT','SALE_REFUND') AND ($from IS NULL OR OccurredAt >= $from) AND ($to IS NULL OR OccurredAt <= $to)),0)
+              COALESCE((SELECT SUM(CAST(Amount AS REAL)) FROM CashRegisterEntries WHERE EntryType IN ('PURCHASE_PAYMENT','SALE_REFUND','Refund') AND ($from IS NULL OR OccurredAt >= $from) AND ($to IS NULL OR OccurredAt <= $to)),0)
               + COALESCE((SELECT SUM(CAST(Amount AS REAL)) FROM ExpenseCashEntries WHERE EntryType='EXPENSE_PAYMENT:Cash' AND ($from IS NULL OR OccurredAt >= $from) AND ($to IS NULL OR OccurredAt <= $to)),0),
               (SELECT COUNT(*) FROM CashRegisterEntries WHERE ($from IS NULL OR OccurredAt >= $from) AND ($to IS NULL OR OccurredAt <= $to))
               + (SELECT COUNT(*) FROM ExpenseCashEntries WHERE EntryType='EXPENSE_PAYMENT:Cash' AND ($from IS NULL OR OccurredAt >= $from) AND ($to IS NULL OR OccurredAt <= $to));
