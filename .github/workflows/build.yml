@@ -2,7 +2,9 @@ name: SmartLedger Build
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main
+      - 'fix/**'
   pull_request:
     branches: [ main ]
   workflow_dispatch:
