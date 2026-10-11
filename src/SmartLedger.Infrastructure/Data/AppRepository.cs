@@ -357,6 +357,9 @@ FROM Operations;
                 // consumed one of those lots, refuse the reversal instead of leaving phantom stock.
                 c.Parameters.Clear();c.CommandText="SELECT EXISTS(SELECT 1 FROM ProductBatches b JOIN InvoiceBatchAllocations a ON a.BatchId=b.Id JOIN Invoices consumed ON consumed.Id=a.InvoiceId WHERE b.PurchaseInvoiceRef=$invoice AND lower(consumed.Status) NOT IN ('reversed','cancelled'));";P(c,"$invoice",storedInvoiceNumber);
                 if(Convert.ToInt32(await c.ExecuteScalarAsync())==1)throw new InvalidOperationException("لا يمكن عكس فاتورة الشراء بعد بيع كميات من دفعاتها؛ عالج مرتجع البيع أولاً.");
+                // Also detect consumption through manual stock movements, which do not have invoice allocation rows.
+                c.Parameters.Clear();c.CommandText="SELECT EXISTS(SELECT 1 FROM (SELECT ProductId,SUM(CAST(QuantityMinor AS REAL)) AS PurchasedQty FROM InvoiceLines WHERE InvoiceId=$invoiceId GROUP BY ProductId) pl WHERE COALESCE((SELECT SUM(CAST(b.QuantityMinor AS REAL)) FROM ProductBatches b WHERE b.PurchaseInvoiceRef=$invoice AND b.ProductId=pl.ProductId),0)<pl.PurchasedQty);";P(c,"$invoiceId",invoiceKey);P(c,"$invoice",storedInvoiceNumber);
+                if(Convert.ToInt32(await c.ExecuteScalarAsync())==1)throw new InvalidOperationException("لا يمكن عكس فاتورة الشراء لأن كميات من دفعاتها استُهلكت أو عُدلت؛ سوِّ حركات المخزون التابعة أولاً.");
                 // Reversed sales retain allocation history. Remove those references before deleting
                 // the original purchase lots, otherwise the BatchId foreign key blocks the reversal.
                 c.Parameters.Clear();c.CommandText="DELETE FROM InvoiceBatchAllocations WHERE BatchId IN (SELECT Id FROM ProductBatches WHERE PurchaseInvoiceRef=$invoice);";P(c,"$invoice",storedInvoiceNumber);await c.ExecuteNonQueryAsync();
