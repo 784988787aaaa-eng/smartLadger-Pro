@@ -398,7 +398,7 @@ FROM Operations;
         if(lines.Count==0)throw new InvalidOperationException("الفاتورة يجب أن تحتوي على صنف واحد على الأقل.");
         if(lines.Any(l=>l.Quantity<=0||l.UnitPrice<=0||l.Discount<0||l.Discount>l.Quantity*l.UnitPrice||l.LineTotal!=decimal.Round(l.Quantity*l.UnitPrice-l.Discount,2)))throw new InvalidOperationException("بيانات كمية أو سعر أو خصم أحد بنود الفاتورة غير صالحة.");
         if(decimal.Round(lines.Sum(l=>l.Quantity*l.UnitPrice),2)!=i.Subtotal||decimal.Round(lines.Sum(l=>l.Discount),2)!=i.Discount||decimal.Round(lines.Sum(l=>l.LineTotal),2)!=decimal.Round(i.Subtotal-i.Discount,2))throw new InvalidOperationException("إجمالي الفاتورة لا يطابق مجموع بنودها وخصوماتها.");
-        if(movements.Count>0&&movements.Count!=lines.Count)throw new InvalidOperationException("عدد حركات المخزون يجب أن يطابق عدد بنود الفاتورة.");
+        if(movements.Count!=lines.Count)throw new InvalidOperationException("يجب أن يكون لكل بند فاتورة حركة مخزون مطابقة ضمن المعاملة الذرية.");
         var expectedMovementType=i.Type==InvoiceType.Sale?StockMovementType.Sale:StockMovementType.Purchase;
         if(movements.Any(m=>m.Type!=expectedMovementType))throw new InvalidOperationException("نوع حركة المخزون لا يطابق نوع الفاتورة.");
         var outstanding=decimal.Round(i.Total-i.Paid,2);
