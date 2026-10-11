@@ -88,7 +88,7 @@ public partial class ReportsViewModel(IAppRepository repo) : ObservableObject
         var exportRows=BuildExportRows();
         if (IsBusy || exportRows.Count == 0)
         {
-            StatusText = exportRows.Count == 0 ? "لا توجد بيانات لتصديرها ضمن الفترة المحددة." : "انتظر حتى يكتمل التقرير.";
+            StatusText = IsBusy ? "انتظر حتى يكتمل التقرير." : "لا توجد بيانات لتصديرها ضمن الفترة المحددة.";
             return;
         }
 
@@ -125,7 +125,7 @@ public partial class ReportsViewModel(IAppRepository repo) : ObservableObject
         var exportRows=BuildExportRows();
         if (IsBusy || exportRows.Count == 0)
         {
-            StatusText = exportRows.Count == 0 ? "لا توجد بيانات لتصديرها ضمن الفترة المحددة." : "انتظر حتى يكتمل التقرير.";
+            StatusText = IsBusy ? "انتظر حتى يكتمل التقرير." : "لا توجد بيانات لتصديرها ضمن الفترة المحددة.";
             return;
         }
 
