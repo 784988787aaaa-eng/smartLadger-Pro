@@ -667,6 +667,12 @@ FROM Operations;
             await movementReader.DisposeAsync();
 
             c.Parameters.Clear();
+            c.CommandText="SELECT EXISTS(SELECT 1 FROM ProductBatches WHERE ProductId=$product AND CAST(QuantityMinor AS REAL)>0);";
+            P(c,"$product",productId);
+            if(Convert.ToInt32(await c.ExecuteScalarAsync(ct))==1)
+                throw new InvalidOperationException("لا يمكن استعادة حركة مخزون مستقلة لصنف يتتبع الدفعات؛ الحركة القديمة لا تحفظ رقم الدفعة وتكلفتها، واستعادتها ستفصل الرصيد الإجمالي عن الدفعات. سوِّ الدفعات أولاً ثم أعد المحاولة.");
+
+            c.Parameters.Clear();
             c.CommandText="SELECT CAST(StockSmallUnits AS REAL) FROM Products WHERE Id=$product;";
             P(c,"$product",productId);
             var current=Convert.ToDecimal(await c.ExecuteScalarAsync(ct));
