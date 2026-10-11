@@ -11,6 +11,8 @@ public partial class PurchasesViewModel(IAppRepository repo,IAppSession session)
 {
     [ObservableProperty] private IReadOnlyList<PersonSummary> people=Array.Empty<PersonSummary>();
     [ObservableProperty] private IReadOnlyList<Product> products=Array.Empty<Product>();
+    [ObservableProperty] private IReadOnlyList<InvoiceSummary> invoiceHistory=Array.Empty<InvoiceSummary>();
+    [ObservableProperty] private string invoiceSearch="";
     private IReadOnlyList<PersonSummary> _allPeople=Array.Empty<PersonSummary>();
     private IReadOnlyList<Product> _allProducts=Array.Empty<Product>();
     private IReadOnlyList<Book> _books=Array.Empty<Book>();
@@ -57,7 +59,9 @@ public partial class PurchasesViewModel(IAppRepository repo,IAppSession session)
     public string BalanceLabel=>Remaining>0?"متبقي علينا":"مسدد بالكامل";
     public IReadOnlyList<PaymentModeOption> PaymentModes {get;}=new[]{new PaymentModeOption(PaymentMode.Cash,"نقدي"),new PaymentModeOption(PaymentMode.Credit,"آجل — عليه"),new PaymentModeOption(PaymentMode.Partial,"جزئي — المتبقي عليه")};
 
-    public async Task LoadAsync(){_books=await repo.GetBooksAsync();_allPeople=await repo.GetSupplierPeopleAsync();_allProducts=await repo.GetProductsAsync();People=_allPeople;Products=_allProducts;}
+    public async Task LoadAsync(){_books=await repo.GetBooksAsync();_allPeople=await repo.GetSupplierPeopleAsync();_allProducts=await repo.GetProductsAsync();People=_allPeople;Products=_allProducts;await LoadInvoiceHistoryAsync();}
+    partial void OnInvoiceSearchChanged(string value)=>_ = LoadInvoiceHistoryAsync();
+    private async Task LoadInvoiceHistoryAsync()=>InvoiceHistory=await repo.GetInvoiceSummariesAsync(InvoiceType.Purchase,InvoiceSearch,100);
     partial void OnSupplierSearchChanged(string value){if(PersonId is Guid id&&_allPeople.FirstOrDefault(x=>x.PersonId==id) is { } selected&&!Normalize(value).Equals(Normalize(selected.PersonName),StringComparison.OrdinalIgnoreCase))PersonId=null;People=FilterPeople(value);IsSupplierSuggestionsOpen=!string.IsNullOrWhiteSpace(value)&&People.Count>0;}
     partial void OnProductSearchChanged(string value){if(_settingProductSelection)return;if(ProductId is Guid id&&_allProducts.FirstOrDefault(x=>x.Id==id) is { } selected&&!Normalize(value).Equals(Normalize(selected.Name),StringComparison.OrdinalIgnoreCase))ProductId=null;Products=FilterProducts(value);IsProductSuggestionsOpen=!string.IsNullOrWhiteSpace(value)&&Products.Count>0;}
     partial void OnPersonIdChanged(Guid? value){var p=_allPeople.FirstOrDefault(x=>x.PersonId==value);if(p is not null){SupplierSearch=p.PersonName;IsSupplierSuggestionsOpen=false;}}
@@ -146,7 +150,7 @@ public partial class PurchasesViewModel(IAppRepository repo,IAppSession session)
             var movements=Lines.Select(x=>new StockMovement(Guid.NewGuid(),x.ProductId,StockMovementType.Purchase,x.QuantitySmallUnits,decimal.Round(x.UnitPrice*x.Quantity/x.QuantitySmallUnits,4),Note.Trim(),DateTimeOffset.Now,session.CurrentUser!.Id)).ToArray();
             LedgerOperation? operation=PersonId is Guid person&&invoice.Total-invoice.Paid>0?new LedgerOperation(Guid.NewGuid(),person,OperationType.DebtToUs,invoice.Total-invoice.Paid,Note.Trim(),DateTimeOffset.Now,session.CurrentUser!.Id):null;
             await repo.CreateInvoiceTransactionWithMovementsAsync(invoice,invoiceLines,movements,operation);
-            StatusText="تم حفظ الفاتورة بنجاح.";IsDialogOpen=false;Lines.Clear();OnPropertyChanged(nameof(LinesTotal));ProductId=null;ProductSearch="";QuantityText="1";PriceText="";PaidText="0";Note="";_allProducts=await repo.GetProductsAsync();Products=_allProducts;Recalc();
+            StatusText="تم حفظ الفاتورة بنجاح.";IsDialogOpen=false;Lines.Clear();OnPropertyChanged(nameof(LinesTotal));ProductId=null;ProductSearch="";QuantityText="1";PriceText="";PaidText="0";Note="";_allProducts=await repo.GetProductsAsync();Products=_allProducts;await LoadInvoiceHistoryAsync();Recalc();
         }catch(Exception ex){StatusText=ex.Message;}
         finally{IsSaving=false;}
     }
