@@ -332,6 +332,6 @@ public partial class SalesViewModel(IAppRepository repo,IAppSession session):Obs
             System.Windows.MessageBox.Show(StatusText,reversed?"تم العكس":"تعذر العكس",System.Windows.MessageBoxButton.OK,reversed?System.Windows.MessageBoxImage.Information:System.Windows.MessageBoxImage.Warning);
             await LoadAsync();
         }
-        catch (Exception ex) { StatusText = ex.Message; }
+        catch (Exception ex) { StatusText = ex.Message; System.Windows.MessageBox.Show(ex.Message,"تعذر عكس الفاتورة",System.Windows.MessageBoxButton.OK,System.Windows.MessageBoxImage.Warning); }
         finally { IsSaving = false; }
     }}
