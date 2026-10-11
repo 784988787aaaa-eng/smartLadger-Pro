@@ -448,9 +448,12 @@ FROM Operations;
                 c.Parameters.Clear();c.CommandText="SELECT Id,QuantityMinor,CostPrice FROM ProductBatches WHERE ProductId=$product AND CAST(QuantityMinor AS REAL)>0 ORDER BY CASE WHEN ExpiryDate IS NULL OR trim(ExpiryDate)='' THEN 1 ELSE 0 END,ExpiryDate,CreatedAt;";P(c,"$product",movement.ProductId.ToString("N"));
                 var batches=new List<(string Id,decimal Quantity,decimal CostPrice)>();
                 await using(var batchReader=await c.ExecuteReaderAsync(ct)){while(await batchReader.ReadAsync(ct))batches.Add((batchReader.GetString(0),D(Convert.ToString(batchReader.GetValue(1),CultureInfo.InvariantCulture)!),D(Convert.ToString(batchReader.GetValue(2),CultureInfo.InvariantCulture)!)));}
+                var trackedBatchQuantity=batches.Sum(b=>b.Quantity);
+                if(trackedBatchQuantity>current)
+                    throw new InvalidOperationException("إجمالي كميات الدفعات يتجاوز الرصيد المخزني المسجل؛ أجرِ تسوية للمخزون قبل البيع.");
                 var remainingToAllocate=movement.QuantitySmallUnits;
                 var allocatedCost=0m;
-                var untrackedStockAvailable=Math.Max(0m,current-batches.Sum(b=>b.Quantity));
+                var untrackedStockAvailable=Math.Max(0m,current-trackedBatchQuantity);
                 foreach(var batch in batches)
                 {
                     if(remainingToAllocate<=0)break;
