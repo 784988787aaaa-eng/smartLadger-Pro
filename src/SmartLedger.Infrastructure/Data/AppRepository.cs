@@ -293,13 +293,13 @@ FROM Operations;
         await r.DisposeAsync();
         c.CommandText="SELECT COALESCE(SUM(CASE WHEN COALESCE(b.BatchQuantity,0)>0 THEN (COALESCE(b.BatchValue,0)/b.BatchQuantity)*MIN(CAST(p.StockSmallUnits AS REAL),b.BatchQuantity)+MAX(0,CAST(p.StockSmallUnits AS REAL)-b.BatchQuantity)*CAST(p.PurchasePrice AS REAL) ELSE CAST(p.StockSmallUnits AS REAL)*CAST(p.PurchasePrice AS REAL) END),0) FROM Products p LEFT JOIN (SELECT ProductId,SUM(CAST(QuantityMinor AS REAL)) AS BatchQuantity,SUM(CAST(QuantityMinor AS REAL)*CAST(CostPrice AS REAL)) AS BatchValue FROM ProductBatches WHERE CAST(QuantityMinor AS REAL)>0 GROUP BY ProductId) b ON b.ProductId=p.Id;";
         var stock=Convert.ToDecimal(await c.ExecuteScalarAsync(ct));
-        c.CommandText="SELECT COUNT(*) FROM Operations WHERE OccurredAt>=date('now','localtime');";
+        c.CommandText="SELECT COUNT(*) FROM Operations WHERE date(OccurredAt,'localtime')=date('now','localtime');";
         var today=Convert.ToInt32(await c.ExecuteScalarAsync(ct));
         c.CommandText="SELECT COALESCE(SUM(CAST(Total AS REAL)),0) FROM Invoices WHERE Type=0 AND COALESCE(lower(Status),'') NOT IN ('reversed','cancelled') AND date(IssuedAt,'localtime')=date('now','localtime');";
         var sales=Convert.ToDecimal(await c.ExecuteScalarAsync(ct));
         c.CommandText="SELECT COALESCE(SUM(CAST(Total AS REAL)),0) FROM Invoices WHERE Type=1 AND COALESCE(lower(Status),'') NOT IN ('reversed','cancelled') AND date(IssuedAt,'localtime')=date('now','localtime');";
         var purchases=Convert.ToDecimal(await c.ExecuteScalarAsync(ct));
-        c.CommandText="SELECT COALESCE(SUM(CAST(Amount AS REAL)),0) FROM Expenses WHERE OccurredAt>=date('now','localtime');";
+        c.CommandText="SELECT COALESCE(SUM(CAST(Amount AS REAL)),0) FROM Expenses WHERE date(OccurredAt,'localtime')=date('now','localtime');";
         var expenses=Convert.ToDecimal(await c.ExecuteScalarAsync(ct));
         return new DashboardSummary(split.OwedToUs,split.WeOwe,stock,today,sales,purchases,expenses);
     }
