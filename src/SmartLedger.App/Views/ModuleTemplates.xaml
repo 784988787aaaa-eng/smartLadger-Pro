@@ -750,6 +750,8 @@
           <TextBox DockPanel.Dock="Right" Width="280" Margin="18,0,0,0" Style="{StaticResource Field}" Text="{Binding InvoiceSearch,UpdateSourceTrigger=PropertyChanged}" AutomationProperties.Name="بحث فواتير البيع" ToolTip="ابحث برقم الفاتورة أو اسم العميل أو البيان"/>
           <StackPanel DockPanel.Dock="Left" Orientation="Horizontal">
             <Button Content="معاينة آخر إيصال" Command="{Binding PrintLastInvoiceCommand}" Style="{StaticResource GhostButton}" Width="140" Height="42" Margin="0,0,8,0"/>
+            <Button Content="طباعة مباشرة" Command="{Binding PrintDirectlyCommand}" Style="{StaticResource GhostButton}" Width="115" Height="42" Margin="0,0,8,0"/>
+            <Button Content="إرسال لواتساب" Command="{Binding SendWhatsAppCommand}" Style="{StaticResource GhostButton}" Width="125" Height="42" Margin="0,0,8,0"/>
             <Button Content="+ إنشاء فاتورة بيع" Command="{Binding OpenNewCommand}" Style="{StaticResource PrimaryButton}" Width="165" Height="42"/>
           </StackPanel>
         </DockPanel>
