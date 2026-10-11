@@ -60,10 +60,11 @@ public partial class InventoryViewModel(IAppRepository repo) : ObservableObject
     [ObservableProperty] private string statusText = "";
 
     public int ProductsCount => Products.Count;
-    public decimal StockValue => Products.Sum(x => x.StockSmallUnits * x.PurchasePrice);
+    private IReadOnlyDictionary<Guid,decimal> _productCostValues = new Dictionary<Guid,decimal>();
+    public decimal StockValue => Products.Sum(x => _productCostValues.TryGetValue(x.Id,out var value) ? value : x.StockSmallUnits * x.PurchasePrice);
     public decimal RetailStockValue => Products.Sum(x => x.StockSmallUnits * x.SalePrice);
     public string SelectedProductStockBreakdown => SelectedProduct is { } p ? InventoryUnitConverter.BreakDown(p.StockSmallUnits, Math.Max(1m,p.ConversionFactor), p.LargeUnit, p.SmallUnit).Formatted : "—";
-    public decimal SelectedProductCostValue => SelectedProduct is { } p ? p.StockSmallUnits * p.PurchasePrice : 0m;
+    public decimal SelectedProductCostValue => SelectedProduct is { } p ? (_productCostValues.TryGetValue(p.Id,out var value) ? value : p.StockSmallUnits * p.PurchasePrice) : 0m;
     public decimal SelectedProductRetailValue => SelectedProduct is { } p ? p.StockSmallUnits * p.SellingPriceMinor : 0m;
     public decimal SelectedProductIncomingQuantity => SelectedProductMovements.Where(m => m.TypeLabel.Contains("وارد", StringComparison.Ordinal) || m.TypeLabel.Contains("افتتاحي", StringComparison.Ordinal)).Sum(m => m.QuantitySmallUnits);
     public decimal SelectedProductOutgoingQuantity => SelectedProductMovements.Where(m => m.TypeLabel.Contains("منصرف", StringComparison.Ordinal)).Sum(m => m.QuantitySmallUnits);
@@ -74,6 +75,7 @@ public partial class InventoryViewModel(IAppRepository repo) : ObservableObject
     public async Task LoadAsync()
     {
         _allProducts = await repo.GetProductsAsync(Search);
+        _productCostValues = await repo.GetProductInventoryCostValuesAsync();
         Products = _allProducts;
         Suppliers = await repo.GetSupplierPeopleAsync();
         ApplyFilter();
@@ -143,6 +145,7 @@ public partial class InventoryViewModel(IAppRepository repo) : ObservableObject
     {
         OnPropertyChanged(nameof(SelectedProductCostValue));
         OnPropertyChanged(nameof(SelectedProductRetailValue));
+        OnPropertyChanged(nameof(StockValue));
         OnPropertyChanged(nameof(SelectedProductIncomingQuantity));
         OnPropertyChanged(nameof(SelectedProductOutgoingQuantity));
         OnPropertyChanged(nameof(SelectedProductSupplier));
