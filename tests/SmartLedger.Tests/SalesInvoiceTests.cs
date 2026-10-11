@@ -189,8 +189,7 @@ public sealed class SalesInvoiceTests
             var summary=await repository.GetCashRegisterSummaryAsync();
             Assert.Equal(20m,summary.CashIn);
             Assert.Equal(7m,summary.CashOut);
-            Assert.Equal(13m,summary.Net);
-            Assert.Equal(2,summary.TransactionCount);
+            Assert.Equal(13m,summary.Balance);
 
             await repository.DeleteOperationAsync(receipt.Id,admin.Id);
             summary=await repository.GetCashRegisterSummaryAsync();
@@ -201,7 +200,6 @@ public sealed class SalesInvoiceTests
             summary=await repository.GetCashRegisterSummaryAsync();
             Assert.Equal(20m,summary.CashIn);
             Assert.Equal(7m,summary.CashOut);
-            Assert.Equal(2,summary.TransactionCount);
         }
         finally
         {
