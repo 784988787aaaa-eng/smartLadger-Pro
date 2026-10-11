@@ -321,7 +321,7 @@ public partial class SalesViewModel(IAppRepository repo,IAppSession session):Obs
         {
             IsSaving = true;
             var reversed = await repo.ReverseInvoiceAsync(invoiceNumber, "طلب المستخدم عكس الفاتورة", session.CurrentUser!.Id.ToString());
-            StatusText = reversed ? $"Invoice {invoiceNumber} reversed successfully." : $"Invoice {invoiceNumber} was not found or was already reversed.";
+            StatusText = reversed ? $"تم عكس فاتورة البيع رقم {invoiceNumber} بنجاح." : $"فاتورة البيع رقم {invoiceNumber} غير موجودة أو سبق عكسها.";
             await LoadAsync();
         }
         catch (Exception ex) { StatusText = ex.Message; }
