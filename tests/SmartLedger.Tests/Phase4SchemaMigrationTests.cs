@@ -19,7 +19,7 @@ public sealed class Phase4SchemaMigrationTests
 
             await using var versionCommand = connection.CreateCommand();
             versionCommand.CommandText = "PRAGMA user_version;";
-            Assert.Equal(17L, Convert.ToInt64(await versionCommand.ExecuteScalarAsync()));
+            Assert.Equal(18L, Convert.ToInt64(await versionCommand.ExecuteScalarAsync()));
 
             await using var tableCommand = connection.CreateCommand();
             tableCommand.CommandText = "SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name IN ('Products','Invoices','InvoiceLines','Expenses','AuditLogs','ExpenseCashEntries','AppPreferences');";
