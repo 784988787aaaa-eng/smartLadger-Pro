@@ -61,6 +61,16 @@ public sealed class InvoiceReversalTests
             var saved = await repository.SaveSalesInvoiceAsync(invoice, new[] { line }, new[] { movement }, customerDebit);
             Assert.Equal(18m, Assert.Single(await repository.GetProductsAsync(product.Barcode)).StockSmallUnits);
 
+            // The public reversal API accepts the numeric invoice identifier; use a stable test number.
+            await using (var connection = database.Open())
+            {
+                await connection.OpenAsync();
+                await using var command = connection.CreateCommand();
+                command.CommandText = "UPDATE Invoices SET InvoiceNumber='123' WHERE Id=$id;";
+                command.Parameters.AddWithValue("$id", saved.Id.ToString("N"));
+                await command.ExecuteNonQueryAsync();
+            }
+
             // Force audit insertion to fail and prove that the reversal transaction rolls back all effects.
             await using (var connection = database.Open())
             {
@@ -78,7 +88,7 @@ public sealed class InvoiceReversalTests
             }
 
             await Assert.ThrowsAsync<SqliteException>(
-                async () => await repository.ReverseInvoiceAsync(saved.InvoiceNumber, "audit rollback test", admin.Id));
+                async () => await repository.ReverseInvoiceAsync(123, "audit rollback test", admin.Id.ToString("N")));
 
             await using (var connection = database.Open())
             {
@@ -102,7 +112,7 @@ public sealed class InvoiceReversalTests
             Assert.Equal(0m, consumedBatches.Single(x => x.BatchNumber == "REV-EARLY").QuantityMinor);
             Assert.Equal(18m, consumedBatches.Single(x => x.BatchNumber == "REV-LATE").QuantityMinor);
 
-            Assert.True(await repository.ReverseInvoiceAsync(saved.InvoiceNumber, "confirmed reversal", admin.Id));
+            Assert.True(await repository.ReverseInvoiceAsync(123, "confirmed reversal", admin.Id.ToString("N")));
 
             // Aggregate stock and the exact FEFO lots must return to their pre-sale quantities.
             Assert.Equal(30m, Assert.Single(await repository.GetProductsAsync(product.Barcode)).StockSmallUnits);
@@ -136,7 +146,7 @@ public sealed class InvoiceReversalTests
             }
 
             // A second reversal is rejected and cannot duplicate ledger, cash, audit, or stock effects.
-            Assert.False(await repository.ReverseInvoiceAsync(saved.InvoiceNumber, "duplicate reversal", admin.Id));
+            Assert.False(await repository.ReverseInvoiceAsync(123, "duplicate reversal", admin.Id.ToString("N")));
             Assert.Equal(30m, Assert.Single(await repository.GetProductsAsync(product.Barcode)).StockSmallUnits);
             Assert.Equal(2, (await repository.GetOperationsAsync(customer.Id)).Count);
 
@@ -177,7 +187,7 @@ public sealed class InvoiceReversalTests
             Assert.NotNull(admin);
 
             var repository = new AppRepository(database);
-            var result = await repository.ReverseInvoiceAsync("INV-DOES-NOT-EXIST", "integration test missing invoice", admin!.Id);
+            var result = await repository.ReverseInvoiceAsync(999999, "integration test missing invoice", admin!.Id.ToString("N"));
             Assert.False(result);
         }
         finally
