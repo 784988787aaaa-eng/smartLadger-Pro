@@ -16,6 +16,8 @@ public partial class SalesViewModel(IAppRepository repo,IAppSession session):Obs
 {
     [ObservableProperty] private IReadOnlyList<PersonSummary> people=Array.Empty<PersonSummary>();
     [ObservableProperty] private IReadOnlyList<Product> products=Array.Empty<Product>();
+    [ObservableProperty] private IReadOnlyList<InvoiceSummary> invoiceHistory=Array.Empty<InvoiceSummary>();
+    [ObservableProperty] private string invoiceSearch="";
     private IReadOnlyList<PersonSummary> _allPeople=Array.Empty<PersonSummary>();
     private IReadOnlyList<Product> _allProducts=Array.Empty<Product>();
     private IReadOnlyList<Book> _books=Array.Empty<Book>();
@@ -73,7 +75,9 @@ public partial class SalesViewModel(IAppRepository repo,IAppSession session):Obs
     public string BalanceLabel=>Remaining>0?"متبقي لنا":"مسدد بالكامل";
     public IReadOnlyList<PaymentModeOption> PaymentModes {get;}=new[]{new PaymentModeOption(PaymentMode.Cash,"نقدي"),new PaymentModeOption(PaymentMode.Credit,"آجل — له"),new PaymentModeOption(PaymentMode.Partial,"جزئي — المتبقي له")};
 
-    public async Task LoadAsync(){_books=await repo.GetBooksAsync();var customerBook=_books.FirstOrDefault(x=>x.Kind==BookKind.Customers);_allPeople=customerBook is null?Array.Empty<PersonSummary>():await repo.GetPeopleAsync(customerBook.Id);_allProducts=await repo.GetProductsAsync();People=_allPeople;Products=_allProducts;}
+    public async Task LoadAsync(){_books=await repo.GetBooksAsync();var customerBook=_books.FirstOrDefault(x=>x.Kind==BookKind.Customers);_allPeople=customerBook is null?Array.Empty<PersonSummary>():await repo.GetPeopleAsync(customerBook.Id);_allProducts=await repo.GetProductsAsync();People=_allPeople;Products=_allProducts;await LoadInvoiceHistoryAsync();}
+    partial void OnInvoiceSearchChanged(string value)=>_ = LoadInvoiceHistoryAsync();
+    private async Task LoadInvoiceHistoryAsync()=>InvoiceHistory=await repo.GetInvoiceSummariesAsync(InvoiceType.Sale,InvoiceSearch,100);
     partial void OnCustomerSearchChanged(string value){if(PersonId is Guid id&&_allPeople.FirstOrDefault(x=>x.PersonId==id) is { } selected&&!Normalize(value).Equals(Normalize(selected.PersonName),StringComparison.OrdinalIgnoreCase))PersonId=null;People=FilterPeople(value);IsCustomerSuggestionsOpen=!string.IsNullOrWhiteSpace(value)&&People.Count>0;}
     partial void OnProductSearchChanged(string value){if(_settingProductSelection)return;if(ProductId is Guid id&&_allProducts.FirstOrDefault(x=>x.Id==id) is { } selected&&!Normalize(value).Equals(Normalize(selected.Name),StringComparison.OrdinalIgnoreCase))ProductId=null;Products=FilterProducts(value);IsProductSuggestionsOpen=!string.IsNullOrWhiteSpace(value)&&Products.Count>0;}
     partial void OnPersonIdChanged(Guid? value){var p=_allPeople.FirstOrDefault(x=>x.PersonId==value);if(p is not null){CustomerSearch=p.PersonName;IsCustomerSuggestionsOpen=false;}}
@@ -302,7 +306,7 @@ public partial class SalesViewModel(IAppRepository repo,IAppSession session):Obs
             StatusText=$"تم حفظ الفاتورة رقم {saved.InvoiceNumber} بنجاح.";
             IsDialogOpen=false;Lines.Clear();OnPropertyChanged(nameof(LinesTotal));OnPropertyChanged(nameof(IsCartEmpty));
             ProductId=null;ProductSearch="";BarcodeInput="";QuantityText="1";PriceText="";PaidText="0";InvoiceDiscountText="0";TaxPercentText="0";Note="";
-            _allProducts=await repo.GetProductsAsync();Products=_allProducts;Recalc();
+            _allProducts=await repo.GetProductsAsync();Products=_allProducts;await LoadInvoiceHistoryAsync();Recalc();
         }
         catch(Exception ex){StatusText=ex.Message;}
         finally{IsSaving=false;}
