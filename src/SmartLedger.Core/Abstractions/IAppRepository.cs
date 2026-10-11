@@ -36,6 +36,7 @@ public interface IAppRepository
     Task DeleteStockMovementAsync(Guid id, Guid deletedBy, CancellationToken ct = default);
     Task<bool> ReverseInvoiceAsync(int invoiceId, string reason, string userId);
     Task<bool> ReverseInvoiceAsync(string invoiceNumber, string reason, string userId);
+    Task<IReadOnlyList<InvoiceSummary>> GetInvoiceSummariesAsync(InvoiceType? type = null, string? search = null, int take = 100, CancellationToken ct = default);
     Task<Invoice> CreateInvoiceAsync(Invoice invoice, IReadOnlyList<InvoiceLine> lines, CancellationToken ct = default);
     Task<Invoice> SaveSalesInvoiceAsync(Invoice invoice, IReadOnlyList<InvoiceLine> lines, IReadOnlyList<StockMovement> movements, LedgerOperation? operation, CancellationToken ct = default);
     Task<Invoice> CreateInvoiceTransactionAsync(Invoice invoice, IReadOnlyList<InvoiceLine> lines, StockMovement? movement, LedgerOperation? operation, CancellationToken ct = default);
