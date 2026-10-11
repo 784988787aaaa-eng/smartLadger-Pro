@@ -109,7 +109,7 @@ public sealed class InvoiceReversalTests
 
             Assert.Equal(18m, Assert.Single(await repository.GetProductsAsync(product.Barcode)).StockSmallUnits);
             var consumedBatches = await repository.GetProductBatchesAsync(product.Id);
-            Assert.Equal(0m, consumedBatches.Single(x => x.BatchNumber == "REV-EARLY").QuantityMinor);
+            Assert.DoesNotContain(consumedBatches, x => x.BatchNumber == "REV-EARLY");
             Assert.Equal(18m, consumedBatches.Single(x => x.BatchNumber == "REV-LATE").QuantityMinor);
 
             Assert.True(await repository.ReverseInvoiceAsync(123, "confirmed reversal", admin.Id.ToString("N")));
