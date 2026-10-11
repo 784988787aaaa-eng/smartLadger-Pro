@@ -41,7 +41,7 @@ COALESCE(SUM(CASE
     WHEN o.Type=1 THEN CAST(o.Amount AS REAL)
     ELSE 0
 END),0),
-MAX(o.OccurredAt),p.AccountCode,p.CreditLimit,p.Address,p.SecondaryPhone,p.AccountNature,p.WhatsAppEnabled,p.UpdatedAt
+(SELECT o2.OccurredAt FROM Operations o2 WHERE o2.PersonId=p.Id ORDER BY julianday(o2.OccurredAt) DESC LIMIT 1),p.AccountCode,p.CreditLimit,p.Address,p.SecondaryPhone,p.AccountNature,p.WhatsAppEnabled,p.UpdatedAt
 FROM People p
 JOIN Books b ON b.Id=p.BookId
 LEFT JOIN Operations o ON o.PersonId=p.Id
