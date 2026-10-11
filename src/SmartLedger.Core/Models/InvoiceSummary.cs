@@ -10,4 +10,7 @@ public sealed record InvoiceSummary(
     decimal Paid,
     string Status,
     PaymentMode PaymentMode,
-    string Note);
+    string Note)
+{
+    public decimal Remaining => Math.Max(0m, Total - Paid);
+}
