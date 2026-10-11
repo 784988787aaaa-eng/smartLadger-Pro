@@ -35,6 +35,7 @@ public partial class InventoryViewModel(IAppRepository repo) : ObservableObject
     [ObservableProperty] private string newOpeningQuantity = "0";
     [ObservableProperty] private string newPurchasePrice = "0";
     [ObservableProperty] private string newSalePrice = "0";
+    [ObservableProperty] private string newMinimumSellingPrice = "0";
     [ObservableProperty] private string newAlert = "10";
     [ObservableProperty] private string newNote = "";
     [ObservableProperty] private string newShelfLocation = "";
@@ -60,11 +61,12 @@ public partial class InventoryViewModel(IAppRepository repo) : ObservableObject
     [ObservableProperty] private string statusText = "";
 
     public int ProductsCount => Products.Count;
-    public decimal StockValue => Products.Sum(x => x.StockSmallUnits * x.PurchasePrice);
-    public decimal RetailStockValue => Products.Sum(x => x.StockSmallUnits * x.SalePrice);
+    private IReadOnlyDictionary<Guid,decimal> _productCostValues = new Dictionary<Guid,decimal>();
+    public decimal StockValue => Products.Sum(x => _productCostValues.TryGetValue(x.Id,out var value) ? value : x.StockSmallUnits * x.PurchasePrice);
+    public decimal RetailStockValue => Products.Sum(x => x.StockSmallUnits * (x.SellingPriceMinor > 0m ? x.SellingPriceMinor : x.SalePrice));
     public string SelectedProductStockBreakdown => SelectedProduct is { } p ? InventoryUnitConverter.BreakDown(p.StockSmallUnits, Math.Max(1m,p.ConversionFactor), p.LargeUnit, p.SmallUnit).Formatted : "—";
-    public decimal SelectedProductCostValue => SelectedProduct is { } p ? p.StockSmallUnits * p.PurchasePrice : 0m;
-    public decimal SelectedProductRetailValue => SelectedProduct is { } p ? p.StockSmallUnits * p.SellingPriceMinor : 0m;
+    public decimal SelectedProductCostValue => SelectedProduct is { } p ? (_productCostValues.TryGetValue(p.Id,out var value) ? value : p.StockSmallUnits * p.PurchasePrice) : 0m;
+    public decimal SelectedProductRetailValue => SelectedProduct is { } p ? p.StockSmallUnits * (p.SellingPriceMinor > 0m ? p.SellingPriceMinor : p.SalePrice) : 0m;
     public decimal SelectedProductIncomingQuantity => SelectedProductMovements.Where(m => m.TypeLabel.Contains("وارد", StringComparison.Ordinal) || m.TypeLabel.Contains("افتتاحي", StringComparison.Ordinal)).Sum(m => m.QuantitySmallUnits);
     public decimal SelectedProductOutgoingQuantity => SelectedProductMovements.Where(m => m.TypeLabel.Contains("منصرف", StringComparison.Ordinal)).Sum(m => m.QuantitySmallUnits);
     public int LowStockCount => Products.Count(x => x.StockSmallUnits <= x.AlertThreshold);
@@ -74,11 +76,13 @@ public partial class InventoryViewModel(IAppRepository repo) : ObservableObject
     public async Task LoadAsync()
     {
         _allProducts = await repo.GetProductsAsync(Search);
+        _productCostValues = await repo.GetProductInventoryCostValuesAsync();
         Products = _allProducts;
         Suppliers = await repo.GetSupplierPeopleAsync();
         ApplyFilter();
         OnPropertyChanged(nameof(ProductsCount));
         OnPropertyChanged(nameof(StockValue));
+        OnPropertyChanged(nameof(SelectedProductCostValue));
         OnPropertyChanged(nameof(RetailStockValue));
         OnPropertyChanged(nameof(LowStockCount));
         OnPropertyChanged(nameof(Warehouses));
@@ -94,7 +98,7 @@ public partial class InventoryViewModel(IAppRepository repo) : ObservableObject
     partial void OnNewBarcodeChanged(string value) => OnPropertyChanged(nameof(BarcodePreview));
     partial void OnNewSmallUnitChanged(string value) => NotifyPackaging();
     partial void OnNewLargeUnitChanged(string value) => NotifyPackaging();
-    partial void OnNewPurchasePriceChanged(string value) { if (!_syncingUnits) SyncMajorFromMinor(); NotifyProfit(); }
+    partial void OnNewPurchasePriceChanged(string value) { if (!_syncingUnits) SyncMajorFromMinor(); if (!IsEditing && (string.IsNullOrWhiteSpace(NewMinimumSellingPrice) || ParseDecimal(NewMinimumSellingPrice)==0m)) NewMinimumSellingPrice=value; NotifyProfit(); }
     partial void OnNewSalePriceChanged(string value) { if (!_syncingUnits) SyncMajorFromMinor(); NotifyProfit(); }
     partial void OnNewMajorPurchasePriceChanged(string value) { if (!_syncingUnits) SyncMinorFromMajor(); NotifyProfit(); }
     partial void OnNewMajorSalePriceChanged(string value) { if (!_syncingUnits) SyncMinorFromMajor(); NotifyProfit(); }
@@ -143,6 +147,7 @@ public partial class InventoryViewModel(IAppRepository repo) : ObservableObject
     {
         OnPropertyChanged(nameof(SelectedProductCostValue));
         OnPropertyChanged(nameof(SelectedProductRetailValue));
+        OnPropertyChanged(nameof(StockValue));
         OnPropertyChanged(nameof(SelectedProductIncomingQuantity));
         OnPropertyChanged(nameof(SelectedProductOutgoingQuantity));
         OnPropertyChanged(nameof(SelectedProductSupplier));
@@ -184,6 +189,7 @@ public partial class InventoryViewModel(IAppRepository repo) : ObservableObject
         NewOpeningQuantity = "0";
         NewPurchasePrice = "0";
         NewSalePrice = "0";
+        NewMinimumSellingPrice = "0";
         NewAlert = "10";
         NewNote = "";
         NewShelfLocation = "";
@@ -218,14 +224,15 @@ public partial class InventoryViewModel(IAppRepository repo) : ObservableObject
         NewConversion = product.ConversionFactor.ToString("0.##", CultureInfo.InvariantCulture);
         NewOpeningQuantity = product.StockSmallUnits.ToString("0.##", CultureInfo.InvariantCulture);
         NewPurchasePrice = product.PurchasePrice.ToString("0.##", CultureInfo.InvariantCulture);
-        NewSalePrice = product.SalePrice.ToString("0.##", CultureInfo.InvariantCulture);
+        NewSalePrice = (product.SellingPriceMinor > 0m ? product.SellingPriceMinor : product.SalePrice).ToString("0.##", CultureInfo.InvariantCulture);
+        NewMinimumSellingPrice = product.MinimumSellingPrice.ToString("0.##", CultureInfo.InvariantCulture);
         NewAlert = product.AlertThreshold.ToString("0.##", CultureInfo.InvariantCulture);
         NewNote = product.Note;
         NewShelfLocation = product.ShelfLocation;
         NewWarehouse = product.WarehouseName;
         EnableMajorUnit = product.ConversionFactor > 1m;
         NewMajorPurchasePrice = (product.PurchasePrice * product.ConversionFactor).ToString("0.##", CultureInfo.CurrentCulture);
-        NewMajorSalePrice = (product.SalePrice * product.ConversionFactor).ToString("0.##", CultureInfo.CurrentCulture);
+        NewMajorSalePrice = (ParseDecimal(NewSalePrice) * product.ConversionFactor).ToString("0.##", CultureInfo.CurrentCulture);
         NewOpeningLargeQuantity = (product.StockSmallUnits / Math.Max(1m, product.ConversionFactor)).ToString("0.##", CultureInfo.CurrentCulture);
         StatusText = "تعديل البيانات — الرصيد الحالي محفوظ ولا يُعاد احتسابه.";
         IsDialogOpen = true;
@@ -245,6 +252,7 @@ public partial class InventoryViewModel(IAppRepository repo) : ObservableObject
         if (!decimal.TryParse(NewConversion, NumberStyles.Number, CultureInfo.CurrentCulture, out var conversion) || conversion <= 0) { StatusText = "أدخل معامل تحويل صحيحًا."; return; }
         if (!decimal.TryParse(NewPurchasePrice, NumberStyles.Number, CultureInfo.CurrentCulture, out var purchase) || purchase < 0) { StatusText = "أدخل سعر شراء صحيحًا."; return; }
         if (!decimal.TryParse(NewSalePrice, NumberStyles.Number, CultureInfo.CurrentCulture, out var sale) || sale < 0) { StatusText = "أدخل سعر بيع صحيحًا."; return; }
+        if (!decimal.TryParse(NewMinimumSellingPrice, NumberStyles.Number, CultureInfo.CurrentCulture, out var minimumSale) || minimumSale < 0) { StatusText = "أدخل حدًا أدنى صحيحًا لسعر البيع."; return; }
         if (!decimal.TryParse(NewAlert, NumberStyles.Number, CultureInfo.CurrentCulture, out var alert) || alert < 0) { StatusText = "أدخل حد تنبيه صحيحًا."; return; }
         if (!IsEditing && ((!EnableMajorUnit && (!decimal.TryParse(NewOpeningQuantity, NumberStyles.Number, CultureInfo.CurrentCulture, out var opening) || opening < 0)) || (EnableMajorUnit && (!decimal.TryParse(NewOpeningLargeQuantity, NumberStyles.Number, CultureInfo.CurrentCulture, out var boxes) || boxes < 0)))) { StatusText = "أدخل الرصيد الافتتاحي الصحيح."; return; }
         var openingQuantity = IsEditing ? SelectedProduct?.StockSmallUnits ?? 0m : NetOpeningSmallUnits;
@@ -273,7 +281,7 @@ public partial class InventoryViewModel(IAppRepository repo) : ObservableObject
                     WarehouseName = NewWarehouse.Trim(),
                     SellingPriceMajor = ParseDecimal(NewMajorSalePrice),
                     SellingPriceMinor = sale,
-                    MinimumSellingPrice = purchase,
+                    MinimumSellingPrice = minimumSale,
                     ReorderPoint = alert,
                     LowStockThreshold = alert,
                     UpdatedAt = DateTimeOffset.UtcNow
@@ -295,7 +303,7 @@ public partial class InventoryViewModel(IAppRepository repo) : ObservableObject
                     WarehouseName = NewWarehouse.Trim(),
                     SellingPriceMajor = ParseDecimal(NewMajorSalePrice),
                     SellingPriceMinor = sale,
-                    MinimumSellingPrice = purchase,
+                    MinimumSellingPrice = minimumSale,
                     ReorderPoint = alert,
                     LowStockThreshold = alert,
                     UpdatedAt = DateTimeOffset.UtcNow

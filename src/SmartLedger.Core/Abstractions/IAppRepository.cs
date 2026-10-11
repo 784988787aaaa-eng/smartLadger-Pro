@@ -23,6 +23,7 @@ public interface IAppRepository
     Task DeletePersonAsync(Guid id, Guid deletedBy, CancellationToken ct = default);
     Task DeleteProductAsync(Guid id, Guid deletedBy, CancellationToken ct = default);
     Task<IReadOnlyList<Product>> GetProductsAsync(string? search = null, CancellationToken ct = default);
+    Task<IReadOnlyDictionary<Guid, decimal>> GetProductInventoryCostValuesAsync(CancellationToken ct = default);
     Task<Product?> GetProductByBarcodeAsync(string barcode, CancellationToken ct = default);
     Task<IReadOnlyList<ProductBatch>> GetProductBatchesAsync(Guid productId, CancellationToken ct = default);
     Task<ProductBatch> AddStockBatchAsync(ProductBatch batch, CancellationToken ct = default);
@@ -34,6 +35,8 @@ public interface IAppRepository
     Task<StockMovement> CreateStockMovementAsync(StockMovement movement, CancellationToken ct = default);
     Task DeleteStockMovementAsync(Guid id, Guid deletedBy, CancellationToken ct = default);
     Task<bool> ReverseInvoiceAsync(int invoiceId, string reason, string userId);
+    Task<bool> ReverseInvoiceAsync(string invoiceNumber, string reason, string userId);
+    Task<IReadOnlyList<InvoiceSummary>> GetInvoiceSummariesAsync(InvoiceType? type = null, string? search = null, int take = 100, CancellationToken ct = default);
     Task<Invoice> CreateInvoiceAsync(Invoice invoice, IReadOnlyList<InvoiceLine> lines, CancellationToken ct = default);
     Task<Invoice> SaveSalesInvoiceAsync(Invoice invoice, IReadOnlyList<InvoiceLine> lines, IReadOnlyList<StockMovement> movements, LedgerOperation? operation, CancellationToken ct = default);
     Task<Invoice> CreateInvoiceTransactionAsync(Invoice invoice, IReadOnlyList<InvoiceLine> lines, StockMovement? movement, LedgerOperation? operation, CancellationToken ct = default);

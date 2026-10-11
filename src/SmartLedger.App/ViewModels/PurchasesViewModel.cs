@@ -11,6 +11,8 @@ public partial class PurchasesViewModel(IAppRepository repo,IAppSession session)
 {
     [ObservableProperty] private IReadOnlyList<PersonSummary> people=Array.Empty<PersonSummary>();
     [ObservableProperty] private IReadOnlyList<Product> products=Array.Empty<Product>();
+    [ObservableProperty] private IReadOnlyList<InvoiceSummary> invoiceHistory=Array.Empty<InvoiceSummary>();
+    [ObservableProperty] private string invoiceSearch="";
     private IReadOnlyList<PersonSummary> _allPeople=Array.Empty<PersonSummary>();
     private IReadOnlyList<Product> _allProducts=Array.Empty<Product>();
     private IReadOnlyList<Book> _books=Array.Empty<Book>();
@@ -58,7 +60,33 @@ public partial class PurchasesViewModel(IAppRepository repo,IAppSession session)
     public string BalanceLabel=>Remaining>0?"متبقي علينا":"مسدد بالكامل";
     public IReadOnlyList<PaymentModeOption> PaymentModes {get;}=new[]{new PaymentModeOption(PaymentMode.Cash,"نقدي"),new PaymentModeOption(PaymentMode.Credit,"آجل — عليه"),new PaymentModeOption(PaymentMode.Partial,"جزئي — المتبقي عليه")};
 
-    public async Task LoadAsync(){_books=await repo.GetBooksAsync();_allPeople=await repo.GetSupplierPeopleAsync();_allProducts=await repo.GetProductsAsync();People=_allPeople;Products=_allProducts;}
+    public async Task LoadAsync(){_books=await repo.GetBooksAsync();_allPeople=await repo.GetSupplierPeopleAsync();_allProducts=await repo.GetProductsAsync();People=_allPeople;Products=_allProducts;await LoadInvoiceHistoryAsync();}
+    private int _invoiceSearchRequest;
+    partial void OnInvoiceSearchChanged(string value)=>_ = LoadInvoiceHistoryAsync();
+    private async Task LoadInvoiceHistoryAsync()
+    {
+        var request = System.Threading.Interlocked.Increment(ref _invoiceSearchRequest);
+        var search = InvoiceSearch;
+        var result = await repo.GetInvoiceSummariesAsync(InvoiceType.Purchase, search, 100);
+        if (request == System.Threading.Volatile.Read(ref _invoiceSearchRequest)) InvoiceHistory = result;
+    }
+    [RelayCommand] private async Task ReverseInvoiceAsync(string invoiceNumber)
+    {
+        if(IsSaving||string.IsNullOrWhiteSpace(invoiceNumber))return;
+        var confirmation=System.Windows.MessageBox.Show($"سيتم عكس فاتورة الشراء رقم {invoiceNumber} مع تحديث المخزون وحساب المورد وحركة النقد. قد يُرفض العكس إذا استُهلكت دفعات الفاتورة. هل تريد المتابعة؟","تأكيد عكس فاتورة الشراء",System.Windows.MessageBoxButton.YesNo,System.Windows.MessageBoxImage.Warning);
+        if(confirmation!=System.Windows.MessageBoxResult.Yes)return;
+        IsSaving=true;
+        try
+        {
+            var reversed=await repo.ReverseInvoiceAsync(invoiceNumber,"طلب المستخدم عكس فاتورة الشراء",session.CurrentUser!.Id.ToString());
+            if(!reversed){System.Windows.MessageBox.Show("لم تُعثر على الفاتورة أو سبق عكسها.","نتيجة العكس",System.Windows.MessageBoxButton.OK,System.Windows.MessageBoxImage.Information);return;}
+            _allProducts=await repo.GetProductsAsync();Products=_allProducts;
+            await LoadInvoiceHistoryAsync();
+            System.Windows.MessageBox.Show("تم عكس الفاتورة وتسجيل الحركات العكسية بنجاح.","تم العكس",System.Windows.MessageBoxButton.OK,System.Windows.MessageBoxImage.Information);
+        }
+        catch(Exception ex){System.Windows.MessageBox.Show(ex.Message,"تعذر عكس الفاتورة",System.Windows.MessageBoxButton.OK,System.Windows.MessageBoxImage.Warning);}
+        finally{IsSaving=false;}
+    }
     partial void OnSupplierSearchChanged(string value){if(PersonId is Guid id&&_allPeople.FirstOrDefault(x=>x.PersonId==id) is { } selected&&!Normalize(value).Equals(Normalize(selected.PersonName),StringComparison.OrdinalIgnoreCase))PersonId=null;People=FilterPeople(value);IsSupplierSuggestionsOpen=!string.IsNullOrWhiteSpace(value)&&People.Count>0;}
     partial void OnProductSearchChanged(string value){if(_settingProductSelection)return;if(ProductId is Guid id&&_allProducts.FirstOrDefault(x=>x.Id==id) is { } selected&&!Normalize(value).Equals(Normalize(selected.Name),StringComparison.OrdinalIgnoreCase))ProductId=null;Products=FilterProducts(value);IsProductSuggestionsOpen=!string.IsNullOrWhiteSpace(value)&&Products.Count>0;}
     partial void OnPersonIdChanged(Guid? value){var p=_allPeople.FirstOrDefault(x=>x.PersonId==value);if(p is not null){SupplierSearch=p.PersonName;IsSupplierSuggestionsOpen=false;}}
@@ -124,7 +152,7 @@ public partial class PurchasesViewModel(IAppRepository repo,IAppSession session)
         if(!NumericNormalizer.TryParseDecimal(QuantityText,out var q)||q<=0){StatusText="أدخل كمية صحيحة.";return false;}
         if(!NumericNormalizer.TryParseDecimal(PriceText,out var price)||price<=0){StatusText="أدخل سعرًا صحيحًا أكبر من صفر.";return false;}
         var smallQuantity=q*QuantityFactor(product);if(smallQuantity<=0){StatusText="تحقق من الوحدة ومعامل التحويل.";return false;}
-        Lines.Add(new InvoiceDraftLine(product.Id,product.Name,q,SelectedQuantityUnit,price,decimal.Round(q*price,2),smallQuantity){BatchNumber=BatchNumber.Trim(),ExpiryDate=ExpiryDate is DateTime expiry?new DateTimeOffset(expiry.Date):null,CostPriceSnapshot=price,ConversionFactorApplied=QuantityFactor(product)});OnPropertyChanged(nameof(LinesTotal));OnPropertyChanged(nameof(IsCartEmpty));ProductId=null;ProductSearch="";QuantityText="1";PriceText="";BatchNumber="";ExpiryDate=null;IsProductSuggestionsOpen=false;Recalc();return true;
+        Lines.Add(new InvoiceDraftLine(product.Id,product.Name,q,SelectedQuantityUnit,price,decimal.Round(q*price,2),smallQuantity){BatchNumber=BatchNumber.Trim(),ExpiryDate=ExpiryDate is DateTime expiry?new DateTimeOffset(expiry.Date):null,CostPriceSnapshot=decimal.Round(price/QuantityFactor(product),4),ConversionFactorApplied=QuantityFactor(product)});OnPropertyChanged(nameof(LinesTotal));OnPropertyChanged(nameof(IsCartEmpty));ProductId=null;ProductSearch="";QuantityText="1";PriceText="";BatchNumber="";ExpiryDate=null;IsProductSuggestionsOpen=false;Recalc();return true;
     }
     private IReadOnlyList<PersonSummary> FilterPeople(string value)=>string.IsNullOrWhiteSpace(value)?_allPeople:_allPeople.Where(x=>ContainsArabic(x.PersonName,value)||ContainsArabic(x.Person.Phone,value)).Take(25).ToArray();
     private IReadOnlyList<Product> FilterProducts(string value)=>string.IsNullOrWhiteSpace(value)?_allProducts:_allProducts.Where(x=>ContainsArabic(x.Name,value)||ContainsArabic(x.Barcode,value)).Take(25).ToArray();
@@ -147,7 +175,7 @@ public partial class PurchasesViewModel(IAppRepository repo,IAppSession session)
             var movements=Lines.Select(x=>new StockMovement(Guid.NewGuid(),x.ProductId,StockMovementType.Purchase,x.QuantitySmallUnits,decimal.Round(x.UnitPrice*x.Quantity/x.QuantitySmallUnits,4),Note.Trim(),DateTimeOffset.Now,session.CurrentUser!.Id)).ToArray();
             LedgerOperation? operation=PersonId is Guid person&&invoice.Total-invoice.Paid>0?new LedgerOperation(Guid.NewGuid(),person,OperationType.DebtToUs,invoice.Total-invoice.Paid,Note.Trim(),DateTimeOffset.Now,session.CurrentUser!.Id):null;
             await repo.CreateInvoiceTransactionWithMovementsAsync(invoice,invoiceLines,movements,operation);
-            StatusText="تم حفظ الفاتورة بنجاح.";IsDialogOpen=false;Lines.Clear();OnPropertyChanged(nameof(LinesTotal));OnPropertyChanged(nameof(IsCartEmpty));ProductId=null;ProductSearch="";QuantityText="1";PriceText="";PaidText="0";Note="";_allProducts=await repo.GetProductsAsync();Products=_allProducts;Recalc();
+            StatusText="تم حفظ الفاتورة بنجاح.";IsDialogOpen=false;Lines.Clear();OnPropertyChanged(nameof(LinesTotal));OnPropertyChanged(nameof(IsCartEmpty));ProductId=null;ProductSearch="";QuantityText="1";PriceText="";PaidText="0";Note="";_allProducts=await repo.GetProductsAsync();Products=_allProducts;await LoadInvoiceHistoryAsync();Recalc();
         }catch(Exception ex){StatusText=ex.Message;}
         finally{IsSaving=false;}
     }

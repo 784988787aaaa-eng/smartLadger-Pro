@@ -9,6 +9,29 @@ public sealed class AuditRepository(Database database)
 {
     private static readonly string[] Sensitive={"password","passwordhash","passwordsalt","recovery","secret","token","privatekey","credential"};
     public async Task LogActionAsync(Guid? userId,string action,string entityType,Guid? entityId,object? details,CancellationToken ct=default){var json=Sanitize(details);await using var db=database.Open();await db.OpenAsync(ct);await using var c=db.CreateCommand();c.CommandText="INSERT INTO AuditLogs VALUES($id,$user,$action,$entity,$entityId,$details,$when);";c.Parameters.AddWithValue("$id",Guid.NewGuid().ToString("N"));c.Parameters.AddWithValue("$user",userId?.ToString("N")??(object)DBNull.Value);c.Parameters.AddWithValue("$action",action);c.Parameters.AddWithValue("$entity",entityType);c.Parameters.AddWithValue("$entityId",entityId?.ToString("N")??(object)DBNull.Value);c.Parameters.AddWithValue("$details",json);c.Parameters.AddWithValue("$when",DateTimeOffset.UtcNow.ToString("O"));await c.ExecuteNonQueryAsync(ct);}
+    public async Task LogActionAsync(SqliteConnection connection, SqliteTransaction transaction, Guid? userId, string action, string entityType, Guid? entityId, object? details, CancellationToken ct = default)
+    {
+        ArgumentNullException.ThrowIfNull(connection);
+        ArgumentNullException.ThrowIfNull(transaction);
+        if (connection.State != System.Data.ConnectionState.Open)
+            throw new InvalidOperationException("The audit connection must be open.");
+        if (!ReferenceEquals(transaction.Connection, connection))
+            throw new InvalidOperationException("The audit transaction must belong to the supplied connection.");
+
+        var json = Sanitize(details);
+        await using var command = connection.CreateCommand();
+        command.Transaction = transaction;
+        command.CommandText = "INSERT INTO AuditLogs VALUES($id,$user,$action,$entity,$entityId,$details,$when);";
+        command.Parameters.AddWithValue("$id", Guid.NewGuid().ToString("N"));
+        command.Parameters.AddWithValue("$user", userId?.ToString("N") ?? (object)DBNull.Value);
+        command.Parameters.AddWithValue("$action", action);
+        command.Parameters.AddWithValue("$entity", entityType);
+        command.Parameters.AddWithValue("$entityId", entityId?.ToString("N") ?? (object)DBNull.Value);
+        command.Parameters.AddWithValue("$details", json);
+        command.Parameters.AddWithValue("$when", DateTimeOffset.UtcNow.ToString("O"));
+        await command.ExecuteNonQueryAsync(ct);
+    }
+
     public async Task<IReadOnlyList<AuditEntry>> SearchAsync(DateTimeOffset? from = null, DateTimeOffset? to = null, Guid? userId = null, string? action = null, string? entityType = null, string? text = null, CancellationToken ct = default)
     {
         var items = new List<AuditEntry>();
