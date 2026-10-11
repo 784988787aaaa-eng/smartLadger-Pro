@@ -316,7 +316,7 @@ FROM Operations;
         var expenses=Convert.ToDecimal(await c.ExecuteScalarAsync(ct));
         return new DashboardSummary(split.OwedToUs,split.WeOwe,stock,today,sales,purchases,expenses);
     }
-    public async Task<IReadOnlyList<LedgerOperation>> GetOperationsAsync(Guid? personId=null,int take=100,CancellationToken ct=default){await EnsurePermissionAsync(PermissionKeys.View,ct);var x=new List<LedgerOperation>();await using var db=database.Open();await db.OpenAsync(ct);await using var c=db.CreateCommand();c.CommandText="SELECT Id,PersonId,Type,Amount,Note,OccurredAt,CreatedBy,ReferenceNumber FROM Operations WHERE($p IS NULL OR PersonId=$p) ORDER BY OccurredAt DESC LIMIT $take;";P(c,"$p",personId?.ToString("N")??(object)DBNull.Value);P(c,"$take",Math.Clamp(take,1,1000));await using var r=await c.ExecuteReaderAsync(ct);while(await r.ReadAsync(ct))x.Add(new LedgerOperation(Guid.Parse(r.GetString(0)),Guid.Parse(r.GetString(1)),(OperationType)r.GetInt32(2),D(r.GetString(3)),r.GetString(4),DateTimeOffset.Parse(r.GetString(5)),Guid.Parse(r.GetString(6))) { ReferenceNumber = r.IsDBNull(7) ? null : r.GetString(7) });return x;}
+    public async Task<IReadOnlyList<LedgerOperation>> GetOperationsAsync(Guid? personId=null,int take=100,CancellationToken ct=default){await EnsurePermissionAsync(PermissionKeys.View,ct);var x=new List<LedgerOperation>();await using var db=database.Open();await db.OpenAsync(ct);await using var c=db.CreateCommand();c.CommandText="SELECT Id,PersonId,Type,Amount,Note,OccurredAt,CreatedBy,ReferenceNumber FROM Operations WHERE($p IS NULL OR PersonId=$p) ORDER BY julianday(OccurredAt) DESC LIMIT $take;";P(c,"$p",personId?.ToString("N")??(object)DBNull.Value);P(c,"$take",Math.Clamp(take,1,1000));await using var r=await c.ExecuteReaderAsync(ct);while(await r.ReadAsync(ct))x.Add(new LedgerOperation(Guid.Parse(r.GetString(0)),Guid.Parse(r.GetString(1)),(OperationType)r.GetInt32(2),D(r.GetString(3)),r.GetString(4),DateTimeOffset.Parse(r.GetString(5)),Guid.Parse(r.GetString(6))) { ReferenceNumber = r.IsDBNull(7) ? null : r.GetString(7) });return x;}
     public async Task<IReadOnlyList<LedgerOperation>> GetOperationsInPeriodAsync(DateTimeOffset from,DateTimeOffset toDate,CancellationToken ct=default)
     {
         await EnsurePermissionAsync(PermissionKeys.View,ct);
@@ -325,7 +325,7 @@ FROM Operations;
         await using var db=database.Open();
         await db.OpenAsync(ct);
         await using var command=db.CreateCommand();
-        command.CommandText="SELECT Id,PersonId,Type,Amount,Note,OccurredAt,CreatedBy,ReferenceNumber FROM Operations WHERE julianday(OccurredAt)>=julianday($from) AND julianday(OccurredAt)<=julianday($to) ORDER BY OccurredAt DESC;";
+        command.CommandText="SELECT Id,PersonId,Type,Amount,Note,OccurredAt,CreatedBy,ReferenceNumber FROM Operations WHERE julianday(OccurredAt)>=julianday($from) AND julianday(OccurredAt)<=julianday($to) ORDER BY julianday(OccurredAt) DESC;";
         P(command,"$from",from.ToString("O",CultureInfo.InvariantCulture));
         P(command,"$to",toDate.ToString("O",CultureInfo.InvariantCulture));
         await using var reader=await command.ExecuteReaderAsync(ct);
@@ -405,7 +405,7 @@ FROM Operations;
         await EnsurePermissionAsync(PermissionKeys.View,ct);
         var results=new List<InvoiceSummary>();
         await using var db=database.Open();await db.OpenAsync(ct);await using var c=db.CreateCommand();
-        c.CommandText="SELECT i.Id,COALESCE(i.InvoiceNumber,''),i.Type,i.IssuedAt,COALESCE(NULLIF(p.Name,''),NULLIF(i.CustomerName,''),''),i.Total,i.Paid,CASE lower(COALESCE(i.Status,'Posted')) WHEN 'reversed' THEN 'معكوسة' WHEN 'cancelled' THEN 'ملغاة' ELSE 'مرحّلة' END,i.PaymentMode,COALESCE(i.Note,'') FROM Invoices i LEFT JOIN People p ON p.Id=i.PersonId WHERE ($type IS NULL OR i.Type=$type) AND ($search='' OR lower(trim(COALESCE(i.InvoiceNumber,''))) LIKE '%'||lower(trim($search))||'%' OR lower(trim(COALESCE(NULLIF(p.Name,''),i.CustomerName,''))) LIKE '%'||lower(trim($search))||'%' OR lower(trim(COALESCE(i.Note,''))) LIKE '%'||lower(trim($search))||'%') ORDER BY i.IssuedAt DESC LIMIT $take;";
+        c.CommandText="SELECT i.Id,COALESCE(i.InvoiceNumber,''),i.Type,i.IssuedAt,COALESCE(NULLIF(p.Name,''),NULLIF(i.CustomerName,''),''),i.Total,i.Paid,CASE lower(COALESCE(i.Status,'Posted')) WHEN 'reversed' THEN 'معكوسة' WHEN 'cancelled' THEN 'ملغاة' ELSE 'مرحّلة' END,i.PaymentMode,COALESCE(i.Note,'') FROM Invoices i LEFT JOIN People p ON p.Id=i.PersonId WHERE ($type IS NULL OR i.Type=$type) AND ($search='' OR lower(trim(COALESCE(i.InvoiceNumber,''))) LIKE '%'||lower(trim($search))||'%' OR lower(trim(COALESCE(NULLIF(p.Name,''),i.CustomerName,''))) LIKE '%'||lower(trim($search))||'%' OR lower(trim(COALESCE(i.Note,''))) LIKE '%'||lower(trim($search))||'%') ORDER BY julianday(i.IssuedAt) DESC LIMIT $take;";
         P(c,"$type",type is null?(object)DBNull.Value:(int)type.Value);P(c,"$search",(search??string.Empty).Trim());P(c,"$take",Math.Clamp(take,1,500));
         await using var r=await c.ExecuteReaderAsync(ct);
         while(await r.ReadAsync(ct))results.Add(new InvoiceSummary(Guid.Parse(r.GetString(0)),r.GetString(1),(InvoiceType)r.GetInt32(2),DateTimeOffset.Parse(r.GetString(3),CultureInfo.InvariantCulture),r.GetString(4),D(r.GetString(5)),D(r.GetString(6)),r.GetString(7),(PaymentMode)r.GetInt32(8),r.GetString(9)));
@@ -574,7 +574,7 @@ FROM Operations;
     }
     public async Task<IReadOnlyList<StockMovement>> GetStockMovementsAsync(Guid productId,int take=200,CancellationToken ct=default)
     {
-        await EnsurePermissionAsync(PermissionKeys.View,ct);var result=new List<StockMovement>();await using var db=database.Open();await db.OpenAsync(ct);await using var c=db.CreateCommand();c.CommandText="SELECT Id,ProductId,Type,QuantitySmallUnits,UnitPrice,Note,OccurredAt,CreatedBy,InvoiceId FROM StockMovements WHERE ProductId=$id ORDER BY OccurredAt DESC LIMIT $take;";P(c,"$id",productId.ToString("N"));P(c,"$take",Math.Clamp(take,1,1000));await using var r=await c.ExecuteReaderAsync(ct);while(await r.ReadAsync(ct))result.Add(new StockMovement(Guid.Parse(r.GetString(0)),Guid.Parse(r.GetString(1)),(StockMovementType)r.GetInt32(2),D(r.GetString(3)),D(r.GetString(4)),r.GetString(5),DateTimeOffset.Parse(r.GetString(6)),Guid.Parse(r.GetString(7))){InvoiceId=r.IsDBNull(8)?null:Guid.Parse(r.GetString(8))});return result;
+        await EnsurePermissionAsync(PermissionKeys.View,ct);var result=new List<StockMovement>();await using var db=database.Open();await db.OpenAsync(ct);await using var c=db.CreateCommand();c.CommandText="SELECT Id,ProductId,Type,QuantitySmallUnits,UnitPrice,Note,OccurredAt,CreatedBy,InvoiceId FROM StockMovements WHERE ProductId=$id ORDER BY julianday(OccurredAt) DESC LIMIT $take;";P(c,"$id",productId.ToString("N"));P(c,"$take",Math.Clamp(take,1,1000));await using var r=await c.ExecuteReaderAsync(ct);while(await r.ReadAsync(ct))result.Add(new StockMovement(Guid.Parse(r.GetString(0)),Guid.Parse(r.GetString(1)),(StockMovementType)r.GetInt32(2),D(r.GetString(3)),D(r.GetString(4)),r.GetString(5),DateTimeOffset.Parse(r.GetString(6)),Guid.Parse(r.GetString(7))){InvoiceId=r.IsDBNull(8)?null:Guid.Parse(r.GetString(8))});return result;
     }
 
     public async Task<IReadOnlyList<ProductMovementRow>> GetProductMovementsAsync(Guid productId,int take=30,CancellationToken ct=default)
@@ -603,7 +603,7 @@ FROM Operations;
         await audit.LogActionAsync(e.CreatedBy,"EXPENSE_CREATE","Expense",e.Id,new { e.Amount,e.Category,e.PaymentMethod },ct);
         return e;
     }
-    public async Task<IReadOnlyList<Expense>> GetExpensesAsync(DateTimeOffset? from=null,DateTimeOffset? toDate=null,CancellationToken ct=default){await EnsurePermissionAsync(PermissionKeys.View,ct);var x=new List<Expense>();await using var db=database.Open();await db.OpenAsync(ct);await using var c=db.CreateCommand();c.CommandText="SELECT Id,PersonId,Category,Amount,Note,OccurredAt,CreatedBy,CategoryId,PaymentMethod FROM Expenses WHERE($f IS NULL OR julianday(OccurredAt)>=julianday($f)) AND($t IS NULL OR julianday(OccurredAt)<=julianday($t)) ORDER BY OccurredAt DESC;";P(c,"$f",from?.ToString("O")??(object)DBNull.Value);P(c,"$t",toDate?.ToString("O")??(object)DBNull.Value);await using var r=await c.ExecuteReaderAsync(ct);while(await r.ReadAsync(ct))x.Add(new Expense(Guid.Parse(r.GetString(0)),r.IsDBNull(1)?null:Guid.Parse(r.GetString(1)),r.GetString(2),D(r.GetString(3)),r.GetString(4),DateTimeOffset.Parse(r.GetString(5)),Guid.Parse(r.GetString(6))){CategoryId=r.GetString(7),PaymentMethod=r.GetString(8)});return x;}
+    public async Task<IReadOnlyList<Expense>> GetExpensesAsync(DateTimeOffset? from=null,DateTimeOffset? toDate=null,CancellationToken ct=default){await EnsurePermissionAsync(PermissionKeys.View,ct);var x=new List<Expense>();await using var db=database.Open();await db.OpenAsync(ct);await using var c=db.CreateCommand();c.CommandText="SELECT Id,PersonId,Category,Amount,Note,OccurredAt,CreatedBy,CategoryId,PaymentMethod FROM Expenses WHERE($f IS NULL OR julianday(OccurredAt)>=julianday($f)) AND($t IS NULL OR julianday(OccurredAt)<=julianday($t)) ORDER BY julianday(OccurredAt) DESC;";P(c,"$f",from?.ToString("O")??(object)DBNull.Value);P(c,"$t",toDate?.ToString("O")??(object)DBNull.Value);await using var r=await c.ExecuteReaderAsync(ct);while(await r.ReadAsync(ct))x.Add(new Expense(Guid.Parse(r.GetString(0)),r.IsDBNull(1)?null:Guid.Parse(r.GetString(1)),r.GetString(2),D(r.GetString(3)),r.GetString(4),DateTimeOffset.Parse(r.GetString(5)),Guid.Parse(r.GetString(6))){CategoryId=r.GetString(7),PaymentMethod=r.GetString(8)});return x;}
     public async Task<IReadOnlyList<RecentOperationRow>> GetRecentOperationsAsync(int take=12,CancellationToken ct=default){await EnsurePermissionAsync(PermissionKeys.View,ct);var x=new List<RecentOperationRow>();await using var db=database.Open();await db.OpenAsync(ct);await using var c=db.CreateCommand();c.CommandText="SELECT o.OccurredAt,p.Name,CASE o.Type WHEN 0 THEN 'استلام' WHEN 1 THEN 'سداد' WHEN 2 THEN 'له' WHEN 3 THEN 'عليه' WHEN 4 THEN 'بيع آجل' WHEN 5 THEN 'شراء آجل' WHEN 6 THEN 'مرتجع' WHEN 7 THEN 'تسوية' ELSE 'أخرى' END,o.Amount,o.Note FROM Operations o JOIN People p ON p.Id=o.PersonId ORDER BY o.OccurredAt DESC LIMIT $take;";P(c,"$take",Math.Clamp(take,1,100));await using var r=await c.ExecuteReaderAsync(ct);while(await r.ReadAsync(ct))x.Add(new RecentOperationRow(DateTimeOffset.Parse(r.GetString(0)),r.GetString(1),r.GetString(2),D(r.GetString(3)),r.GetString(4)));return x;}
     public async Task<IReadOnlyList<GlobalSearchResult>> SearchGlobalAsync(string query,int takePerCategory=8,CancellationToken ct=default)
     {
@@ -638,7 +638,7 @@ FROM Operations;
             while(await r.ReadAsync(ct)) results.Add(new GlobalSearchResult(Guid.Parse(r.GetString(0)),"العمليات",r.GetString(1),r.GetString(3)+" — "+r.GetString(2),"Operation"));
 
         c.Parameters.Clear(); P(c,"$q",$"%{q}%"); P(c,"$take",take);
-        c.CommandText="SELECT Id,Type,Note,Total FROM Invoices WHERE Note LIKE $q OR CAST(Total AS TEXT) LIKE $q ORDER BY IssuedAt DESC LIMIT $take;";
+        c.CommandText="SELECT Id,Type,Note,Total FROM Invoices WHERE Note LIKE $q OR CAST(Total AS TEXT) LIKE $q ORDER BY julianday(IssuedAt) DESC LIMIT $take;";
         await using(var r=await c.ExecuteReaderAsync(ct))
             while(await r.ReadAsync(ct))
             {
@@ -647,7 +647,7 @@ FROM Operations;
             }
 
         c.Parameters.Clear(); P(c,"$q",$"%{q}%"); P(c,"$take",take);
-        c.CommandText="SELECT Id,Category,Note,Amount FROM Expenses WHERE Category LIKE $q OR Note LIKE $q OR CAST(Amount AS TEXT) LIKE $q ORDER BY OccurredAt DESC LIMIT $take;";
+        c.CommandText="SELECT Id,Category,Note,Amount FROM Expenses WHERE Category LIKE $q OR Note LIKE $q OR CAST(Amount AS TEXT) LIKE $q ORDER BY julianday(OccurredAt) DESC LIMIT $take;";
         await using(var r=await c.ExecuteReaderAsync(ct))
             while(await r.ReadAsync(ct)) results.Add(new GlobalSearchResult(Guid.Parse(r.GetString(0)),"المصروفات",r.GetString(1),AmountFormatterText(r.GetString(3))+" — "+r.GetString(2),"Expense"));
 
