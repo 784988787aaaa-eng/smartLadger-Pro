@@ -31,7 +31,7 @@ public sealed class AccountStatementPdfService
         ArgumentNullException.ThrowIfNull(operations);
         ArgumentOutOfRangeException.ThrowIfLessThan(periodTo, periodFrom);
         QuestPDF.Settings.License = LicenseType.Community;
-        QuestPDF.Settings.UseSystemFonts = true;
+        PdfFontConfig.RegisterFonts();
         var periodOperations = operations.Where(x => x.OccurredAt >= periodFrom && x.OccurredAt <= periodTo)
             .OrderBy(x => x.OccurredAt).ThenBy(x => x.Id).ToArray();
         var calculation = FinancialReportCalculations.CalculateAccountStatement(periodOperations, periodFrom, periodTo, openingBalance);
@@ -55,7 +55,7 @@ public sealed class AccountStatementPdfService
             page.MarginVertical(26);
             page.PageColor(Colors.White);
             page.ContentFromRightToLeft();
-            page.DefaultTextStyle(s => s.FontFamily("Tahoma").FontSize(9).FontColor(Ink));
+            page.DefaultTextStyle(s => s.FontFamily(PdfFontConfig.ArabicFontFamily).FontSize(9).FontColor(Ink));
             page.Header().PaddingBottom(10).Column(header =>
             {
                 header.Spacing(3);
