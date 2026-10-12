@@ -166,7 +166,12 @@
                 <StackPanel Margin="4" HorizontalAlignment="Center"><TextBlock Text="صافي الرصيد الحالي" Style="{StaticResource KpiLabel}" HorizontalAlignment="Center" /><TextBlock Text="{Binding NetBalance,Converter={StaticResource PrivacyMoneyConverter}}" Style="{StaticResource MetricText}" Foreground="{Binding NetBalance,Converter={StaticResource NetBalanceBrushConverter}}" HorizontalAlignment="Center" FlowDirection="LeftToRight" /><Border Background="{Binding NetBalance,Converter={StaticResource NetBalanceBrushConverter}}" CornerRadius="7" Padding="6,2" Margin="0,3,0,0"><TextBlock Text="{Binding BalanceStatusText}" Foreground="White" FontSize="10" FontWeight="SemiBold" /></Border></StackPanel>
               </UniformGrid>
               <TextBlock Text="ملاحظة الحساب" Style="{StaticResource KpiLabel}" Margin="4,8,4,2" />
-              <TextBlock Text="{Binding SelectedAccountNote}" Foreground="{StaticResource BrushText}" TextWrapping="Wrap" Margin="4,0,4,2" AutomationProperties.Name="ملاحظة الحساب" />
+              <TextBlock Text="{Binding SelectedAccountNote}" Foreground="{StaticResource BrushText}" TextWrapping="Wrap" Margin="4,0,4,2" AutomationProperties.Name="ملاحظة الحساب" />
+              <StackPanel Orientation="Horizontal" FlowDirection="RightToLeft" HorizontalAlignment="Center" Margin="4,10,4,2">
+                <Button Content="+ &#x633;&#x646;&#x62F; &#x642;&#x628;&#x636;" Command="{Binding OpenReceiptForSelectedAccountCommand}" Background="#166534" Foreground="#ECFDF5" BorderBrush="#22C55E" BorderThickness="1" Padding="14,8" MinWidth="118" Margin="0,0,8,0" FontWeight="SemiBold" />
+                <Button Content="- &#x633;&#x646;&#x62F; &#x635;&#x631;&#x641;" Command="{Binding OpenPaymentForSelectedAccountCommand}" Background="#7F1D1D" Foreground="#FFF1F2" BorderBrush="#FB7185" BorderThickness="1" Padding="14,8" MinWidth="118" Margin="0,0,8,0" FontWeight="SemiBold" />
+                <Button Content="&#x62A;&#x633;&#x62C;&#x64A;&#x644; &#x642;&#x64A;&#x62F; / &#x62F;&#x64A;&#x646;" Command="{Binding OpenDebtForSelectedAccountCommand}" Background="#1E3A5F" Foreground="#EFF6FF" BorderBrush="#60A5FA" BorderThickness="1" Padding="14,8" MinWidth="142" FontWeight="SemiBold" />
+              </StackPanel>
               </StackPanel>
             </Border>
             <Border Grid.Row="2" Style="{StaticResource Card}" Padding="10">
@@ -195,11 +200,11 @@
                   <DataGridTemplateColumn Header="رقم السند" Width="100">
                     <DataGridTemplateColumn.CellTemplate><DataTemplate><TextBlock Text="{Binding ReferenceNumber}" HorizontalAlignment="Center" FlowDirection="LeftToRight" Foreground="{StaticResource BrushMuted}" /></DataTemplate></DataGridTemplateColumn.CellTemplate>
                   </DataGridTemplateColumn>
-                  <DataGridTemplateColumn Header="البيان / التفاصيل" Width="*" MinWidth="240">
+                  <DataGridTemplateColumn Header="البيان / التفاصيل" Width="*" MinWidth="250">
                     <DataGridTemplateColumn.HeaderTemplate>
                       <DataTemplate><TextBlock Text="البيان / التفاصيل" HorizontalAlignment="Center" TextAlignment="Center" FontWeight="SemiBold" FontSize="12.5" /></DataTemplate>
                     </DataGridTemplateColumn.HeaderTemplate>
-                    <DataGridTemplateColumn.CellTemplate>
+                    <DataGridTemplateColumn.CellStyle><Style TargetType="DataGridCell"><Setter Property="Padding" Value="8,4" /><Setter Property="VerticalContentAlignment" Value="Center" /></Style></DataGridTemplateColumn.CellStyle><DataGridTemplateColumn.CellTemplate>
                       <DataTemplate>
                         <TextBlock Text="{Binding Note}" Style="{StaticResource TableTextCell}" ToolTip="{Binding Note}" HorizontalAlignment="Stretch" TextAlignment="Center" />
                       </DataTemplate>

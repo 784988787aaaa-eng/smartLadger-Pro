@@ -6,23 +6,23 @@
         <Grid FlowDirection="RightToLeft" KeyboardNavigation.TabNavigation="Local" behaviors:InputDialogBehavior.IsEnabled="True" ClipToBounds="True">
           <Grid.RowDefinitions><RowDefinition Height="Auto" /><RowDefinition Height="*" /><RowDefinition Height="Auto" /></Grid.RowDefinitions>
           <DockPanel Grid.Row="0" Margin="0,0,0,8">
-            <Button DockPanel.Dock="Left" Command="{Binding CloseDialogCommand}" Style="{StaticResource IconButton}" ToolTip="ط¥ط؛ظ„ط§ظ‚" AutomationProperties.Name="ط¥ط؛ظ„ط§ظ‚" AutomationProperties.AutomationId="Btn_CloseProductDialog" Width="36" Height="36">
+            <Button DockPanel.Dock="Left" Command="{Binding CloseDialogCommand}" Style="{StaticResource IconButton}" ToolTip="إغلاق" AutomationProperties.Name="إغلاق" AutomationProperties.AutomationId="Btn_CloseProductDialog" Width="36" Height="36">
               <Path Width="14" Height="14" Stretch="Uniform" Stroke="#9DB7D4" StrokeThickness="1.6" Data="{StaticResource CloseIcon}" />
             </Button>
             <StackPanel Margin="0,0,12,0">
               <TextBlock FontSize="20" FontWeight="SemiBold">
                 <TextBlock.Style>
                   <Style TargetType="TextBlock">
-                    <Setter Property="Text" Value="ط¥ط¶ط§ظپط© طµظ†ظپ ط¬ط¯ظٹط¯" />
+                    <Setter Property="Text" Value="إضافة صنف جديد" />
                     <Style.Triggers>
                       <DataTrigger Binding="{Binding IsEditing}" Value="True">
-                        <Setter Property="Text" Value="طھط¹ط¯ظٹظ„ ط¨ظٹط§ظ†ط§طھ ط§ظ„طµظ†ظپ" />
+                        <Setter Property="Text" Value="تعديل بيانات الصنف" />
                       </DataTrigger>
                     </Style.Triggers>
                   </Style>
                 </TextBlock.Style>
               </TextBlock>
-              <TextBlock Text="ط¥ط¯ط®ط§ظ„ ط³ط±ظٹط¹طŒ ظˆط­ط¯ط§طھ ظ…ط±ظ†ط©طŒ ظˆط±طµظٹط¯ ظˆط§ط¶ط­" Style="{StaticResource CaptionText}" Margin="0,2,0,0" />
+              <TextBlock Text="إدخال سريع، وحدات مرنة، ورصيد واضح" Style="{StaticResource CaptionText}" Margin="0,2,0,0" />
             </StackPanel>
           </DockPanel>
           <Grid Grid.Row="1" ClipToBounds="True">
@@ -33,7 +33,7 @@
             </Grid.ColumnDefinitions>
             <Border Style="{StaticResource Card}" Padding="10" Margin="0,0,4,0" Grid.Column="0">
               <StackPanel>
-                <TextBlock Text="ظ،. ظ…ط¹ظ„ظˆظ…ط§طھ ط§ظ„طµظ†ظپ" FontSize="15" FontWeight="SemiBold" Margin="2,0,2,10" />
+                <TextBlock Text="١. معلومات الصنف" FontSize="15" FontWeight="SemiBold" Margin="2,0,2,10" />
                 <Grid>
                   <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="2*" />
@@ -41,7 +41,7 @@
                     <ColumnDefinition Width="1.2*" />
                   </Grid.ColumnDefinitions>
                   <StackPanel Margin="4">
-                    <TextBlock Text="ط§ط³ظ… ط§ظ„طµظ†ظپ *" Style="{StaticResource SectionLabel}" />
+                    <TextBlock Text="اسم الصنف *" Style="{StaticResource SectionLabel}" />
                     <TextBox Style="{StaticResource Field}" FontSize="15" Text="{Binding NewName,UpdateSourceTrigger=PropertyChanged}" AutomationProperties.AutomationId="ProductNameInput" FlowDirection="RightToLeft" TextAlignment="Right" Height="36" Margin="0,0,0,6" />
                   </StackPanel>
                   <StackPanel Grid.Column="1" Margin="4">
@@ -52,12 +52,12 @@
                         <ColumnDefinition Width="Auto" />
                       </Grid.ColumnDefinitions>
                       <TextBox Style="{StaticResource Field}" Text="{Binding NewBarcode,UpdateSourceTrigger=PropertyChanged}" AutomationProperties.AutomationId="ProductBarcodeInput" FlowDirection="LeftToRight" Margin="0,0,4,0" TextAlignment="Left" Height="36" />
-                      <Button Grid.Column="1" Content="طھظˆظ„ظٹط¯" Command="{Binding GenerateBarcodeCommand}" Style="{StaticResource GhostButton}" Padding="8,0" Height="36" ToolTip="طھظˆظ„ظٹط¯ ط¨ط§ط±ظƒظˆط¯ ط¯ط§ط®ظ„ظٹ ط¹ظ†ط¯ ط¹ط¯ظ… طھظˆظپط± ط¨ط§ط±ظƒظˆط¯ ظ…طµظ†ط¹" />
+                      <Button Grid.Column="1" Content="توليد" Command="{Binding GenerateBarcodeCommand}" Style="{StaticResource GhostButton}" Padding="8,0" Height="36" ToolTip="توليد باركود داخلي عند عدم توفر باركود مصنع" />
                     </Grid>
                   </StackPanel>
                   <StackPanel Grid.Column="2" Margin="4">
                     <TextBlock Text="{DynamicResource ColCategory}" Style="{StaticResource SectionLabel}" />
-                    <ComboBox IsEditable="True" IsTextSearchEnabled="True" ItemsSource="{Binding Categories}" Text="{Binding NewCategory,UpdateSourceTrigger=PropertyChanged}" ToolTip="ط§ط®طھط± طھطµظ†ظٹظپظ‹ط§ ط£ظˆ ط§ظƒطھط¨ طھطµظ†ظٹظپظ‹ط§ ط¬ط¯ظٹط¯ظ‹ط§" FlowDirection="RightToLeft" Height="36" Margin="0,0,0,6" />
+                    <ComboBox IsEditable="True" IsTextSearchEnabled="True" ItemsSource="{Binding Categories}" Text="{Binding NewCategory,UpdateSourceTrigger=PropertyChanged}" ToolTip="اختر تصنيفًا أو اكتب تصنيفًا جديدًا" FlowDirection="RightToLeft" Height="36" Margin="0,0,0,6" />
                   </StackPanel>
                 </Grid>
                 <Grid Margin="0,2,0,0">
@@ -67,15 +67,15 @@
                     <ColumnDefinition Width="1.2*" />
                   </Grid.ColumnDefinitions>
                   <StackPanel Margin="4">
-                    <TextBlock Text="ط§ظ„ظ…ط®ط²ظ†" Style="{StaticResource SectionLabel}" />
-                    <ComboBox IsEditable="True" IsTextSearchEnabled="True" ItemsSource="{Binding ProductWarehouses}" Text="{Binding NewWarehouse,UpdateSourceTrigger=PropertyChanged}" ToolTip="ط§ط®طھط± ظ…ط®ط²ظ†ظ‹ط§ ط£ظˆ ط§ظƒطھط¨ ط§ط³ظ…ظ‹ط§ ط¬ط¯ظٹط¯ظ‹ط§" Height="36" Margin="0,0,0,6" />
+                    <TextBlock Text="المخزن" Style="{StaticResource SectionLabel}" />
+                    <ComboBox IsEditable="True" IsTextSearchEnabled="True" ItemsSource="{Binding ProductWarehouses}" Text="{Binding NewWarehouse,UpdateSourceTrigger=PropertyChanged}" ToolTip="اختر مخزنًا أو اكتب اسمًا جديدًا" Height="36" Margin="0,0,0,6" />
                   </StackPanel>
                   <StackPanel Grid.Column="1" Margin="4">
-                    <TextBlock Text="ظ…ظˆظ‚ط¹ ط§ظ„طھط®ط²ظٹظ†" Style="{StaticResource SectionLabel}" />
-                    <TextBox Style="{StaticResource Field}" Text="{Binding NewShelfLocation,UpdateSourceTrigger=PropertyChanged}" ToolTip="ط±ظپ ط£ظˆ ظ…ظ…ط± (ط§ط®طھظٹط§ط±ظٹ)" Height="36" Margin="0,0,0,6" />
+                    <TextBlock Text="موقع التخزين" Style="{StaticResource SectionLabel}" />
+                    <TextBox Style="{StaticResource Field}" Text="{Binding NewShelfLocation,UpdateSourceTrigger=PropertyChanged}" ToolTip="رف أو ممر (اختياري)" Height="36" Margin="0,0,0,6" />
                   </StackPanel>
                   <StackPanel Grid.Column="2" Margin="4">
-                    <TextBlock Text="ط§ظ„ظ…ظˆط±ط¯ ط§ظ„ط§ظپطھط±ط§ط¶ظٹ" Style="{StaticResource SectionLabel}" />
+                    <TextBlock Text="المورد الافتراضي" Style="{StaticResource SectionLabel}" />
                     <ComboBox ItemsSource="{Binding Suppliers}" DisplayMemberPath="PersonName" SelectedValuePath="PersonId" SelectedValue="{Binding NewSupplierId,Mode=TwoWay}" FlowDirection="RightToLeft" Height="36" Margin="0,0,0,6" />
                   </StackPanel>
                 </Grid>
@@ -89,10 +89,10 @@
                     <ColumnDefinition Width="Auto" />
                   </Grid.ColumnDefinitions>
                   <StackPanel>
-                    <TextBlock Text="ظ¢. ط§ظ„ظˆط­ط¯ط§طھ ظˆط§ظ„طھط­ظˆظٹظ„" FontSize="15" FontWeight="SemiBold" />
-                    <TextBlock Text="ظˆط­ط¯ط© ظˆط§ط­ط¯ط© ظ„ظ„طµظ†ظپ ط§ظ„ط¨ط³ظٹط·طŒ ط£ظˆ ظˆط­ط¯طھط§ظ† ط¹ظ†ط¯ ط§ظ„ط¨ظٹط¹ ظˆط§ظ„ط´ط±ط§ط، ط¨ط§ظ„طھط¬ط²ط¦ط© ظˆط§ظ„ط¬ظ…ظ„ط©" Style="{StaticResource CaptionText}" Margin="0,2,0,0" />
+                    <TextBlock Text="٢. الوحدات والتحويل" FontSize="15" FontWeight="SemiBold" />
+                    <TextBlock Text="وحدة واحدة للصنف البسيط، أو وحدتان عند البيع والشراء بالتجزئة والجملة" Style="{StaticResource CaptionText}" Margin="0,2,0,0" />
                   </StackPanel>
-                  <CheckBox Grid.Column="1" Content="طھظپط¹ظٹظ„ ظˆط­ط¯ط© ظƒط¨ط±ظ‰" IsChecked="{Binding EnableMajorUnit}" VerticalAlignment="Center" Margin="12,0,0,0" FontWeight="SemiBold" />
+                  <CheckBox Grid.Column="1" Content="تفعيل وحدة كبرى" IsChecked="{Binding EnableMajorUnit}" VerticalAlignment="Center" Margin="12,0,0,0" FontWeight="SemiBold" />
                 </Grid>
                 <Grid>
                   <Grid.ColumnDefinitions>
@@ -101,8 +101,8 @@
                     <ColumnDefinition />
                   </Grid.ColumnDefinitions>
                   <StackPanel Margin="4">
-                    <TextBlock Text="ط§ظ„ظˆط­ط¯ط© ط§ظ„ط£ط³ط§ط³ظٹط©" Style="{StaticResource SectionLabel}" />
-                    <TextBox Style="{StaticResource Field}" Text="{Binding NewSmallUnit,UpdateSourceTrigger=PropertyChanged}" ToolTip="ظ…ط«ظ„ ط­ط¨ط© ط£ظˆ ظ‚ط§ط±ظˆط±ط© ط£ظˆ ط¹ظ„ط¨ط©" Height="36" Margin="0,0,0,6" />
+                    <TextBlock Text="الوحدة الأساسية" Style="{StaticResource SectionLabel}" />
+                    <TextBox Style="{StaticResource Field}" Text="{Binding NewSmallUnit,UpdateSourceTrigger=PropertyChanged}" ToolTip="مثل حبة أو قارورة أو علبة" Height="36" Margin="0,0,0,6" />
                   </StackPanel>
                   <StackPanel Grid.Column="1" Margin="4">
                     <StackPanel.Style>
@@ -115,8 +115,8 @@
                         </Style.Triggers>
                       </Style>
                     </StackPanel.Style>
-                    <TextBlock Text="ط§ظ„ظˆط­ط¯ط© ط§ظ„ظƒط¨ط±ظ‰" Style="{StaticResource SectionLabel}" />
-                    <TextBox Style="{StaticResource Field}" Text="{Binding NewLargeUnit,UpdateSourceTrigger=PropertyChanged}" ToolTip="ظ…ط«ظ„ ظƒط±طھظˆظ† ط£ظˆ طµظ†ط¯ظˆظ‚" Height="36" Margin="0,0,0,6" />
+                    <TextBlock Text="الوحدة الكبرى" Style="{StaticResource SectionLabel}" />
+                    <TextBox Style="{StaticResource Field}" Text="{Binding NewLargeUnit,UpdateSourceTrigger=PropertyChanged}" ToolTip="مثل كرتون أو صندوق" Height="36" Margin="0,0,0,6" />
                   </StackPanel>
                   <StackPanel Grid.Column="2" Margin="4">
                     <StackPanel.Style>
@@ -129,13 +129,13 @@
                         </Style.Triggers>
                       </Style>
                     </StackPanel.Style>
-                    <TextBlock Text="ط¹ط¯ط¯ ط§ظ„ظˆط­ط¯ط§طھ ط§ظ„ط£ط³ط§ط³ظٹط© ظپظٹ ط§ظ„ظƒط¨ط±ظ‰" Style="{StaticResource SectionLabel}" />
-                    <TextBox Style="{StaticResource NumericField}" Text="{Binding NewConversion,UpdateSourceTrigger=PropertyChanged}" ToolTip="ظ…ط«ط§ظ„: 24 ظ‚ط§ط±ظˆط±ط© ظپظٹ ط§ظ„ظƒط±طھظˆظ†" Height="36" Margin="0,0,0,6" />
+                    <TextBlock Text="عدد الوحدات الأساسية في الكبرى" Style="{StaticResource SectionLabel}" />
+                    <TextBox Style="{StaticResource NumericField}" Text="{Binding NewConversion,UpdateSourceTrigger=PropertyChanged}" ToolTip="مثال: 24 قارورة في الكرتون" Height="36" Margin="0,0,0,6" />
                   </StackPanel>
                 </Grid>
                 <Border Background="#0B162C" BorderBrush="{StaticResource BrushLine}" BorderThickness="1" CornerRadius="8" Padding="10" Margin="4,8,4,0">
                   <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                    <TextBlock Text="ظ…ط¹ط§ظٹظ†ط©: " Foreground="{StaticResource BrushMuted}" VerticalAlignment="Center" />
+                    <TextBlock Text="معاينة: " Foreground="{StaticResource BrushMuted}" VerticalAlignment="Center" />
                     <TextBlock Text="{Binding NewLargeUnit}" FontWeight="SemiBold" VerticalAlignment="Center">
                       <TextBlock.Style>
                         <Style TargetType="TextBlock">
@@ -173,7 +173,7 @@
                       </TextBlock.Style>
                     </TextBlock>
                     <TextBlock Text="{Binding NewSmallUnit}" FontWeight="SemiBold" Margin="5,0,0,0" VerticalAlignment="Center" />
-                    <TextBlock Text="ظ…ظ†طھط¬ ط¨ظˆط­ط¯ط© ظˆط§ط­ط¯ط©ط› ظ„ط§ ظٹظ„ط²ظ… طھط­ظˆظٹظ„" Foreground="{StaticResource BrushMuted}" VerticalAlignment="Center">
+                    <TextBlock Text="منتج بوحدة واحدة؛ لا يلزم تحويل" Foreground="{StaticResource BrushMuted}" VerticalAlignment="Center">
                       <TextBlock.Style>
                         <Style TargetType="TextBlock">
                           <Setter Property="Visibility" Value="Visible" />
@@ -192,7 +192,7 @@
             <StackPanel Grid.Column="2">
               <Border Style="{StaticResource Card}" Padding="10" Margin="0,0,0,4">
                 <StackPanel>
-                  <TextBlock Text="ظ£. ط§ظ„ط±طµظٹط¯ ط§ظ„ط§ظپطھطھط§ط­ظٹ ظˆط§ظ„طھظ†ط¨ظٹظ‡" FontSize="15" FontWeight="SemiBold" Margin="2,0,2,10" />
+                  <TextBlock Text="٣. الرصيد الافتتاحي والتنبيه" FontSize="15" FontWeight="SemiBold" Margin="2,0,2,10" />
                   <Grid>
                     <Grid.ColumnDefinitions>
                       <ColumnDefinition />
@@ -200,7 +200,7 @@
                       <ColumnDefinition />
                     </Grid.ColumnDefinitions>
                     <StackPanel Margin="4">
-                      <TextBlock Text="ط§ظ„ظƒظ…ظٹط© ط§ظ„ط§ظپطھطھط§ط­ظٹط©" Style="{StaticResource SectionLabel}" />
+                      <TextBlock Text="الكمية الافتتاحية" Style="{StaticResource SectionLabel}" />
                       <Grid>
                         <TextBox Text="{Binding NewOpeningQuantity,UpdateSourceTrigger=PropertyChanged}" FlowDirection="LeftToRight" TextAlignment="Right" Height="36" Margin="0,0,0,6">
                           <TextBox.Style>
@@ -227,14 +227,14 @@
                           </TextBox.Style>
                         </TextBox>
                       </Grid>
-                      <TextBlock Text="{Binding NetOpeningSmallUnits,StringFormat={}ط§ظ„ط±طµظٹط¯ ط§ظ„ظ…ط¹ط§ط¯ظ„: {0:0.##} ظˆط­ط¯ط© ط£ط³ط§ط³ظٹط©}" Foreground="{StaticResource BrushAccent2}" Margin="2,5,0,0" />
+                      <TextBlock Text="{Binding NetOpeningSmallUnits,StringFormat={}الرصيد المعادل: {0:0.##} وحدة أساسية}" Foreground="{StaticResource BrushAccent2}" Margin="2,5,0,0" />
                     </StackPanel>
                     <StackPanel Grid.Column="1" Margin="4">
-                      <TextBlock Text="ط­ط¯ طھظ†ط¨ظٹظ‡ ط§ظ†ط®ظپط§ط¶ ط§ظ„ظ…ط®ط²ظˆظ†" Style="{StaticResource SectionLabel}" />
+                      <TextBlock Text="حد تنبيه انخفاض المخزون" Style="{StaticResource SectionLabel}" />
                       <TextBox Style="{StaticResource NumericField}" Text="{Binding NewAlert,UpdateSourceTrigger=PropertyChanged}" Height="36" Margin="0,0,0,6" />
                     </StackPanel>
                     <StackPanel Grid.Column="2" Margin="4">
-                      <TextBlock Text="ظ…ظ„ط§ط­ط¸ط© ط¯ط§ط®ظ„ظٹط©" Style="{StaticResource SectionLabel}" />
+                      <TextBlock Text="ملاحظة داخلية" Style="{StaticResource SectionLabel}" />
                       <TextBox Style="{StaticResource Field}" Text="{Binding NewNote,UpdateSourceTrigger=PropertyChanged}" FlowDirection="RightToLeft" TextAlignment="Right" Height="36" Margin="0,0,0,6" />
                     </StackPanel>
                   </Grid>
@@ -242,7 +242,7 @@
               </Border>
               <Border Style="{StaticResource Card}" Padding="16" Margin="0,4,0,0">
                 <StackPanel>
-                  <TextBlock Text="ظ¤. ط§ظ„طھط³ط¹ظٹط±" FontSize="15" FontWeight="SemiBold" Margin="2,0,2,10" />
+                  <TextBlock Text="٤. التسعير" FontSize="15" FontWeight="SemiBold" Margin="2,0,2,10" />
                   <Grid>
                     <Grid.ColumnDefinitions>
                       <ColumnDefinition />
@@ -250,18 +250,18 @@
                       <ColumnDefinition Width="1.1*" />
                     </Grid.ColumnDefinitions>
                     <StackPanel Margin="4">
-                      <TextBlock Text="{Binding NewSmallUnit,StringFormat={}ط³ط¹ط± ط§ظ„ط´ط±ط§ط، / {0}}" Style="{StaticResource SectionLabel}" />
+                      <TextBlock Text="{Binding NewSmallUnit,StringFormat={}سعر الشراء / {0}}" Style="{StaticResource SectionLabel}" />
                       <TextBox Style="{StaticResource NumericField}" Text="{Binding NewPurchasePrice,UpdateSourceTrigger=PropertyChanged}" FlowDirection="LeftToRight" TextAlignment="Right" Height="36" Margin="0,0,0,6" />
                     </StackPanel>
                     <StackPanel Grid.Column="1" Margin="4">
-                      <TextBlock Text="{Binding NewSmallUnit,StringFormat={}ط³ط¹ط± ط§ظ„ط¨ظٹط¹ / {0}}" Style="{StaticResource SectionLabel}" />
+                      <TextBlock Text="{Binding NewSmallUnit,StringFormat={}سعر البيع / {0}}" Style="{StaticResource SectionLabel}" />
                       <TextBox Style="{StaticResource NumericField}" Text="{Binding NewSalePrice,UpdateSourceTrigger=PropertyChanged}" FlowDirection="LeftToRight" TextAlignment="Right" Height="36" Margin="0,0,0,6" />
                     </StackPanel>
                     <Border Grid.Column="2" Background="#0B162C" BorderBrush="{StaticResource BrushLine}" BorderThickness="1" CornerRadius="8" Padding="10" Margin="4">
                       <StackPanel VerticalAlignment="Center">
-                        <TextBlock Text="ظ‡ط§ظ…ط´ ط§ظ„ط±ط¨ط­ ط§ظ„طھظ‚ط¯ظٹط±ظٹ" Style="{StaticResource SectionLabel}" />
+                        <TextBlock Text="هامش الربح التقديري" Style="{StaticResource SectionLabel}" />
                         <TextBlock Text="{Binding ProfitMargin,StringFormat={}{0:0.0}%}" FontSize="19" FontWeight="SemiBold" Foreground="{StaticResource BrushAccent2}" />
-                        <TextBlock Text="{Binding ProfitPerUnit,StringFormat={}ط§ظ„ط±ط¨ط­ ظ„ظ„ظˆط­ط¯ط©: {0:0.##}}" Style="{StaticResource CaptionText}" />
+                        <TextBlock Text="{Binding ProfitPerUnit,StringFormat={}الربح للوحدة: {0:0.##}}" Style="{StaticResource CaptionText}" />
                       </StackPanel>
                     </Border>
                   </Grid>
@@ -282,15 +282,15 @@
                       <ColumnDefinition Width="1.1*" />
                     </Grid.ColumnDefinitions>
                     <StackPanel Margin="4">
-                      <TextBlock Text="{Binding NewLargeUnit,StringFormat={}ط³ط¹ط± ط§ظ„ط´ط±ط§ط، / {0}}" Style="{StaticResource SectionLabel}" />
+                      <TextBlock Text="{Binding NewLargeUnit,StringFormat={}سعر الشراء / {0}}" Style="{StaticResource SectionLabel}" />
                       <TextBox Style="{StaticResource NumericField}" Text="{Binding NewMajorPurchasePrice,UpdateSourceTrigger=PropertyChanged}" FlowDirection="LeftToRight" TextAlignment="Right" Height="36" Margin="0,0,0,6" />
                     </StackPanel>
                     <StackPanel Grid.Column="1" Margin="4">
-                      <TextBlock Text="{Binding NewLargeUnit,StringFormat={}ط³ط¹ط± ط§ظ„ط¨ظٹط¹ / {0}}" Style="{StaticResource SectionLabel}" />
+                      <TextBlock Text="{Binding NewLargeUnit,StringFormat={}سعر البيع / {0}}" Style="{StaticResource SectionLabel}" />
                       <TextBox Style="{StaticResource NumericField}" Text="{Binding NewMajorSalePrice,UpdateSourceTrigger=PropertyChanged}" FlowDirection="LeftToRight" TextAlignment="Right" Height="36" Margin="0,0,0,6" />
                     </StackPanel>
                     <StackPanel Grid.Column="2" Margin="4" VerticalAlignment="Center">
-                      <TextBlock Text="ظٹظ…ظƒظ† طھط¹ط¯ظٹظ„ ط³ط¹ط± ط§ظ„ظˆط­ط¯ط© ط§ظ„ظƒط¨ط±ظ‰ ظٹط¯ظˆظٹظ‹ط§" Style="{StaticResource CaptionText}" TextWrapping="Wrap" />
+                      <TextBlock Text="يمكن تعديل سعر الوحدة الكبرى يدويًا" Style="{StaticResource CaptionText}" TextWrapping="Wrap" />
                     </StackPanel>
                   </Grid>
                 </StackPanel>
@@ -305,9 +305,9 @@
               <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
             <TextBlock Text="{Binding StatusText}" Style="{StaticResource CaptionText}" VerticalAlignment="Center" TextWrapping="Wrap" Margin="2,0,12,0" />
-            <Button Grid.Column="1" Content="ط¥ظ„ط؛ط§ط، [Esc]" Command="{Binding CloseDialogCommand}" Style="{StaticResource GhostButton}" Width="100" Margin="0,0,8,0" />
-            <Button Grid.Column="2" Content="ط­ظپط¸ ظˆظ…طھط§ط¨ط¹ط© [Ctrl+Enter]" Command="{Binding SaveAndNewProductCommand}" Style="{StaticResource GhostButton}" Width="170" Margin="0,0,8,0" />
-            <Button Grid.Column="3" Content="ط­ظپط¸ ظˆط¥ط؛ظ„ط§ظ‚ [Ctrl+S]" Command="{Binding SaveAndCloseProductCommand}" Style="{StaticResource PrimaryButton}" Width="165" />
+            <Button Grid.Column="1" Content="إلغاء [Esc]" Command="{Binding CloseDialogCommand}" Style="{StaticResource GhostButton}" Width="100" Margin="0,0,8,0" />
+            <Button Grid.Column="2" Content="حفظ ومتابعة [Ctrl+Enter]" Command="{Binding SaveAndNewProductCommand}" Style="{StaticResource GhostButton}" Width="170" Margin="0,0,8,0" />
+            <Button Grid.Column="3" Content="حفظ وإغلاق [Ctrl+S]" Command="{Binding SaveAndCloseProductCommand}" Style="{StaticResource PrimaryButton}" Width="165" />
           </Grid>
         </Grid>
       </Border>

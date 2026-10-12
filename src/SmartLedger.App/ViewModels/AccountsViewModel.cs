@@ -1,4 +1,4 @@
-using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Win32;
 using SmartLedger.Infrastructure.FinalRelease;
@@ -348,6 +348,31 @@ public partial class AccountsViewModel(IAppRepository repo,IAppSession session):
         OnPropertyChanged(nameof(VisibleAccountsCount));
     }
 
+    [RelayCommand]
+    private Task OpenReceiptForSelectedAccountAsync() => OpenQuickOperationAsync(OperationType.Receive);
+
+    [RelayCommand]
+    private Task OpenPaymentForSelectedAccountAsync() => OpenQuickOperationAsync(OperationType.Payment);
+
+    [RelayCommand]
+    private Task OpenDebtForSelectedAccountAsync() => OpenQuickOperationAsync(OperationType.DebtOnUs);
+
+    private async Task OpenQuickOperationAsync(OperationType type)
+    {
+        var person = SelectedPerson;
+        if (person is null)
+        {
+            System.Windows.MessageBox.Show("ظٹط±ط¬ظ‰ طھط­ط¯ظٹط¯ ط­ط³ط§ط¨ ط£ظˆظ„ط§ظ‹.", "ط§ظ„ط¹ظ…ظ„ظٹط§طھ ط§ظ„ظ…ط§ظ„ظٹط©",
+                System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Information);
+            return;
+        }
+
+        var main = System.Windows.Application.Current?.MainWindow?.DataContext as MainViewModel;
+        if (main is null) return;
+
+        await main.OpenOperationForPersonAsync(person.PersonId);
+        main.Operations.SelectedType = type;
+    }
     [RelayCommand]
     private async Task OpenOperationForAccountAsync(PersonSummary? person)
     {

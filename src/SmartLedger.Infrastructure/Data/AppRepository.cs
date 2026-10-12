@@ -1,4 +1,4 @@
-using System.Globalization;
+﻿using System.Globalization;
 using Microsoft.Data.Sqlite;
 using SmartLedger.Core.Abstractions;
 using SmartLedger.Core.Models;
@@ -193,7 +193,7 @@ LIMIT COALESCE($take,-1);
             c.Parameters.Clear();
             c.CommandText="INSERT INTO Operations(Id,PersonId,Type,Amount,Note,OccurredAt,CreatedBy,ReferenceNumber) VALUES($id,$person,$type,$amount,$note,$when,$user,$reference);";
             P(c,"$id",Guid.NewGuid().ToString("N")); P(c,"$person",p.Id.ToString("N")); P(c,"$type",(int)openingDirection);
-            P(c,"$amount",S(decimal.Round(openingBalance,2,MidpointRounding.AwayFromZero))); P(c,"$note","رصيد افتتاحي");
+            P(c,"$amount",S(decimal.Round(openingBalance,2,MidpointRounding.AwayFromZero))); P(c,"$note",!string.IsNullOrWhiteSpace(p.Note) ? p.Note.Trim() : "\u0631\u0635\u064a\u062f \u0627\u0641\u062a\u062a\u0627\u062d\u064a");
             P(c,"$when",DateTimeOffset.UtcNow.ToString("O",CultureInfo.InvariantCulture)); P(c,"$user",userId.ToString("N")); P(c,"$reference",DBNull.Value);
             await c.ExecuteNonQueryAsync(ct);
         }
@@ -263,7 +263,7 @@ LIMIT COALESCE($take,-1);
         await c.ExecuteNonQueryAsync(ct);
         if(openingBalance>0)
         {
-            var operation=new LedgerOperation(Guid.NewGuid(),p.Id,openingDirection,decimal.Round(openingBalance,2),"رصيد افتتاحي",DateTimeOffset.UtcNow,appSession?.CurrentUser?.Id ?? Guid.Empty);
+            var operation=new LedgerOperation(Guid.NewGuid(),p.Id,openingDirection,decimal.Round(openingBalance,2),!string.IsNullOrWhiteSpace(p.Note) ? p.Note.Trim() : "\u0631\u0635\u064a\u062f \u0627\u0641\u062a\u062a\u0627\u062d\u064a",DateTimeOffset.UtcNow,appSession?.CurrentUser?.Id ?? Guid.Empty);
             if(operation.CreatedBy==Guid.Empty) throw new InvalidOperationException("لا توجد جلسة مستخدم صالحة لتسجيل الرصيد الافتتاحي.");
             if(!await ExistsAsync(c,"Users",operation.CreatedBy,ct)) throw new InvalidOperationException("المستخدم المنفذ للعملية غير موجود.");
             c.Parameters.Clear(); c.CommandText="INSERT INTO Operations(Id,PersonId,Type,Amount,Note,OccurredAt,CreatedBy,ReferenceNumber) VALUES($id,$person,$type,$amount,$note,$when,$user,$reference);"; P(c,"$id",operation.Id.ToString("N")); P(c,"$person",operation.PersonId.ToString("N")); P(c,"$type",(int)operation.Type); P(c,"$amount",S(operation.Amount)); P(c,"$note",operation.Note); P(c,"$when",operation.OccurredAt.ToString("O")); P(c,"$user",operation.CreatedBy.ToString("N")); P(c,"$reference",(object?)operation.ReferenceNumber ?? DBNull.Value); await c.ExecuteNonQueryAsync(ct);

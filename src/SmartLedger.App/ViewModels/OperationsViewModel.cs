@@ -21,6 +21,7 @@ public partial class OperationsViewModel(IAppRepository repo,IAppSession session
     [ObservableProperty] private bool isPaymentSelected;
     [ObservableProperty] private bool isSaleSelected;
     [ObservableProperty] private bool isPurchaseSelected;
+    [ObservableProperty] private bool isDebtSelected;
     [ObservableProperty] private string amountText="";
     [ObservableProperty] private string note="";
     [ObservableProperty] private bool isBusy;
@@ -44,6 +45,7 @@ public partial class OperationsViewModel(IAppRepository repo,IAppSession session
         IsPaymentSelected=value==OperationType.Payment;
         IsSaleSelected=value==OperationType.Sale;
         IsPurchaseSelected=value==OperationType.Purchase;
+        IsDebtSelected=value==OperationType.DebtOnUs || value==OperationType.DebtToUs;
         OnPropertyChanged(nameof(SelectedTypeLabel));
     }
     partial void OnSelectedPersonIdChanged(Guid? value)
@@ -90,6 +92,7 @@ public partial class OperationsViewModel(IAppRepository repo,IAppSession session
     [RelayCommand] private void SelectPayment(){SelectedType=OperationType.Payment;}
     [RelayCommand] private void SelectSale(){SelectedType=OperationType.Sale;}
     [RelayCommand] private void SelectPurchase(){SelectedType=OperationType.Purchase;}
+    [RelayCommand] private void SelectDebt(){ var person=People.FirstOrDefault(x=>x.PersonId==SelectedPersonId); SelectedType=person is not null && person.NetBalance<0 ? OperationType.DebtToUs : OperationType.DebtOnUs; }
     [RelayCommand] private void OpenNew(){SelectedPersonId=null;PersonSearch="";SelectedType=OperationType.Receive;IsPersonSuggestionsOpen=false;IsMainPersonSuggestionsOpen=false;IsDialogPersonSuggestionsOpen=false;AmountText="";Note="";StatusText="";IsDialogOpen=true;}
     [RelayCommand] private void CloseDialog(){if(!IsBusy)IsDialogOpen=false;}
 
