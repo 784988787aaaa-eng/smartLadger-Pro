@@ -55,7 +55,7 @@ public partial class PurchasesViewModel(IAppRepository repo,IAppSession session)
     public bool IsCartEmpty => Lines.Count == 0;
 
     public IReadOnlyList<string> QuantityUnits { get { var p=_allProducts.FirstOrDefault(x=>x.Id==ProductId); return p is null?Array.Empty<string>():new[]{p.SmallUnit,p.LargeUnit}.Where(x=>!string.IsNullOrWhiteSpace(x)).Distinct(StringComparer.OrdinalIgnoreCase).ToArray(); } }
-    private decimal QuantityFactor(Product p)=>!string.IsNullOrWhiteSpace(p.LargeUnit)&&!string.Equals(p.LargeUnit,p.SmallUnit,StringComparison.OrdinalIgnoreCase)&&string.Equals(SelectedQuantityUnit,p.LargeUnit,StringComparison.OrdinalIgnoreCase)?p.ConversionFactor:1m;
+    private decimal QuantityFactor(Product p)=>!string.IsNullOrWhiteSpace(p.LargeUnit)&&!string.Equals(p.LargeUnit,p.SmallUnit,StringComparison.OrdinalIgnoreCase)&&string.Equals(SelectedQuantityUnit,p.LargeUnit,StringComparison.OrdinalIgnoreCase)&&p.ConversionFactor>0m?p.ConversionFactor:1m;
     public decimal Remaining=>Math.Max(0,Total-(NumericNormalizer.TryParseDecimal(PaidText,out var paid)?paid:0));
     public string BalanceLabel=>Remaining>0?"متبقي علينا":"مسدد بالكامل";
     public IReadOnlyList<PaymentModeOption> PaymentModes {get;}=new[]{new PaymentModeOption(PaymentMode.Cash,"نقدي"),new PaymentModeOption(PaymentMode.Credit,"آجل — عليه"),new PaymentModeOption(PaymentMode.Partial,"جزئي — المتبقي عليه")};
@@ -73,6 +73,7 @@ public partial class PurchasesViewModel(IAppRepository repo,IAppSession session)
     [RelayCommand] private async Task ReverseInvoiceAsync(string invoiceNumber)
     {
         if(IsSaving||string.IsNullOrWhiteSpace(invoiceNumber))return;
+        if(session.CurrentUser is null){System.Windows.MessageBox.Show("انتهت جلسة المستخدم؛ أعد تسجيل الدخول قبل عكس الفاتورة.","تعذر عكس الفاتورة",System.Windows.MessageBoxButton.OK,System.Windows.MessageBoxImage.Warning);return;}
         var confirmation=System.Windows.MessageBox.Show($"سيتم عكس فاتورة الشراء رقم {invoiceNumber} مع تحديث المخزون وحساب المورد وحركة النقد. قد يُرفض العكس إذا استُهلكت دفعات الفاتورة. هل تريد المتابعة؟","تأكيد عكس فاتورة الشراء",System.Windows.MessageBoxButton.YesNo,System.Windows.MessageBoxImage.Warning);
         if(confirmation!=System.Windows.MessageBoxResult.Yes)return;
         IsSaving=true;
@@ -91,7 +92,7 @@ public partial class PurchasesViewModel(IAppRepository repo,IAppSession session)
     partial void OnProductSearchChanged(string value){if(_settingProductSelection)return;if(ProductId is Guid id&&_allProducts.FirstOrDefault(x=>x.Id==id) is { } selected&&!Normalize(value).Equals(Normalize(selected.Name),StringComparison.OrdinalIgnoreCase))ProductId=null;Products=FilterProducts(value);IsProductSuggestionsOpen=!string.IsNullOrWhiteSpace(value)&&Products.Count>0;}
     partial void OnPersonIdChanged(Guid? value){var p=_allPeople.FirstOrDefault(x=>x.PersonId==value);if(p is not null){SupplierSearch=p.PersonName;IsSupplierSuggestionsOpen=false;}}
     partial void OnProductIdChanged(Guid? value){var p=_allProducts.FirstOrDefault(x=>x.Id==value);_settingProductSelection=true;_lastUnitFactor=1m;if(p is not null){ProductSearch=p.Name;SelectedQuantityUnit=p.SmallUnit;PriceText=p.PurchasePrice>0?p.PurchasePrice.ToString("0.##",System.Globalization.CultureInfo.InvariantCulture):"";IsProductSuggestionsOpen=false;}else{SelectedQuantityUnit="";PriceText="";}_settingProductSelection=false;OnPropertyChanged(nameof(QuantityUnits));Recalc();}
-    partial void OnSelectedQuantityUnitChanged(string value){OnPropertyChanged(nameof(QuantityUnits));if(_settingProductSelection)return;var product=_allProducts.FirstOrDefault(x=>x.Id==ProductId);if(product is null)return;var nextFactor=QuantityFactor(product);if(NumericNormalizer.TryParseDecimal(PriceText,out var currentPrice)&&_lastUnitFactor>0)PriceText=(currentPrice*nextFactor/_lastUnitFactor).ToString("0.##",System.Globalization.CultureInfo.InvariantCulture);_lastUnitFactor=nextFactor;}
+    partial void OnSelectedQuantityUnitChanged(string value){OnPropertyChanged(nameof(QuantityUnits));if(_settingProductSelection)return;var product=_allProducts.FirstOrDefault(x=>x.Id==ProductId);if(product is null)return;var nextFactor=QuantityFactor(product);var previousFactor=_lastUnitFactor;if(nextFactor<=0m||previousFactor<=0m){StatusText="معامل تحويل الوحدة غير صالح؛ تعذر تحويل السعر.";_lastUnitFactor=1m;return;}if(NumericNormalizer.TryParseDecimal(PriceText,out var currentPrice)&&currentPrice>=0m)PriceText=decimal.Round(currentPrice*nextFactor/previousFactor,4,MidpointRounding.AwayFromZero).ToString("0.####",System.Globalization.CultureInfo.InvariantCulture);_lastUnitFactor=nextFactor;}
     [RelayCommand] private void OpenNew(){Lines.Clear();OnPropertyChanged(nameof(LinesTotal));OnPropertyChanged(nameof(IsCartEmpty));PersonId=null;ProductId=null;SupplierSearch="";ProductSearch="";People=_allPeople;Products=_allProducts;IsSupplierSuggestionsOpen=false;IsProductSuggestionsOpen=false;QuantityText="1";PriceText="";PaidText="0";Note="";PaymentMode=PaymentMode.Cash;SyncPaymentChoices();StatusText="";Recalc();IsDialogOpen=true;}
     [RelayCommand] private void OpenQuickPerson(){QuickPersonName=SupplierSearch.Trim();QuickPersonPhone="";QuickPersonNote="";IsQuickPersonDialogOpen=true;}
     [RelayCommand] private void CloseQuickPerson(){IsQuickPersonDialogOpen=false;}
@@ -161,6 +162,7 @@ public partial class PurchasesViewModel(IAppRepository repo,IAppSession session)
     [RelayCommand] private async Task SaveAsync()
     {
         if(IsSaving)return;
+        if(session.CurrentUser is null){StatusText="انتهت جلسة المستخدم؛ أعد تسجيل الدخول قبل حفظ الفاتورة.";return;}
         if(ProductId is not null){if(!AddCurrentLine())return;}
         else if(!string.IsNullOrWhiteSpace(ProductSearch)){StatusText="اختر الصنف من الاقتراحات أو أنشئه أولًا.";return;}
         if(Lines.Count==0){StatusText="أضف صنفًا واحدًا على الأقل إلى الفاتورة.";return;}
