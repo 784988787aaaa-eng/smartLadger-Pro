@@ -1,4 +1,5 @@
 using SmartLedger.Core.Models;
+using SmartLedger.Core.Services;
 using SmartLedger.Infrastructure.Data;
 using Xunit;
 
@@ -7,6 +8,27 @@ namespace SmartLedger.Tests;
 public sealed class LedgerCalculationTests
 {
     private static readonly decimal[] ExpectedRunningBalances = { 100m, 70m, 120m, 140m };
+    [Fact]
+    public void AccountStatement_IncludesInitialBalanceAndPrePeriodMovements()
+    {
+        var person = Guid.NewGuid();
+        var user = Guid.NewGuid();
+        var from = DateTimeOffset.Parse("2026-10-01T00:00:00Z");
+        var to = DateTimeOffset.Parse("2026-10-31T23:59:59Z");
+        var operations = new[]
+        {
+            new LedgerOperation(Guid.NewGuid(), person, OperationType.DebtOnUs, 25m, "قبل الفترة", from.AddDays(-2), user),
+            new LedgerOperation(Guid.NewGuid(), person, OperationType.Receive, 10m, "داخل الفترة", from.AddDays(1), user)
+        };
+
+        var statement = FinancialReportCalculations.CalculateAccountStatement(operations, from, to, initialBalance: 500m);
+
+        Assert.Equal(525m, statement.OpeningBalance);
+        Assert.Single(statement.Movements);
+        Assert.Equal(515m, statement.Movements[0].RunningBalance);
+        Assert.Equal(515m, statement.ClosingBalance);
+    }
+
     [Fact]
     public void RunningBalances_AccumulateDebitsAndCreditsChronologically()
     {

@@ -3,6 +3,7 @@ using QuestPDF.Fluent;
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
 using SmartLedger.Core.Models;
+using SmartLedger.Core.Services;
 
 namespace SmartLedger.Infrastructure.Reporting;
 
@@ -17,17 +18,11 @@ public sealed class AccountStatementPdfService
     {
         ArgumentNullException.ThrowIfNull(operations);
         ArgumentOutOfRangeException.ThrowIfLessThan(periodTo, periodFrom);
-        var rows = operations.Where(x => x.OccurredAt >= periodFrom && x.OccurredAt <= periodTo).OrderBy(x => x.OccurredAt).ThenBy(x => x.Id);
-        var balance = openingBalance;
-        decimal debit = 0m, credit = 0m;
-        foreach (var operation in rows)
-        {
-            var signed = SignedAmount(operation);
-            balance += signed;
-            debit += Math.Max(0m, signed);
-            credit += Math.Max(0m, -signed);
-        }
-        return new AccountStatementTotals(openingBalance, debit, credit, balance);
+        var periodOperations = operations.Where(x => x.OccurredAt >= periodFrom && x.OccurredAt <= periodTo).ToArray();
+        var calculation = FinancialReportCalculations.CalculateAccountStatement(periodOperations, periodFrom, periodTo, openingBalance);
+        var debit = periodOperations.Sum(x => Math.Max(0m, FinancialReportCalculations.SignedLedgerEffect(x)));
+        var credit = periodOperations.Sum(x => Math.Max(0m, -FinancialReportCalculations.SignedLedgerEffect(x)));
+        return new AccountStatementTotals(calculation.OpeningBalance, debit, credit, calculation.ClosingBalance);
     }
     public byte[] Render(string businessName, string personName, string accountNumber, string currency,
         IReadOnlyList<LedgerOperation> operations, DateTimeOffset periodFrom, DateTimeOffset periodTo,
@@ -37,17 +32,15 @@ public sealed class AccountStatementPdfService
         ArgumentOutOfRangeException.ThrowIfLessThan(periodTo, periodFrom);
         QuestPDF.Settings.License = LicenseType.Community;
         QuestPDF.Settings.UseSystemFonts = true;
-        var rows = operations.Where(x => x.OccurredAt >= periodFrom && x.OccurredAt <= periodTo)
+        var periodOperations = operations.Where(x => x.OccurredAt >= periodFrom && x.OccurredAt <= periodTo)
             .OrderBy(x => x.OccurredAt).ThenBy(x => x.Id).ToArray();
-        var balance = openingBalance;
-        var renderedRows = rows.Select(x =>
-        {
-            var signed = SignedAmount(x);
-            balance += signed;
-            return new StatementRow(x.OccurredAt, x.TypeLabel, x.ReferenceNumber ?? string.Empty, x.Note,
-                Math.Max(0m, signed), Math.Max(0m, -signed), balance);
-        }).ToArray();
-        var closingBalance = balance;
+        var calculation = FinancialReportCalculations.CalculateAccountStatement(periodOperations, periodFrom, periodTo, openingBalance);
+        var renderedRows = calculation.Movements.Select(x =>
+            new StatementRow(x.OccurredAt, x.TypeLabel, x.ReferenceNumber ?? string.Empty, x.Note,
+                Math.Max(0m, FinancialReportCalculations.SignedLedgerEffect(x)),
+                Math.Max(0m, -FinancialReportCalculations.SignedLedgerEffect(x)), x.RunningBalance)).ToArray();
+        var closingBalance = calculation.ClosingBalance;
+        openingBalance = calculation.OpeningBalance;
         var totalDebit = renderedRows.Sum(x => x.Debit);
         var totalCredit = renderedRows.Sum(x => x.Credit);
         var name = string.IsNullOrWhiteSpace(businessName) ? "SmartLedger" : businessName.Trim();
@@ -121,12 +114,6 @@ public sealed class AccountStatementPdfService
         })).GeneratePdf();
     }
 
-    private static decimal SignedAmount(LedgerOperation op) => op.Type switch
-    {
-        OperationType.DebtOnUs or OperationType.Sale or OperationType.Payment or OperationType.Settlement => op.Amount,
-        OperationType.DebtToUs or OperationType.Receive or OperationType.Return or OperationType.Purchase => -op.Amount,
-        _ => 0m
-    };
     private static string Money(decimal value, string currency) => value.ToString("#,##0.00;(#,##0.00);0.00", CultureInfo.InvariantCulture) + (currency.Length == 0 ? string.Empty : $" {currency}");
     private static void Header(IContainer c, string text) => c.Background(HeaderFill).BorderBottom(1).BorderColor("#B9C8D8").PaddingVertical(6).PaddingHorizontal(3).AlignMiddle().Text(text).FontSize(8).Bold();
     private static void Cell(IContainer c, string text, bool bold = false)

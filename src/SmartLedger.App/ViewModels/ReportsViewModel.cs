@@ -135,7 +135,7 @@ public partial class ReportsViewModel(IAppRepository repo) : ObservableObject
     private async Task LoadSelectedAccountStatementAsync()
     {
         if (SelectedStatementAccount is null) { AccountStatementMovements = Array.Empty<LedgerOperation>(); OpeningBalance = ClosingBalance = 0m; OnPropertyChanged(nameof(OpeningBalance)); OnPropertyChanged(nameof(ClosingBalance)); return; }
-        var operations = await repo.GetOperationsAsync(SelectedStatementAccount.PersonId, 10000);
+        var operations = await repo.GetOperationsAsync(SelectedStatementAccount.PersonId, 0);
         var from = new DateTimeOffset(DateTime.SpecifyKind(FromDate.Date, DateTimeKind.Local));
         var to = new DateTimeOffset(DateTime.SpecifyKind(ToDate.Date.AddDays(1).AddTicks(-1), DateTimeKind.Local));
         var calculation = FinancialReportCalculations.CalculateAccountStatement(operations, from, to);
@@ -156,11 +156,15 @@ public partial class ReportsViewModel(IAppRepository repo) : ObservableObject
         {
             var from = new DateTimeOffset(DateTime.SpecifyKind(FromDate.Date, DateTimeKind.Local));
             var to = new DateTimeOffset(DateTime.SpecifyKind(ToDate.Date.AddDays(1).AddTicks(-1), DateTimeKind.Local));
-            var all = await repo.GetOperationsAsync(SelectedStatementAccount.PersonId, 10000);
-            var opening = all.Where(x => x.OccurredAt < from).Sum(SignedLedgerEffect);
-            var period = all.Where(x => x.OccurredAt >= from && x.OccurredAt <= to).OrderBy(x => x.OccurredAt).ToList();
-            if (opening != 0m) period.Insert(0, new LedgerOperation(Guid.Empty, SelectedStatementAccount.PersonId, opening > 0 ? OperationType.DebtOnUs : OperationType.DebtToUs, Math.Abs(opening), "Opening balance", from.AddTicks(-1), Guid.Empty));
-            await new PdfDocumentService(repo).GenerateAccountStatementAsync(dialog.FileName, SelectedStatementAccount.Person.Name, SelectedStatementAccount.BookName, period, SelectedPageKind, periodFrom: from, periodTo: to);
+            var all = await repo.GetOperationsAsync(SelectedStatementAccount.PersonId, 0);
+            await new PdfDocumentService(repo).GenerateAccountStatementAsync(
+                dialog.FileName,
+                SelectedStatementAccount.Person.Name,
+                SelectedStatementAccount.BookName,
+                all,
+                SelectedPageKind,
+                periodFrom: from,
+                periodTo: to);
             StatusText = "Account statement PDF exported: " + dialog.FileName;
         }
         catch (Exception ex) { StatusText = "Account statement PDF export failed: " + ex.Message; }

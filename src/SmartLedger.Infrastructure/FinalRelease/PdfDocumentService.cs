@@ -4,6 +4,7 @@ using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
 using SmartLedger.Core.Abstractions;
 using SmartLedger.Core.Models;
+using SmartLedger.Core.Services;
 using SmartLedger.Infrastructure.Reporting;
 
 namespace SmartLedger.Infrastructure.FinalRelease;
@@ -79,15 +80,13 @@ public sealed class PdfDocumentService(IAppRepository repo)
         var identity = await repo.GetIdentityAsync(ct);
         ConfigurePdf();
         var thermal = IsThermal(kind);
-        var ordered = operations.OrderBy(x => x.OccurredAt).ThenBy(x => x.Id).ToArray();
-        var balance = 0m;
-        var rows = ordered.Select(x =>
-        {
-            balance += SignedAmount(x);
-            var signed = SignedAmount(x);
-            return new StatementLine(x.OccurredAt, x.TypeLabel, x.Note, Math.Max(0m, signed), Math.Max(0m, -signed), balance);
-        }).ToArray();
-        var closing = balance;
+        var from = periodFrom ?? DateTimeOffset.MinValue;
+        var to = periodTo ?? DateTimeOffset.MaxValue;
+        var calculation = FinancialReportCalculations.CalculateAccountStatement(operations, from, to);
+        var rows = calculation.Movements.Select(x =>
+            new StatementLine(x.OccurredAt, x.TypeLabel, x.Note, x.Debit, x.Credit, x.RunningBalance)).ToArray();
+        var opening = calculation.OpeningBalance;
+        var closing = calculation.ClosingBalance;
 
         Document.Create(document => document.Page(page =>
         {
@@ -104,6 +103,7 @@ public sealed class PdfDocumentService(IAppRepository repo)
             {
                 column.Spacing(thermal ? 5 : 12);
                 column.Item().Element(c => AccountSummary(c, rows.Length, closing, identity.Currency, thermal));
+                column.Item().PaddingBottom(2).Text($"الرصيد الافتتاحي: {FormatMoney(opening, identity.Currency)}").Bold().FontSize(thermal ? 8 : 10);
                 column.Item().Table(table =>
                 {
                     table.ColumnsDefinition(cols =>

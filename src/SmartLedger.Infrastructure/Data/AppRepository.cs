@@ -303,7 +303,38 @@ FROM Operations;
         var expenses=Convert.ToDecimal(await c.ExecuteScalarAsync(ct));
         return new DashboardSummary(split.OwedToUs,split.WeOwe,stock,today,sales,purchases,expenses);
     }
-    public async Task<IReadOnlyList<LedgerOperation>> GetOperationsAsync(Guid? personId=null,int take=100,CancellationToken ct=default){await EnsurePermissionAsync(PermissionKeys.View,ct);var x=new List<LedgerOperation>();await using var db=database.Open();await db.OpenAsync(ct);await using var c=db.CreateCommand();c.CommandText="SELECT o.Id,o.PersonId,o.Type,o.Amount,o.Note,o.OccurredAt,o.CreatedBy,o.ReferenceNumber,COALESCE(o.SourceInvoiceId,(SELECT i.Id FROM Invoices i WHERE lower(trim(i.InvoiceNumber))=lower(trim(o.ReferenceNumber)) LIMIT 1)),COALESCE(o.SourceStockMovementId,(SELECT sm.Id FROM StockMovements sm WHERE sm.InvoiceId=COALESCE(o.SourceInvoiceId,(SELECT i.Id FROM Invoices i WHERE lower(trim(i.InvoiceNumber))=lower(trim(o.ReferenceNumber)) LIMIT 1)) ORDER BY sm.OccurredAt LIMIT 1)) FROM Operations o WHERE($p IS NULL OR o.PersonId=$p) ORDER BY o.OccurredAt DESC LIMIT $take;";P(c,"$p",personId?.ToString("N")??(object)DBNull.Value);P(c,"$take",Math.Clamp(take,1,1000));await using var r=await c.ExecuteReaderAsync(ct);while(await r.ReadAsync(ct))x.Add(new LedgerOperation(Guid.Parse(r.GetString(0)),Guid.Parse(r.GetString(1)),(OperationType)r.GetInt32(2),D(r.GetString(3)),r.GetString(4),DateTimeOffset.Parse(r.GetString(5)),Guid.Parse(r.GetString(6))) { ReferenceNumber = r.IsDBNull(7) ? null : r.GetString(7), SourceInvoiceId = r.IsDBNull(8) ? null : Guid.Parse(r.GetString(8)), SourceStockMovementId = r.IsDBNull(9) ? null : Guid.Parse(r.GetString(9)) });return x;}
+    public async Task<IReadOnlyList<LedgerOperation>> GetOperationsAsync(Guid? personId = null, int take = 100, CancellationToken ct = default)
+    {
+        await EnsurePermissionAsync(PermissionKeys.View, ct);
+        var operations = new List<LedgerOperation>();
+        await using var db = database.Open();
+        await db.OpenAsync(ct);
+        await using var command = db.CreateCommand();
+        command.CommandText = "SELECT o.Id,o.PersonId,o.Type,o.Amount,o.Note,o.OccurredAt,o.CreatedBy,o.ReferenceNumber,COALESCE(o.SourceInvoiceId,(SELECT i.Id FROM Invoices i WHERE lower(trim(i.InvoiceNumber))=lower(trim(o.ReferenceNumber)) LIMIT 1)),COALESCE(o.SourceStockMovementId,(SELECT sm.Id FROM StockMovements sm WHERE sm.InvoiceId=COALESCE(o.SourceInvoiceId,(SELECT i.Id FROM Invoices i WHERE lower(trim(i.InvoiceNumber))=lower(trim(o.ReferenceNumber)) LIMIT 1)) ORDER BY sm.OccurredAt LIMIT 1)) FROM Operations o WHERE($p IS NULL OR o.PersonId=$p) ORDER BY o.OccurredAt DESC";
+        if (take > 0)
+            command.CommandText += " LIMIT $take";
+        P(command, "$p", personId?.ToString("N") ?? (object)DBNull.Value);
+        if (take > 0)
+            P(command, "$take", Math.Clamp(take, 1, 1000));
+        await using var reader = await command.ExecuteReaderAsync(ct);
+        while (await reader.ReadAsync(ct))
+        {
+            operations.Add(new LedgerOperation(
+                Guid.Parse(reader.GetString(0)),
+                Guid.Parse(reader.GetString(1)),
+                (OperationType)reader.GetInt32(2),
+                D(reader.GetString(3)),
+                reader.GetString(4),
+                DateTimeOffset.Parse(reader.GetString(5)),
+                Guid.Parse(reader.GetString(6)))
+            {
+                ReferenceNumber = reader.IsDBNull(7) ? null : reader.GetString(7),
+                SourceInvoiceId = reader.IsDBNull(8) ? null : Guid.Parse(reader.GetString(8)),
+                SourceStockMovementId = reader.IsDBNull(9) ? null : Guid.Parse(reader.GetString(9))
+            });
+        }
+        return operations;
+    }
     public async Task<IReadOnlyList<LedgerOperation>> GetOperationsInPeriodAsync(DateTimeOffset from,DateTimeOffset toDate,CancellationToken ct=default)
     {
         await EnsurePermissionAsync(PermissionKeys.View,ct);
