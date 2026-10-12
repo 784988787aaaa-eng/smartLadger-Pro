@@ -38,98 +38,96 @@
           </Grid>
 
           <!-- Fields: fixed, non-overlapping rows -->
-          <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled"><Grid>
-            <Grid.RowDefinitions>
-              <RowDefinition Height="Auto"/>
-              <RowDefinition Height="Auto"/>
-              <RowDefinition Height="Auto"/>
-              <RowDefinition Height="Auto"/>
-              <RowDefinition Height="Auto"/>
-              <RowDefinition Height="Auto"/>
-            </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+          <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+            <StackPanel>
+              <!-- Card 1: account identity and opening balance -->
+              <Border Background="#0D192D" BorderBrush="#263E61" BorderThickness="1" CornerRadius="8" Padding="14" Margin="0,0,0,12">
+                <StackPanel>
+                  <TextBlock Text="البيانات المالية الأساسية" FontSize="13" FontWeight="SemiBold" Foreground="{StaticResource BrushAccent}" Margin="0,0,0,12"/>
+                  <TextBlock Text="{DynamicResource Str_Account_Name}" Style="{StaticResource SectionLabel}"/>
+                  <TextBox Style="{StaticResource DialogField}" Height="40" AutomationProperties.Name="اسم الحساب"
+                           AutomationProperties.AutomationId="AccountNameInput"
+                           Text="{Binding NewName, UpdateSourceTrigger=PropertyChanged}"
+                           HorizontalContentAlignment="Right" TextAlignment="Right" FlowDirection="RightToLeft"
+                           Language="ar-SA" Padding="10,6" TabIndex="0"
+                           InputMethod.IsInputMethodEnabled="True" InputMethod.PreferredImeState="On"
+                           InputMethod.PreferredImeConversionMode="Native"/>
+                  <TextBox Text="{Binding NewAccountCode}" Visibility="Collapsed"/>
+                  <Grid Margin="0,8,0,0">
+                    <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                    <StackPanel Grid.Column="0" Margin="0,0,6,0">
+                      <TextBlock Text="{DynamicResource Str_Account_Category}" Style="{StaticResource SectionLabel}"/>
+                      <ComboBox Style="{StaticResource DialogComboBox}" Height="38"
+                                ItemsSource="{Binding BookGroups}" DisplayMemberPath="Name"
+                                SelectedItem="{Binding SelectedGroupBook, Mode=TwoWay}"
+                                IsEditable="False" AutomationProperties.Name="الدفتر" TabIndex="1"
+                                KeyboardNavigation.DirectionalNavigation="Contained"
+                                behaviors:InputDialogBehavior.SpaceOpensComboBox="True"
+                                Background="#0B162C" Foreground="#EAF4FF" BorderBrush="#263E61"/>
+                    </StackPanel>
+                    <StackPanel Grid.Column="1" Margin="6,0,0,0">
+                      <TextBlock Text="{DynamicResource Str_Account_OpeningBalance}" Style="{StaticResource SectionLabel}"/>
+                      <TextBox Style="{StaticResource DialogNumericField}" Height="38"
+                               AutomationProperties.Name="المبلغ الافتتاحي"
+                               Text="{Binding OpeningBalanceText, UpdateSourceTrigger=PropertyChanged}"
+                               FlowDirection="LeftToRight" TextAlignment="Right" HorizontalContentAlignment="Right"
+                               Padding="10,6" FontSize="14" TabIndex="2"/>
+                    </StackPanel>
+                  </Grid>
+                  <TextBlock Text="{DynamicResource Str_Account_BalanceType}" Style="{StaticResource SectionLabel}" Margin="0,12,0,6"/>
+                  <Grid>
+                    <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                    <RadioButton Grid.Column="0" Content="{DynamicResource Str_Account_Credit}"
+                                 Style="{StaticResource SegmentedRadioButton}"
+                                 IsChecked="{Binding OpeningBalanceForUs, Mode=TwoWay}"
+                                 Command="{Binding SelectOpeningForUsCommand}"
+                                 Margin="0,0,4,0" Background="#12382F" BorderBrush="#16856B"
+                                 AutomationProperties.Name="الرصيد له"/>
+                    <RadioButton Grid.Column="1" Content="{DynamicResource Str_Account_Debit}"
+                                 Style="{StaticResource SegmentedRadioButton}"
+                                 IsChecked="{Binding OpeningBalanceAgainstUs, Mode=TwoWay}"
+                                 Command="{Binding SelectOpeningAgainstUsCommand}"
+                                 Margin="4,0,0,0" Background="#40232C" BorderBrush="#E66A7A"
+                                 AutomationProperties.Name="الرصيد عليه"/>
+                  </Grid>
+                </StackPanel>
+              </Border>
 
-            <StackPanel Grid.Row="0" Grid.ColumnSpan="2" Margin="0,0,0,12">
-              <TextBlock Text="{DynamicResource Str_Account_Name}" Style="{StaticResource SectionLabel}" Margin="0,0,0,5"/>
-              <TextBox Style="{StaticResource DialogField}" Height="42" AutomationProperties.Name="اسم الحساب"
-                       AutomationProperties.AutomationId="AccountNameInput"
-                       Text="{Binding NewName, UpdateSourceTrigger=PropertyChanged}"
-                       HorizontalContentAlignment="Right" TextAlignment="Right" FlowDirection="RightToLeft"
-                       Language="ar-SA" Padding="10,5" TabIndex="0"
-                       InputMethod.IsInputMethodEnabled="True" InputMethod.PreferredImeState="On"
-                       InputMethod.PreferredImeConversionMode="Native"/>
-              <TextBox Text="{Binding NewAccountCode}" Visibility="Collapsed"/>
+              <!-- Card 2: credit, contact and notes -->
+              <Border Background="#101E34" BorderBrush="#263E61" BorderThickness="1" CornerRadius="8" Padding="14">
+                <StackPanel>
+                  <TextBlock Text="الائتمان والاتصال" FontSize="13" FontWeight="SemiBold" Foreground="{StaticResource BrushAccent}" Margin="0,0,0,12"/>
+                  <Grid>
+                    <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                    <StackPanel Grid.Column="0" Margin="0,0,6,12">
+                      <TextBlock Text="{DynamicResource Str_Account_CreditLimit}" Style="{StaticResource SectionLabel}"/>
+                      <TextBox Style="{StaticResource DialogNumericField}" Height="38"
+                               Text="{Binding NewCreditLimit, UpdateSourceTrigger=PropertyChanged}"
+                               AutomationProperties.Name="حد الائتمان" FlowDirection="LeftToRight"
+                               TextAlignment="Right" Padding="10,6" TabIndex="3"/>
+                    </StackPanel>
+                    <StackPanel Grid.Column="1" Margin="6,0,0,12">
+                      <TextBlock Text="{DynamicResource Str_Account_Phone}" Style="{StaticResource SectionLabel}"/>
+                      <TextBox Style="{StaticResource DialogField}" Height="38"
+                               AutomationProperties.Name="رقم الهاتف"
+                               Text="{Binding NewPhone, UpdateSourceTrigger=PropertyChanged}"
+                               FlowDirection="LeftToRight" TextAlignment="Left" HorizontalContentAlignment="Left"
+                               Padding="10,6" TabIndex="4" Language="ar-SA"/>
+                    </StackPanel>
+                  </Grid>
+                  <TextBlock Text="{DynamicResource Str_Account_Notes}" Style="{StaticResource SectionLabel}"/>
+                  <TextBox Style="{StaticResource DialogField}" Height="72" MinHeight="72"
+                           AutomationProperties.Name="البيان والتفصيل"
+                           Text="{Binding NewNote, UpdateSourceTrigger=PropertyChanged}"
+                           AcceptsReturn="True" TextWrapping="Wrap" VerticalContentAlignment="Top"
+                           Padding="10,8" FlowDirection="RightToLeft" TextAlignment="Right" TabIndex="5"/>
+                  <CheckBox Content="تفعيل واتساب لهذا الحساب"
+                            IsChecked="{Binding NewWhatsAppEnabled}" HorizontalAlignment="Right"
+                            Margin="0,8,0,0" Foreground="{StaticResource BrushText}" TabIndex="6"/>
+                </StackPanel>
+              </Border>
             </StackPanel>
-
-            <StackPanel Grid.Row="1" Grid.Column="0" Margin="0,0,6,12">
-              <TextBlock Text="{DynamicResource Str_Account_Category}" Style="{StaticResource SectionLabel}" Margin="0,0,0,5"/>
-              <ComboBox Style="{StaticResource DialogComboBox}" Height="42"
-                        ItemsSource="{Binding BookGroups}" DisplayMemberPath="Name"
-                        SelectedItem="{Binding SelectedGroupBook, Mode=TwoWay}"
-                        IsEditable="False" AutomationProperties.Name="الدفتر" TabIndex="1"
-                        KeyboardNavigation.DirectionalNavigation="Contained"
-                        behaviors:InputDialogBehavior.SpaceOpensComboBox="True"
-                        Background="#0B162C" Foreground="#EAF4FF" BorderBrush="#263E61"/>
-            </StackPanel>
-            <StackPanel Grid.Row="1" Grid.Column="1" Margin="6,0,0,12">
-              <TextBlock Text="{DynamicResource Str_Account_OpeningBalance}" Style="{StaticResource SectionLabel}" Margin="0,0,0,5"/>
-              <TextBox Style="{StaticResource DialogNumericField}" Height="42"
-                       AutomationProperties.Name="المبلغ الافتتاحي"
-                       Text="{Binding OpeningBalanceText, UpdateSourceTrigger=PropertyChanged}"
-                       FlowDirection="LeftToRight" TextAlignment="Right" HorizontalContentAlignment="Right"
-                       Padding="10,5" FontSize="14" TabIndex="2"/>
-            </StackPanel>
-
-            <StackPanel Grid.Row="2" Grid.ColumnSpan="2" Margin="0,0,0,12">
-              <TextBlock Text="{DynamicResource Str_Account_BalanceType}" Style="{StaticResource SectionLabel}" Margin="0,0,0,6"/>
-              <Grid Height="40">
-                <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
-                <RadioButton Grid.Column="0" Content="{DynamicResource Str_Account_Credit}" GroupName="OpeningBalanceDirection"
-                             IsChecked="{Binding OpeningBalanceForUs, Mode=TwoWay}"
-                             Command="{Binding SelectOpeningForUsCommand}"
-                             HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
-                             Margin="0,0,4,0" Padding="10,6" FontSize="13" FontWeight="SemiBold"
-                             Foreground="#D1FAE5" Background="#12382F" BorderBrush="#16856B"
-                             AutomationProperties.Name="الرصيد له"/>
-                <RadioButton Grid.Column="1" Content="{DynamicResource Str_Account_Debit}" GroupName="OpeningBalanceDirection"
-                             IsChecked="{Binding OpeningBalanceAgainstUs, Mode=TwoWay}"
-                             Command="{Binding SelectOpeningAgainstUsCommand}"
-                             HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
-                             Margin="4,0,0,0" Padding="10,6" FontSize="13" FontWeight="SemiBold"
-                             Foreground="#FFE4E6" Background="#40232C" BorderBrush="#E66A7A"
-                             AutomationProperties.Name="الرصيد عليه"/>
-              </Grid>
-            </StackPanel>
-
-            <StackPanel Grid.Row="3" Grid.ColumnSpan="2" Margin="0,0,0,12">
-              <TextBlock Text="{DynamicResource Str_Account_Notes}" Style="{StaticResource SectionLabel}" Margin="0,0,0,5"/>
-              <TextBox Style="{StaticResource DialogField}" Height="64" MinHeight="64"
-                       AutomationProperties.Name="البيان والتفصيل"
-                       Text="{Binding NewNote, UpdateSourceTrigger=PropertyChanged}"
-                       AcceptsReturn="True" TextWrapping="Wrap" VerticalContentAlignment="Top"
-                       Padding="10,8" FlowDirection="RightToLeft" TextAlignment="Right" TabIndex="3"/>
-            </StackPanel>
-
-            <StackPanel Grid.Row="4" Grid.Column="0" Margin="0,0,6,12">
-              <TextBlock Text="{DynamicResource Str_Account_Phone}" Style="{StaticResource SectionLabel}" Margin="0,0,0,5"/>
-              <TextBox Style="{StaticResource DialogField}" Height="42"
-                       AutomationProperties.Name="رقم الهاتف"
-                       Text="{Binding NewPhone, UpdateSourceTrigger=PropertyChanged}"
-                       FlowDirection="LeftToRight" TextAlignment="Left" HorizontalContentAlignment="Left"
-                       TabIndex="4" Language="ar-SA"/>
-            </StackPanel>
-            <StackPanel Grid.Row="4" Grid.Column="1" Margin="6,0,0,12">
-              <TextBlock Text="{DynamicResource Str_Account_CreditLimit}" Style="{StaticResource SectionLabel}" Margin="0,0,0,5"/>
-              <TextBox Style="{StaticResource DialogNumericField}" Height="42"
-                       Text="{Binding NewCreditLimit, UpdateSourceTrigger=PropertyChanged}"
-                       AutomationProperties.Name="حد الائتمان" FlowDirection="LeftToRight"
-                       TextAlignment="Right" TabIndex="5"/>
-            </StackPanel>
-
-            <CheckBox Grid.Row="5" Grid.ColumnSpan="2" Content="تفعيل واتساب لهذا الحساب"
-                      IsChecked="{Binding NewWhatsAppEnabled}" HorizontalAlignment="Right"
-                      Margin="0,0,0,2" Foreground="{StaticResource BrushText}" TabIndex="6"/>
-          </Grid></ScrollViewer>
+          </ScrollViewer>
 
           <!-- Footer: primary, save-and-continue, and cancel -->
           <Grid Grid.Row="2" Margin="0,18,0,0">
