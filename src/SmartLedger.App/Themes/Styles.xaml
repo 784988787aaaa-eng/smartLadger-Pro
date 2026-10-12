@@ -1,4 +1,7 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:behavior="clr-namespace:SmartLedger.App.Behaviors">
+  <!-- Compatibility aliases used by legacy and current XAML templates. -->
+  <BooleanToVisibilityConverter x:Key="BoolToVisibility"/>
+  <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
   <Style TargetType="TextBlock">
     <Setter Property="FontFamily" Value="{StaticResource ArabicFont}"/>
     <Setter Property="Foreground" Value="{StaticResource BrushText}"/>
