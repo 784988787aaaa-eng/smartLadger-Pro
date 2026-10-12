@@ -90,4 +90,37 @@
   <sys:String x:Key="ColStatementBalance">الرصيد التراكمي</sys:String>
   <sys:String x:Key="ColStatementDetails">البيان / تفاصيل الحركة</sys:String>
   <sys:String x:Key="ColStatementDateTime">التاريخ والوقت</sys:String>
+
+  <!-- Batch 1: normalized Arabic accounting terms for input dialogs -->
+  <sys:String x:Key="Str_SaveAndClose">حفظ وإغلاق (F5)</sys:String>
+  <sys:String x:Key="Str_SaveAndNew">حفظ ومتابعة (Ctrl+Enter)</sys:String>
+  <sys:String x:Key="Str_Cancel">إلغاء (Esc)</sys:String>
+  <sys:String x:Key="Str_Saving">جارٍ الحفظ والترحيل…</sys:String>
+  <sys:String x:Key="Str_Account_Title">بطاقة حساب مالي جديد</sys:String>
+  <sys:String x:Key="Str_Account_Name">اسم الحساب *</sys:String>
+  <sys:String x:Key="Str_Account_Category">تصنيف الدفتر</sys:String>
+  <sys:String x:Key="Str_Account_OpeningBalance">الرصيد الافتتاحي</sys:String>
+  <sys:String x:Key="Str_Account_BalanceType">طبيعة الرصيد</sys:String>
+  <sys:String x:Key="Str_Account_Debit">مدين (عليه)</sys:String>
+  <sys:String x:Key="Str_Account_Credit">دائن (له)</sys:String>
+  <sys:String x:Key="Str_Account_CreditLimit">حد الائتمان المسموح</sys:String>
+  <sys:String x:Key="Str_Account_Phone">رقم الهاتف</sys:String>
+  <sys:String x:Key="Str_Account_Notes">البيان والملاحظات</sys:String>
+  <sys:String x:Key="Str_Product_Title">بطاقة صنف مخزني جديد</sys:String>
+  <sys:String x:Key="Str_Product_Name">اسم الصنف التجاري *</sys:String>
+  <sys:String x:Key="Str_Product_Barcode">الباركود الدولي / المحلي</sys:String>
+  <sys:String x:Key="Str_Product_Category">المجموعة والتصنيف</sys:String>
+  <sys:String x:Key="Str_Product_Warehouse">المستودع الافتراضي</sys:String>
+  <sys:String x:Key="Str_Product_UnitBase">الوحدة الأساسية (الصغرى)</sys:String>
+  <sys:String x:Key="Str_Product_UnitMajor">الوحدة الكبرى (العبوة)</sys:String>
+  <sys:String x:Key="Str_Product_Factor">معامل التحويل</sys:String>
+  <sys:String x:Key="Str_Product_CostPrice">سعر تكلفة الشراء</sys:String>
+  <sys:String x:Key="Str_Product_SalePrice">سعر البيع الافتراضي</sys:String>
+  <sys:String x:Key="Str_Product_OpeningQty">الكمية الافتتاحية</sys:String>
+  <sys:String x:Key="Str_Product_MinAlert">حد التنبيه الأدنى</sys:String>
+  <sys:String x:Key="Str_Expense_Title">سند صرف مالي ونفقة</sys:String>
+  <sys:String x:Key="Str_Expense_Amount">المبلغ المنصرف *</sys:String>
+  <sys:String x:Key="Str_Expense_Source">مصدر الدفع (الخزينة/البنك)</sys:String>
+  <sys:String x:Key="Str_Expense_Date">تاريخ السند</sys:String>
+  <sys:String x:Key="Str_Expense_Statement">بيان سبب الصرف *</sys:String>
 </ResourceDictionary>
