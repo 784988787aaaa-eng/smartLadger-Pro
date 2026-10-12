@@ -123,4 +123,19 @@
   <sys:String x:Key="Str_Expense_Source">مصدر الدفع (الخزينة/البنك)</sys:String>
   <sys:String x:Key="Str_Expense_Date">تاريخ السند</sys:String>
   <sys:String x:Key="Str_Expense_Statement">بيان سبب الصرف *</sys:String>
+  <sys:String x:Key="Str_Expense_Subtitle">سجّل النفقة وراجع تفاصيل الصرف قبل الحفظ</sys:String>
+  <sys:String x:Key="Str_Product_SectionIdentity">١. معلومات الصنف</sys:String>
+  <sys:String x:Key="Str_Product_SectionUnits">٢. الوحدات والتحويل</sys:String>
+  <sys:String x:Key="Str_Product_SectionStock">٣. المخزون والتنبيه</sys:String>
+  <sys:String x:Key="Str_Product_SectionPricing">٤. التسعير</sys:String>
+  <sys:String x:Key="Str_Product_ProfitMargin">هامش الربح التقديري</sys:String>
+  <sys:String x:Key="Str_Product_UnitMinor">الوحدة الأساسية</sys:String>
+  <sys:String x:Key="Str_Product_UnitMajorToggle">تفعيل وحدة كبرى</sys:String>
+  <sys:String x:Key="Str_Product_ShelfLocation">موقع التخزين</sys:String>
+  <sys:String x:Key="Str_Product_DefaultSupplier">المورد الافتراضي</sys:String>
+  <sys:String x:Key="Str_Product_Notes">ملاحظة داخلية</sys:String>
+  <sys:String x:Key="Str_Expense_Category">تصنيف المصروف</sys:String>
+  <sys:String x:Key="Str_Expense_PaymentCash">الصندوق الرئيسي</sys:String>
+  <sys:String x:Key="Str_Expense_PaymentBank">الحساب البنكي</sys:String>
+  <sys:String x:Key="Str_Expense_PaymentCredit">آجل</sys:String>
 </ResourceDictionary>
