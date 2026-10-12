@@ -1,5 +1,4 @@
 using QuestPDF.Fluent;
-using QuestPDF.Drawing;
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
 using QRCoder;
@@ -10,21 +9,10 @@ namespace SmartLedger.Infrastructure.Reporting;
 
 public sealed class InvoicePrintService : IInvoicePrintService
 {
-    private static int _fontsRegistered;
     public InvoicePrintService()
     {
         QuestPDF.Settings.License = LicenseType.Community;
-        if (Interlocked.Exchange(ref _fontsRegistered, 1) == 0)
-        {
-            var fontsDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Fonts);
-            foreach (var fontName in new[] { "tahoma.ttf", "arial.ttf" })
-            {
-                var fontPath = Path.Combine(fontsDirectory, fontName);
-                if (!File.Exists(fontPath)) continue;
-                using var fontStream = File.OpenRead(fontPath);
-                FontManager.RegisterFontFromStream(fontStream);
-            }
-        }
+        PdfFontConfig.RegisterFonts();
     }
 
     public byte[] RenderThermalReceipt(Invoice invoice, IReadOnlyList<InvoiceLine> lines, BusinessIdentity identity)
@@ -41,7 +29,16 @@ public sealed class InvoicePrintService : IInvoicePrintService
         ArgumentNullException.ThrowIfNull(invoice);
         ArgumentNullException.ThrowIfNull(lines);
         ArgumentNullException.ThrowIfNull(identity);
-        var qrPayload = $"رقم الفاتورة={invoice.InvoiceNumber};الإجمالي={invoice.Total:N2};العملة={identity.Currency};التاريخ={invoice.IssuedAt:yyyy/MM/dd HH:mm}";
+        var qrPayload = string.Join("\n", new[]
+        {
+            $"رقم الفاتورة: {invoice.InvoiceNumber}",
+            $"تاريخ الترحيل: {invoice.IssuedAt:yyyy/MM/dd HH:mm}",
+            $"المنشأة: {identity.BusinessName}",
+            $"الإجمالي النهائي: {invoice.Total.ToString("N2", System.Globalization.CultureInfo.InvariantCulture)} {identity.Currency}",
+            invoice.TaxAmount > 0
+                ? $"مبلغ الضريبة: {invoice.TaxAmount.ToString("N2", System.Globalization.CultureInfo.InvariantCulture)} {identity.Currency}"
+                : null
+        }.Where(value => !string.IsNullOrWhiteSpace(value)));
         var logoBytes = !string.IsNullOrWhiteSpace(identity.LogoPath) && File.Exists(identity.LogoPath) ? File.ReadAllBytes(identity.LogoPath) : null;
         using var qrGenerator = new QRCodeGenerator();
         using var qrData = qrGenerator.CreateQrCode(qrPayload, QRCodeGenerator.ECCLevel.Q);
@@ -50,10 +47,10 @@ public sealed class InvoicePrintService : IInvoicePrintService
         {
             document.Page(page =>
             {
-                page.Size(thermal ? new PageSize(226.77f, 720f) : PageSizes.A4);
+                page.Size(thermal ? CalculateThermalPageSize(lines) : PageSizes.A4);
                 page.Margin(thermal ? 8 : 28);
                 page.ContentFromRightToLeft();
-                page.DefaultTextStyle(style => style.FontFamily("Tahoma").FontSize(thermal ? 8 : 10));
+                page.DefaultTextStyle(style => style.FontFamily(PdfFontConfig.ArabicFontFamily).FontSize(thermal ? 8 : 10));
                 page.Content().Column(column =>
                 {
                     column.Spacing(thermal ? 4 : 8);
@@ -133,6 +130,26 @@ public sealed class InvoicePrintService : IInvoicePrintService
                 });
             });
         }).GeneratePdf();
+    }
+
+    private static PageSize CalculateThermalPageSize(IReadOnlyList<InvoiceLine> lines)
+    {
+        const float widthPoints = 226.77f; // 80 mm
+        const float baseHeaderAndFooter = 380f;
+        const float pointsPerLine = 36f;
+        const float pointsPerWrappedDescriptionLine = 15f;
+        const int approximateCharactersPerDescriptionLine = 20;
+
+        var estimatedHeight = baseHeaderAndFooter;
+        foreach (var line in lines)
+        {
+            var descriptionLength = line.Description?.Length ?? 0;
+            var wrappedLines = Math.Max(0,
+                (int)Math.Ceiling(descriptionLength / (double)approximateCharactersPerDescriptionLine) - 1);
+            estimatedHeight += pointsPerLine + (wrappedLines * pointsPerWrappedDescriptionLine);
+        }
+
+        return new PageSize(widthPoints, Math.Max(500f, estimatedHeight));
     }
 
     private static IContainer CellStyle(IContainer container)
