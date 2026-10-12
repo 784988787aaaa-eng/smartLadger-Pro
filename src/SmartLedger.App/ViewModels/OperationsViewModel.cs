@@ -109,7 +109,8 @@ public partial class OperationsViewModel(IAppRepository repo,IAppSession session
     [RelayCommand(CanExecute=nameof(CanSave))]
     private async Task SaveAsync()
     {
-        if(!NumericNormalizer.TryParseDecimal(AmountText,out var amount)||amount<=0||SelectedPersonId is null)return;
+        if(!NumericNormalizer.TryParseDecimal(AmountText,out var amount)||amount<=0||SelectedPersonId is null){StatusText="اختر حسابًا وأدخل مبلغًا صحيحًا أكبر من صفر.";return;}
+        if(session.CurrentUser is null){StatusText="انتهت جلسة المستخدم؛ أعد تسجيل الدخول قبل حفظ الحركة.";return;}
         IsBusy=true; StatusText="جارٍ حفظ الحركة…";
         try
         {
@@ -120,7 +121,7 @@ public partial class OperationsViewModel(IAppRepository repo,IAppSession session
             StatusText="تم حفظ الحركة بنجاح.";
             IsDialogOpen=false;
         }
-        catch(Exception ex){StatusText=ex.Message;}
+        catch(Exception){StatusText="تعذر حفظ الحركة. تحقق من البيانات وصلاحيات المستخدم ثم أعد المحاولة.";}
         finally{IsBusy=false;SaveCommand.NotifyCanExecuteChanged();}
     }
 
