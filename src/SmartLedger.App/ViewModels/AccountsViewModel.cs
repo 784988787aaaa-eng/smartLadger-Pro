@@ -432,6 +432,9 @@ public partial class AccountsViewModel(IAppRepository repo,IAppSession session):
     private Task SaveAndNewAsync() => SaveAccountAsync(true);
 
     [RelayCommand]
+    private Task SaveAndNewAccountAsync() => SaveAccountAsync(true);
+
+    [RelayCommand]
     private Task SaveAndCloseAsync() => SaveAccountAsync(false);
 
     private async Task SaveAccountAsync(bool continueEntry)
