@@ -147,7 +147,7 @@
             </TextBlock>
             <StackPanel Grid.Column="1" Orientation="Horizontal" FlowDirection="LeftToRight">
               <Button Content="{DynamicResource Str_SaveAndClose}" Command="{Binding SaveAndCloseCommand}"
-                      Width="132" Height="42" Margin="0,0,8,0" IsDefault="True"
+                      Width="132" Height="42" Margin="0,0,8,0" IsDefault="True" ToolTip="حفظ الحساب وإغلاق النافذة (F5)"
                       AutomationProperties.Name="حفظ الحساب" AutomationProperties.AutomationId="Btn_SaveAccount">
                 <Button.Style>
                   <Style TargetType="Button" BasedOn="{StaticResource PrimaryButton}">
@@ -160,9 +160,9 @@
                   </Style>
                 </Button.Style>
               </Button>
-              <Button Content="{DynamicResource Str_SaveAndNew}" Command="{Binding SaveAndNewAccountCommand}" Width="140" Height="42" Margin="0,0,8,0" Style="{StaticResource SmartSecondaryButton}" AutomationProperties.Name="حفظ ومتابعة"/>
+              <Button Content="{DynamicResource Str_SaveAndNew}" Command="{Binding SaveAndNewAccountCommand}" Width="140" Height="42" Margin="0,0,8,0" Style="{StaticResource SmartSecondaryButton}" ToolTip="حفظ الحساب وفتح بطاقة جديدة (Ctrl+Enter)" AutomationProperties.Name="حفظ ومتابعة"/>
               <Button Content="{DynamicResource Str_Cancel}" Command="{Binding CloseDialogCommand}"
-                      Width="84" Height="42" Style="{StaticResource GhostButton}" IsCancel="True"
+                      Width="84" Height="42" Style="{StaticResource GhostButton}" ToolTip="إغلاق دون حفظ (Esc)" IsCancel="True"
                       AutomationProperties.Name="إلغاء"/>
             </StackPanel>
           </Grid>
