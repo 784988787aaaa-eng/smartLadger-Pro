@@ -7,9 +7,9 @@
           Grid.Row="0" Grid.Column="0" Grid.RowSpan="999" Grid.ColumnSpan="999"
           Panel.ZIndex="1001" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
           Visibility="{Binding IsDialogOpen, Converter={StaticResource BoolToVisibility}}">
-      <Border Width="560" MaxWidth="560" Height="Auto"
+      <Border x:Name="DialogHostContainer" MinWidth="420" Width="560" MaxWidth="900" MaxHeight="900"
               HorizontalAlignment="Center" VerticalAlignment="Center"
-              Style="{StaticResource DialogShell}" Padding="20">
+              Style="{StaticResource ResponsiveDialogHost}" Padding="20">
         <Grid FlowDirection="RightToLeft"
               KeyboardNavigation.TabNavigation="Cycle"
               behaviors:InputDialogBehavior.IsEnabled="True">
@@ -24,21 +24,21 @@
           </Grid.RowDefinitions>
 
           <!-- Header -->
-          <Grid Grid.Row="0" Margin="0,0,0,18">
+          <Grid Grid.Row="0" Margin="0,0,0,18" Cursor="SizeAll" behaviors:DialogInteractionBehavior.IsDraggable="True">
             <Grid.ColumnDefinitions><ColumnDefinition Width="36"/><ColumnDefinition Width="*"/><ColumnDefinition Width="36"/></Grid.ColumnDefinitions>
             <Button Grid.Column="0" Command="{Binding CloseDialogCommand}" Style="{StaticResource IconButton}"
                     ToolTip="إغلاق" AutomationProperties.Name="إغلاق" Width="34" Height="34">
               <Path Width="13" Height="13" Stretch="Uniform" Stroke="#9DB7D4" StrokeThickness="1.6" Data="{StaticResource CloseIcon}"/>
             </Button>
             <StackPanel Grid.Column="1" HorizontalAlignment="Center">
-              <TextBlock Text="إضافة حساب جديد" FontSize="19" FontWeight="SemiBold" HorizontalAlignment="Center"/>
+              <TextBlock Text="{DynamicResource Str_Account_Title}" FontSize="19" FontWeight="SemiBold" HorizontalAlignment="Center"/>
               <TextBlock Text="أدخل بيانات الحساب والرصيد الافتتاحي" FontSize="11" Foreground="{StaticResource BrushMuted}" Margin="0,4,0,0" HorizontalAlignment="Center"/>
             </StackPanel>
             <Border Grid.Column="2"/>
           </Grid>
 
           <!-- Fields: fixed, non-overlapping rows -->
-          <Grid Grid.Row="1">
+          <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled"><Grid>
             <Grid.RowDefinitions>
               <RowDefinition Height="Auto"/>
               <RowDefinition Height="Auto"/>
@@ -50,7 +50,7 @@
             <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
 
             <StackPanel Grid.Row="0" Grid.ColumnSpan="2" Margin="0,0,0,12">
-              <TextBlock Text="اسم الحساب *" Style="{StaticResource SectionLabel}" Margin="0,0,0,5"/>
+              <TextBlock Text="{DynamicResource Str_Account_Name}" Style="{StaticResource SectionLabel}" Margin="0,0,0,5"/>
               <TextBox Style="{StaticResource DialogField}" Height="42" AutomationProperties.Name="اسم الحساب"
                        AutomationProperties.AutomationId="AccountNameInput"
                        Text="{Binding NewName, UpdateSourceTrigger=PropertyChanged}"
@@ -62,7 +62,7 @@
             </StackPanel>
 
             <StackPanel Grid.Row="1" Grid.Column="0" Margin="0,0,6,12">
-              <TextBlock Text="الدفتر" Style="{StaticResource SectionLabel}" Margin="0,0,0,5"/>
+              <TextBlock Text="{DynamicResource Str_Account_Category}" Style="{StaticResource SectionLabel}" Margin="0,0,0,5"/>
               <ComboBox Style="{StaticResource DialogComboBox}" Height="42"
                         ItemsSource="{Binding BookGroups}" DisplayMemberPath="Name"
                         SelectedItem="{Binding SelectedGroupBook, Mode=TwoWay}"
@@ -72,7 +72,7 @@
                         Background="#0B162C" Foreground="#EAF4FF" BorderBrush="#263E61"/>
             </StackPanel>
             <StackPanel Grid.Row="1" Grid.Column="1" Margin="6,0,0,12">
-              <TextBlock Text="المبلغ (الرصيد الافتتاحي)" Style="{StaticResource SectionLabel}" Margin="0,0,0,5"/>
+              <TextBlock Text="{DynamicResource Str_Account_OpeningBalance}" Style="{StaticResource SectionLabel}" Margin="0,0,0,5"/>
               <TextBox Style="{StaticResource DialogNumericField}" Height="42"
                        AutomationProperties.Name="المبلغ الافتتاحي"
                        Text="{Binding OpeningBalanceText, UpdateSourceTrigger=PropertyChanged}"
@@ -81,17 +81,17 @@
             </StackPanel>
 
             <StackPanel Grid.Row="2" Grid.ColumnSpan="2" Margin="0,0,0,12">
-              <TextBlock Text="طبيعة الرصيد الافتتاحي" Style="{StaticResource SectionLabel}" Margin="0,0,0,6"/>
+              <TextBlock Text="{DynamicResource Str_Account_BalanceType}" Style="{StaticResource SectionLabel}" Margin="0,0,0,6"/>
               <Grid Height="40">
                 <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
-                <RadioButton Grid.Column="0" Content="له" GroupName="OpeningBalanceDirection"
+                <RadioButton Grid.Column="0" Content="{DynamicResource Str_Account_Credit}" GroupName="OpeningBalanceDirection"
                              IsChecked="{Binding OpeningBalanceForUs, Mode=TwoWay}"
                              Command="{Binding SelectOpeningForUsCommand}"
                              HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
                              Margin="0,0,4,0" Padding="10,6" FontSize="13" FontWeight="SemiBold"
                              Foreground="#D1FAE5" Background="#12382F" BorderBrush="#16856B"
                              AutomationProperties.Name="الرصيد له"/>
-                <RadioButton Grid.Column="1" Content="عليه" GroupName="OpeningBalanceDirection"
+                <RadioButton Grid.Column="1" Content="{DynamicResource Str_Account_Debit}" GroupName="OpeningBalanceDirection"
                              IsChecked="{Binding OpeningBalanceAgainstUs, Mode=TwoWay}"
                              Command="{Binding SelectOpeningAgainstUsCommand}"
                              HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
@@ -102,7 +102,7 @@
             </StackPanel>
 
             <StackPanel Grid.Row="3" Grid.ColumnSpan="2" Margin="0,0,0,12">
-              <TextBlock Text="البيان والتفصيل" Style="{StaticResource SectionLabel}" Margin="0,0,0,5"/>
+              <TextBlock Text="{DynamicResource Str_Account_Notes}" Style="{StaticResource SectionLabel}" Margin="0,0,0,5"/>
               <TextBox Style="{StaticResource DialogField}" Height="64" MinHeight="64"
                        AutomationProperties.Name="البيان والتفصيل"
                        Text="{Binding NewNote, UpdateSourceTrigger=PropertyChanged}"
@@ -111,7 +111,7 @@
             </StackPanel>
 
             <StackPanel Grid.Row="4" Grid.Column="0" Margin="0,0,6,12">
-              <TextBlock Text="رقم الهاتف (اختياري)" Style="{StaticResource SectionLabel}" Margin="0,0,0,5"/>
+              <TextBlock Text="{DynamicResource Str_Account_Phone}" Style="{StaticResource SectionLabel}" Margin="0,0,0,5"/>
               <TextBox Style="{StaticResource DialogField}" Height="42"
                        AutomationProperties.Name="رقم الهاتف"
                        Text="{Binding NewPhone, UpdateSourceTrigger=PropertyChanged}"
@@ -119,7 +119,7 @@
                        TabIndex="4" Language="ar-SA"/>
             </StackPanel>
             <StackPanel Grid.Row="4" Grid.Column="1" Margin="6,0,0,12">
-              <TextBlock Text="حد الائتمان (اختياري)" Style="{StaticResource SectionLabel}" Margin="0,0,0,5"/>
+              <TextBlock Text="{DynamicResource Str_Account_CreditLimit}" Style="{StaticResource SectionLabel}" Margin="0,0,0,5"/>
               <TextBox Style="{StaticResource DialogNumericField}" Height="42"
                        Text="{Binding NewCreditLimit, UpdateSourceTrigger=PropertyChanged}"
                        AutomationProperties.Name="حد الائتمان" FlowDirection="LeftToRight"
@@ -129,15 +129,15 @@
             <CheckBox Grid.Row="5" Grid.ColumnSpan="2" Content="تفعيل واتساب لهذا الحساب"
                       IsChecked="{Binding NewWhatsAppEnabled}" HorizontalAlignment="Right"
                       Margin="0,0,0,2" Foreground="{StaticResource BrushText}" TabIndex="6"/>
-          </Grid>
+          </Grid></ScrollViewer>
 
-          <!-- Footer: one primary action and cancel only -->
+          <!-- Footer: primary, save-and-continue, and cancel -->
           <Grid Grid.Row="2" Margin="0,18,0,0">
             <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
             <TextBlock Grid.Column="0" Text="{Binding StatusText}" Foreground="{StaticResource BrushMuted}"
                        FontSize="11" VerticalAlignment="Center" TextWrapping="Wrap" MaxWidth="230"/>
             <StackPanel Grid.Column="1" Orientation="Horizontal" FlowDirection="LeftToRight">
-              <Button Content="حفظ الحساب" Command="{Binding SaveAndCloseCommand}"
+              <Button Content="{DynamicResource Str_SaveAndClose}" Command="{Binding SaveAndCloseCommand}"
                       Width="132" Height="42" Margin="0,0,8,0" IsDefault="True"
                       AutomationProperties.Name="حفظ الحساب" AutomationProperties.AutomationId="Btn_SaveAccount">
                 <Button.Style>
@@ -151,7 +151,8 @@
                   </Style>
                 </Button.Style>
               </Button>
-              <Button Content="إلغاء" Command="{Binding CloseDialogCommand}"
+              <Button Content="{DynamicResource Str_SaveAndNew}" Command="{Binding SaveAndNewAccountCommand}" Width="140" Height="42" Margin="0,0,8,0" Style="{StaticResource SmartSecondaryButton}" AutomationProperties.Name="حفظ ومتابعة"/>
+              <Button Content="{DynamicResource Str_Cancel}" Command="{Binding CloseDialogCommand}"
                       Width="84" Height="42" Style="{StaticResource GhostButton}" IsCancel="True"
                       AutomationProperties.Name="إلغاء"/>
             </StackPanel>
