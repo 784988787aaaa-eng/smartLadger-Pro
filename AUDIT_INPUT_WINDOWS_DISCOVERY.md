@@ -1,154 +1,129 @@
 # SmartLedger — Audit Input Windows Discovery
-> **الحالة:** استكشاف ساكن أولي — غير مكتمل  
-> **المستودع:** `784988787aaaa-eng/smartLadger-Pro`  
-> **الفرع المستهدف:** `feature/unified-clean-build`  
-> **قيد السلامة:** لم تُجرَ أي تعديلات على كود التطبيق أو الواجهات أو قاعدة البيانات ضمن هذا الاستكشاف. هذا المستند توثيق فقط.  
-> **حدود الإثبات:** المعلومات أدناه مقتبسة من الملفات التي أمكن قراءتها مباشرةً عبر GitHub. لا يُدّعى أن جرد XAML أو الخدمات شامل؛ يلزم استكمال تعداد ملفات الشجرة ومراجعة الملفات ذات الصلة.
 
-## 1. بنية المشروع والحزم
+> **الحالة:** استكشاف ساكن موجّه، غير نهائي. **الفرع:** `feature/unified-clean-build`.
+> **قيد:** لم يُعدّل كود التطبيق أو قاعدة البيانات أو Workflow. لم يُنفذ build/tests/runtime QA؛ هذه النتائج من قراءة الملفات على الفرع مباشرة.
 
-### المشاريع الظاهرة في الحل
-من `SmartLedger.sln`:
-- `src/SmartLedger.Core/SmartLedger.Core.csproj`
-- `src/SmartLedger.Infrastructure/SmartLedger.Infrastructure.csproj`
-- `src/SmartLedger.App/SmartLedger.App.csproj`
-- `tests/SmartLedger.Tests/SmartLedger.Tests.csproj`
+## 1. الملفات التي تمت قراءتها
 
-### مشروع الواجهة
-- **الاسم:** `SmartLedger.App`
-- **المسار:** `src/SmartLedger.App/SmartLedger.App.csproj`
-- **الإطار المستهدف:** `net10.0-windows`
-- **WPF:** مفعّل عبر `<UseWPF>true</UseWPF>`
-- **Nullable / ImplicitUsings:** مفعّلان.
-- **TreatWarningsAsErrors:** مفعّل.
-- **MVVM package:** `CommunityToolkit.Mvvm 8.4.2`
-- **Project references:** `SmartLedger.Core` و`SmartLedger.Infrastructure`.
+| الملف | Blob SHA |
+|---|---|
+| `src/SmartLedger.App/Views/Modules/AccountDialogControl.xaml` | `0f82c65ff62147196c84e733cf8b41cfedff25f0` |
+| `src/SmartLedger.App/Views/Modules/ProductDialogControl.xaml` | `d4aee194accaac2390f8b4862b3d1ae3d81698a2` |
+| `src/SmartLedger.App/Views/Modules/ExpenseVoucherDialogControl.xaml` | `afe66bb24c0914eb2bb495922f024f335d579bd8` |
+| `src/SmartLedger.App/Views/Modules/SalesView.xaml` | `b33e538868cc2ab9e2f79cb5c54ff10560bf0309` |
+| `src/SmartLedger.App/Themes/Styles.xaml` | `c098fd82aa988248a1d87eb40c7d7fde6e1751c7` |
+| `src/SmartLedger.App/Themes/Typography.xaml` | `1462ed005a141756c323dfaea77943cd05121409` |
+| `src/SmartLedger.App/Views/MainWindow.xaml` | `e5f48679ce4952a57a4da1134d45adfc963ba77e` |
+| `src/SmartLedger.App/App.xaml` | `7b5dfd9761f49cd15788e195e2ec361ec30d14d7` |
 
-### Core
-- **المسار:** `src/SmartLedger.Core/SmartLedger.Core.csproj`
-- **الإطار المستهدف:** `net10.0`
-- **TreatWarningsAsErrors:** مفعّل.
+تمت قراءة `PurchasesView.xaml` و`OperationsView.xaml` وViewModels ذات الصلة أيضًا؛ لم تُسجّل بصماتها في ملخص هذه الجولة.
 
-### Infrastructure والحزم
-- **المسار:** `src/SmartLedger.Infrastructure/SmartLedger.Infrastructure.csproj`
-- **الإطار المستهدف:** `net10.0`
-- **Project reference:** `SmartLedger.Core`
-- **الحزم المثبتة مباشرةً في الملف:**
-  - `Microsoft.Data.Sqlite 10.0.12`
-  - `QuestPDF 2026.9.1`
-  - `QRCoder 1.6.0`
-  - `DocumentFormat.OpenXml 3.1.1`
+## 2. البنية المعمارية: Dialog DataTemplates
 
-**ملاحظة:** لا تثبت الملفات التي قُرئت حتى الآن وجود MaterialDesignInXaml أو MahApps.Metro أو HandyControl؛ لا ينبغي استنتاج غيابها نهائيًا قبل استكمال فحص جميع ملفات المشروع ومراجع الحزم.
+الملفات الثلاثة التي تنتهي بـ `DialogControl.xaml` ليست `Window` أو `UserControl`. كل ملف هو `ResourceDictionary` ويعرّف `DataTemplate`:
+- `AccountDialogControlTemplate`
+- `ProductDialogControlTemplate`
+- `ExpenseVoucherDialogTemplate`
 
-## 2. محتوى ملف App.xaml
+وتستخدم القوالب `DialogOverlay` وخصائص مثل `IsDialogOpen` مع `BoolToVisibility`. هذا يثبت أنها قوالب تُعرض داخل واجهة أخرى، لا نوافذ مستقلة بذاتها. يلزم فحص `ModuleTemplates.xaml` و`MainWindow.xaml` وViewModels لتوثيق الاستضافة الكاملة وإدارة التركيز/الخلفية.
 
-المسار: `src/SmartLedger.App/App.xaml`
+## 3. المجموعة (أ): قوالب الإدخال
 
-```xml
-<Application x:Class="SmartLedger.App.App" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:vm="clr-namespace:SmartLedger.App.ViewModels" xmlns:local="clr-namespace:SmartLedger.App.Converters" ShutdownMode="OnMainWindowClose">
-  <Application.Resources>
-    <ResourceDictionary>
-      <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="Themes/Colors.xaml"/>
-        <ResourceDictionary Source="Themes/Typography.xaml"/>
-        <ResourceDictionary Source="Themes/Styles.xaml"/>
-        <ResourceDictionary Source="Themes/Iconography.xaml"/>
-        <ResourceDictionary Source="Views/ModuleTemplates.xaml"/>
-        <ResourceDictionary Source="Views/Modules/InventoryView.xaml"/>
-        <ResourceDictionary Source="Views/Modules/UsersView.xaml"/>
-        <ResourceDictionary Source="Views/Modules/ExpensesView.xaml"/>
-        <ResourceDictionary Source="Views/Modules/AccountsView.xaml"/>
-        <ResourceDictionary Source="Views/Modules/PurchasesView.xaml"/>
-        <ResourceDictionary Source="Views/Modules/DashboardView.xaml"/>
-        <ResourceDictionary Source="Views/Modules/SettingsView.xaml"/>
-        <ResourceDictionary Source="Views/Modules/SalesView.xaml"/>
-        <ResourceDictionary Source="Views/Modules/AuditLogView.xaml"/>
-        <ResourceDictionary Source="Views/Modules/RecycleBinView.xaml"/>
-        <ResourceDictionary Source="Views/Modules/ReportsView.xaml"/>
-        <ResourceDictionary Source="Views/Modules/OperationsView.xaml"/>
-        <ResourceDictionary Source="Views/Modules/AccountDialogControl.xaml"/>
-        <ResourceDictionary Source="Views/Modules/ProductDialogControl.xaml"/>
-        <ResourceDictionary Source="Views/Modules/ExpenseVoucherDialogControl.xaml"/>
-        <ResourceDictionary Source="Resources/Strings.ar.xaml"/>
-      </ResourceDictionary.MergedDictionaries>
-      <local:InverseBooleanToVisibilityConverter x:Key="InverseBoolToVisibility"/><local:ActivePageBackgroundConverter x:Key="ActivePageBackgroundConverter"/>
-      <SolidColorBrush x:Key="Bg" Color="#070B19"/><SolidColorBrush x:Key="Surface" Color="#0F172A"/><SolidColorBrush x:Key="Surface2" Color="#131E3D"/><SolidColorBrush x:Key="Line" Color="#263A5A"/><SolidColorBrush x:Key="Text" Color="#F8FAFC"/><SolidColorBrush x:Key="Muted" Color="#93A4C3"/><SolidColorBrush x:Key="Cyan" Color="#00B4D8"/><SolidColorBrush x:Key="Green" Color="#06D6A0"/><SolidColorBrush x:Key="Red" Color="#EF476F"/><SolidColorBrush x:Key="Yellow" Color="#FFD166"/>
-    </ResourceDictionary>
-  </Application.Resources>
-</Application>
-```
+### 3.1 الحساب — `AccountDialogControl.xaml`
 
-### موارد مشتركة ظاهرة في App.xaml
-- `Themes/Colors.xaml`
-- `Themes/Typography.xaml`
-- `Themes/Styles.xaml`
-- `Themes/Iconography.xaml`
-- `Views/ModuleTemplates.xaml`
-- موارد Views/Modules المدرجة في الكود أعلاه.
-- `Resources/Strings.ar.xaml`
+- RTL صريح على Grid، و`InputDialogBehavior.IsEnabled`; TabNavigation دائري؛ F5 للحفظ وEscape للإغلاق.
+- الحقول: اسم الحساب، الدفتر، الرصيد الافتتاحي، اتجاه الرصيد «له/عليه»، البيان، الهاتف، حد الائتمان، واتساب.
+- الرصيد وحد الائتمان LTR مع محاذاة يمين؛ الهاتف LTR ومحاذاة يسار.
+- زر حفظ وإغلاق مع حالة `IsSaving` تعطل الزر أثناء الحفظ، وزر إلغاء. لا يظهر زر «حفظ وجديد».
+- ViewModel المرشح الذي عُثر عليه: `src/SmartLedger.App/ViewModels/AccountsViewModel.cs`. لم يُعثر على `AccountDialogControl.xaml.cs` بالمسار المتوقع؛ وهذا متسق مع ResourceDictionary/DataTemplate.
 
-### اتجاه RTL والخطوط
-- يحتوي `App.xaml` الذي قُرئ على موارد Typography، لكنه لا يحدد `FlowDirection` على عنصر Application نفسه.
-- لا يمكن تحديد ما إذا كان RTL مضبوطًا على مستوى النوافذ أو عناصرها قبل فحص XAML لكل نافذة وموارد الأنماط.
+**ملاحظات:** الاسم معلّم بنجمة لكن يجب إثبات تحقق الاسم والتكرار والرصيد من مسار الحفظ. نصوص عديدة مكتوبة مباشرة في XAML، لذلك التعريب ليس مركزيًا بالكامل. إعدادات XAML لا تثبت نجاح Enter/Tab/IME وقت التشغيل.
 
-## 3. جرد أولي لملفات XAML
+### 3.2 الصنف — `ProductDialogControl.xaml`
 
-**هذه قائمة الملفات المشار إليها صراحةً في App.xaml، وليست جردًا كاملًا لجميع ملفات XAML في المستودع.** صُنّفت بحسب اسم الملف فقط؛ لم تُراجع بعد جميع محتوياتها لتحديد كل مسارات الإدخال بدقة.
+- DataTemplate بعرض 880 وحد أقصى 920 وارتفاع 580 وحد أقصى 600، بثلاث بطاقات/أعمدة و`ClipToBounds="True"`.
+- حقول الاسم والباركود والتصنيف والمخزن وموقعه والمورد والوحدات ومعامل التحويل والكميات الافتتاحية وحد التنبيه والملاحظة وأسعار الشراء/البيع وهوامش الربح.
+- RTL على الحاوية؛ بعض حقول الباركود والأرقام والكميات والأسعار LTR. الأزرار: إلغاء، «حفظ ومتابعة» (`SaveAndNewProductCommand`) و«حفظ وإغلاق» (`SaveAndCloseProductCommand`).
+- ViewModel: `src/SmartLedger.App/ViewModels/InventoryViewModel.cs`. توجد حسابات `CalculatedUnitCostMinor`, `ProfitPerUnit`, `ProfitMargin`, `NetOpeningSmallUnits`. دالة `ParseDecimal` تستخدم `decimal.TryParse` مع `CurrentCulture` وتعيد صفرًا عند فشل التحليل، وبعض الحسابات تطبق `Math.Max(1m, conversion)`.
 
-### وحدات الواجهة
-- `src/SmartLedger.App/Views/Modules/InventoryView.xaml`
-- `src/SmartLedger.App/Views/Modules/UsersView.xaml`
-- `src/SmartLedger.App/Views/Modules/ExpensesView.xaml`
-- `src/SmartLedger.App/Views/Modules/AccountsView.xaml`
-- `src/SmartLedger.App/Views/Modules/PurchasesView.xaml`
-- `src/SmartLedger.App/Views/Modules/DashboardView.xaml`
-- `src/SmartLedger.App/Views/Modules/SettingsView.xaml`
-- `src/SmartLedger.App/Views/Modules/SalesView.xaml`
-- `src/SmartLedger.App/Views/Modules/AuditLogView.xaml`
-- `src/SmartLedger.App/Views/Modules/RecycleBinView.xaml`
-- `src/SmartLedger.App/Views/Modules/ReportsView.xaml`
-- `src/SmartLedger.App/Views/Modules/OperationsView.xaml`
+**مخاطر للتدقيق:** إرجاع صفر عند فشل التحليل قد يخفي الفرق بين القيمة غير الصالحة والصفر؛ وقيد معامل التحويل إلى 1 أو أكثر يحتاج إثباته في التحقق ومسار الحفظ. الحاوية الثابتة مع `ClipToBounds` تستلزم اختبار دقات مختلفة. لم يُعثر على code-behind مستقل بالمسار المتوقع.
 
-### عناصر حوار/إدخال ظاهرة بالاسم
-- `src/SmartLedger.App/Views/Modules/AccountDialogControl.xaml`
-- `src/SmartLedger.App/Views/Modules/ProductDialogControl.xaml`
-- `src/SmartLedger.App/Views/Modules/ExpenseVoucherDialogControl.xaml`
-- `src/SmartLedger.App/Views/ModuleTemplates.xaml`
+### 3.3 سند النفقة — `ExpenseVoucherDialogControl.xaml`
 
-### ملفات موارد التصميم
-- `src/SmartLedger.App/Themes/Colors.xaml`
-- `src/SmartLedger.App/Themes/Typography.xaml`
-- `src/SmartLedger.App/Themes/Styles.xaml`
-- `src/SmartLedger.App/Themes/Iconography.xaml`
-- `src/SmartLedger.App/Resources/Strings.ar.xaml`
+- DataTemplate بعرض 560: الفئة، المبلغ، التاريخ، مصدر الدفع، البيان؛ المبلغ بارز بحجم 40 وLRT/LTR رقمي، وخيارات الدفع Cash/Bank/Credit.
+- حقل البيان عربي لكنه مضبوط على `FlowDirection="LeftToRight"`، وهو تفاوت يستحق التحقق البصري والسلوكي.
+- أزرار حفظ وإلغاء؛ لا يظهر في القالب تعطيل صريح للحفظ أثناء الحفظ.
+- ViewModel: `src/SmartLedger.App/ViewModels/ExpensesViewModel.cs`. `SaveAsync` يمنع التكرار عبر `IsSaving`، ويتحقق من مبلغ موجب عبر `NumericNormalizer.TryParseDecimal`، ثم يحفظ ويعيد تحميل البيانات. يستخدم `session.CurrentUser!.Id`؛ يجب إثبات أن الجلسة مهيأة قبل السماح بالحفظ. يعرض `ex.Message` في StatusText، ويلزم تقييم ملاءمة رسائل الاستثناء للمستخدم النهائي.
 
-## 4. ViewModels وCode-Behind والتحقق
+## 4. المجموعة (ب): الفواتير والعمليات
 
-- مرجع الحزمة المؤكد في مشروع الواجهة: `CommunityToolkit.Mvvm 8.4.2`.
-- يثبت ذلك وجود اعتماد على الحزمة، لكنه **لا يثبت وحده** أن كل ViewModel يستخدم المصدر المولّد أو سمات Toolkit.
-- لم تُحسم بعد قائمة ملفات `*.xaml.cs` وViewModels المقابلة، ولا نمط التحقق المستخدم (`IDataErrorInfo` أو `INotifyDataErrorInfo` أو تحقق يدوي). تُترك هذه البنود غير محسومة حتى قراءة الملفات ذات الصلة مباشرةً.
+### 4.1 المبيعات — `SalesView.xaml` / `SalesViewModel.cs`
 
-## 5. الخدمات المالية والمخزنية
+- القالب DataTemplate لـ `SalesViewModel` ويضم سجل الفواتير وحوار إدخال overlay؛ ليست عملية الإدخال محصورة في صفحة ثابتة.
+- اختصارات F1–F6 وEscape وCtrl+S وCtrl+P.
+- الحقول: باركود، عميل، صنف، كمية ووحدة، سعر، مدفوع، خصم، ضريبة %، بيان؛ جدول سطور مع حذف.
+- طرق الدفع: نقدي، آجل، جزئي. مؤشرات: إجمالي السطور، الخصم، الضريبة، الصافي، المدفوع، المتبقي، رصيد العميل الحالي والمتوقع.
+- أوامر مرئية للحفظ/الترحيل والطباعة، حفظ فقط، طباعة، واتساب، تعليق واستئناف فاتورة.
+- ViewModel: `src/SmartLedger.App/ViewModels/SalesViewModel.cs`. يحسب `LinesTotal` و`DiscountAmountDisplay` و`TaxAmountDisplay` و`Remaining` و`ProjectedCustomerBalance`. يستدعي `CurrentDiscount` و`CurrentTax`؛ يجب فحص تعريفهما ومسار الترحيل قبل الجزم بحدود الخصم أو طريقة الضريبة.
 
-- المشروع المرشح لاحتواء التنفيذات والبنية التحتية هو `src/SmartLedger.Infrastructure`، وفق تقسيم الحل ومرجع المشروع من واجهة المستخدم.
-- الحزمة `Microsoft.Data.Sqlite` موجودة في ملف Infrastructure.
-- **لم يتم بعد إثبات أسماء ومسارات الخدمات المسؤولة عن كل عملية**، ولم تُربط النوافذ بخدمات الحفظ والترحيل أو بحركات المخزون. يلزم فحص ملفات المصدر الفعلية قبل توثيق أي ربط.
+### 4.2 المشتريات — `PurchasesView.xaml` / `PurchasesViewModel.cs`
 
-## 6. ملاحظة CI/CD مسجلة
+- ViewModel يحوي `IsDialogOpen` وسطور الفاتورة والإجماليات والمتبقي، ويستخدم آلية تغيير الوحدة ومعامل التحويل.
+- تغيير الوحدة قد يعيد حساب السعر من نسبة معامل الوحدة الحالي إلى السابق، مع تنسيق InvariantCulture.
+- `ReverseInvoiceAsync` يطلب تأكيدًا، يستدعي `repo.ReverseInvoiceAsync`، ثم يعيد تحميل سجل الفواتير.
 
-المسار: `.github/workflows/build.yml` على الفرع المستهدف.
+**مطلوب:** تدقيق قواعد الخصم/الضريبة/التقريب وتكلفة المخزون والسداد الجزئي، واختبارات تبديل الوحدة والقيم غير الصالحة. وجود أمر العكس لا يثبت وحده سلامة عكس المخزون والدفتر العام؛ يجب تتبع repository/services واختباراتها. تفاصيل XAML ومسار الحفظ لم تُستخرج كاملة في هذه الجولة.
 
-في محتوى الملف الذي تمت قراءته، أحداث الدفع تشمل `main` و`fix/**`، وأحداث `pull_request` تستهدف `main`. لا يظهر `feature/unified-clean-build` ضمن هذه القوائم. لا يُجرى أي تعديل على Workflow في هذه المرحلة.
+### 4.3 العمليات — `OperationsView.xaml` / `OperationsViewModel.cs`
 
-## 7. الأعمال المتبقية لاستكمال سجل التدقيق
+- قالب حركة داخل overlay؛ بحث حساب مع Popup اقتراحات؛ أنواع ظاهرة: استلام/قبض، سداد/صرف، دين جديد.
+- RTL للحاوية، LTR للمبلغ، F5 وCtrl+S للحفظ وEscape للإغلاق.
+- `SaveAsync` و`CanSave` يتحققان من مبلغ موجب صالح وحساب مختار، ويمنعان الإتاحة أثناء `IsBusy`.
 
-1. الحصول على قائمة شجرة المستودع كاملة على الفرع المستهدف، ثم حصر كل `.xaml` و`.xaml.cs` وViewModels والخدمات والاختبارات.
-2. قراءة ملفات الأنماط والخطوط وتحديد نطاق تطبيق RTL فعليًا.
-3. مطابقة كل نافذة إدخال مع ViewModel والأوامر والتحقق وخدمة الحفظ.
-4. تتبع مسارات الفواتير والقيود والمخزون والتسعير في طبقات Core وInfrastructure.
-5. إعداد مصفوفة التدقيق البصري والوظيفي والمحاسبي، وتصنيف المخاطر P0–P3.
-6. إبقاء كل التعديلات على كود التطبيق وقاعدة البيانات مجمّدة حتى موافقة صريحة على خطة التنفيذ.
+**مطلوب:** إثبات اتجاه المدين/الدائن لكل نوع، ذرية الحفظ وسجل التدقيق، ومنع الترحيل المكرر. حقل البحث مضبوط LTR مع محاذاة يمين ويحتاج اختبارًا عمليًا.
 
----
-**مبدأ التوثيق:** البنود غير المقروءة مباشرةً تبقى «غير محسومة» ولا تُستبدل باستنتاجات افتراضية.
+## 5. المجموعة (ج): الأنماط والنافذة الجذرية
+
+### Styles.xaml
+توجد أنماط مشتركة مثل `Field`, `NumericField`, `DialogNumericField`, `DialogComboBox`, `PrimaryButton`, `GhostButton`, `DialogShell`, `DialogOverlay` وأنماط DataGrid. `NumericField` يضبط LTR ومحاذاة يمين، لكن بعض العناصر تتجاوز الأنماط بخصائص محلية. توجد حالة تركيز تغيّر لون الحد إلى لون التمييز؛ لم يُجر اختبار تباين أو فحص runtime، لذا لا تصنيف نهائي للتباين بعد.
+
+### Typography.xaml
+- `ArabicFont` يحدد خطًا مفضلًا مع بدائل.
+- النمط العام لـ `TextBlock` يضبط `Language="en-US"`، بينما النافذة الرئيسية `ar-SA`; يستحق ذلك اختبار الأرقام والنصوص المختلطة.
+- `MetricText` يضبط `FlowDirection="LeftToRight"` للأرقام؛ يجب اختبار العملة والفواصل العشرية مع النص العربي.
+
+### MainWindow.xaml
+المسار المكتشف هو `src/SmartLedger.App/Views/MainWindow.xaml`، وليس `src/SmartLedger.App/MainWindow.xaml`. النافذة تضبط `FlowDirection="RightToLeft"`, `Language="ar-SA"`, و`UseLayoutRounding` و`SnapsToDevicePixels`. أبعادها الابتدائية 1400×850 وحدها الأدنى 1100×700. هذا يثبت RTL على النافذة الجذرية لكنه لا يلغي إعادة ضبط الاتجاه على عناصر فرعية.
+
+## 6. استنتاجات مشتركة ومخاطر أولية
+
+1. **التعريب:** وجود `Strings.ar.xaml` لا يعني أن كل النصوص مترجمة من الموارد؛ القوالب أعلاه تحتوي نصوصًا ثابتة كثيرة.
+2. **الأرقام:** `NumericNormalizer.TryParseDecimal` في بعض المسارات، مقابل `InventoryViewModel.ParseDecimal` الذي يعيد صفرًا عند الفشل. يجب اختبار النقطة/الفاصلة والثقافة الحالية.
+3. **RTL/LTR:** التباين قد يكون مقصودًا للباركود والأرقام، لكن بعض الحقول النصية العربية مضبوطة LTR. يلزم حصر لكل حقل.
+4. **القص والتخطيط:** حوار الصنف ذو حجم ثابت و`ClipToBounds`; يلزم runtime QA بدقات مختلفة.
+5. **الحفظ المكرر:** توجد حماية صريحة في بعض ViewModels، لكن لم يثبت بعد أن كل مسارات الترحيل محمية على مستوى الخدمات/قاعدة البيانات.
+6. **الجودة:** `TreatWarningsAsErrors` مفعّل وفق ملفات المشاريع التي فُحصت سابقًا، لكن هذه الجولة لم تنفذ بناءً أو اختبارًا، ولا تثبت خلو Binding warnings وقت التشغيل.
+
+## 7. ViewModels المرتبطة التي عُثر عليها
+
+- `src/SmartLedger.App/ViewModels/AccountsViewModel.cs`
+- `src/SmartLedger.App/ViewModels/InventoryViewModel.cs`
+- `src/SmartLedger.App/ViewModels/ExpensesViewModel.cs`
+- `src/SmartLedger.App/ViewModels/SalesViewModel.cs`
+- `src/SmartLedger.App/ViewModels/PurchasesViewModel.cs`
+- `src/SmartLedger.App/ViewModels/OperationsViewModel.cs`
+
+لم تُوجد ملفات code-behind مستقلة للقوالب الثلاثة بالمسارات المتوقعة؛ الملفات موارد XAML وليست UserControl.
+
+## 8. ما يلزم قبل المخرجات النهائية
+
+- قراءة `ModuleTemplates.xaml` و`InputDialogBehavior` لتوثيق الاستضافة وEnter/Tab والاقتراحات.
+- تتبع أوامر الحفظ حتى repository/services وقاعدة البيانات، مع المعاملات ومنع التكرار وسجل التدقيق.
+- فحص تعريفات `CurrentDiscount` و`CurrentTax` وحسابات التقريب والتكلفة والتحويل واختباراتها.
+- حصر النصوص الثابتة وخصائص RTL/LTR ومصادر الموارد.
+- إجراء build/tests وruntime screenshots في مرحلة لاحقة مصرح بها.
+- بعدها إعداد Input Windows Audit Matrix وتصنيف P0–P3، وتقييم Design System، وخطة تنفيذ للموافقة.
+
+## 9. القرار
+
+**لا تعديل على التطبيق أو قاعدة البيانات.** هذا تحديث للاستكشاف الساكن فقط، ولا يعتمد أي إصلاح قبل اكتمال الأدلة وموافقة صريحة على خطة التنفيذ.
