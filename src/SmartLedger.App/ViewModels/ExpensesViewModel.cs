@@ -19,5 +19,57 @@ public partial class ExpensesViewModel(IAppRepository repo,IAppSession session):
  public async Task LoadAsync(){Expenses=await repo.GetExpensesAsync();CashSummary=await repo.GetCashRegisterSummaryAsync(DateTimeOffset.Now.Date,DateTimeOffset.Now);}
  [RelayCommand] private void OpenAdd(){Category="أخرى";PaymentMethod="Cash";AmountText="";Note="";ExpenseDate=DateTime.Today;StatusText="";IsDialogOpen=true;}
  [RelayCommand] private void CloseDialog(){if(!IsSaving)IsDialogOpen=false;}
- [RelayCommand] private async Task SaveAsync(){if(IsSaving)return;if(!SmartLedger.Core.Services.NumericNormalizer.TryParseDecimal(AmountText,out var amount)||amount<=0){StatusText="أدخل مبلغًا صحيحًا.";return;}IsSaving=true;StatusText="جارٍ حفظ النفقة…";try{await repo.CreateExpenseAsync(new Expense(Guid.NewGuid(),null,Category.Trim(),amount,Note.Trim(),new DateTimeOffset(ExpenseDate.Date),session.CurrentUser!.Id){CategoryId=Category.Trim(),PaymentMethod=PaymentMethod});StatusText="تم حفظ النفقة بنجاح.";IsDialogOpen=false;AmountText="";Note="";await LoadAsync();}catch(Exception ex){StatusText=ex.Message;}finally{IsSaving=false;}}
+  [RelayCommand]
+  private async Task SaveAsync()
+  {
+      if (IsSaving) return;
+      if (session.CurrentUser is not { } currentUser)
+      {
+          StatusText = "تعذر إتمام العملية: جلسة المستخدم غير صالحة أو انتهت صلاحيتها. يرجى إعادة تسجيل الدخول.";
+          return;
+      }
+
+      if (!SmartLedger.Core.Services.NumericNormalizer.TryParseDecimal(AmountText, out var amount) || amount <= 0m)
+      {
+          StatusText = "أدخل مبلغًا صحيحًا أكبر من صفر.";
+          return;
+      }
+
+      IsSaving = true;
+      StatusText = "جارٍ حفظ سند الصرف…";
+      try
+      {
+          var expense = new Expense(
+              Guid.NewGuid(),
+              null,
+              Category.Trim(),
+              amount,
+              Note.Trim(),
+              new DateTimeOffset(ExpenseDate.Date),
+              currentUser.Id)
+          {
+              CategoryId = Category.Trim(),
+              PaymentMethod = PaymentMethod
+          };
+
+          await repo.CreateExpenseAsync(expense);
+          StatusText = "تم حفظ سند الصرف بنجاح.";
+          IsDialogOpen = false;
+          AmountText = "";
+          Note = "";
+          await LoadAsync();
+      }
+      catch (InvalidOperationException ex)
+      {
+          StatusText = $"تعذر حفظ السند: {ex.Message}";
+      }
+      catch (Exception)
+      {
+          StatusText = "حدث خطأ غير متوقع أثناء حفظ السند. يرجى مراجعة سجل التدقيق أو مسؤول النظام.";
+      }
+      finally
+      {
+          IsSaving = false;
+      }
+  }
 }
