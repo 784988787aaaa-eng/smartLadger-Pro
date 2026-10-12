@@ -13,6 +13,12 @@ using SmartLedger.Infrastructure.Reporting;
 
 namespace SmartLedger.App.ViewModels;
 
+public enum PrintFormatOption
+{
+    Thermal80mm,
+    StandardA4
+}
+
 public partial class SalesViewModel(IAppRepository repo,IAppSession session):ObservableObject
 {
     [ObservableProperty] private IReadOnlyList<PersonSummary> people=Array.Empty<PersonSummary>();
@@ -65,6 +71,7 @@ public partial class SalesViewModel(IAppRepository repo,IAppSession session):Obs
     [ObservableProperty] private string statusText="";
     [ObservableProperty] private bool autoPrintOnPosting;
     [ObservableProperty] private string defaultPrintLayout="Thermal80";
+    [ObservableProperty] private PrintFormatOption printFormat = PrintFormatOption.Thermal80mm;
     [ObservableProperty] private string defaultSaleUnit="Minor";
     public ObservableCollection<InvoiceDraftLine> Lines { get; } = new();
     public decimal LinesTotal => Lines.Sum(x=>x.LineTotal);
@@ -89,6 +96,9 @@ public partial class SalesViewModel(IAppRepository repo,IAppSession session):Obs
         _allProducts=await repo.GetProductsAsync(); People=_allPeople; Products=_allProducts;
         AutoPrintOnPosting=string.Equals(await repo.GetPreferenceAsync("invoice.autoPrint",CancellationToken.None),"true",StringComparison.OrdinalIgnoreCase);
         DefaultPrintLayout=await repo.GetPreferenceAsync("invoice.printLayout",CancellationToken.None)??"Thermal80";
+        PrintFormat = string.Equals(DefaultPrintLayout, "A4", StringComparison.OrdinalIgnoreCase)
+            ? PrintFormatOption.StandardA4
+            : PrintFormatOption.Thermal80mm;
         DefaultSaleUnit=await repo.GetPreferenceAsync("invoice.defaultSaleUnit",CancellationToken.None)??"Minor";
         await LoadInvoiceHistoryAsync();
     }
@@ -220,7 +230,7 @@ public partial class SalesViewModel(IAppRepository repo,IAppSession session):Obs
         try
         {
             var identity=await repo.GetIdentityAsync();
-            var pdf=(string.Equals(DefaultPrintLayout,"A4",StringComparison.OrdinalIgnoreCase)?new InvoicePrintService().RenderA4Invoice(invoice,LastSavedLines,identity):new InvoicePrintService().RenderThermalReceipt(invoice,LastSavedLines,identity));
+            var pdf=(PrintFormat == PrintFormatOption.StandardA4 ? new InvoicePrintService().RenderA4Invoice(invoice,LastSavedLines,identity) : new InvoicePrintService().RenderThermalReceipt(invoice,LastSavedLines,identity));
             var path=Path.Combine(Path.GetTempPath(),$"SmartLedger-{invoice.InvoiceNumber}.pdf");
             await File.WriteAllBytesAsync(path,pdf);
             Process.Start(new ProcessStartInfo(path){UseShellExecute=true});
