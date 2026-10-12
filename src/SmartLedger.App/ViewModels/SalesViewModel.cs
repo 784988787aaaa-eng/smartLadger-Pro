@@ -74,7 +74,7 @@ public partial class SalesViewModel(IAppRepository repo,IAppSession session):Obs
     public int HeldInvoiceCount => _heldInvoices.Count;
 
     public IReadOnlyList<string> QuantityUnits { get { var p=_allProducts.FirstOrDefault(x=>x.Id==ProductId); return p is null?Array.Empty<string>():new[]{p.SmallUnit,p.LargeUnit}.Where(x=>!string.IsNullOrWhiteSpace(x)).Distinct(StringComparer.OrdinalIgnoreCase).ToArray(); } }
-    private decimal QuantityFactor(Product p)=>!string.IsNullOrWhiteSpace(p.LargeUnit)&&!string.Equals(p.LargeUnit,p.SmallUnit,StringComparison.OrdinalIgnoreCase)&&string.Equals(SelectedQuantityUnit,p.LargeUnit,StringComparison.OrdinalIgnoreCase)?p.ConversionFactor:1m;
+    private decimal QuantityFactor(Product p)=>!string.IsNullOrWhiteSpace(p.LargeUnit)&&!string.Equals(p.LargeUnit,p.SmallUnit,StringComparison.OrdinalIgnoreCase)&&string.Equals(SelectedQuantityUnit,p.LargeUnit,StringComparison.OrdinalIgnoreCase)&&p.ConversionFactor>0m?p.ConversionFactor:1m;
     public decimal Remaining=>Math.Max(0,Total-(NumericNormalizer.TryParseDecimal(PaidText,out var paid)?paid:0));
     public decimal CurrentCustomerBalance=>_allPeople.FirstOrDefault(x=>x.PersonId==PersonId)?.NetBalance??0m;
     public decimal ProjectedCustomerBalance=>CurrentCustomerBalance+Remaining;
@@ -286,6 +286,7 @@ public partial class SalesViewModel(IAppRepository repo,IAppSession session):Obs
     [RelayCommand] private async Task SaveAsync()
     {
         if(IsSaving)return;
+        if(session.CurrentUser is null){StatusText="انتهت جلسة المستخدم؛ أعد تسجيل الدخول قبل حفظ الفاتورة.";return;}
         if(ProductId is not null){if(!AddCurrentLine())return;}
         else if(!string.IsNullOrWhiteSpace(ProductSearch)){StatusText="اختر الصنف من الاقتراحات أو أنشئه أولًا.";return;}
         if(Lines.Count==0){StatusText="أضف صنفًا واحدًا على الأقل إلى الفاتورة.";return;}
