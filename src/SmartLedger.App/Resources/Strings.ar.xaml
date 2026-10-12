@@ -50,9 +50,9 @@
   <sys:String x:Key="ColCredit">له (دائن)</sys:String>
   <sys:String x:Key="ColRunningBalance">الرصيد التراكمي</sys:String>
   <sys:String x:Key="ColActions">الإجراءات</sys:String>
-  <sys:String x:Key="BtnSaveAndNew">حفظ ومتابعة (Ctrl+Enter)</sys:String>
-  <sys:String x:Key="BtnSaveAndClose">حفظ وإغلاق (Ctrl+S)</sys:String>
-  <sys:String x:Key="BtnCancel">إلغاء (Esc)</sys:String>
+  <sys:String x:Key="BtnSaveAndNew">حفظ ومتابعة</sys:String>
+  <sys:String x:Key="BtnSaveAndClose">حفظ وإغلاق</sys:String>
+  <sys:String x:Key="BtnCancel">إلغاء</sys:String>
   <sys:String x:Key="ColBarcode">الباركود / الرمز</sys:String>
   <sys:String x:Key="ColProductName">اسم الصنف / المنتج</sys:String>
   <sys:String x:Key="ColCategory">التصنيف</sys:String>
@@ -92,9 +92,9 @@
   <sys:String x:Key="ColStatementDateTime">التاريخ والوقت</sys:String>
 
   <!-- Batch 1: normalized Arabic accounting terms for input dialogs -->
-  <sys:String x:Key="Str_SaveAndClose">حفظ وإغلاق (F5)</sys:String>
-  <sys:String x:Key="Str_SaveAndNew">حفظ ومتابعة (Ctrl+Enter)</sys:String>
-  <sys:String x:Key="Str_Cancel">إلغاء (Esc)</sys:String>
+  <sys:String x:Key="Str_SaveAndClose">حفظ وإغلاق</sys:String>
+  <sys:String x:Key="Str_SaveAndNew">حفظ ومتابعة</sys:String>
+  <sys:String x:Key="Str_Cancel">إلغاء</sys:String>
   <sys:String x:Key="Str_Saving">جارٍ الحفظ والترحيل…</sys:String>
   <sys:String x:Key="Str_Account_Title">بطاقة حساب مالي جديد</sys:String>
   <sys:String x:Key="Str_Account_Name">اسم الحساب *</sys:String>
@@ -142,7 +142,7 @@
   <sys:String x:Key="Str_Purchases_Title">فاتورة مشتريات وتوريد جديدة</sys:String>
   <sys:String x:Key="Str_Customer">العميل / الحساب</sys:String>
   <sys:String x:Key="Str_Supplier">المورد / الحساب</sys:String>
-  <sys:String x:Key="Str_BarcodeSearch">مسح الباركود أو اسم الصنف (F1)</sys:String>
+  <sys:String x:Key="Str_BarcodeSearch">مسح الباركود أو اسم الصنف</sys:String>
   <sys:String x:Key="Str_Invoice_Item">الصنف</sys:String>
   <sys:String x:Key="Str_Invoice_Unit">الوحدة</sys:String>
   <sys:String x:Key="Str_Invoice_Qty">الكمية</sys:String>
@@ -158,9 +158,9 @@
   <sys:String x:Key="Str_Pay_Cash">نقدي</sys:String>
   <sys:String x:Key="Str_Pay_Credit">آجل</sys:String>
   <sys:String x:Key="Str_Pay_Partial">سداد جزئي</sys:String>
-  <sys:String x:Key="Str_SaveAndPrint">حفظ وترحيل مع الطباعة (F5)</sys:String>
-  <sys:String x:Key="Str_SaveOnly">حفظ فقط (Ctrl+S)</sys:String>
-  <sys:String x:Key="Str_HoldInvoice">تعليق الفاتورة (F4)</sys:String>
+  <sys:String x:Key="Str_SaveAndPrint">حفظ وترحيل مع الطباعة</sys:String>
+  <sys:String x:Key="Str_SaveOnly">حفظ فقط</sys:String>
+  <sys:String x:Key="Str_HoldInvoice">تعليق الفاتورة</sys:String>
   <sys:String x:Key="Str_ReverseInvoice">عكس/إلغاء الفاتورة</sys:String>
   <sys:String x:Key="Str_ReverseConfirm">هل أنت متأكد من عكس هذه الفاتورة؟ سيتم إلغاء القيود وإعادة الكميات للمخزن فوراً.</sys:String>
   <sys:String x:Key="Str_Op_Title">سند ومعاملة مالية جديدة</sys:String>
