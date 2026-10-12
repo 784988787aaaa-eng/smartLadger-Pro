@@ -109,6 +109,44 @@ public partial class InventoryViewModel(IAppRepository repo) : ObservableObject
     partial void OnSelectedWarehouseChanged(string value) => ApplyFilter();
     partial void OnStockFilterChanged(string value) => ApplyFilter();
 
+    private bool TryParseFinancialDecimal(string? input, out decimal result, string fieldNameAr)
+    {
+        result = 0m;
+        if (string.IsNullOrWhiteSpace(input))
+        {
+            StatusText = $"أدخل قيمة {fieldNameAr}.";
+            return false;
+        }
+
+        var normalized = input.Trim()
+            .Replace("٠", "0", StringComparison.Ordinal).Replace("١", "1", StringComparison.Ordinal)
+            .Replace("٢", "2", StringComparison.Ordinal).Replace("٣", "3", StringComparison.Ordinal)
+            .Replace("٤", "4", StringComparison.Ordinal).Replace("٥", "5", StringComparison.Ordinal)
+            .Replace("٦", "6", StringComparison.Ordinal).Replace("٧", "7", StringComparison.Ordinal)
+            .Replace("٨", "8", StringComparison.Ordinal).Replace("٩", "9", StringComparison.Ordinal)
+            .Replace("۰", "0", StringComparison.Ordinal).Replace("۱", "1", StringComparison.Ordinal)
+            .Replace("۲", "2", StringComparison.Ordinal).Replace("۳", "3", StringComparison.Ordinal)
+            .Replace("۴", "4", StringComparison.Ordinal).Replace("۵", "5", StringComparison.Ordinal)
+            .Replace("۶", "6", StringComparison.Ordinal).Replace("۷", "7", StringComparison.Ordinal)
+            .Replace("۸", "8", StringComparison.Ordinal).Replace("۹", "9", StringComparison.Ordinal)
+            .Replace('٫', '.').Replace('٬', '\0').Replace(',', '.');
+
+        normalized = normalized.Replace("\0", string.Empty, StringComparison.Ordinal);
+        if (!decimal.TryParse(normalized, NumberStyles.AllowLeadingSign | NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingWhite | NumberStyles.AllowTrailingWhite, CultureInfo.InvariantCulture, out result))
+        {
+            StatusText = $"القيمة المدخلة في حقل {fieldNameAr} غير صالحة حسابيًا.";
+            return false;
+        }
+
+        if (result < 0m)
+        {
+            StatusText = $"قيمة {fieldNameAr} لا يمكن أن تكون سالبة.";
+            return false;
+        }
+
+        return true;
+    }
+
     private static decimal ParseDecimal(string value) => decimal.TryParse(value, NumberStyles.Number, CultureInfo.CurrentCulture, out var n) ? n : 0m;
     public string BarcodePreview => string.IsNullOrWhiteSpace(NewBarcode) ? "سيُنشأ عند الطلب" : NewBarcode;
     private void NotifyPackaging() { OnPropertyChanged(nameof(PackagingSummary)); }
@@ -249,13 +287,16 @@ public partial class InventoryViewModel(IAppRepository repo) : ObservableObject
     {
         if (IsSaving) return;
         if (string.IsNullOrWhiteSpace(NewName)) { StatusText = "أدخل اسم الصنف."; return; }
-        if (!decimal.TryParse(NewConversion, NumberStyles.Number, CultureInfo.CurrentCulture, out var conversion) || conversion <= 0) { StatusText = "أدخل معامل تحويل صحيحًا."; return; }
-        if (!decimal.TryParse(NewPurchasePrice, NumberStyles.Number, CultureInfo.CurrentCulture, out var purchase) || purchase < 0) { StatusText = "أدخل سعر شراء صحيحًا."; return; }
-        if (!decimal.TryParse(NewSalePrice, NumberStyles.Number, CultureInfo.CurrentCulture, out var sale) || sale < 0) { StatusText = "أدخل سعر بيع صحيحًا."; return; }
-        if (!decimal.TryParse(NewMinimumSellingPrice, NumberStyles.Number, CultureInfo.CurrentCulture, out var minimumSale) || minimumSale < 0) { StatusText = "أدخل حدًا أدنى صحيحًا لسعر البيع."; return; }
-        if (!decimal.TryParse(NewAlert, NumberStyles.Number, CultureInfo.CurrentCulture, out var alert) || alert < 0) { StatusText = "أدخل حد تنبيه صحيحًا."; return; }
-        if (!IsEditing && ((!EnableMajorUnit && (!decimal.TryParse(NewOpeningQuantity, NumberStyles.Number, CultureInfo.CurrentCulture, out var opening) || opening < 0)) || (EnableMajorUnit && (!decimal.TryParse(NewOpeningLargeQuantity, NumberStyles.Number, CultureInfo.CurrentCulture, out var boxes) || boxes < 0)))) { StatusText = "أدخل الرصيد الافتتاحي الصحيح."; return; }
-        var openingQuantity = IsEditing ? SelectedProduct?.StockSmallUnits ?? 0m : NetOpeningSmallUnits;
+        if (!TryParseFinancialDecimal(NewConversion, out var conversion, "معامل التحويل") || conversion <= 0m) { StatusText = "أدخل معامل تحويل أكبر من صفر."; return; }
+        if (!TryParseFinancialDecimal(NewPurchasePrice, out var purchase, "سعر الشراء")) return;
+        if (!TryParseFinancialDecimal(NewSalePrice, out var sale, "سعر البيع")) return;
+        if (!TryParseFinancialDecimal(NewMinimumSellingPrice, out var minimumSale, "الحد الأدنى لسعر البيع")) return;
+        if (!TryParseFinancialDecimal(NewAlert, out var alert, "حد التنبيه")) return;
+        decimal opening = 0m;
+        decimal boxes = 0m;
+        if (!IsEditing && !EnableMajorUnit && !TryParseFinancialDecimal(NewOpeningQuantity, out opening, "الرصيد الافتتاحي")) return;
+        if (!IsEditing && EnableMajorUnit && !TryParseFinancialDecimal(NewOpeningLargeQuantity, out boxes, "الرصيد الافتتاحي")) return;
+        var openingQuantity = IsEditing ? SelectedProduct?.StockSmallUnits ?? 0m : (EnableMajorUnit ? boxes * conversion : opening);
 
         IsSaving = true;
         StatusText = IsEditing ? "جارٍ حفظ التعديل…" : "جارٍ حفظ الصنف…";
