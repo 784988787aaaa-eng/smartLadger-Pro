@@ -290,6 +290,8 @@ public partial class InventoryViewModel(IAppRepository repo) : ObservableObject
         if (!TryParseFinancialDecimal(NewConversion, out var conversion, "معامل التحويل") || conversion <= 0m) { StatusText = "أدخل معامل تحويل أكبر من صفر."; return; }
         if (!TryParseFinancialDecimal(NewPurchasePrice, out var purchase, "سعر الشراء")) return;
         if (!TryParseFinancialDecimal(NewSalePrice, out var sale, "سعر البيع")) return;
+        if (EnableMajorUnit && !TryParseFinancialDecimal(NewMajorPurchasePrice, out _, "سعر شراء الوحدة الكبرى")) return;
+        if (EnableMajorUnit && !TryParseFinancialDecimal(NewMajorSalePrice, out _, "سعر بيع الوحدة الكبرى")) return;
         if (!TryParseFinancialDecimal(NewMinimumSellingPrice, out var minimumSale, "الحد الأدنى لسعر البيع")) return;
         if (!TryParseFinancialDecimal(NewAlert, out var alert, "حد التنبيه")) return;
         decimal opening = 0m;
