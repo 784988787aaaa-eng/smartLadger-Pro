@@ -135,7 +135,16 @@
           <Grid Grid.Row="2" Margin="0,18,0,0">
             <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
             <TextBlock Grid.Column="0" Text="{Binding StatusText}" Foreground="{StaticResource BrushMuted}"
-                       FontSize="11" VerticalAlignment="Center" TextWrapping="Wrap" MaxWidth="230"/>
+                       FontSize="11" VerticalAlignment="Center" TextWrapping="Wrap" MaxWidth="230">
+              <TextBlock.Style>
+                <Style TargetType="TextBlock" BasedOn="{StaticResource {x:Type TextBlock}}">
+                  <Style.Triggers>
+                    <Trigger Property="Text" Value=""><Setter Property="Visibility" Value="Collapsed"/></Trigger>
+                    <Trigger Property="Text" Value="{x:Null}"><Setter Property="Visibility" Value="Collapsed"/></Trigger>
+                  </Style.Triggers>
+                </Style>
+              </TextBlock.Style>
+            </TextBlock>
             <StackPanel Grid.Column="1" Orientation="Horizontal" FlowDirection="LeftToRight">
               <Button Content="{DynamicResource Str_SaveAndClose}" Command="{Binding SaveAndCloseCommand}"
                       Width="132" Height="42" Margin="0,0,8,0" IsDefault="True"
