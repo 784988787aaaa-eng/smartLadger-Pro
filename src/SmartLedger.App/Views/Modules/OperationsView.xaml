@@ -12,8 +12,8 @@
             <Grid.RowDefinitions><RowDefinition Height="Auto" /><RowDefinition Height="Auto" /></Grid.RowDefinitions>
             <TextBlock Text="الحساب" Style="{StaticResource SectionLabel}" />
             <Grid Grid.Row="1" Margin="0,4,0,0">
-              <TextBox x:Name="OperationPersonSearch" Style="{StaticResource Field}" Text="{Binding PersonSearch,UpdateSourceTrigger=PropertyChanged}" FlowDirection="LeftToRight" TextAlignment="Right" AutomationProperties.Name="بحث عن الحساب" />
-              <Popup Placement="Bottom" PlacementTarget="{Binding ElementName=OperationPersonSearch}" IsOpen="{Binding IsMainPersonSuggestionsOpen}" StaysOpen="False" AllowsTransparency="True">
+              <TextBox x:Name="OperationPersonSearch" Style="{StaticResource Field}" Text="{Binding PersonSearch,UpdateSourceTrigger=PropertyChanged}" FlowDirection="RightToLeft" TextAlignment="Right" AutomationProperties.Name="بحث عن الحساب" />
+              <Popup Placement="Bottom" PlacementTarget="{Binding ElementName=OperationPersonSearch}" IsOpen="{Binding IsMainPersonSuggestionsOpen}" StaysOpen="False" AllowsTransparency="True" FlowDirection="RightToLeft">
                 <Border Width="390" MaxHeight="260" Style="{StaticResource DialogShell}" Padding="6">
                   <ListBox ItemsSource="{Binding People}" SelectedValuePath="PersonId" SelectedValue="{Binding SelectedPersonId,Mode=TwoWay}" FlowDirection="RightToLeft">
                     <ListBox.ItemTemplate><DataTemplate><Grid Margin="4,2"><Grid.ColumnDefinitions><ColumnDefinition /><ColumnDefinition Width="Auto" /></Grid.ColumnDefinitions><TextBlock Text="{Binding PersonName}" FontWeight="SemiBold" /><TextBlock Grid.Column="1" Text="{Binding BookName}" Foreground="{StaticResource BrushMuted}" Margin="12,0,0,0" /></Grid></DataTemplate></ListBox.ItemTemplate>
@@ -43,7 +43,7 @@
         </DataGrid>
       </Border>
       <Grid Style="{StaticResource DialogOverlay}" Visibility="{Binding IsDialogOpen,Converter={StaticResource BoolToVisibility}}">
-        <Border Width="620" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{StaticResource DialogShell}" Padding="26">
+        <Border x:Name="DialogHostContainer" MinWidth="520" Width="620" MaxWidth="900" MaxHeight="850" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{StaticResource DialogShell}" Padding="26">
           <Grid FlowDirection="RightToLeft" KeyboardNavigation.TabNavigation="Local" behaviors:InputDialogBehavior.IsEnabled="True">
             <Grid.InputBindings>
               <KeyBinding Key="F5" Command="{Binding SaveCommand}" />
@@ -51,7 +51,7 @@
               <KeyBinding Key="Escape" Command="{Binding CloseDialogCommand}" />
             </Grid.InputBindings>
             <Grid.RowDefinitions><RowDefinition Height="Auto" /><RowDefinition Height="Auto" /><RowDefinition Height="Auto" /><RowDefinition Height="Auto" /><RowDefinition Height="Auto" /><RowDefinition Height="Auto" /></Grid.RowDefinitions>
-            <Grid Grid.Row="0" Margin="0,0,0,18"><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions><Button Grid.Column="0" Command="{Binding CloseDialogCommand}" Style="{StaticResource IconButton}" ToolTip="&#x625;&#x63;&#x644;&#x627;&#x642;" AutomationProperties.Name="&#x625;&#x63;&#x644;&#x627;&#x642;"><Path Width="14" Height="14" Stretch="Uniform" Stroke="#9DB7D4" StrokeThickness="1.6" Data="{StaticResource CloseIcon}" /></Button><TextBlock Grid.Column="1" Text="&#x62D;&#x631;&#x643;&#x629; &#x62C;&#x62F;&#x64A;&#x62F;&#x629;" FontSize="22" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center"/><Border Grid.Column="2" Width="30"/></Grid>
+            <Grid Grid.Row="0" Margin="0,0,0,18" Cursor="SizeAll" behaviors:DialogInteractionBehavior.IsDraggable="True"><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions><Button Grid.Column="0" Command="{Binding CloseDialogCommand}" Style="{StaticResource IconButton}" ToolTip="&#x625;&#x63;&#x644;&#x627;&#x642;" AutomationProperties.Name="&#x625;&#x63;&#x644;&#x627;&#x642;"><Path Width="14" Height="14" Stretch="Uniform" Stroke="#9DB7D4" StrokeThickness="1.6" Data="{StaticResource CloseIcon}" /></Button><TextBlock Grid.Column="1" Text="{DynamicResource Str_Op_Title} FontSize="22" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center"/><Border Grid.Column="2" Width="30"/></Grid>
             <Grid Grid.Row="1" Margin="0,0,0,14">
               <Grid.RowDefinitions><RowDefinition Height="Auto" /><RowDefinition Height="Auto" /></Grid.RowDefinitions>
               <TextBlock Text="الحساب" Style="{StaticResource SectionLabel}" />
