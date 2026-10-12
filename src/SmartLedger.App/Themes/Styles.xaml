@@ -95,8 +95,8 @@
     <Setter Property="Padding" Value="13,9"/>
   </Style>
   <Style x:Key="Field" TargetType="TextBox">
-    <Setter Property="Height" Value="40"/>
-    <Setter Property="Padding" Value="10,0"/>
+    <Setter Property="Height" Value="38"/>
+    <Setter Property="Padding" Value="10,6"/>
     <Setter Property="FontFamily" Value="{StaticResource ArabicFont}"/>
     <Setter Property="FontSize" Value="14"/>
     <Setter Property="Foreground" Value="{StaticResource BrushText}"/>
@@ -155,7 +155,7 @@
     <Setter Property="Margin" Value="0,0,0,4"/>
   </Style>
   <Style TargetType="ComboBox">
-    <Setter Property="Height" Value="40"/>
+    <Setter Property="Height" Value="38"/>
     <Setter Property="FontFamily" Value="{StaticResource ArabicFont}"/>
     <Setter Property="FontSize" Value="14"/>
     <Setter Property="Foreground" Value="{StaticResource BrushText}"/>
@@ -163,7 +163,8 @@
     <Setter Property="BorderBrush" Value="{StaticResource BrushLine}"/>
     <Setter Property="BorderThickness" Value="1"/>
     <Setter Property="VerticalContentAlignment" Value="Center"/>
-    <Setter Property="Padding" Value="12,0"/>
+    <Setter Property="Padding" Value="10,6"/>
+    <Setter Property="FlowDirection" Value="RightToLeft"/>
     <Setter Property="Language" Value="ar-SA"/>
     <Setter Property="Template">
       <Setter.Value>
@@ -532,5 +533,67 @@
     <Setter Property="Height" Value="38"/>
     <Setter Property="MinWidth" Value="84"/>
     <Setter Property="Padding" Value="14,0"/>
+  </Style>
+
+  <!-- Sprint A: consistent dark-theme tooltips and MVVM-friendly segmented radio buttons. -->
+  <Style TargetType="ToolTip">
+    <Setter Property="Background" Value="#1E293B"/>
+    <Setter Property="Foreground" Value="#F8FAFC"/>
+    <Setter Property="BorderBrush" Value="#334155"/>
+    <Setter Property="BorderThickness" Value="1"/>
+    <Setter Property="Padding" Value="10,6"/>
+    <Setter Property="FontFamily" Value="{StaticResource ArabicFont}"/>
+    <Setter Property="FontSize" Value="12"/>
+    <Setter Property="Placement" Value="Mouse"/>
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="ToolTip">
+          <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="6" Padding="{TemplateBinding Padding}">
+            <ContentPresenter RecognizesAccessKey="True" TextElement.Foreground="{TemplateBinding Foreground}"/>
+          </Border>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+  <Style x:Key="SegmentedRadioButton" TargetType="RadioButton">
+    <Setter Property="Foreground" Value="{StaticResource BrushText}"/>
+    <Setter Property="Background" Value="{StaticResource BrushSurface2}"/>
+    <Setter Property="BorderBrush" Value="{StaticResource BrushLine}"/>
+    <Setter Property="BorderThickness" Value="1"/>
+    <Setter Property="Padding" Value="14,8"/>
+    <Setter Property="MinHeight" Value="38"/>
+    <Setter Property="FontFamily" Value="{StaticResource ArabicFont}"/>
+    <Setter Property="FontSize" Value="13"/>
+    <Setter Property="FontWeight" Value="SemiBold"/>
+    <Setter Property="Cursor" Value="Hand"/>
+    <Setter Property="FlowDirection" Value="RightToLeft"/>
+    <Setter Property="HorizontalContentAlignment" Value="Center"/>
+    <Setter Property="VerticalContentAlignment" Value="Center"/>
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="RadioButton">
+          <Border x:Name="SegmentChrome" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="6" Padding="{TemplateBinding Padding}" SnapsToDevicePixels="True">
+            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" RecognizesAccessKey="True"/>
+          </Border>
+          <ControlTemplate.Triggers>
+            <Trigger Property="IsChecked" Value="True">
+              <Setter TargetName="SegmentChrome" Property="Background" Value="#00B4D8"/>
+              <Setter TargetName="SegmentChrome" Property="BorderBrush" Value="#00B4D8"/>
+              <Setter Property="Foreground" Value="#FFFFFF"/>
+            </Trigger>
+            <Trigger Property="IsMouseOver" Value="True">
+              <Setter TargetName="SegmentChrome" Property="BorderBrush" Value="#00B4D8"/>
+            </Trigger>
+            <Trigger Property="IsEnabled" Value="False">
+              <Setter TargetName="SegmentChrome" Property="Opacity" Value="0.45"/>
+            </Trigger>
+            <Trigger Property="IsKeyboardFocused" Value="True">
+              <Setter TargetName="SegmentChrome" Property="BorderBrush" Value="#00B4D8"/>
+              <Setter TargetName="SegmentChrome" Property="BorderThickness" Value="2"/>
+            </Trigger>
+          </ControlTemplate.Triggers>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
   </Style>
 </ResourceDictionary>
