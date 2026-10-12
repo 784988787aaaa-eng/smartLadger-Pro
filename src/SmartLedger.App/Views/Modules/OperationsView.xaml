@@ -83,7 +83,7 @@
             <Grid Grid.Row="5" Margin="0,16,0,0">
               <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
               <TextBlock Grid.Column="0" Text="Enter &#x644;&#x644;&#x62A;&#x627;&#x644;&#x64A;  &#x2022;  Ctrl+S &#x623;&#x648; F5 &#x644;&#x644;&#x62D;&#x641;&#x638;  &#x2022;  Esc &#x644;&#x644;&#x625;&#x63A;&#x644;&#x627;&#x642;" Style="{StaticResource CaptionText}" VerticalAlignment="Center" HorizontalAlignment="Left" TextWrapping="Wrap" Margin="0,0,12,0"/>
-              <Button Grid.Column="1" Content="&#x62D;&#x641;&#x638; &#x627;&#x644;&#x62D;&#x631;&#x643;&#x629;  [F5]" Command="{Binding SaveCommand}" Style="{StaticResource PrimaryButton}" Width="150"/>
+              <Button Grid.Column="1" Content="حفظ الحركة" ToolTip="حفظ الحركة المحاسبية (F5 أو Ctrl+S)" Command="{Binding SaveCommand}" Style="{StaticResource PrimaryButton}" Width="150"/>
               <Button Grid.Column="2" Content="إلغاء" Command="{Binding CloseDialogCommand}" Style="{StaticResource GhostButton}" Width="105" Margin="8,0,0,0" ToolTip="إغلاق النموذج دون حفظ (Esc)"/>
             </Grid>
           </Grid>
