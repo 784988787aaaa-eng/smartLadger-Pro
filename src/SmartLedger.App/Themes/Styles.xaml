@@ -498,4 +498,36 @@
     <Setter Property="BorderBrush" Value="{StaticResource BrushCardBorder}"/>
     <Setter Property="BorderThickness" Value="1"/>
   </Style>
+
+  <!-- Batch 1 reusable dialog and smart action styles; host interaction is wired in Batch 2. -->
+  <Style x:Key="ModernDialogOverlay" TargetType="Grid" BasedOn="{StaticResource DialogOverlay}">
+    <Setter Property="Background" Value="#A0030712"/>
+  </Style>
+  <Style x:Key="ResponsiveDialogHost" TargetType="Border" BasedOn="{StaticResource DialogShell}">
+    <Setter Property="MinWidth" Value="420"/>
+    <Setter Property="MinHeight" Value="280"/>
+    <Setter Property="MaxWidth" Value="1600"/>
+    <Setter Property="MaxHeight" Value="1200"/>
+    <Setter Property="SnapsToDevicePixels" Value="True"/>
+  </Style>
+  <Style x:Key="SmartPrimaryButton" TargetType="Button" BasedOn="{StaticResource PrimaryButton}">
+    <Setter Property="Height" Value="38"/>
+    <Setter Property="MinWidth" Value="96"/>
+    <Setter Property="Padding" Value="18,0"/>
+    <Setter Property="FontWeight" Value="SemiBold"/>
+  </Style>
+  <Style x:Key="SmartSecondaryButton" TargetType="Button" BasedOn="{StaticResource EnterpriseButton}">
+    <Setter Property="Background" Value="{StaticResource BrushSurface2}"/>
+    <Setter Property="Foreground" Value="{StaticResource BrushPositive}"/>
+    <Setter Property="BorderBrush" Value="{StaticResource BrushPositive}"/>
+    <Setter Property="BorderThickness" Value="1"/>
+    <Setter Property="Height" Value="38"/>
+    <Setter Property="MinWidth" Value="96"/>
+    <Setter Property="Padding" Value="14,0"/>
+  </Style>
+  <Style x:Key="SmartGhostButton" TargetType="Button" BasedOn="{StaticResource GhostButton}">
+    <Setter Property="Height" Value="38"/>
+    <Setter Property="MinWidth" Value="84"/>
+    <Setter Property="Padding" Value="14,0"/>
+  </Style>
 </ResourceDictionary>
