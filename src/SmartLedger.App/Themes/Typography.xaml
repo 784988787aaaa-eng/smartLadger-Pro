@@ -6,7 +6,7 @@
     <Setter Property="FontSize" Value="14"/>
     <Setter Property="TextOptions.TextFormattingMode" Value="Display"/>
     <Setter Property="TextOptions.TextRenderingMode" Value="ClearType"/>
-    <Setter Property="Language" Value="en-US"/>
+    <Setter Property="Language" Value="ar-SA"/>
   </Style>
   <Style x:Key="TitleText" TargetType="TextBlock" BasedOn="{StaticResource {x:Type TextBlock}}">
     <Setter Property="FontSize" Value="28"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="Margin" Value="0,0,0,4"/>
@@ -19,6 +19,12 @@
   </Style>
   <Style x:Key="MetricText" TargetType="TextBlock" BasedOn="{StaticResource {x:Type TextBlock}}">
     <Setter Property="FontSize" Value="27"/><Setter Property="FontWeight" Value="Bold"/><Setter Property="FontFamily" Value="Segoe UI, Tahoma, Arial"/><Setter Property="Language" Value="en-US"/><Setter Property="FlowDirection" Value="LeftToRight"/><Setter Property="TextAlignment" Value="Right"/>
+  </Style>
+  <Style x:Key="FinancialMetricText" TargetType="TextBlock" BasedOn="{StaticResource MetricText}">
+    <Setter Property="FlowDirection" Value="LeftToRight"/>
+    <Setter Property="TextAlignment" Value="Right"/>
+    <Setter Property="Language" Value="en-US"/>
+    <Setter Property="FontWeight" Value="SemiBold"/>
   </Style>
   <Style x:Key="KpiLabel" TargetType="TextBlock" BasedOn="{StaticResource {x:Type TextBlock}}">
     <Setter Property="FontSize" Value="13"/><Setter Property="FontWeight" Value="SemiBold"/>
