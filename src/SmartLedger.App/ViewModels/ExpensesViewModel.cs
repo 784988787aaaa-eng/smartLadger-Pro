@@ -23,7 +23,8 @@ public partial class ExpensesViewModel(IAppRepository repo,IAppSession session):
   private async Task SaveAsync()
   {
       if (IsSaving) return;
-      if (session.CurrentUser is not { } currentUser)
+      var currentUser = session.CurrentUser;
+      if (currentUser is null)
       {
           StatusText = "تعذر إتمام العملية: جلسة المستخدم غير صالحة أو انتهت صلاحيتها. يرجى إعادة تسجيل الدخول.";
           return;
