@@ -68,6 +68,7 @@
                            FlowDirection="RightToLeft" TextAlignment="Right"
                            Margin="0,0,0,10" ToolTip="اسم واضح ومميز للصنف"/>
                   <Grid>
+                    <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
                     <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
                     <StackPanel Grid.Column="0" Margin="0,0,6,8">
                       <TextBlock Text="{DynamicResource ColBarcode}" Style="{StaticResource SectionLabel}"/>
@@ -138,7 +139,7 @@
                     </StackPanel>
                     <StackPanel Grid.Column="1" Margin="6,0,6,8">
                       <TextBlock Text="{DynamicResource Str_Product_UnitMajor}" Style="{StaticResource SectionLabel}"/>
-                      <TextBox Style="{StaticResource Field}" Height="38"
+                      <TextBox Height="38"
                                Text="{Binding NewLargeUnit, UpdateSourceTrigger=PropertyChanged}"
                                ToolTip="الوحدة الكبرى مثل كرتون أو صندوق">
                         <TextBox.Style>
@@ -151,7 +152,7 @@
                     </StackPanel>
                     <StackPanel Grid.Column="2" Margin="6,0,0,8">
                       <TextBlock Text="معامل التحويل" Style="{StaticResource SectionLabel}"/>
-                      <TextBox Style="{StaticResource NumericField}" Height="38"
+                      <TextBox Height="38"
                                Text="{Binding NewConversion, UpdateSourceTrigger=PropertyChanged}"
                                ToolTip="عدد الوحدات الأساسية داخل الوحدة الكبرى">
                         <TextBox.Style>
